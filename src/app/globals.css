@@ -2,26 +2,227 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 20% 96%;
+    --secondary-foreground: 224 71% 4%;
+    --muted: 225 20% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 225 20% 96%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 239 84% 67%;
+    --radius: 0.5rem;
+    --chart-1: 239 84% 67%;
+    --chart-2: 38 92% 50%;
+    --chart-3: 245 58% 51%;
+    --chart-4: 32 95% 44%;
+    --chart-5: 250 50% 60%;
+  }
+
+  .dark {
+    --background: 260 60% 5%;
+    --foreground: 226 20% 92%;
+    --card: 258 47% 8%;
+    --card-foreground: 226 20% 92%;
+    --popover: 258 47% 8%;
+    --popover-foreground: 226 20% 92%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 255 20% 13%;
+    --secondary-foreground: 226 20% 92%;
+    --muted: 255 20% 13%;
+    --muted-foreground: 225 10% 55%;
+    --accent: 255 20% 15%;
+    --accent-foreground: 226 20% 92%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 255 15% 16%;
+    --input: 255 15% 16%;
+    --ring: 239 84% 67%;
+    --chart-1: 239 84% 67%;
+    --chart-2: 38 92% 50%;
+    --chart-3: 245 58% 60%;
+    --chart-4: 32 95% 50%;
+    --chart-5: 250 50% 60%;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+/* Refined shadows */
+.shadow-warm-sm {
+  box-shadow: 0 1px 2px 0 rgb(79 70 229 / 0.04);
+}
+.shadow-warm {
+  box-shadow: 0 1px 3px 0 rgb(79 70 229 / 0.06), 0 1px 2px -1px rgb(79 70 229 / 0.06);
+}
+.shadow-warm-md {
+  box-shadow: 0 4px 6px -1px rgb(79 70 229 / 0.07), 0 2px 4px -2px rgb(79 70 229 / 0.05);
+}
+.shadow-warm-lg {
+  box-shadow: 0 10px 15px -3px rgb(79 70 229 / 0.07), 0 4px 6px -4px rgb(79 70 229 / 0.05);
+}
+
+/* Micro animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+/* Smooth transitions for interactive elements */
+.transition-theme {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ========================================
+   PREMIUM VISUAL UTILITIES
+   ======================================== */
+
+/* Dot grid background */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, hsl(var(--foreground) / 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Grid pattern */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Noise texture overlay */
+.bg-noise {
+  position: relative;
+}
+.bg-noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, hsl(239 84% 67%), hsl(271 81% 56%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient border */
+.gradient-border {
+  position: relative;
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, hsl(239 84% 67% / 0.5), hsl(271 81% 56% / 0.5), hsl(38 92% 50% / 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 40px -10px hsl(239 84% 67% / 0.3);
+}
+
+/* Glass morphism */
+.glass {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   FLOAT ANIMATIONS FOR ORBS
+   ======================================== */
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(10px, -15px) scale(1.05); }
+  66% { transform: translate(-8px, 8px) scale(0.95); }
+}
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float 8s ease-in-out 2s infinite;
+}
+.animate-float-slow {
+  animation: float 12s ease-in-out 4s infinite;
+}
+
+/* Pulse glow for the popular card */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 30px -8px hsl(239 84% 67% / 0.3); }
+  50% { box-shadow: 0 0 50px -5px hsl(239 84% 67% / 0.45); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Sidebar dot pattern (smaller, subtler) */
+.bg-sidebar-dots {
+  background-image: radial-gradient(circle, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Gradient accent bar */
+.gradient-bar-top {
+  position: relative;
+}
+.gradient-bar-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, hsl(239 84% 67%), hsl(271 81% 56%), hsl(239 84% 67%));
+  border-radius: var(--radius) var(--radius) 0 0;
 }

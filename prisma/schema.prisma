@@ -1,0 +1,565 @@
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native"]
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [vector]
+}
+
+enum Role {
+  ADMIN
+  EXPERT
+  SUBSCRIBER
+}
+
+enum PostMediaType {
+  TEXT
+  VIDEO
+  AUDIO
+  IMAGE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum SubscriptionTier {
+  FREE
+  STANDARD
+  PREMIUM
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  hashedPassword String
+  image          String?
+  role           Role      @default(SUBSCRIBER)
+  bio            String?
+  headline       String?
+  isActive       Boolean   @default(true)
+  isBanned       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  expertProfile              ExpertProfile?
+  settings                   UserSettings?
+  posts                      Post[]               @relation("AuthorPosts")
+  likes                      Like[]
+  comments                   Comment[]
+  bookmarks                  Bookmark[]
+  subscriptionsAsSubscriber  ExpertSubscription[] @relation("SubscriberSubs")
+  sentMessages               ChatMessage[]        @relation("SentMessages")
+  notifications              Notification[]
+  reports                    Report[]             @relation("Reporter")
+  reportsAgainst             Report[]             @relation("Reported")
+
+  @@index([role])
+  @@index([email])
+}
+
+model UserSettings {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  emailOnNewSubscriber Boolean  @default(true)
+  emailOnComment       Boolean  @default(true)
+  emailOnChat          Boolean  @default(false)
+  emailDigest          String   @default("weekly")
+  twoFactorEnabled     Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ExpertProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  displayName      String
+  specialty        String[]
+  socialLinks      Json?
+  monthlyPrice     Float    @default(9.99)
+  isVerified       Boolean  @default(false)
+  totalSubscribers Int      @default(0)
+  vectorNamespace  String   @unique
+  ragEnabled       Boolean  @default(true)
+  twinPersonality  String?
+  twinGreeting     String?  @default("Hello! I'm the digital twin of this expert. Ask me anything about their expertise!")
+  freeTrialQuestions Int      @default(3)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  personalityProfile Json?
+
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions      ExpertSubscription[]
+  knowledgeItems     KnowledgeItem[]
+  chatSessions       ChatSession[]
+  pricingTiers       ExpertPricingTier[]
+  widgetConfig       WidgetConfig?
+  importJobs         ImportJob[]
+  subscriberMemories SubscriberMemory[]
+  knowledgeNodes     KnowledgeNode[]
+  twinAccuracyScore  TwinAccuracyScore?
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  authorId     String
+  title        String?
+  content      String?
+  status       PostStatus @default(PUBLISHED)
+  isRagEnabled Boolean    @default(false)
+  isHidden     Boolean    @default(false)
+  isPremiumOnly Boolean    @default(false)
+  viewCount    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  author    User        @relation("AuthorPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  media     PostMedia[]
+  likes     Like[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  tags      PostTag[]
+
+  @@index([authorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PostMedia {
+  id        String        @id @default(cuid())
+  postId    String
+  type      PostMediaType
+  url       String
+  thumbnail String?
+  duration  Float?
+  order     Int           @default(0)
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostTag {
+  id     String @id @default(cuid())
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  postCount Int       @default(0)
+  posts     PostTag[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  content   String
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies Comment[] @relation("CommentReplies")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model KnowledgeItem {
+  id              String   @id @default(cuid())
+  expertProfileId String
+  title           String
+  content         String
+  sourceType      String
+  sourceId        String?
+  isIndexed       Boolean  @default(false)
+  vectorIds       String[]
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+
+  @@index([expertProfileId])
+}
+
+model ExpertSubscription {
+  id              String             @id @default(cuid())
+  subscriberId    String
+  expertProfileId String
+  status          SubscriptionStatus @default(ACTIVE)
+  startDate       DateTime           @default(now())
+  endDate         DateTime?
+  price           Float
+  tier  SubscriptionTier @default(PREMIUM)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  subscriber    User          @relation("SubscriberSubs", fields: [subscriberId], references: [id], onDelete: Cascade)
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriberId, expertProfileId])
+  @@index([status])
+}
+
+model ChatSession {
+  id              String   @id @default(cuid())
+  subscriberId    String
+  expertProfileId String
+  title           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isTrial  Boolean  @default(false)
+
+  expertProfile      ExpertProfile       @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  messages           ChatMessage[]
+  sharedConversation SharedConversation?
+
+  @@index([subscriberId, expertProfileId])
+}
+
+model ChatMessage {
+  id            String   @id @default(cuid())
+  chatSessionId String
+  senderId      String?
+  role          String
+  content       String
+  sources       Json?
+  createdAt     DateTime @default(now())
+
+  rating      Int?
+
+  chatSession ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+  sender      User?       @relation("SentMessages", fields: [senderId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  reporterId  String
+  reportedId  String
+  contentType String
+  contentId   String
+  reason      String
+  status      ReportStatus @default(PENDING)
+  adminNotes  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  reporter User @relation("Reporter", fields: [reporterId], references: [id])
+  reported User @relation("Reported", fields: [reportedId], references: [id])
+
+  @@index([status])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventType String
+  userId    String?
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([userId])
+}
+
+model FreeTrialUsage {
+  id              String    @id @default(cuid())
+  userId          String
+  expertProfileId String
+  questionCount   Int       @default(0)
+  lastQuestionAt  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([userId, expertProfileId])
+  @@index([userId])
+}
+
+model ExpertPricingTier {
+  id              String           @id @default(cuid())
+  expertProfileId String
+  tier            SubscriptionTier
+  price           Float            @default(0)
+  monthlyQuestions Int?
+  description     String?
+  features        String[]
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([expertProfileId, tier])
+  @@index([expertProfileId])
+}
+
+model MonthlyTwinUsage {
+  id              String   @id @default(cuid())
+  subscriberId    String
+  expertProfileId String
+  month           Int
+  questionCount   Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([subscriberId, expertProfileId, month])
+  @@index([subscriberId, expertProfileId])
+}
+
+model WidgetConfig {
+  id              String   @id @default(cuid())
+  expertProfileId String   @unique
+  isEnabled       Boolean  @default(true)
+  apiKey          String   @unique @default(cuid())
+  primaryColor    String   @default("#6366f1")
+  position        String   @default("bottom-right")
+  greeting        String?
+  freeQuestions    Int      @default(2)
+  allowedDomains  String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  expertProfile  ExpertProfile   @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  widgetSessions WidgetSession[]
+}
+
+model WidgetSession {
+  id             String   @id @default(cuid())
+  widgetConfigId String
+  visitorId      String
+  questionCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  widgetConfig WidgetConfig    @relation(fields: [widgetConfigId], references: [id], onDelete: Cascade)
+  messages     WidgetMessage[]
+
+  @@unique([widgetConfigId, visitorId])
+  @@index([widgetConfigId])
+}
+
+model WidgetMessage {
+  id              String   @id @default(cuid())
+  widgetSessionId String
+  role            String
+  content         String
+  createdAt       DateTime @default(now())
+
+  widgetSession WidgetSession @relation(fields: [widgetSessionId], references: [id], onDelete: Cascade)
+}
+
+model TwinInteraction {
+  id              String   @id @default(cuid())
+  expertProfileId String
+  chatSessionId   String?
+  question        String
+  answerQuality   Float?
+  topicCategory   String?
+  sourcesUsed     Int      @default(0)
+  isFromWidget    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([expertProfileId, createdAt])
+  @@index([expertProfileId, topicCategory])
+}
+
+model SharedConversation {
+  id            String   @id @default(cuid())
+  shareId       String   @unique @default(cuid())
+  chatSessionId String   @unique
+  sharedById    String
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  chatSession ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+
+  @@index([shareId])
+  @@index([sharedById])
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ImportSourceType {
+  BLOG_URL
+  PDF
+}
+
+model ImportJob {
+  id              String           @id @default(cuid())
+  expertProfileId String
+  sourceType      ImportSourceType
+  sourceUrl       String?
+  fileName        String?
+  status          ImportStatus     @default(PENDING)
+  itemsCreated    Int              @default(0)
+  errorMessage    String?
+  metadata        Json?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+
+  @@index([expertProfileId])
+  @@index([status])
+}
+
+// ============================================
+// Long-term Memory
+// ============================================
+
+model SubscriberMemory {
+  id              String   @id @default(cuid())
+  subscriberId    String
+  expertProfileId String
+  fact            String
+  category        String
+  confidence      Float    @default(1.0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+
+  @@index([subscriberId, expertProfileId])
+  @@index([expertProfileId])
+}
+
+// ============================================
+// Knowledge Graph (GraphRAG)
+// ============================================
+
+model KnowledgeNode {
+  id              String   @id @default(cuid())
+  expertProfileId String
+  concept         String
+  description     String?
+  vectorId        String?
+  createdAt       DateTime @default(now())
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  outEdges      KnowledgeEdge[] @relation("SourceEdges")
+  inEdges       KnowledgeEdge[] @relation("TargetEdges")
+
+  @@unique([expertProfileId, concept])
+  @@index([expertProfileId])
+}
+
+model KnowledgeEdge {
+  id           String @id @default(cuid())
+  sourceNodeId String
+  targetNodeId String
+  relationship String
+  weight       Float  @default(1.0)
+
+  sourceNode KnowledgeNode @relation("SourceEdges", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode KnowledgeNode @relation("TargetEdges", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceNodeId, targetNodeId, relationship])
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
+}
+
+// ============================================
+// Twin Accuracy Score
+// ============================================
+
+model TwinAccuracyScore {
+  id              String   @id @default(cuid())
+  expertProfileId String   @unique
+  overallScore    Float    @default(0)
+  components      Json
+  calculatedAt    DateTime @default(now())
+
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// Persistent Vector Store (pgvector)
+// ============================================
+
+model VectorChunk {
+  id        String   @id @default(cuid())
+  vectorId  String   @unique
+  namespace String
+  content   String
+  metadata  Json?
+  // embedding column added via raw SQL migration (Unsupported type for vector)
+  embedding Unsupported("vector(1536)")?
+  createdAt DateTime @default(now())
+
+  @@index([namespace])
+}

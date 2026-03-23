@@ -1,0 +1,149 @@
+"use client";
+
+import Link from "next/link";
+import { Bot, MessageCircle, Sparkles } from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+interface Message {
+  id: string;
+  role: string;
+  content: string;
+  createdAt: Date | string;
+}
+
+interface Expert {
+  displayName: string;
+  specialty: string[];
+  user: { name: string | null; image: string | null };
+}
+
+interface SharedConversationViewProps {
+  expert: Expert;
+  messages: Message[];
+}
+
+export function SharedConversationView({
+  expert,
+  messages,
+}: SharedConversationViewProps) {
+  const expertName = expert.displayName;
+  const expertImage = expert.user.image;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      {/* Top bar */}
+      <header className="border-b bg-background/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Bot className="h-5 w-5 text-primary" />
+            <span className="text-sm font-semibold">Digital Twin Chat</span>
+          </div>
+          <Button size="sm" asChild>
+            <Link href="/register">Sign Up Free</Link>
+          </Button>
+        </div>
+      </header>
+
+      {/* Expert header */}
+      <div className="mx-auto max-w-3xl px-4 pt-8 pb-4">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-14 w-14 ring-2 ring-primary/20">
+            <AvatarImage src={expertImage ?? undefined} alt={expertName} />
+            <AvatarFallback className="text-lg">
+              {getInitials(expertName)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-xl font-bold">
+              {expertName}&apos;s Digital Twin
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              AI-powered conversation
+            </p>
+            {(expert.specialty ?? []).length > 0 && (
+              <div className="mt-1 flex flex-wrap gap-1">
+                {expert.specialty.slice(0, 3).map((s) => (
+                  <Badge key={s} variant="secondary" className="text-[10px]">
+                    {s}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="mx-auto max-w-3xl px-4 pb-8">
+        <div className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
+          {messages.map((msg) => {
+            const isUser = msg.role === "user";
+            return (
+              <div
+                key={msg.id}
+                className={cn(
+                  "flex items-start gap-3",
+                  isUser && "flex-row-reverse"
+                )}
+              >
+                <Avatar className="mt-0.5 h-8 w-8 shrink-0">
+                  {isUser ? (
+                    <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                      <MessageCircle className="h-3.5 w-3.5" />
+                    </AvatarFallback>
+                  ) : (
+                    <>
+                      <AvatarImage src={expertImage ?? undefined} />
+                      <AvatarFallback className="text-xs">
+                        {getInitials(expertName)}
+                      </AvatarFallback>
+                    </>
+                  )}
+                </Avatar>
+                <div
+                  className={cn(
+                    "max-w-[80%] rounded-2xl px-4 py-2.5",
+                    isUser
+                      ? "rounded-tr-md bg-primary text-primary-foreground"
+                      : "rounded-tl-md bg-muted"
+                  )}
+                >
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {msg.content}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* CTA Banner */}
+      <div className="border-t bg-background">
+        <div className="mx-auto max-w-3xl px-4 py-8 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Sparkles className="h-6 w-6 text-primary" />
+          </div>
+          <h2 className="mt-4 text-lg font-bold">
+            Want to chat with {expertName}&apos;s AI Twin?
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Sign up to ask your own questions and explore more expert Digital
+            Twins.
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <Button asChild>
+              <Link href="/register">Get Started Free</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/">Learn More</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
