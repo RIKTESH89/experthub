@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendNotificationEmail } from "@/lib/email/send-notification-email";
 
 export async function POST(
   request: NextRequest,
@@ -141,6 +142,13 @@ export async function POST(
           link: `/expert/subscribers`,
         },
       });
+
+      // Fire-and-forget email notification
+      sendNotificationEmail({
+        type: "new_subscriber",
+        recipientUserId: expertId,
+        data: { subscriberName: session.user.name || "Someone" },
+      }).catch(() => {});
 
       isSubscribed = true;
     }

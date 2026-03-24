@@ -74,6 +74,7 @@ model User {
   notifications              Notification[]
   reports                    Report[]             @relation("Reporter")
   reportsAgainst             Report[]             @relation("Reported")
+  passwordResetTokens        PasswordResetToken[]
 
   @@index([role])
   @@index([email])
@@ -536,6 +537,20 @@ model KnowledgeEdge {
 // ============================================
 // Twin Accuracy Score
 // ============================================
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
 
 model TwinAccuracyScore {
   id              String   @id @default(cuid())

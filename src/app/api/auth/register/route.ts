@@ -3,6 +3,8 @@ import { hash } from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations/auth";
 import { slugify } from "@/lib/utils";
+import { sendEmail } from "@/lib/email/resend";
+import { welcomeEmail } from "@/lib/email/templates";
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,6 +65,13 @@ export async function POST(request: NextRequest) {
         data: { vectorNamespace },
       });
     }
+
+    // Fire-and-forget welcome email
+    sendEmail({
+      to: user.email,
+      subject: "Welcome to ExpertHub!",
+      html: welcomeEmail(user.name || "there", body.role || "SUBSCRIBER"),
+    }).catch(() => {});
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hashedPassword: _pw, ...userWithoutPassword } = user;

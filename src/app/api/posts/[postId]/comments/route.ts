@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendNotificationEmail } from "@/lib/email/send-notification-email";
 import { z } from "zod";
 
 const createCommentSchema = z.object({
@@ -120,6 +121,17 @@ export async function POST(
           link: `/posts/${postId}`,
         },
       });
+
+      // Fire-and-forget email notification
+      sendNotificationEmail({
+        type: "new_comment",
+        recipientUserId: post.authorId,
+        data: {
+          commenterName: session.user.name || "Someone",
+          postTitle: post.title || "Untitled Post",
+          postId: postId,
+        },
+      }).catch(() => {});
     }
 
     return NextResponse.json(comment, { status: 201 });
