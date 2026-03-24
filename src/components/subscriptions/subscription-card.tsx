@@ -1,21 +1,9 @@
 import Link from "next/link";
-import {
-  MessageCircle,
-  Calendar,
-  CreditCard,
-  MoreHorizontal,
-} from "lucide-react";
-import { cn, getInitials, formatDate } from "@/lib/utils";
+import { MessageSquare, User } from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface Subscription {
   id: string;
@@ -36,28 +24,53 @@ interface SubscriptionCardProps {
 }
 
 const statusConfig = {
-  ACTIVE: { label: "Active", className: "bg-green-500/10 text-green-600 dark:text-green-400" },
-  CANCELLED: { label: "Cancelled", className: "bg-red-500/10 text-red-600 dark:text-red-400" },
-  EXPIRED: { label: "Expired", className: "bg-gray-500/10 text-gray-600 dark:text-gray-400" },
-  PAST_DUE: { label: "Past Due", className: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400" },
+  ACTIVE: {
+    label: "Active",
+    dotClass: "bg-green-500",
+    textClass: "text-green-600 dark:text-green-400",
+    borderClass: "border-l-green-500",
+  },
+  CANCELLED: {
+    label: "Cancelled",
+    dotClass: "bg-gray-400",
+    textClass: "text-gray-500 dark:text-gray-400",
+    borderClass: "border-l-gray-400",
+  },
+  EXPIRED: {
+    label: "Expired",
+    dotClass: "bg-red-500",
+    textClass: "text-red-600 dark:text-red-400",
+    borderClass: "border-l-red-500",
+  },
 };
 
 export function SubscriptionCard({
   subscription,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCancel,
 }: SubscriptionCardProps) {
-  const status = statusConfig[subscription.status];
+  const status = statusConfig[subscription.status] ?? statusConfig.ACTIVE;
+  const isInactive =
+    subscription.status === "CANCELLED" || subscription.status === "EXPIRED";
 
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
-      <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
-        <Link href={`/subscriber/experts/${subscription.expert.id}`}>
-          <Avatar className="h-12 w-12 ring-2 ring-transparent transition-all hover:ring-primary/20">
+    <Card
+      className={cn(
+        "border-l-4 transition-colors duration-200 hover:bg-muted/50",
+        status.borderClass
+      )}
+    >
+      <CardContent className="flex items-center gap-3 p-3">
+        <Link
+          href={`/subscriber/experts/${subscription.expert.id}`}
+          className="shrink-0"
+        >
+          <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
             <AvatarImage
               src={subscription.expert.image ?? undefined}
               alt={subscription.expert.displayName}
             />
-            <AvatarFallback>
+            <AvatarFallback className="text-xs">
               {getInitials(subscription.expert.displayName)}
             </AvatarFallback>
           </Avatar>
@@ -71,57 +84,63 @@ export function SubscriptionCard({
             >
               {subscription.expert.displayName}
             </Link>
-            <Badge variant="secondary" className={cn("text-[10px]", status.className)}>
-              {status.label}
-            </Badge>
+            <span className="flex shrink-0 items-center gap-1">
+              <span
+                className={cn("inline-block h-2 w-2 rounded-full", status.dotClass)}
+              />
+              <span className={cn("text-[11px]", status.textClass)}>
+                {status.label}
+              </span>
+            </span>
           </div>
           {subscription.expert.headline && (
             <p className="mt-0.5 truncate text-xs text-muted-foreground">
               {subscription.expert.headline}
             </p>
           )}
-          <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <CreditCard className="h-3 w-3" />
-              ${(subscription.monthlyPrice ?? 0).toFixed(2)}/mo
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              Since {formatDate(subscription.startDate)}
-            </span>
-          </div>
         </div>
 
-        <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/subscriber/experts/${subscription.expert.id}/chat`}>
-              <MessageCircle className="mr-1.5 h-3.5 w-3.5" />
-              Chat
-            </Link>
-          </Button>
+        <span className="shrink-0 text-xs text-muted-foreground">
+          ${(subscription.monthlyPrice ?? 0).toFixed(2)}/mo
+        </span>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href={`/subscriber/experts/${subscription.expert.id}`}>
-                  View Profile
-                </Link>
-              </DropdownMenuItem>
-              {subscription.status === "ACTIVE" && onCancel && (
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => onCancel(subscription.id)}
+        <div className="flex shrink-0 items-center gap-1">
+          {isInactive ? (
+            <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+              <Link href={`/subscriber/experts/${subscription.expert.id}`}>
+                Resubscribe
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                asChild
+              >
+                <Link
+                  href={`/subscriber/experts/${subscription.expert.id}/chat`}
+                  title="Chat"
                 >
-                  Cancel Subscription
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <MessageSquare className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                asChild
+              >
+                <Link
+                  href={`/subscriber/experts/${subscription.expert.id}`}
+                  title="View Profile"
+                >
+                  <User className="h-4 w-4" />
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
