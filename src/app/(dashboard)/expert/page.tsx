@@ -51,8 +51,8 @@ interface AccuracyScore {
 }
 
 interface KnowledgeStatus {
-  totalItems: number;
-  indexedItems: number;
+  total: number;
+  indexed: number;
 }
 
 function generateViewsData() {
@@ -148,7 +148,7 @@ export default function ExpertDashboardPage() {
   const [stats, setStats] = useState<ExpertStats | null>(null);
   const [recentSubscribers, setRecentSubscribers] = useState<RecentSubscriber[]>([]);
   const [accuracyScore, setAccuracyScore] = useState<AccuracyScore>({ score: null, configured: false });
-  const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus>({ totalItems: 0, indexedItems: 0 });
+  const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus>({ total: 0, indexed: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const viewsData = useMemo(() => generateViewsData(), []);
 
@@ -159,7 +159,7 @@ export default function ExpertDashboardPage() {
           fetch("/api/expert/stats"),
           fetch("/api/expert/subscribers?limit=5&sort=recent"),
           fetch("/api/expert/accuracy-score"),
-          fetch("/api/expert/knowledge/status"),
+          fetch("/api/knowledge/stats"),
         ]);
 
         if (statsRes.ok) {
@@ -217,8 +217,8 @@ export default function ExpertDashboardPage() {
   const totalMonthViews = viewsData.reduce((sum, d) => sum + d.views, 0);
   const displayedSubs = recentSubscribers.slice(0, 3);
   const remainingSubs = recentSubscribers.length - 3;
-  const kbProgress = knowledgeStatus.totalItems > 0
-    ? Math.round((knowledgeStatus.indexedItems / knowledgeStatus.totalItems) * 100)
+  const kbProgress = knowledgeStatus.total > 0
+    ? Math.round((knowledgeStatus.indexed / knowledgeStatus.total) * 100)
     : 0;
 
   if (isLoading) {
@@ -366,7 +366,7 @@ export default function ExpertDashboardPage() {
                     </div>
                   </div>
                   <Link
-                    href="/expert/twin/configure"
+                    href="/expert/twin"
                     className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
                   >
                     Set up Twin
@@ -488,11 +488,11 @@ export default function ExpertDashboardPage() {
             </div>
             <div className="mt-3 flex items-center gap-6">
               <div>
-                <div className="text-2xl font-bold">{knowledgeStatus.totalItems}</div>
+                <div className="text-2xl font-bold">{knowledgeStatus.total}</div>
                 <span className="text-[10px] text-muted-foreground">Total Items</span>
               </div>
               <div>
-                <div className="text-2xl font-bold">{knowledgeStatus.indexedItems}</div>
+                <div className="text-2xl font-bold">{knowledgeStatus.indexed}</div>
                 <span className="text-[10px] text-muted-foreground">Indexed</span>
               </div>
               <div className="flex-1 min-w-0">
@@ -517,7 +517,7 @@ export default function ExpertDashboardPage() {
                 Add Knowledge
               </Link>
               <Link
-                href="/expert/knowledge/graph"
+                href="/expert/twin"
                 className="inline-flex items-center gap-1.5 rounded-md border border-border/50 bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted/50 hover:border-primary/30"
               >
                 <Network className="h-3 w-3" />
@@ -533,7 +533,7 @@ export default function ExpertDashboardPage() {
         {[
           { href: "/expert/posts/new", icon: Plus, label: "Create Post" },
           { href: "/expert/knowledge", icon: BookOpen, label: "Manage Knowledge" },
-          { href: "/expert/twin/configure", icon: Settings, label: "Configure Twin" },
+          { href: "/expert/twin", icon: Settings, label: "Configure Twin" },
           { href: "/expert/analytics", icon: BarChart3, label: "View Analytics" },
         ].map((action) => (
           <Link

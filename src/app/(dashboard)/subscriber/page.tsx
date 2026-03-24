@@ -46,7 +46,7 @@ export default function SubscriberDashboardPage() {
         const [statsRes, expertsRes, subscribedRes] = await Promise.all([
           fetch("/api/subscriber/stats"),
           fetch("/api/experts/featured?limit=4"),
-          fetch("/api/subscriber/subscriptions?limit=5"),
+          fetch("/api/subscriptions"),
         ]);
 
         if (statsRes.ok) {
@@ -63,8 +63,13 @@ export default function SubscriberDashboardPage() {
 
         if (subscribedRes.ok) {
           const subscribedData = await subscribedRes.json();
+          const subs = Array.isArray(subscribedData) ? subscribedData : subscribedData.experts ?? [];
           setSubscribedExperts(
-            subscribedData.experts ?? subscribedData ?? []
+            subs.slice(0, 5).map((s: { expert?: { id: string; displayName: string; image?: string | null }; id?: string; displayName?: string; image?: string | null }) => ({
+              id: s.expert?.id ?? s.id ?? "",
+              displayName: s.expert?.displayName ?? s.displayName ?? "",
+              image: s.expert?.image ?? s.image ?? null,
+            }))
           );
         }
       } catch {

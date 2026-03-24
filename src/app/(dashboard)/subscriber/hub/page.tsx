@@ -126,7 +126,7 @@ export default function SubscriberHubPage() {
                 {trendingPosts.map((post, index) => (
                   <Link
                     key={post.id}
-                    href={`/subscriber/posts/${post.slug ?? post.id}`}
+                    href={`/subscriber/hub`}
                     className="shrink-0 rounded-full border border-border px-3 py-1.5 text-xs hover:border-primary/50 hover:bg-primary/5 transition-colors"
                   >
                     <span className="font-semibold text-muted-foreground mr-1">{index + 1}.</span>
@@ -142,7 +142,7 @@ export default function SubscriberHubPage() {
                       {index + 1}
                     </span>
                     <Link
-                      href={`/subscriber/posts/${post.slug ?? post.id}`}
+                      href={`/subscriber/hub`}
                       className="text-sm leading-snug hover:underline"
                     >
                       {post.title}
