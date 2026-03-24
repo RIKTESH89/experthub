@@ -55,15 +55,20 @@ interface KnowledgeStatus {
   indexed: number;
 }
 
-function generateViewsData() {
+function generateViewsData(totalViews: number) {
   const days = [];
   const now = new Date();
+  // Distribute total views across 7 days with some natural variation
+  // For new experts with 0 views, all points will be 0
+  const dailyBase = totalViews > 0 ? Math.max(1, Math.floor(totalViews / 7)) : 0;
   for (let i = 6; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
+    // Apply slight variation based on day index (deterministic, not random)
+    const variation = totalViews > 0 ? Math.round(dailyBase * (0.7 + (((i * 37) % 10) / 10) * 0.6)) : 0;
     days.push({
       date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      views: Math.floor(Math.random() * 300) + 50,
+      views: variation,
     });
   }
   return days;
@@ -150,7 +155,6 @@ export default function ExpertDashboardPage() {
   const [accuracyScore, setAccuracyScore] = useState<AccuracyScore>({ score: null, configured: false });
   const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus>({ total: 0, indexed: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const viewsData = useMemo(() => generateViewsData(), []);
 
   useEffect(() => {
     async function fetchData() {
@@ -214,7 +218,8 @@ export default function ExpertDashboardPage() {
     fetchData();
   }, []);
 
-  const totalMonthViews = viewsData.reduce((sum, d) => sum + d.views, 0);
+  const totalViews = stats?.totalViews ?? 0;
+  const viewsData = useMemo(() => generateViewsData(totalViews), [totalViews]);
   const displayedSubs = recentSubscribers.slice(0, 3);
   const remainingSubs = recentSubscribers.length - 3;
   const kbProgress = knowledgeStatus.total > 0
@@ -392,7 +397,7 @@ export default function ExpertDashboardPage() {
               <SparklineChart data={viewsData} />
             </div>
             <p className="mt-3 text-base font-semibold">
-              {totalMonthViews.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">views this week</span>
+              {totalViews.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">total views</span>
             </p>
           </CardContent>
         </Card>
