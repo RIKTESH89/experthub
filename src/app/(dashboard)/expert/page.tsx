@@ -249,7 +249,7 @@ export default function ExpertDashboardPage() {
     : [];
 
   return (
-    <div className="space-y-5 lg:space-y-6 animate-fade-in overflow-hidden">
+    <div className="flex min-h-[calc(100vh-8rem)] flex-col gap-5 lg:gap-6 animate-fade-in overflow-hidden">
       {/* ── Row 1: Hero section ── */}
       <div className="grid gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-12">
         {/* Left: Welcome + Mini Stats */}
@@ -379,30 +379,30 @@ export default function ExpertDashboardPage() {
         </div>
       </div>
 
-      {/* ── Row 2: Content area ── */}
-      <div className="grid gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-12">
+      {/* ── Row 2: Content area (expands to fill remaining height) ── */}
+      <div className="grid flex-1 gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-12 auto-rows-fr">
         {/* Left: Post Views Sparkline */}
-        <Card className="group md:col-span-1 lg:col-span-4 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-muted-foreground">Post Views</span>
+        <Card className="group md:col-span-1 lg:col-span-4 border-border/50 hover:border-border transition-colors shadow-sm flex flex-col">
+          <CardContent className="p-5 flex flex-col flex-1">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-muted-foreground">Post Views</span>
               <span className="text-xs text-muted-foreground">7 days</span>
             </div>
-            <div className="h-[80px] w-full">
+            <div className="flex-1 min-h-[100px] w-full">
               <SparklineChart data={viewsData} />
             </div>
-            <p className="mt-2 text-sm font-semibold">
-              {totalMonthViews.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">views this week</span>
+            <p className="mt-3 text-base font-semibold">
+              {totalMonthViews.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">views this week</span>
             </p>
           </CardContent>
         </Card>
 
         {/* Center: Recent Subscribers (compact) */}
-        <Card className="group md:col-span-1 lg:col-span-3 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-5">
+        <Card className="group md:col-span-1 lg:col-span-3 border-border/50 hover:border-border transition-colors shadow-sm flex flex-col">
+          <CardContent className="p-5 flex flex-col flex-1">
             <span className="text-sm font-medium text-muted-foreground">Recent Subscribers</span>
             {displayedSubs.length === 0 ? (
-              <div className="py-6 flex flex-col items-center gap-2">
+              <div className="flex-1 flex flex-col items-center justify-center gap-2">
                 {/* People/community SVG icon */}
                 <svg
                   width="48"
@@ -425,10 +425,10 @@ export default function ExpertDashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="mt-2.5 space-y-2">
+              <div className="mt-3 flex-1 space-y-3">
                 {displayedSubs.map((sub) => (
-                  <div key={sub.id} className="flex items-center gap-2.5">
-                    <Avatar className="h-7 w-7">
+                  <div key={sub.id} className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9">
                       <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
                         {sub.name
                           .split(" ")
@@ -444,7 +444,7 @@ export default function ExpertDashboardPage() {
             {remainingSubs > 0 && (
               <Link
                 href="/expert/subscribers"
-                className="mt-2.5 flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                className="mt-auto pt-3 flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 +{remainingSubs} more <ArrowRight className="h-3 w-3" />
               </Link>
@@ -452,7 +452,7 @@ export default function ExpertDashboardPage() {
             {displayedSubs.length > 0 && remainingSubs <= 0 && (
               <Link
                 href="/expert/subscribers"
-                className="mt-2.5 flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                className="mt-auto pt-3 flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
@@ -461,8 +461,8 @@ export default function ExpertDashboardPage() {
         </Card>
 
         {/* Right: Knowledge Base Status */}
-        <Card className="group md:col-span-2 lg:col-span-5 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-5">
+        <Card className="group md:col-span-2 lg:col-span-5 border-border/50 hover:border-border transition-colors shadow-sm flex flex-col">
+          <CardContent className="p-5 flex flex-col flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">Knowledge Base</span>
               {/* Connected nodes SVG illustration */}
@@ -508,17 +508,17 @@ export default function ExpertDashboardPage() {
                 </div>
               </div>
             </div>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-auto pt-4 flex gap-3">
               <Link
                 href="/expert/knowledge"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/50 bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted/50 hover:border-primary/30"
+                className="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-muted/50 hover:border-primary/30"
               >
                 <Database className="h-3 w-3" />
                 Add Knowledge
               </Link>
               <Link
                 href="/expert/twin"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/50 bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted/50 hover:border-primary/30"
+                className="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-muted/50 hover:border-primary/30"
               >
                 <Network className="h-3 w-3" />
                 Build Graph
