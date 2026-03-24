@@ -224,15 +224,15 @@ export default function ExpertDashboardPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 lg:grid-cols-12">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
           <Skeleton className="h-52 rounded-xl lg:col-span-7" />
           <Skeleton className="h-52 rounded-xl lg:col-span-3" />
           <Skeleton className="h-52 rounded-xl lg:col-span-2" />
         </div>
-        <div className="grid gap-4 lg:grid-cols-12">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
           <Skeleton className="h-44 rounded-xl lg:col-span-4" />
           <Skeleton className="h-44 rounded-xl lg:col-span-3" />
-          <Skeleton className="h-44 rounded-xl lg:col-span-5" />
+          <Skeleton className="h-44 rounded-xl md:col-span-2 lg:col-span-5" />
         </div>
         <Skeleton className="h-12 w-full rounded-xl" />
       </div>
@@ -249,27 +249,51 @@ export default function ExpertDashboardPage() {
     : [];
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="space-y-4 animate-fade-in overflow-hidden">
       {/* ── Row 1: Hero section ── */}
-      <div className="grid gap-4 lg:grid-cols-12">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
         {/* Left: Welcome + Mini Stats */}
         <div className="lg:col-span-7 flex flex-col gap-3">
-          <WelcomeBanner
-            userName={session?.user?.name ?? "Expert"}
-            role="EXPERT"
-          />
+          <div className="relative">
+            <WelcomeBanner
+              userName={session?.user?.name ?? "Expert"}
+              role="EXPERT"
+            />
+            {/* Decorative growth chart SVG */}
+            <svg
+              width="80"
+              height="60"
+              viewBox="0 0 80 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="absolute right-3 top-1/2 -translate-y-1/2 opacity-[0.15] pointer-events-none hidden sm:block"
+              aria-hidden="true"
+            >
+              <path d="M4 52 L20 38 L32 42 L48 22 L60 28 L76 8" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4 52 L20 38 L32 42 L48 22 L60 28 L76 8 L76 60 L4 60 Z" fill="url(#heroGrowthGrad)" />
+              <circle cx="76" cy="8" r="4" fill="#8b5cf6" />
+              <circle cx="48" cy="22" r="3" fill="#6366f1" />
+              <circle cx="20" cy="38" r="3" fill="#6366f1" />
+              <defs>
+                <linearGradient id="heroGrowthGrad" x1="40" y1="8" x2="40" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#8b5cf6" stopOpacity="0.3" />
+                  <stop offset="1" stopColor="#6366f1" stopOpacity="0.02" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
           {stats && (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {miniStats.map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-lg border border-border/50 bg-card p-3 shadow-sm transition-colors hover:bg-muted/30"
+                  className="rounded-lg border border-border/50 bg-card p-3 shadow-sm transition-colors hover:bg-muted/30 min-w-0"
                 >
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <s.icon className="h-3.5 w-3.5 text-primary/70" />
-                    <span className="text-xs text-muted-foreground truncate">{s.label}</span>
+                  <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                    <s.icon className="h-3.5 w-3.5 shrink-0 text-primary/70" />
+                    <span className="text-xs text-muted-foreground truncate min-w-0">{s.label}</span>
                   </div>
-                  <div className="text-lg font-bold tracking-tight leading-none">{s.value}</div>
+                  <div className="text-lg font-bold tracking-tight leading-none truncate min-w-0">{s.value}</div>
                   <div className="mt-1 flex items-center gap-1">
                     <MiniTrendIcon direction={s.trend.direction} />
                     <span className={`text-[10px] font-semibold ${trendColor(s.trend.direction)}`}>
@@ -282,30 +306,46 @@ export default function ExpertDashboardPage() {
           )}
         </div>
 
-        {/* Center: Create Post CTA */}
-        <Link href="/expert/posts/new" className="lg:col-span-3">
-          <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:scale-[1.01]">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-purple-500/5 to-primary/10 opacity-60 group-hover:opacity-100 transition-opacity" />
-            <CardContent className="relative flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 shadow-lg transition-transform group-hover:scale-110">
-                <Plus className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base">Create Post</h3>
-                <p className="mt-1 text-xs text-muted-foreground leading-snug">
-                  Share your expertise with subscribers
-                </p>
-              </div>
-              <div className="mt-auto flex items-center gap-1 text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5">
-                Start writing <ArrowRight className="h-3 w-3" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+        {/* Center: Create Post CTA + Twin Score (stacked on md, side by side on sm, separate cols on lg) */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-1 md:col-span-1 lg:col-span-5 lg:grid-cols-5">
+          <Link href="/expert/posts/new" className="sm:col-span-1 lg:col-span-3">
+            <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-primary/40 hover:scale-[1.01]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-purple-500/5 to-primary/10 opacity-60 group-hover:opacity-100 transition-opacity" />
+              {/* Decorative floating document/pen SVG pattern */}
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <rect x="15%" y="12%" width="18" height="22" rx="2" fill="#6366f1" opacity="0.1" transform="rotate(-12, 30, 23)" />
+                <rect x="18%" y="14%" width="10" height="1.5" rx="0.75" fill="#8b5cf6" opacity="0.12" />
+                <rect x="18%" y="18%" width="8" height="1.5" rx="0.75" fill="#8b5cf6" opacity="0.1" />
+                <rect x="70%" y="65%" width="16" height="20" rx="2" fill="#8b5cf6" opacity="0.08" transform="rotate(8, 75, 75)" />
+                <line x1="72%" y1="68%" x2="82%" y2="68%" stroke="#6366f1" strokeWidth="1.2" opacity="0.1" />
+                <line x1="72%" y1="73%" x2="79%" y2="73%" stroke="#6366f1" strokeWidth="1.2" opacity="0.08" />
+                <path d="M85 15 L89 11 L91 13 L87 17 Z" fill="#6366f1" opacity="0.12" />
+                <line x1="84" y1="18" x2="88" y2="18" stroke="#8b5cf6" strokeWidth="1" opacity="0.1" />
+              </svg>
+              <CardContent className="relative flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 shadow-lg transition-transform group-hover:scale-110">
+                  <Plus className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-base">Create Post</h3>
+                  <p className="mt-1 text-xs text-muted-foreground leading-snug">
+                    Share your expertise with subscribers
+                  </p>
+                </div>
+                <div className="mt-auto flex items-center gap-1 text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5">
+                  Start writing <ArrowRight className="h-3 w-3" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
 
-        {/* Right: Twin Accuracy Score */}
-        <div className="lg:col-span-2">
-          <Card className="h-full border-border/50 shadow-sm">
+          {/* Twin Accuracy Score */}
+          <div className="sm:col-span-1 lg:col-span-2">
+          <Card className="group h-full border-border/50 hover:border-border transition-colors shadow-sm">
             <CardContent className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
               {accuracyScore.configured && accuracyScore.score !== null ? (
                 <>
@@ -335,13 +375,14 @@ export default function ExpertDashboardPage() {
               )}
             </CardContent>
           </Card>
+          </div>
         </div>
       </div>
 
       {/* ── Row 2: Content area ── */}
-      <div className="grid gap-4 lg:grid-cols-12">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
         {/* Left: Post Views Sparkline */}
-        <Card className="lg:col-span-4 border-border/50 shadow-sm">
+        <Card className="group md:col-span-1 lg:col-span-4 border-border/50 hover:border-border transition-colors shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-muted-foreground">Post Views</span>
@@ -357,13 +398,32 @@ export default function ExpertDashboardPage() {
         </Card>
 
         {/* Center: Recent Subscribers (compact) */}
-        <Card className="lg:col-span-3 border-border/50 shadow-sm">
+        <Card className="group md:col-span-1 lg:col-span-3 border-border/50 hover:border-border transition-colors shadow-sm">
           <CardContent className="p-4">
             <span className="text-xs font-medium text-muted-foreground">Recent Subscribers</span>
             {displayedSubs.length === 0 ? (
-              <p className="py-6 text-center text-xs text-muted-foreground">
-                No subscribers yet
-              </p>
+              <div className="py-6 flex flex-col items-center gap-2">
+                {/* People/community SVG icon */}
+                <svg
+                  width="48"
+                  height="32"
+                  viewBox="0 0 48 32"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-muted-foreground/40"
+                  aria-hidden="true"
+                >
+                  <circle cx="24" cy="10" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                  <path d="M14 28c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                  <circle cx="10" cy="13" r="4" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.5" />
+                  <path d="M2 28c0-4.418 3.582-8 8-8" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.5" />
+                  <circle cx="38" cy="13" r="4" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.5" />
+                  <path d="M46 28c0-4.418-3.582-8-8-8" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.5" />
+                </svg>
+                <p className="text-center text-xs text-muted-foreground">
+                  No subscribers yet
+                </p>
+              </div>
             ) : (
               <div className="mt-2.5 space-y-2">
                 {displayedSubs.map((sub) => (
@@ -401,9 +461,31 @@ export default function ExpertDashboardPage() {
         </Card>
 
         {/* Right: Knowledge Base Status */}
-        <Card className="lg:col-span-5 border-border/50 shadow-sm">
+        <Card className="group md:col-span-2 lg:col-span-5 border-border/50 hover:border-border transition-colors shadow-sm">
           <CardContent className="p-4">
-            <span className="text-xs font-medium text-muted-foreground">Knowledge Base</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">Knowledge Base</span>
+              {/* Connected nodes SVG illustration */}
+              <svg
+                width="60"
+                height="40"
+                viewBox="0 0 60 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="opacity-30"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="20" r="4" fill="#6366f1" opacity="0.6" />
+                <circle cx="30" cy="10" r="5" fill="#8b5cf6" opacity="0.5" />
+                <circle cx="30" cy="30" r="3.5" fill="#6366f1" opacity="0.5" />
+                <circle cx="48" cy="18" r="4.5" fill="#8b5cf6" opacity="0.6" />
+                <line x1="16" y1="19" x2="25" y2="12" stroke="#6366f1" strokeWidth="1.2" opacity="0.4" />
+                <line x1="16" y1="21" x2="26" y2="28" stroke="#6366f1" strokeWidth="1.2" opacity="0.4" />
+                <line x1="35" y1="11" x2="44" y2="17" stroke="#8b5cf6" strokeWidth="1.2" opacity="0.4" />
+                <line x1="33" y1="28" x2="44" y2="20" stroke="#8b5cf6" strokeWidth="1.2" opacity="0.4" />
+                <line x1="30" y1="15" x2="30" y2="26" stroke="#6366f1" strokeWidth="1" opacity="0.3" />
+              </svg>
+            </div>
             <div className="mt-3 flex items-center gap-6">
               <div>
                 <div className="text-2xl font-bold">{knowledgeStatus.totalItems}</div>
@@ -447,7 +529,7 @@ export default function ExpertDashboardPage() {
       </div>
 
       {/* ── Row 3: Quick Actions strip ── */}
-      <div className="flex flex-wrap gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
         {[
           { href: "/expert/posts/new", icon: Plus, label: "Create Post" },
           { href: "/expert/knowledge", icon: BookOpen, label: "Manage Knowledge" },
@@ -457,7 +539,7 @@ export default function ExpertDashboardPage() {
           <Link
             key={action.label}
             href={action.href}
-            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-150 hover:border-primary/50 hover:bg-primary/5"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-150 hover:border-primary/50 hover:bg-primary/5"
           >
             <action.icon className="h-3.5 w-3.5" />
             {action.label}

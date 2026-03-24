@@ -25,18 +25,36 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-border/60 p-5 md:p-6">
       {/* Gradient mesh background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-primary/4" />
-      <div className="absolute top-0 right-1/4 h-32 w-32 rounded-full bg-primary/6 blur-3xl" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
+      <div className="absolute top-0 right-1/4 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
       <div className="absolute bottom-0 left-1/3 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
+
+      {/* Decorative sparkle SVG */}
+      <svg
+        className="absolute right-6 top-4 h-16 w-16 text-primary/10 pointer-events-none"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z" />
+      </svg>
+      <svg
+        className="absolute right-20 top-8 h-8 w-8 text-primary/[0.07] pointer-events-none"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z" />
+      </svg>
 
       {/* Content */}
       <div className="relative z-10">
         {/* Greeting + date on one line */}
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h1 className="text-lg font-bold tracking-tight sm:text-xl">
+          <h1 className="text-base font-bold tracking-tight sm:text-lg md:text-xl">
             Welcome back, <span className="text-gradient">{userName}</span>
           </h1>
-          <span className="text-xs font-medium text-muted-foreground/70 tracking-wide">
+          <span className="hidden sm:inline text-xs font-medium text-muted-foreground/70 tracking-wide">
             {today}
           </span>
         </div>
@@ -52,7 +70,7 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
             {stats.map((stat, i) => (
               <span
                 key={i}
-                className="inline-flex items-center rounded-full bg-primary/8 border border-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground"
+                className="inline-flex items-center rounded-full bg-primary/10 border border-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground"
               >
                 {stat}
               </span>

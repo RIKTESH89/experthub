@@ -55,7 +55,7 @@ function generateSparklinePoints(direction: "up" | "down" | "neutral"): string {
   return points.map(([x, y]) => `${x},${y}`).join(" ");
 }
 
-function Sparkline({ direction, color }: { direction: "up" | "down" | "neutral"; color: string }) {
+function Sparkline({ direction, color, uniqueId }: { direction: "up" | "down" | "neutral"; color: string; uniqueId: string }) {
   const points = generateSparklinePoints(direction);
 
   return (
@@ -68,7 +68,7 @@ function Sparkline({ direction, color }: { direction: "up" | "down" | "neutral";
     >
       {/* Gradient fill under the line */}
       <defs>
-        <linearGradient id={`spark-grad-${direction}`} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`spark-grad-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.15" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
@@ -76,7 +76,7 @@ function Sparkline({ direction, color }: { direction: "up" | "down" | "neutral";
       {/* Area fill */}
       <polyline
         points={`0,24 ${points} 80,24`}
-        fill={`url(#spark-grad-${direction})`}
+        fill={`url(#spark-grad-${uniqueId})`}
       />
       {/* Line */}
       <polyline
@@ -117,7 +117,7 @@ export function StatCard({
 
         {/* Value row */}
         <div className="flex items-baseline gap-3">
-          <span className="text-2xl font-bold tracking-tight">{value}</span>
+          <span className="text-xl sm:text-2xl font-bold tracking-tight truncate">{value}</span>
           {trend && (() => {
             const { icon: TrendIcon, color, bg, border } = trendConfig[trend.direction];
             return (
@@ -141,8 +141,8 @@ export function StatCard({
 
         {/* Sparkline */}
         {trend && (
-          <div className="mt-3 -mx-4 -mb-4 px-0">
-            <Sparkline direction={trend.direction} color={resolvedSparkColor} />
+          <div className="mt-2 -mx-4 -mb-4 px-0">
+            <Sparkline direction={trend.direction} color={resolvedSparkColor} uniqueId={`${title.replace(/\s/g, '-')}-${trend.direction}`} />
           </div>
         )}
       </CardContent>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SubscriberBookmarksPage() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Bookmarks</h2>
