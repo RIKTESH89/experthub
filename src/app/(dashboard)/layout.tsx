@@ -37,7 +37,7 @@ export default async function DashboardLayout({
           />
 
           <div className="relative p-4 md:p-6 lg:p-8">
-            <div className="mx-auto w-full max-w-7xl">
+            <div className="mx-auto w-full max-w-[1600px]">
               {children}
             </div>
           </div>

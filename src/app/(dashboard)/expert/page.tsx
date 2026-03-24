@@ -249,11 +249,11 @@ export default function ExpertDashboardPage() {
     : [];
 
   return (
-    <div className="space-y-4 animate-fade-in overflow-hidden">
+    <div className="space-y-5 lg:space-y-6 animate-fade-in overflow-hidden">
       {/* ── Row 1: Hero section ── */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
+      <div className="grid gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-12">
         {/* Left: Welcome + Mini Stats */}
-        <div className="lg:col-span-7 flex flex-col gap-3">
+        <div className="lg:col-span-7 flex flex-col gap-4">
           <div className="relative">
             <WelcomeBanner
               userName={session?.user?.name ?? "Expert"}
@@ -283,17 +283,17 @@ export default function ExpertDashboardPage() {
             </svg>
           </div>
           {stats && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {miniStats.map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-lg border border-border/50 bg-card p-3 shadow-sm transition-colors hover:bg-muted/30 min-w-0"
+                  className="rounded-xl border border-border/50 bg-card p-4 shadow-sm transition-colors hover:bg-muted/30 min-w-0"
                 >
                   <div className="flex items-center gap-1.5 mb-1 min-w-0">
                     <s.icon className="h-3.5 w-3.5 shrink-0 text-primary/70" />
                     <span className="text-xs text-muted-foreground truncate min-w-0">{s.label}</span>
                   </div>
-                  <div className="text-lg font-bold tracking-tight leading-none truncate min-w-0">{s.value}</div>
+                  <div className="text-xl font-bold tracking-tight leading-none truncate min-w-0 mt-0.5">{s.value}</div>
                   <div className="mt-1 flex items-center gap-1">
                     <MiniTrendIcon direction={s.trend.direction} />
                     <span className={`text-[10px] font-semibold ${trendColor(s.trend.direction)}`}>
@@ -307,7 +307,7 @@ export default function ExpertDashboardPage() {
         </div>
 
         {/* Center: Create Post CTA + Twin Score (stacked on md, side by side on sm, separate cols on lg) */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-1 md:col-span-1 lg:col-span-5 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 md:grid-cols-1 md:col-span-1 lg:col-span-5 lg:grid-cols-5">
           <Link href="/expert/posts/new" className="sm:col-span-1 lg:col-span-3">
             <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-primary/40 hover:scale-[1.01]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-purple-500/5 to-primary/10 opacity-60 group-hover:opacity-100 transition-opacity" />
@@ -380,15 +380,15 @@ export default function ExpertDashboardPage() {
       </div>
 
       {/* ── Row 2: Content area ── */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-12">
+      <div className="grid gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-12">
         {/* Left: Post Views Sparkline */}
         <Card className="group md:col-span-1 lg:col-span-4 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-4">
+          <CardContent className="p-5">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-muted-foreground">Post Views</span>
               <span className="text-xs text-muted-foreground">7 days</span>
             </div>
-            <div className="h-[60px] w-full">
+            <div className="h-[80px] w-full">
               <SparklineChart data={viewsData} />
             </div>
             <p className="mt-2 text-sm font-semibold">
@@ -399,8 +399,8 @@ export default function ExpertDashboardPage() {
 
         {/* Center: Recent Subscribers (compact) */}
         <Card className="group md:col-span-1 lg:col-span-3 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-4">
-            <span className="text-xs font-medium text-muted-foreground">Recent Subscribers</span>
+          <CardContent className="p-5">
+            <span className="text-sm font-medium text-muted-foreground">Recent Subscribers</span>
             {displayedSubs.length === 0 ? (
               <div className="py-6 flex flex-col items-center gap-2">
                 {/* People/community SVG icon */}
@@ -462,9 +462,9 @@ export default function ExpertDashboardPage() {
 
         {/* Right: Knowledge Base Status */}
         <Card className="group md:col-span-2 lg:col-span-5 border-border/50 hover:border-border transition-colors shadow-sm">
-          <CardContent className="p-4">
+          <CardContent className="p-5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-muted-foreground">Knowledge Base</span>
+              <span className="text-sm font-medium text-muted-foreground">Knowledge Base</span>
               {/* Connected nodes SVG illustration */}
               <svg
                 width="60"
@@ -529,7 +529,7 @@ export default function ExpertDashboardPage() {
       </div>
 
       {/* ── Row 3: Quick Actions strip ── */}
-      <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+      <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
         {[
           { href: "/expert/posts/new", icon: Plus, label: "Create Post" },
           { href: "/expert/knowledge", icon: BookOpen, label: "Manage Knowledge" },
@@ -539,7 +539,7 @@ export default function ExpertDashboardPage() {
           <Link
             key={action.label}
             href={action.href}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-all duration-150 hover:border-primary/50 hover:bg-primary/5"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-all duration-150 hover:border-primary/50 hover:bg-primary/5"
           >
             <action.icon className="h-3.5 w-3.5" />
             {action.label}
