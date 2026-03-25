@@ -35,8 +35,10 @@ export async function GET() {
     sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
     // Current period stats
-    const [totalPosts, recentPosts, totalViews, recentLikes, recentComments] =
-      await Promise.all([
+    const [
+      totalPosts, recentPosts, totalViews, recentLikes, recentComments,
+      recentSubscribers, recentViews,
+    ] = await Promise.all([
         prisma.post.count({
           where: { authorId: session.user.id },
         }),
@@ -64,10 +66,25 @@ export async function GET() {
             createdAt: { gte: thirtyDaysAgo },
           },
         }),
+        prisma.expertSubscription.count({
+          where: {
+            expertProfileId: expertProfile.id,
+            createdAt: { gte: thirtyDaysAgo },
+          },
+        }),
+        prisma.post
+          .aggregate({
+            where: {
+              authorId: session.user.id,
+              createdAt: { gte: thirtyDaysAgo },
+            },
+            _sum: { viewCount: true },
+          })
+          .then((r) => r._sum.viewCount || 0),
       ]);
 
     // Previous period stats for trend calculation
-    const [prevPosts, prevLikes, prevComments] = await Promise.all([
+    const [prevPosts, prevLikes, prevComments, prevSubscribers, prevViews] = await Promise.all([
       prisma.post.count({
         where: {
           authorId: session.user.id,
@@ -86,6 +103,21 @@ export async function GET() {
           createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
         },
       }),
+      prisma.expertSubscription.count({
+        where: {
+          expertProfileId: expertProfile.id,
+          createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+        },
+      }),
+      prisma.post
+        .aggregate({
+          where: {
+            authorId: session.user.id,
+            createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+          },
+          _sum: { viewCount: true },
+        })
+        .then((r) => r._sum.viewCount || 0),
     ]);
 
     const currentEngagement =
@@ -111,9 +143,9 @@ export async function GET() {
       totalViews,
       engagementRate: Math.round(currentEngagement * 10) / 10,
       trends: {
-        subscribers: { direction: "neutral" as const, percentage: 0 },
+        subscribers: calcTrend(recentSubscribers, prevSubscribers),
         posts: calcTrend(recentPosts, prevPosts),
-        views: { direction: "neutral" as const, percentage: 0 },
+        views: calcTrend(recentViews, prevViews),
         engagement: calcTrend(currentEngagement, prevEngagement),
       },
     });
