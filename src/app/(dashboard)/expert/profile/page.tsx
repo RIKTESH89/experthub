@@ -57,6 +57,7 @@ export default function ExpertProfilePage() {
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [specInput, setSpecInput] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const {
     register,
@@ -107,6 +108,20 @@ export default function ExpertProfilePage() {
   const onSubmit = async (data: ExpertProfileValues) => {
     setIsSubmitting(true);
     try {
+      // Upload avatar if a new file was selected
+      let imageUrl: string | undefined;
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("file", avatarFile);
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.url;
+        } else {
+          toast.error("Failed to upload profile photo");
+        }
+      }
+
       const res = await fetch("/api/expert/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -119,9 +134,11 @@ export default function ExpertProfilePage() {
             linkedin: data.linkedinUrl || undefined,
             website: data.websiteUrl || undefined,
           },
+          ...(imageUrl && { image: imageUrl }),
         }),
       });
       if (!res.ok) throw new Error("Failed to save");
+      setAvatarFile(null);
       toast.success("Profile updated successfully");
     } catch {
       toast.error("Failed to update profile");
@@ -206,7 +223,10 @@ export default function ExpertProfilePage() {
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) setAvatarPreview(URL.createObjectURL(file));
+                    if (file) {
+                      setAvatarPreview(URL.createObjectURL(file));
+                      setAvatarFile(file);
+                    }
                   }}
                 />
               </div>

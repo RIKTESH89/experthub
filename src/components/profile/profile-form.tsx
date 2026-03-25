@@ -41,6 +41,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     initialData.image ?? null
   );
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const {
     register,
@@ -57,22 +58,40 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setAvatarPreview(url);
+      setAvatarPreview(URL.createObjectURL(file));
+      setAvatarFile(file);
     }
   };
 
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSubmitting(true);
     try {
+      // Upload avatar if a new file was selected
+      let imageUrl: string | undefined;
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("file", avatarFile);
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.url;
+        } else {
+          toast.error("Failed to upload profile photo");
+        }
+      }
+
       const res = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          ...(imageUrl && { image: imageUrl }),
+        }),
       });
 
       if (!res.ok) throw new Error("Failed to update profile");
 
+      setAvatarFile(null);
       toast.success("Profile updated successfully");
       onSuccess?.();
     } catch {
@@ -179,7 +198,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
         </CardContent>
 
         <CardFooter className="flex justify-end border-t pt-4">
-          <Button type="submit" disabled={isSubmitting || !isDirty}>
+          <Button type="submit" disabled={isSubmitting || (!isDirty && !avatarFile)}>
             {isSubmitting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
