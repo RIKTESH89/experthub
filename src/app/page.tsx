@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -346,7 +348,16 @@ const pricingTiers = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+
+  if (session?.user) {
+    const role = (session.user as { role?: string }).role || "";
+    if (role === "ADMIN") redirect("/admin");
+    if (role === "EXPERT") redirect("/expert");
+    redirect("/subscriber");
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* ==================== NAVIGATION ==================== */}

@@ -1,24 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-const publicRoutes = ["/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
-const authRedirectRoutes = ["/", "/login", "/register"];
+const publicRoutes = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
 
-  // For /, /login, /register — if user is already logged in, redirect to dashboard
-  if (authRedirectRoutes.includes(pathname)) {
-    if (session?.user) {
-      const role = (session.user as { role?: string }).role || "";
-      const dashboardUrl = role === "ADMIN" ? "/admin" : role === "EXPERT" ? "/expert" : "/subscriber";
-      return NextResponse.redirect(new URL(dashboardUrl, req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Allow other public routes
+  // Allow public routes (/, /login, /register handle their own redirects server-side)
   if (publicRoutes.includes(pathname)) {
     return NextResponse.next();
   }

@@ -1,10 +1,20 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { Sparkles } from "lucide-react";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
+  if (session?.user) {
+    const role = (session.user as { role?: string }).role || "";
+    if (role === "ADMIN") redirect("/admin");
+    if (role === "EXPERT") redirect("/expert");
+    redirect("/subscriber");
+  }
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Mobile top banner */}
