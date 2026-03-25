@@ -610,30 +610,30 @@ function ShareProfileCard({ userId }: { userId: string }) {
   if (!userId) return null;
 
   return (
-    <Card className="border-border/50 shadow-sm">
-      <CardContent className="p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Share2 className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold">Share Your Profile</span>
+    <Card className="border-border/50 shadow-sm overflow-hidden">
+      <CardContent className="p-3 sm:p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Share2 className="h-4 w-4 text-primary shrink-0" />
+          <span className="text-sm font-semibold truncate">Share Your Profile</span>
           <a
             href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+            className="ml-auto inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors shrink-0"
           >
             Preview <ExternalLink className="h-3 w-3" />
           </a>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
           {snippets.map((snippet) => (
             <div
               key={snippet.id}
-              className="group rounded-lg border border-border/50 p-3 transition-colors hover:border-primary/30 hover:bg-muted/30"
+              className="group overflow-hidden rounded-lg border border-border/50 p-2.5 sm:p-3 transition-colors hover:border-primary/30 hover:bg-muted/30"
             >
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium">{snippet.label}</p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">{snippet.description}</p>
+                  <p className="text-xs font-medium truncate">{snippet.label}</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground truncate">{snippet.description}</p>
                 </div>
                 <button
                   onClick={() => handleCopy(snippet.id, snippet.value)}
@@ -647,7 +647,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
                   )}
                 </button>
               </div>
-              <p className="mt-2 truncate rounded bg-muted/50 px-2 py-1 font-mono text-[10px] text-muted-foreground">
+              <p className="mt-1.5 overflow-hidden text-ellipsis whitespace-nowrap rounded bg-muted/50 px-2 py-1 font-mono text-[10px] text-muted-foreground">
                 {snippet.value.split("\n")[0]}
               </p>
             </div>
