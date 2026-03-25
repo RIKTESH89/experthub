@@ -8,7 +8,18 @@ const authApiRoute = "/api/auth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes
+  // For /, /login, /register — if user is already logged in, redirect to dashboard
+  if (pathname === "/" || pathname === "/login" || pathname === "/register") {
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    if (token) {
+      const role = (token.role as string) || "";
+      const dashboardUrl = role === "ADMIN" ? "/admin" : role === "EXPERT" ? "/expert" : "/subscriber";
+      return NextResponse.redirect(new URL(dashboardUrl, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Allow other public routes
   if (publicRoutes.includes(pathname)) {
     return NextResponse.next();
   }
