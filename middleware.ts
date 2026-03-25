@@ -28,6 +28,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Allow public expert profile pages and their API (no auth required)
+  if (pathname.startsWith("/e/") || pathname.startsWith("/api/public/")) {
+    return NextResponse.next();
+  }
+
   // Allow static files and Next.js internals
   if (
     pathname.startsWith("/_next") ||
