@@ -79,6 +79,12 @@ export async function POST() {
 
     return NextResponse.json({ personalityProfile: profile });
   } catch (error) {
+    if (error instanceof Error && error.name === "NoContentError") {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      );
+    }
     console.error("Analyze personality error:", error);
     return NextResponse.json(
       { error: "Internal server error" },

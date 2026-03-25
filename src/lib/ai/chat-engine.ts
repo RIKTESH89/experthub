@@ -45,12 +45,20 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   const personalityProfile = expert?.personalityProfile
     ? (expert.personalityProfile as unknown as PersonalityProfile)
     : null;
+  const ragEnabled = expert?.ragEnabled ?? true;
 
-  // Step 1: Retrieve context from vector store
-  thinkingSteps.push("Searching knowledge base...");
-  const namespace = `expert_${expertId}`;
-  const retrievalResults = await retrieveContext(namespace, query, 5);
-  const contextTexts = retrievalResults.map((r) => r.content);
+  // Step 1: Retrieve context from vector store (only if RAG is enabled)
+  let retrievalResults: RetrievalResult[] = [];
+  let contextTexts: string[] = [];
+
+  if (ragEnabled) {
+    thinkingSteps.push("Searching knowledge base...");
+    const namespace = `expert_${expertId}`;
+    retrievalResults = await retrieveContext(namespace, query, 5);
+    contextTexts = retrievalResults.map((r) => r.content);
+  } else {
+    thinkingSteps.push("Knowledge base search disabled by expert");
+  }
 
   if (retrievalResults.length > 0) {
     thinkingSteps.push(`Found ${retrievalResults.length} relevant sources`);
@@ -67,9 +75,9 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     thinkingSteps.push("No direct matches found in knowledge base");
   }
 
-  // Step 2: Graph-enhanced retrieval
+  // Step 2: Graph-enhanced retrieval (only if RAG is enabled)
   let graphContext: string[] = [];
-  if (expert?.id && retrievalResults.length > 0) {
+  if (ragEnabled && expert?.id && retrievalResults.length > 0) {
     thinkingSteps.push("Exploring knowledge graph connections...");
     try {
       graphContext = await graphEnhancedRetrieval(expert.id, retrievalResults);

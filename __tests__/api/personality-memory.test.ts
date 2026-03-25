@@ -220,7 +220,7 @@ describe("Personality Replication & Long-term Memory Integration Tests", () => {
       expect(data.error).toBe("Expert profile not found");
     });
 
-    it("handles empty knowledge base gracefully (no items)", async () => {
+    it("returns 400 when expert has no content to analyze", async () => {
       mockAuth.mockResolvedValue(mockSession.expert);
 
       mockPrisma.expertProfile.findUnique.mockResolvedValue(mockExpertProfile);
@@ -229,28 +229,15 @@ describe("Personality Replication & Long-term Memory Integration Tests", () => {
       mockPrisma.knowledgeItem.findMany.mockResolvedValue([]);
       mockPrisma.post.findMany.mockResolvedValue([]);
 
-      // When content is empty, analyzePersonality returns FALLBACK_PROFILE without calling OpenAI
-      const fallbackProfile = {
-        tone: "Professional",
-        catchphrases: [],
-        writingStyle: "Clear and informative",
-        communicationGuidelines: ["Be helpful and accurate"],
-        topicExpertise: [],
-        sentencePatterns: "Standard declarative sentences",
-      };
-
-      mockPrisma.expertProfile.update.mockResolvedValue({
-        ...mockExpertProfile,
-        personalityProfile: fallbackProfile,
-      });
-
       const response = await analyzePersonality();
       const data = await response.json();
 
-      expect(response.status).toBe(200);
-      expect(data.personalityProfile).toEqual(fallbackProfile);
+      expect(response.status).toBe(400);
+      expect(data.error).toContain("No content available");
       // callOpenAI should NOT be called when there's no content
       expect(mockedCallOpenAI).not.toHaveBeenCalled();
+      // Profile should NOT be saved to DB
+      expect(mockPrisma.expertProfile.update).not.toHaveBeenCalled();
     });
   });
 

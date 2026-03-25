@@ -10,14 +10,12 @@ export interface PersonalityProfile {
   sentencePatterns: string;
 }
 
-const FALLBACK_PROFILE: PersonalityProfile = {
-  tone: "Professional",
-  catchphrases: [],
-  writingStyle: "Clear and informative",
-  communicationGuidelines: ["Be helpful and accurate"],
-  topicExpertise: [],
-  sentencePatterns: "Standard declarative sentences",
-};
+export class NoContentError extends Error {
+  constructor() {
+    super("No content available to analyze. Please add knowledge items or posts first.");
+    this.name = "NoContentError";
+  }
+}
 
 export async function analyzePersonality(
   expertProfileId: string
@@ -70,7 +68,7 @@ export async function analyzePersonality(
   }
 
   if (combinedContent.trim().length === 0) {
-    return FALLBACK_PROFILE;
+    throw new NoContentError();
   }
 
   const raw = await callOpenAI({
@@ -96,5 +94,13 @@ Return ONLY valid JSON matching this structure. No extra text.`,
     maxTokens: 1024,
   });
 
-  return safeParseJSON<PersonalityProfile>(raw, FALLBACK_PROFILE);
+  const fallback: PersonalityProfile = {
+    tone: "Professional",
+    catchphrases: [],
+    writingStyle: "Clear and informative",
+    communicationGuidelines: [],
+    topicExpertise: [],
+    sentencePatterns: "Standard sentences",
+  };
+  return safeParseJSON<PersonalityProfile>(raw, fallback);
 }

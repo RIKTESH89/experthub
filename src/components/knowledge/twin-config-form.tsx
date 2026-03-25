@@ -81,7 +81,11 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
         method: "POST",
       });
 
-      if (!res.ok) throw new Error("Failed to analyze personality");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        toast.error(errData?.error || "Failed to analyze personality");
+        return;
+      }
 
       const data = await res.json();
       setCurrentProfile(data.personalityProfile);
