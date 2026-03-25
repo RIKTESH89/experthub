@@ -299,12 +299,14 @@ export default function ExpertDashboardPage() {
                     <span className="text-xs text-muted-foreground truncate min-w-0">{s.label}</span>
                   </div>
                   <div className="text-xl font-bold tracking-tight leading-none truncate min-w-0 mt-0.5">{s.value}</div>
-                  <div className="mt-1 flex items-center gap-1">
-                    <MiniTrendIcon direction={s.trend.direction} />
-                    <span className={`text-[10px] font-semibold ${trendColor(s.trend.direction)}`}>
-                      {s.trend.percentage}%
-                    </span>
-                  </div>
+                  {(s.trend.direction !== "neutral" || s.trend.percentage > 0) && (
+                    <div className="mt-1 flex items-center gap-1">
+                      <MiniTrendIcon direction={s.trend.direction} />
+                      <span className={`text-[10px] font-semibold ${trendColor(s.trend.direction)}`}>
+                        {s.trend.percentage}%
+                      </span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
