@@ -790,15 +790,15 @@ describe("calculateTwinScore", () => {
     // knowledgeCoverage = 0 (no items)
     // personalityCompleteness = 0 (neither set)
     // graphDensity = 0 (no nodes)
-    // subscriberRatings = 50 (default)
-    // responseQuality = 50 (default)
-    // overall = 0*0.3 + 0*0.2 + 0*0.15 + 50*0.2 + 50*0.15 = 17.5 => 18
-    expect(result.overallScore).toBe(18);
+    // subscriberRatings = 0 (no ratings)
+    // responseQuality = 0 (no interactions)
+    // overall = 0*0.3 + 0*0.2 + 0*0.15 + 0*0.2 + 0*0.15 = 0
+    expect(result.overallScore).toBe(0);
     expect(result.components.knowledgeCoverage).toBe(0);
     expect(result.components.personalityCompleteness).toBe(0);
     expect(result.components.graphDensity).toBe(0);
-    expect(result.components.subscriberRatings).toBe(50);
-    expect(result.components.responseQuality).toBe(50);
+    expect(result.components.subscriberRatings).toBe(0);
+    expect(result.components.responseQuality).toBe(0);
   });
 
   it("returns high score for well-configured expert", async () => {

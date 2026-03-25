@@ -83,7 +83,7 @@ export async function calculateTwinScore(
     },
     select: { rating: true },
   });
-  let subscriberRatings = 50;
+  let subscriberRatings = 0;
   if (ratedMessages.length > 0) {
     const positiveCount = ratedMessages.filter((m) => m.rating === 1).length;
     subscriberRatings = Math.round((positiveCount / ratedMessages.length) * 100);
@@ -97,7 +97,7 @@ export async function calculateTwinScore(
     },
     select: { answerQuality: true },
   });
-  let responseQuality = 50;
+  let responseQuality = 0;
   if (interactions.length > 0) {
     const avg =
       interactions.reduce((sum, i) => sum + (i.answerQuality ?? 0), 0) /
