@@ -121,11 +121,11 @@ export async function GET() {
     ]);
 
     const currentEngagement =
-      totalPosts > 0
-        ? ((recentLikes + recentComments) / totalPosts) * 100
+      totalViews > 0
+        ? ((recentLikes + recentComments) / totalViews) * 100
         : 0;
     const prevEngagement =
-      prevPosts > 0 ? ((prevLikes + prevComments) / prevPosts) * 100 : 0;
+      prevViews > 0 ? ((prevLikes + prevComments) / prevViews) * 100 : 0;
 
     const calcTrend = (current: number, previous: number) => {
       if (previous === 0)
