@@ -144,10 +144,25 @@ model Post {
   comments  Comment[]
   bookmarks Bookmark[]
   tags      PostTag[]
+  views     PostView[]
 
   @@index([authorId])
   @@index([status])
   @@index([createdAt])
+}
+
+model PostView {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String?
+  ipHash    String?
+  viewedAt  DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, userId])
+  @@index([postId, ipHash])
+  @@index([postId, viewedAt])
 }
 
 model PostMedia {

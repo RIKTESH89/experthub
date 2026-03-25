@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { removeDocument } from "@/lib/vector/indexer";
 import { createPostSchema } from "@/lib/validations/post";
+import crypto from "crypto";
 
 const updatePostSchema = createPostSchema.partial();
 
@@ -58,12 +59,6 @@ export async function GET(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Increment view count
-    await prisma.post.update({
-      where: { id: postId },
-      data: { viewCount: { increment: 1 } },
-    });
-
     // Check if current user liked/bookmarked
     const session = await auth();
     let isLiked = false;
@@ -82,10 +77,47 @@ export async function GET(
       isBookmarked = !!bookmark;
     }
 
+    // Track deduplicated view (fire-and-forget — don't block response)
+    const userId = session?.user?.id ?? null;
+    const isAuthor = userId === post.authorId;
+
+    if (!isAuthor) {
+      // Generate IP hash for anonymous dedup (logged-out users)
+      const forwarded = request.headers.get("x-forwarded-for");
+      const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+      const ipHash = crypto.createHash("sha256").update(ip).digest("hex").slice(0, 16);
+
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+      // Check if this user/ip already viewed this post in last 24 hours
+      const existingView = await prisma.postView.findFirst({
+        where: {
+          postId,
+          viewedAt: { gte: twentyFourHoursAgo },
+          ...(userId ? { userId } : { ipHash }),
+        },
+      });
+
+      if (!existingView) {
+        // New unique view — record it and increment count
+        prisma.postView.create({
+          data: {
+            postId,
+            userId,
+            ipHash: userId ? null : ipHash,
+          },
+        }).then(() => {
+          return prisma.post.update({
+            where: { id: postId },
+            data: { viewCount: { increment: 1 } },
+          });
+        }).catch(() => {}); // fire-and-forget
+      }
+    }
+
     return NextResponse.json({
       ...post,
       tags: post.tags.map((pt) => pt.tag.name),
-      viewCount: post.viewCount + 1,
       isLiked,
       isBookmarked,
     });

@@ -198,32 +198,65 @@ describe("Post CRUD", () => {
     );
   });
 
-  // 7. GET /posts/:id - returns post detail with incremented viewCount
-  it("GET /posts/:id - returns post detail with incremented viewCount", async () => {
+  // 7. GET /posts/:id - returns post detail with deduplicated view tracking
+  it("GET /posts/:id - returns post detail with deduplicated views", async () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
-    const postDetail = { ...mockPost, viewCount: 100, comments: [] };
+    const postDetail = { ...mockPost, authorId: "expert-id-1", viewCount: 100, comments: [] };
     mockPrisma.post.findUnique.mockResolvedValue(postDetail);
-    mockPrisma.post.update.mockResolvedValue({ ...postDetail, viewCount: 101 });
     mockPrisma.like.findUnique.mockResolvedValue(null);
     mockPrisma.bookmark.findUnique.mockResolvedValue(null);
+    // No existing view in last 24h — this is a new unique view
+    mockPrisma.postView.findFirst.mockResolvedValue(null);
+    mockPrisma.postView.create.mockResolvedValue({ id: "view-1" });
+    mockPrisma.post.update.mockResolvedValue({ ...postDetail, viewCount: 101 });
 
     const req = createGET("/api/posts/post-id-1");
     const res = await getPost(req, postParams("post-id-1"));
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json.viewCount).toBe(101);
+    expect(json.viewCount).toBe(100); // Returns current count, not incremented
     expect(json.isLiked).toBe(false);
     expect(json.isBookmarked).toBe(false);
+  });
 
-    // Verify view count was incremented
-    expect(mockPrisma.post.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: "post-id-1" },
-        data: { viewCount: { increment: 1 } },
-      })
-    );
+  // 7b. Author viewing own post does not increment view count
+  it("GET /posts/:id - author view does not count", async () => {
+    mockAuth.mockResolvedValue(mockSession.expert);
+
+    const postDetail = { ...mockPost, authorId: "expert-id-1", viewCount: 100, comments: [] };
+    mockPrisma.post.findUnique.mockResolvedValue(postDetail);
+    mockPrisma.like.findUnique.mockResolvedValue(null);
+    mockPrisma.bookmark.findUnique.mockResolvedValue(null);
+
+    const req = createGET("/api/posts/post-id-1");
+    const res = await getPost(req, postParams("post-id-1"));
+
+    expect(res.status).toBe(200);
+    // Author's view should NOT trigger postView.findFirst or create
+    expect(mockPrisma.postView.findFirst).not.toHaveBeenCalled();
+    expect(mockPrisma.postView.create).not.toHaveBeenCalled();
+  });
+
+  // 7c. Duplicate view within 24h does not increment
+  it("GET /posts/:id - duplicate view within 24h is not counted", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
+
+    const postDetail = { ...mockPost, authorId: "expert-id-1", viewCount: 100, comments: [] };
+    mockPrisma.post.findUnique.mockResolvedValue(postDetail);
+    mockPrisma.like.findUnique.mockResolvedValue(null);
+    mockPrisma.bookmark.findUnique.mockResolvedValue(null);
+    // Existing view found — already viewed within 24h
+    mockPrisma.postView.findFirst.mockResolvedValue({ id: "existing-view" });
+
+    const req = createGET("/api/posts/post-id-1");
+    const res = await getPost(req, postParams("post-id-1"));
+
+    expect(res.status).toBe(200);
+    // Should check for existing view but NOT create a new one
+    expect(mockPrisma.postView.findFirst).toHaveBeenCalled();
+    expect(mockPrisma.postView.create).not.toHaveBeenCalled();
   });
 
   // 8. PATCH /posts/:id - author can update their post

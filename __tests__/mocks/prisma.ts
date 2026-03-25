@@ -19,6 +19,12 @@ const mockPrismaClient = {
     groupBy: jest.fn(),
     aggregate: jest.fn(),
   },
+  postView: {
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    create: jest.fn(),
+    count: jest.fn(),
+  },
   postMedia: {
     deleteMany: jest.fn(),
     createMany: jest.fn(),
