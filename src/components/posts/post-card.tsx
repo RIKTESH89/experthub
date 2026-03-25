@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Crown } from "lucide-react";
+import { Play, Pause, Crown, ChevronLeft, ChevronRight, X, Volume2 } from "lucide-react";
 import { cn, formatRelativeDate, truncate, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
@@ -59,33 +58,261 @@ interface PostCardProps {
   onBookmarkToggle?: (postId: string) => void;
 }
 
-function ImageLayout({ images }: { images: PostMedia[] }) {
+/* ================================================================
+   IMAGE LIGHTBOX — full-screen popup with arrow navigation
+   ================================================================ */
+
+function ImageLightbox({
+  images,
+  initialIndex,
+  isOpen,
+  onClose,
+}: {
+  images: PostMedia[];
+  initialIndex: number;
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+  const goNext = useCallback(() => {
+    setCurrentIndex((i) => (i + 1) % images.length);
+  }, [images.length]);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((i) => (i - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  if (!isOpen || images.length === 0) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      {/* Counter */}
+      <div className="absolute left-4 top-4 rounded-full bg-white/10 px-3 py-1 text-sm text-white backdrop-blur-sm">
+        {currentIndex + 1} / {images.length}
+      </div>
+
+      {/* Previous button */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); goPrev(); }}
+          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+      )}
+
+      {/* Image */}
+      <div
+        className="relative max-h-[85vh] max-w-[90vw]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={images[currentIndex].url}
+          alt=""
+          className="max-h-[85vh] max-w-[90vw] rounded-lg object-contain"
+        />
+      </div>
+
+      {/* Next button */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); goNext(); }}
+          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ================================================================
+   INLINE VIDEO PLAYER — click to play/pause
+   ================================================================ */
+
+function InlineVideoPlayer({ video }: { video: PostMedia }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <div
+      className="relative aspect-video overflow-hidden rounded-lg bg-black cursor-pointer"
+      onClick={togglePlay}
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
+    >
+      <video
+        ref={videoRef}
+        src={video.url}
+        poster={video.thumbnail ?? undefined}
+        className="h-full w-full object-contain"
+        onEnded={() => setIsPlaying(false)}
+        playsInline
+      />
+
+      {/* Play/Pause overlay */}
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center justify-center transition-opacity duration-200",
+          isPlaying && !showControls ? "opacity-0" : "opacity-100"
+        )}
+      >
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110">
+          {isPlaying ? (
+            <Pause className="h-6 w-6 fill-current" />
+          ) : (
+            <Play className="h-6 w-6 fill-current" />
+          )}
+        </div>
+      </div>
+
+      {/* Duration badge */}
+      {video.duration && !isPlaying && (
+        <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white">
+          {Math.floor(video.duration / 60)}:{String(video.duration % 60).padStart(2, "0")}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ================================================================
+   INLINE AUDIO PLAYER — click to play with progress bar
+   ================================================================ */
+
+function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(audio.duration || 0);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${String(s).padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3">
+      <audio
+        ref={audioRef}
+        src={audio.url}
+        onTimeUpdate={() => {
+          if (!audioRef.current) return;
+          const pct = (audioRef.current.currentTime / (audioRef.current.duration || 1)) * 100;
+          setProgress(pct);
+          setCurrentTime(audioRef.current.currentTime);
+        }}
+        onLoadedMetadata={() => {
+          if (audioRef.current) setDuration(audioRef.current.duration);
+        }}
+        onEnded={() => { setIsPlaying(false); setProgress(0); setCurrentTime(0); }}
+      />
+
+      {/* Play button */}
+      <button
+        onClick={togglePlay}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+      >
+        {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
+      </button>
+
+      {/* Progress bar + waveform */}
+      <div className="min-w-0 flex-1 space-y-1">
+        <div className="relative h-8 w-full overflow-hidden rounded">
+          {/* Waveform visualization (decorative) */}
+          <svg viewBox="0 0 200 32" className="h-full w-full text-muted-foreground/20" preserveAspectRatio="none">
+            {Array.from({ length: 40 }).map((_, i) => {
+              const h = ((i * 7 + 3) % 12) + 4;
+              return <rect key={i} x={i * 5} y={16 - h / 2} width="3" height={h} rx="1" fill="currentColor" />;
+            })}
+          </svg>
+          {/* Progress overlay */}
+          <div className="absolute inset-0 overflow-hidden" style={{ width: `${progress}%` }}>
+            <svg viewBox="0 0 200 32" className="h-full w-full text-primary/60" preserveAspectRatio="none">
+              {Array.from({ length: 40 }).map((_, i) => {
+                const h = ((i * 7 + 3) % 12) + 4;
+                return <rect key={i} x={i * 5} y={16 - h / 2} width="3" height={h} rx="1" fill="currentColor" />;
+              })}
+            </svg>
+          </div>
+        </div>
+        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+      </div>
+
+      <Volume2 className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </div>
+  );
+}
+
+/* ================================================================
+   COMPACT IMAGE GRID — smaller thumbnails with click to open lightbox
+   ================================================================ */
+
+function CompactImageGrid({
+  images,
+  onImageClick,
+}: {
+  images: PostMedia[];
+  onImageClick: (index: number) => void;
+}) {
   const count = images.length;
 
   if (count === 1) {
     return (
-      <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-        <Image
-          src={images[0].url}
-          alt=""
-          fill
-          className="object-cover transition-transform duration-300 hover:scale-105"
-        />
+      <div
+        className="relative h-48 cursor-pointer overflow-hidden rounded-lg bg-muted"
+        onClick={() => onImageClick(0)}
+      >
+        <Image src={images[0].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
       </div>
     );
   }
 
   if (count === 2) {
     return (
-      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
+      <div className="grid h-40 grid-cols-2 gap-1 overflow-hidden rounded-lg">
         {images.map((img, i) => (
-          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={img.url}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-300 hover:scale-105"
-            />
+          <div key={i} className="relative cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(i)}>
+            <Image src={img.url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
           </div>
         ))}
       </div>
@@ -94,144 +321,166 @@ function ImageLayout({ images }: { images: PostMedia[] }) {
 
   if (count === 3) {
     return (
-      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
-        <div className="relative row-span-2 aspect-square overflow-hidden bg-muted">
-          <Image
-            src={images[0].url}
-            alt=""
-            fill
-            className="object-cover transition-transform duration-300 hover:scale-105"
-          />
+      <div className="grid h-48 grid-cols-3 gap-1 overflow-hidden rounded-lg">
+        <div className="relative col-span-2 cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(0)}>
+          <Image src={images[0].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
         </div>
-        {images.slice(1, 3).map((img, i) => (
-          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={img.url}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-300 hover:scale-105"
-            />
-          </div>
-        ))}
+        <div className="grid grid-rows-2 gap-1">
+          {images.slice(1, 3).map((img, i) => (
+            <div key={i} className="relative cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(i + 1)}>
+              <Image src={img.url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (count === 4) {
     return (
-      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
+      <div className="grid h-48 grid-cols-2 grid-rows-2 gap-1 overflow-hidden rounded-lg">
         {images.map((img, i) => (
-          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={img.url}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-300 hover:scale-105"
-            />
+          <div key={i} className="relative cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(i)}>
+            <Image src={img.url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
           </div>
         ))}
       </div>
     );
   }
 
-  // 5+ images: first full width, then 2x2 grid below with +N overlay on last
-  const displayCount = 5;
-  const remaining = count - displayCount;
+  // 5+ images
+  const remaining = count - 4;
   return (
-    <div className="space-y-1 overflow-hidden rounded-lg">
-      <div className="relative aspect-video overflow-hidden bg-muted">
-        <Image
-          src={images[0].url}
-          alt=""
-          fill
-          className="object-cover transition-transform duration-300 hover:scale-105"
-        />
+    <div className="grid h-52 grid-cols-4 grid-rows-2 gap-1 overflow-hidden rounded-lg">
+      {/* First image spans 2 cols on first row */}
+      <div className="relative col-span-2 cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(0)}>
+        <Image src={images[0].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
       </div>
-      <div className="grid grid-cols-2 gap-1">
-        {images.slice(1, 5).map((img, i) => (
-          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={img.url}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-300 hover:scale-105"
-            />
-            {remaining > 0 && i === 3 && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <span className="text-lg font-semibold text-white">
-                  +{remaining}
-                </span>
-              </div>
-            )}
+      {/* Second image */}
+      <div className="relative cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(1)}>
+        <Image src={images[1].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
+      </div>
+      {/* Third image */}
+      <div className="relative cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(2)}>
+        <Image src={images[2].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
+      </div>
+      {/* Fourth image spans 2 cols on second row */}
+      <div className="relative col-span-2 cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(3)}>
+        <Image src={images[3].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
+      </div>
+      {/* Fifth image or +N overlay */}
+      <div className="relative col-span-2 cursor-pointer overflow-hidden bg-muted" onClick={() => onImageClick(4)}>
+        <Image src={images[4 < count ? 4 : count - 1].url} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" />
+        {remaining > 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <span className="text-xl font-bold text-white">+{remaining}</span>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
 }
+
+/* ================================================================
+   COMPACT VIDEO THUMBNAIL — shows thumbnail with play icon, click to expand
+   ================================================================ */
+
+function CompactVideoThumbnail({
+  video,
+  onClick,
+}: {
+  video: PostMedia;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className="relative h-36 cursor-pointer overflow-hidden rounded-lg bg-muted"
+      onClick={onClick}
+    >
+      {video.thumbnail ? (
+        <Image src={video.thumbnail} alt="" fill className="object-cover" />
+      ) : (
+        <div className="flex h-full items-center justify-center bg-gradient-to-br from-muted to-muted-foreground/10" />
+      )}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110">
+          <Play className="h-5 w-5 fill-current" />
+        </div>
+      </div>
+      {video.duration && (
+        <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white">
+          {Math.floor(video.duration / 60)}:{String(video.duration % 60).padStart(2, "0")}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ================================================================
+   MEDIA GRID — compact layout with click-to-expand behavior
+   ================================================================ */
 
 function MediaGrid({ media }: { media: PostMedia[] }) {
   const sorted = [...media].sort((a, b) => a.order - b.order);
   const images = sorted.filter((m) => m.type === "IMAGE");
   const videos = sorted.filter((m) => m.type === "VIDEO");
-  const audio = sorted.filter((m) => m.type === "AUDIO");
+  const audioFiles = sorted.filter((m) => m.type === "AUDIO");
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [expandedVideos, setExpandedVideos] = useState<Set<number>>(new Set());
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const toggleVideoExpand = (index: number) => {
+    setExpandedVideos((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
 
   return (
-    <div className="space-y-2">
-      {images.length > 0 && <ImageLayout images={images} />}
+    <>
+      <div className="space-y-2">
+        {/* Images — compact grid, click opens lightbox */}
+        {images.length > 0 && (
+          <CompactImageGrid images={images} onImageClick={openLightbox} />
+        )}
 
-      {videos.map((video, i) => (
-        <div
-          key={i}
-          className="relative aspect-video overflow-hidden rounded-lg bg-muted"
-        >
-          {video.thumbnail ? (
-            <Image src={video.thumbnail} alt="" fill className="object-cover" />
+        {/* Videos — compact thumbnail, click expands to inline player */}
+        {videos.map((video, i) =>
+          expandedVideos.has(i) ? (
+            <InlineVideoPlayer key={i} video={video} />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-muted to-muted-foreground/10" />
-          )}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110">
-              <Play className="h-6 w-6 fill-current" />
-            </div>
-          </div>
-          {video.duration && (
-            <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white">
-              {Math.floor(video.duration / 60)}:{String(video.duration % 60).padStart(2, "0")}
-            </span>
-          )}
-        </div>
-      ))}
+            <CompactVideoThumbnail key={i} video={video} onClick={() => toggleVideoExpand(i)} />
+          )
+        )}
 
-      {audio.map((a, i) => (
-        <div
-          key={i}
-          className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3"
-        >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Play className="h-5 w-5" />
-          </div>
-          <svg viewBox="0 0 100 32" className="h-8 flex-1 text-primary/30">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <rect key={i} x={i * 5} y={16 - (((i * 7 + 3) % 12) + 2)} width="3" height={((i * 7 + 3) % 12) + 4} rx="1" fill="currentColor" />
-            ))}
-          </svg>
-          <div className="min-w-0 shrink-0">
-            <p className="truncate text-sm font-medium">Audio</p>
-            {a.duration && (
-              <p className="text-xs text-muted-foreground">
-                {Math.floor(a.duration / 60)}:{String(a.duration % 60).padStart(2, "0")}
-              </p>
-            )}
-          </div>
-          <Button variant="ghost" size="icon" className="shrink-0">
-            <Play className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
-    </div>
+        {/* Audio — always inline player (compact by nature) */}
+        {audioFiles.map((a, i) => (
+          <InlineAudioPlayer key={i} audio={a} />
+        ))}
+      </div>
+
+      {/* Image lightbox */}
+      <ImageLightbox
+        images={images}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
+    </>
   );
 }
+
+/* ================================================================
+   POST CARD — main component (untouched logic)
+   ================================================================ */
 
 export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -292,7 +541,11 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             </button>
           )}
 
-          {(post.media ?? []).length > 0 && <MediaGrid media={post.media} />}
+          {(post.media ?? []).length > 0 && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <MediaGrid media={post.media} />
+            </div>
+          )}
 
           {(post.tags ?? []).length > 0 && (
             <div className="flex flex-wrap gap-1.5">
