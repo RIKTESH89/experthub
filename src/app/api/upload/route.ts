@@ -9,7 +9,18 @@ const ALLOWED_TYPES: Record<string, string[]> = {
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/webm"],
 };
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+// Per-type file size limits (keep low for free tier S3)
+const MAX_FILE_SIZES: Record<string, number> = {
+  image: 5 * 1024 * 1024,   // 5MB
+  video: 25 * 1024 * 1024,  // 25MB
+  audio: 10 * 1024 * 1024,  // 10MB
+};
+
+const MAX_FILE_SIZE_LABELS: Record<string, string> = {
+  image: "5MB",
+  video: "25MB",
+  audio: "10MB",
+};
 
 // Lazy-initialize S3 client (avoid crash if env vars missing)
 let s3Client: S3Client | null = null;
@@ -44,13 +55,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "File size exceeds 50MB limit" },
-        { status: 400 }
-      );
-    }
-
     const mimeType = file.type;
     const fileCategory = Object.entries(ALLOWED_TYPES).find(([, types]) =>
       types.includes(mimeType)
@@ -58,12 +62,22 @@ export async function POST(request: NextRequest) {
 
     if (!fileCategory) {
       return NextResponse.json(
-        { error: "File type not allowed. Supported: images, videos, audio" },
+        { error: "File type not allowed. Supported: images (5MB), videos (25MB), audio (10MB)" },
         { status: 400 }
       );
     }
 
     const [category] = fileCategory;
+    const maxSize = MAX_FILE_SIZES[category] || 5 * 1024 * 1024;
+    const maxLabel = MAX_FILE_SIZE_LABELS[category] || "5MB";
+
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: `File size exceeds ${maxLabel} limit for ${category} files` },
+        { status: 400 }
+      );
+    }
+
     const ext = file.name.split(".").pop() || "bin";
     const uniqueName = `${randomUUID()}.${ext}`;
     const s3Key = `${category}/${uniqueName}`;

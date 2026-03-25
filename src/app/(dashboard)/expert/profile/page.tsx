@@ -224,6 +224,10 @@ export default function ExpertProfilePage() {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
+                      if (file.size > 5 * 1024 * 1024) {
+                        toast.error("Profile photo must be under 5MB");
+                        return;
+                      }
                       setAvatarPreview(URL.createObjectURL(file));
                       setAvatarFile(file);
                     }

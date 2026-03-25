@@ -92,7 +92,27 @@ export function PostComposer({
   const addMedia = useCallback(
     (files: FileList | null, type: "IMAGE" | "VIDEO" | "AUDIO") => {
       if (!files) return;
-      const newMedia: MediaFile[] = Array.from(files).map((file) => ({
+
+      const sizeLimits: Record<string, { max: number; label: string }> = {
+        IMAGE: { max: 5 * 1024 * 1024, label: "5MB" },
+        VIDEO: { max: 25 * 1024 * 1024, label: "25MB" },
+        AUDIO: { max: 10 * 1024 * 1024, label: "10MB" },
+      };
+
+      const limit = sizeLimits[type];
+      const validFiles: File[] = [];
+
+      for (const file of Array.from(files)) {
+        if (file.size > limit.max) {
+          toast.error(`${file.name} exceeds ${limit.label} limit for ${type.toLowerCase()} files`);
+        } else {
+          validFiles.push(file);
+        }
+      }
+
+      if (validFiles.length === 0) return;
+
+      const newMedia: MediaFile[] = validFiles.map((file) => ({
         id: crypto.randomUUID(),
         file,
         type,
