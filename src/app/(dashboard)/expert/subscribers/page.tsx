@@ -37,7 +37,8 @@ interface SubscriberStats {
   total: number;
   active: number;
   mrr: number;
-  growthPercent: number;
+  subsTrend: { direction: "up" | "down" | "neutral"; percentage: number };
+  revenueTrend: { direction: "up" | "down" | "neutral"; percentage: number };
 }
 
 export default function ExpertSubscribersPage() {
@@ -75,11 +76,44 @@ export default function ExpertSubscribersPage() {
     const mrr = subscribers
       .filter((s) => s.status === "ACTIVE")
       .reduce((sum, s) => sum + s.monthlyAmount, 0);
+
+    // Calculate real trends by comparing last 30 days vs previous 30 days
+    const now = Date.now();
+    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    const recentSubs = subscribers.filter(
+      (s) => new Date(s.subscriptionDate).getTime() > now - thirtyDays
+    ).length;
+    const prevSubs = subscribers.filter((s) => {
+      const t = new Date(s.subscriptionDate).getTime();
+      return t > now - thirtyDays * 2 && t <= now - thirtyDays;
+    }).length;
+
+    const recentRevenue = subscribers
+      .filter((s) => s.status === "ACTIVE" && new Date(s.subscriptionDate).getTime() > now - thirtyDays)
+      .reduce((sum, s) => sum + s.monthlyAmount, 0);
+    const prevRevenue = subscribers
+      .filter((s) => {
+        const t = new Date(s.subscriptionDate).getTime();
+        return s.status === "ACTIVE" && t > now - thirtyDays * 2 && t <= now - thirtyDays;
+      })
+      .reduce((sum, s) => sum + s.monthlyAmount, 0);
+
+    const calcTrend = (current: number, previous: number) => {
+      if (previous === 0 && current === 0) return { direction: "neutral" as const, percentage: 0 };
+      if (previous === 0) return { direction: "up" as const, percentage: 100 };
+      const pct = Math.round(((current - previous) / previous) * 100);
+      return {
+        direction: pct > 0 ? ("up" as const) : pct < 0 ? ("down" as const) : ("neutral" as const),
+        percentage: Math.abs(pct),
+      };
+    };
+
     return {
       total: subscribers.length,
       active,
       mrr,
-      growthPercent: 8.3,
+      subsTrend: calcTrend(recentSubs, prevSubs),
+      revenueTrend: calcTrend(recentRevenue, prevRevenue),
     };
   }, [subscribers]);
 
@@ -149,14 +183,14 @@ export default function ExpertSubscribersPage() {
           title="Active Subscriptions"
           value={formatNumber(stats.active)}
           icon={CreditCard}
-          trend={{ direction: "up", percentage: stats.growthPercent }}
+          trend={stats.subsTrend.direction !== "neutral" || stats.subsTrend.percentage > 0 ? stats.subsTrend : undefined}
           description="from last month"
         />
         <StatCard
           title="Monthly Revenue"
           value={`$${stats.mrr.toFixed(2)}`}
           icon={TrendingUp}
-          trend={{ direction: "up", percentage: 12.1 }}
+          trend={stats.revenueTrend.direction !== "neutral" || stats.revenueTrend.percentage > 0 ? stats.revenueTrend : undefined}
           description="from last month"
         />
       </div>
