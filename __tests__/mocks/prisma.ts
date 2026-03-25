@@ -26,6 +26,7 @@ const mockPrismaClient = {
     count: jest.fn(),
   },
   postMedia: {
+    findMany: jest.fn().mockResolvedValue([]),
     deleteMany: jest.fn(),
     createMany: jest.fn(),
   },
