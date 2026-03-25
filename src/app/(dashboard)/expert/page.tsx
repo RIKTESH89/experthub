@@ -391,7 +391,7 @@ export default function ExpertDashboardPage() {
           <CardContent className="p-5 flex flex-col flex-1">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-muted-foreground">Post Views</span>
-              <span className="text-xs text-muted-foreground">7 days</span>
+              <span className="text-xs text-muted-foreground">trend</span>
             </div>
             <div className="flex-1 min-h-[100px] w-full">
               <SparklineChart data={viewsData} />
