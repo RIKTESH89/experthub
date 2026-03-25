@@ -46,8 +46,8 @@ interface RecentSubscriber {
 }
 
 interface AccuracyScore {
-  score: number | null;
-  configured: boolean;
+  overallScore: number;
+  components?: Record<string, number>;
 }
 
 interface KnowledgeStatus {
@@ -152,7 +152,7 @@ export default function ExpertDashboardPage() {
   const { data: session } = useSession();
   const [stats, setStats] = useState<ExpertStats | null>(null);
   const [recentSubscribers, setRecentSubscribers] = useState<RecentSubscriber[]>([]);
-  const [accuracyScore, setAccuracyScore] = useState<AccuracyScore>({ score: null, configured: false });
+  const [accuracyScore, setAccuracyScore] = useState<AccuracyScore | null>(null);
   const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus>({ total: 0, indexed: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -352,12 +352,12 @@ export default function ExpertDashboardPage() {
           <div className="sm:col-span-1 lg:col-span-2">
           <Card className="group h-full border-border/50 hover:border-border transition-colors shadow-sm">
             <CardContent className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
-              {accuracyScore.configured && accuracyScore.score !== null ? (
+              {accuracyScore && accuracyScore.overallScore > 0 ? (
                 <>
                   <div className="relative">
-                    <CircularProgress percentage={accuracyScore.score} />
+                    <CircularProgress percentage={Math.round(accuracyScore.overallScore)} />
                     <div className="absolute inset-0 flex items-center justify-center rotate-90">
-                      <span className="text-sm font-bold">{accuracyScore.score}%</span>
+                      <span className="text-sm font-bold">{Math.round(accuracyScore.overallScore)}%</span>
                     </div>
                   </div>
                   <span className="text-xs text-muted-foreground font-medium">Twin Accuracy</span>
