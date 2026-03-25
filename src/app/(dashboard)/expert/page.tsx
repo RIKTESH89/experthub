@@ -362,7 +362,7 @@ export default function ExpertDashboardPage() {
                 <>
                   <div className="relative">
                     <CircularProgress percentage={Math.round(accuracyScore.overallScore)} />
-                    <div className="absolute inset-0 flex items-center justify-center rotate-90">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-sm font-bold">{Math.round(accuracyScore.overallScore)}%</span>
                     </div>
                   </div>
@@ -372,7 +372,7 @@ export default function ExpertDashboardPage() {
                 <>
                   <div className="relative">
                     <CircularProgress percentage={0} />
-                    <div className="absolute inset-0 flex items-center justify-center rotate-90">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-lg text-muted-foreground">?</span>
                     </div>
                   </div>
