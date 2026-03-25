@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { randomUUID } from "crypto";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const ALLOWED_TYPES: Record<string, string[]> = {
   image: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
@@ -11,6 +10,25 @@ const ALLOWED_TYPES: Record<string, string[]> = {
 };
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Lazy-initialize S3 client (avoid crash if env vars missing)
+let s3Client: S3Client | null = null;
+
+function getS3Client(): S3Client | null {
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    return null;
+  }
+  if (!s3Client) {
+    s3Client = new S3Client({
+      region: process.env.AWS_REGION || "ap-south-1",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+    });
+  }
+  return s3Client;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,15 +66,46 @@ export async function POST(request: NextRequest) {
     const [category] = fileCategory;
     const ext = file.name.split(".").pop() || "bin";
     const uniqueName = `${randomUUID()}.${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads", category);
-
-    await mkdir(uploadDir, { recursive: true });
+    const s3Key = `${category}/${uniqueName}`;
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filePath = path.join(uploadDir, uniqueName);
-    await writeFile(filePath, buffer);
 
-    const url = `/uploads/${category}/${uniqueName}`;
+    const client = getS3Client();
+    const bucket = process.env.AWS_S3_BUCKET || "experthub-uploads";
+
+    if (!client) {
+      // Fallback to local storage if S3 not configured (dev mode)
+      const { writeFile, mkdir } = await import("fs/promises");
+      const path = await import("path");
+      const uploadDir = path.join(process.cwd(), "public", "uploads", category);
+      await mkdir(uploadDir, { recursive: true });
+      await writeFile(path.join(uploadDir, uniqueName), buffer);
+
+      return NextResponse.json(
+        {
+          url: `/uploads/${category}/${uniqueName}`,
+          filename: uniqueName,
+          originalName: file.name,
+          size: file.size,
+          type: mimeType,
+          category,
+        },
+        { status: 201 }
+      );
+    }
+
+    // Upload to S3
+    await client.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: s3Key,
+        Body: buffer,
+        ContentType: mimeType,
+      })
+    );
+
+    const region = process.env.AWS_REGION || "ap-south-1";
+    const url = `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
 
     return NextResponse.json(
       {
