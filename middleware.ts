@@ -5,12 +5,21 @@ import { getToken } from "next-auth/jwt";
 const publicRoutes = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
 const authApiRoute = "/api/auth";
 
+// NextAuth v5 uses AUTH_SECRET and a different cookie name than v4
+const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+const isSecure = process.env.NEXTAUTH_URL?.startsWith("https://") ?? process.env.NODE_ENV === "production";
+const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
+
+async function getSessionToken(request: NextRequest) {
+  return getToken({ req: request, secret, cookieName, salt: cookieName });
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // For /, /login, /register — if user is already logged in, redirect to dashboard
   if (pathname === "/" || pathname === "/login" || pathname === "/register") {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getSessionToken(request);
     if (token) {
       const role = (token.role as string) || "";
       const dashboardUrl = role === "ADMIN" ? "/admin" : role === "EXPERT" ? "/expert" : "/subscriber";
@@ -53,10 +62,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const token = await getSessionToken(request);
 
   // Redirect unauthenticated users to login
   if (!token) {
