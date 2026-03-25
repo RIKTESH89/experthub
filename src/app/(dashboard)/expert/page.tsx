@@ -317,8 +317,8 @@ export default function ExpertDashboardPage() {
           )}
         </div>
 
-        {/* Center: Create Post CTA + Twin Score (stacked on md, side by side on sm, separate cols on lg) */}
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 md:grid-cols-1 md:col-span-1 lg:col-span-5 lg:grid-cols-5">
+        {/* Center: Create Post CTA + Twin Score (stacked on mobile/md, side by side on sm, 3+2 on lg) */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 md:col-span-1 lg:col-span-5 lg:grid-cols-5">
           <Link href="/expert/posts/new" className="sm:col-span-1 lg:col-span-3">
             <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-primary/40 hover:scale-[1.01]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-purple-500/5 to-primary/10 opacity-60 group-hover:opacity-100 transition-opacity" />
