@@ -94,9 +94,9 @@ export function PostComposer({
       if (!files) return;
 
       const sizeLimits: Record<string, { max: number; label: string }> = {
-        IMAGE: { max: 5 * 1024 * 1024, label: "5MB" },
-        VIDEO: { max: 25 * 1024 * 1024, label: "25MB" },
-        AUDIO: { max: 10 * 1024 * 1024, label: "10MB" },
+        IMAGE: { max: 2 * 1024 * 1024, label: "2MB" },
+        VIDEO: { max: 10 * 1024 * 1024, label: "10MB" },
+        AUDIO: { max: 3 * 1024 * 1024, label: "3MB" },
       };
 
       const limit = sizeLimits[type];

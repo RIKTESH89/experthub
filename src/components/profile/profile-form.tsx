@@ -58,8 +58,8 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Profile photo must be under 5MB");
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Profile photo must be under 2MB");
         return;
       }
       setAvatarPreview(URL.createObjectURL(file));

@@ -11,15 +11,15 @@ const ALLOWED_TYPES: Record<string, string[]> = {
 
 // Per-type file size limits (keep low for free tier S3)
 const MAX_FILE_SIZES: Record<string, number> = {
-  image: 5 * 1024 * 1024,   // 5MB
-  video: 25 * 1024 * 1024,  // 25MB
-  audio: 10 * 1024 * 1024,  // 10MB
+  image: 2 * 1024 * 1024,   // 2MB
+  video: 10 * 1024 * 1024,  // 10MB
+  audio: 3 * 1024 * 1024,   // 3MB
 };
 
 const MAX_FILE_SIZE_LABELS: Record<string, string> = {
-  image: "5MB",
-  video: "25MB",
-  audio: "10MB",
+  image: "2MB",
+  video: "10MB",
+  audio: "3MB",
 };
 
 // Lazy-initialize S3 client (avoid crash if env vars missing)
@@ -62,14 +62,14 @@ export async function POST(request: NextRequest) {
 
     if (!fileCategory) {
       return NextResponse.json(
-        { error: "File type not allowed. Supported: images (5MB), videos (25MB), audio (10MB)" },
+        { error: "File type not allowed. Supported: images (2MB), videos (10MB), audio (3MB)" },
         { status: 400 }
       );
     }
 
     const [category] = fileCategory;
-    const maxSize = MAX_FILE_SIZES[category] || 5 * 1024 * 1024;
-    const maxLabel = MAX_FILE_SIZE_LABELS[category] || "5MB";
+    const maxSize = MAX_FILE_SIZES[category] || 2 * 1024 * 1024;
+    const maxLabel = MAX_FILE_SIZE_LABELS[category] || "2MB";
 
     if (file.size > maxSize) {
       return NextResponse.json(
