@@ -17,9 +17,9 @@ const pricingTiers = [
   },
   {
     name: "Subscriber",
-    price: "From $9.99",
+    price: "Varies",
     period: "/mo per expert",
-    description: "Full access to expert knowledge and AI Digital Twins",
+    description: "Each expert sets their own pricing",
     features: [
       "Unlimited Digital Twin chats",
       "All expert posts & content",
