@@ -1,29 +1,19 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/lib/auth";
 
-const publicRoutes = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
-const authApiRoute = "/api/auth";
+const publicRoutes = ["/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
+const authRedirectRoutes = ["/", "/login", "/register"];
 
-// NextAuth v5 uses AUTH_SECRET and a different cookie name than v4
-const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
-const isSecure = process.env.NEXTAUTH_URL?.startsWith("https://") ?? process.env.NODE_ENV === "production";
-const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
-
-async function getSessionToken(request: NextRequest) {
-  return getToken({ req: request, secret, cookieName, salt: cookieName });
-}
-
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
+  const session = req.auth;
 
   // For /, /login, /register — if user is already logged in, redirect to dashboard
-  if (pathname === "/" || pathname === "/login" || pathname === "/register") {
-    const token = await getSessionToken(request);
-    if (token) {
-      const role = (token.role as string) || "";
+  if (authRedirectRoutes.includes(pathname)) {
+    if (session?.user) {
+      const role = (session.user as { role?: string }).role || "";
       const dashboardUrl = role === "ADMIN" ? "/admin" : role === "EXPERT" ? "/expert" : "/subscriber";
-      return NextResponse.redirect(new URL(dashboardUrl, request.url));
+      return NextResponse.redirect(new URL(dashboardUrl, req.url));
     }
     return NextResponse.next();
   }
@@ -34,7 +24,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Allow auth API routes
-  if (pathname.startsWith(authApiRoute)) {
+  if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
@@ -62,40 +52,38 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = await getSessionToken(request);
-
   // Redirect unauthenticated users to login
-  if (!token) {
-    const loginUrl = new URL("/login", request.url);
+  if (!session?.user) {
+    const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  const role = (token.role as string) || "";
+  const role = ((session.user as { role?: string }).role as string) || "";
 
   // Admin routes
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     if (role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
   // Expert routes
   if (pathname.startsWith("/expert") || pathname.startsWith("/api/expert")) {
     if (role !== "EXPERT" && role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
   // Subscriber routes
   if (pathname.startsWith("/subscriber") || pathname.startsWith("/api/subscriber")) {
     if (role !== "SUBSCRIBER" && role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
