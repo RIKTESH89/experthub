@@ -140,67 +140,6 @@ function ImageLightbox({
 }
 
 /* ================================================================
-   INLINE VIDEO PLAYER — click to play/pause
-   ================================================================ */
-
-function InlineVideoPlayer({ video }: { video: PostMedia }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      videoRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  return (
-    <div
-      className="relative aspect-video overflow-hidden rounded-lg bg-black cursor-pointer"
-      onClick={togglePlay}
-      onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
-    >
-      <video
-        ref={videoRef}
-        src={video.url}
-        poster={video.thumbnail ?? undefined}
-        className="h-full w-full object-contain"
-        onEnded={() => setIsPlaying(false)}
-        playsInline
-      />
-
-      {/* Play/Pause overlay */}
-      <div
-        className={cn(
-          "absolute inset-0 flex items-center justify-center transition-opacity duration-200",
-          isPlaying && !showControls ? "opacity-0" : "opacity-100"
-        )}
-      >
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110">
-          {isPlaying ? (
-            <Pause className="h-6 w-6 fill-current" />
-          ) : (
-            <Play className="h-6 w-6 fill-current" />
-          )}
-        </div>
-      </div>
-
-      {/* Duration badge */}
-      {video.duration && !isPlaying && (
-        <span className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white">
-          {Math.floor(video.duration / 60)}:{String(video.duration % 60).padStart(2, "0")}
-        </span>
-      )}
-    </div>
-  );
-}
-
-/* ================================================================
    INLINE AUDIO PLAYER — click to play with progress bar
    ================================================================ */
 
@@ -420,6 +359,46 @@ function CompactVideoThumbnail({
    MEDIA GRID — compact layout with click-to-expand behavior
    ================================================================ */
 
+function VideoLightbox({
+  video,
+  isOpen,
+  onClose,
+}: {
+  video: PostMedia | null;
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  if (!isOpen || !video) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <button
+        onClick={onClose}
+        className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      <div
+        className="relative max-h-[85vh] max-w-[90vw] w-full flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <video
+          src={video.url}
+          poster={video.thumbnail ?? undefined}
+          controls
+          autoPlay
+          playsInline
+          className="max-h-[85vh] max-w-[90vw] rounded-lg"
+        />
+      </div>
+    </div>
+  );
+}
+
 function MediaGrid({ media }: { media: PostMedia[] }) {
   const sorted = [...media].sort((a, b) => a.order - b.order);
   const images = sorted.filter((m) => m.type === "IMAGE");
@@ -428,20 +407,11 @@ function MediaGrid({ media }: { media: PostMedia[] }) {
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [expandedVideos, setExpandedVideos] = useState<Set<number>>(new Set());
+  const [videoLightbox, setVideoLightbox] = useState<PostMedia | null>(null);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
-  };
-
-  const toggleVideoExpand = (index: number) => {
-    setExpandedVideos((prev) => {
-      const next = new Set(prev);
-      if (next.has(index)) next.delete(index);
-      else next.add(index);
-      return next;
-    });
   };
 
   return (
@@ -452,16 +422,12 @@ function MediaGrid({ media }: { media: PostMedia[] }) {
           <CompactImageGrid images={images} onImageClick={openLightbox} />
         )}
 
-        {/* Videos — compact thumbnail, click expands to inline player */}
-        {videos.map((video, i) =>
-          expandedVideos.has(i) ? (
-            <InlineVideoPlayer key={i} video={video} />
-          ) : (
-            <CompactVideoThumbnail key={i} video={video} onClick={() => toggleVideoExpand(i)} />
-          )
-        )}
+        {/* Videos — compact thumbnail, click opens video popup */}
+        {videos.map((video, i) => (
+          <CompactVideoThumbnail key={i} video={video} onClick={() => setVideoLightbox(video)} />
+        ))}
 
-        {/* Audio — always inline player (compact by nature) */}
+        {/* Audio — inline player (compact by nature) */}
         {audioFiles.map((a, i) => (
           <InlineAudioPlayer key={i} audio={a} />
         ))}
@@ -473,6 +439,13 @@ function MediaGrid({ media }: { media: PostMedia[] }) {
         initialIndex={lightboxIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
+      />
+
+      {/* Video lightbox */}
+      <VideoLightbox
+        video={videoLightbox}
+        isOpen={!!videoLightbox}
+        onClose={() => setVideoLightbox(null)}
       />
     </>
   );
