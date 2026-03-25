@@ -13,6 +13,8 @@ import {
   Loader2,
   Send,
   Save,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -112,7 +114,18 @@ export function PostComposer({
 
       if (validFiles.length === 0) return;
 
-      const newMedia: MediaFile[] = validFiles.map((file) => ({
+      // Enforce 5 media files limit
+      const remaining = 5 - mediaFiles.length;
+      if (remaining <= 0) {
+        toast.error("Maximum 5 media files per post");
+        return;
+      }
+      const filesToAdd = validFiles.slice(0, remaining);
+      if (filesToAdd.length < validFiles.length) {
+        toast.info(`Only ${remaining} more file${remaining !== 1 ? "s" : ""} allowed. Some files were skipped.`);
+      }
+
+      const newMedia: MediaFile[] = filesToAdd.map((file) => ({
         id: crypto.randomUUID(),
         file,
         type,
@@ -120,7 +133,7 @@ export function PostComposer({
       }));
       setMediaFiles((prev) => [...prev, ...newMedia]);
     },
-    []
+    [mediaFiles.length]
   );
 
   const removeMedia = useCallback((id: string) => {
@@ -128,6 +141,15 @@ export function PostComposer({
       const file = prev.find((f) => f.id === id);
       if (file) URL.revokeObjectURL(file.preview);
       return prev.filter((f) => f.id !== id);
+    });
+  }, []);
+
+  const moveMedia = useCallback((fromIndex: number, toIndex: number) => {
+    setMediaFiles((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      return updated;
     });
   }, []);
 
@@ -234,37 +256,65 @@ export function PostComposer({
           </div>
 
           {mediaFiles.length > 0 && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {mediaFiles.map((mf) => (
-                <div key={mf.id} className="group relative overflow-hidden rounded-lg">
-                  {mf.type === "IMAGE" ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={mf.preview}
-                      alt=""
-                      className="aspect-video w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex aspect-video items-center justify-center bg-muted">
-                      {mf.type === "VIDEO" ? (
-                        <Video className="h-8 w-8 text-muted-foreground" />
-                      ) : (
-                        <Music className="h-8 w-8 text-muted-foreground" />
-                      )}
-                      <span className="ml-2 truncate text-xs text-muted-foreground">
-                        {mf.file.name}
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {mediaFiles.map((mf, index) => (
+                  <div key={mf.id} className="group relative overflow-hidden rounded-lg">
+                    {mf.type === "IMAGE" ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={mf.preview}
+                        alt=""
+                        className="aspect-video w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex aspect-video items-center justify-center bg-muted">
+                        {mf.type === "VIDEO" ? (
+                          <Video className="h-8 w-8 text-muted-foreground" />
+                        ) : (
+                          <Music className="h-8 w-8 text-muted-foreground" />
+                        )}
+                        <span className="ml-2 truncate text-xs text-muted-foreground">
+                          {mf.file.name}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute left-1 top-1 flex items-center gap-0.5">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-[10px] font-bold text-white">
+                        {index + 1}
                       </span>
                     </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => removeMedia(mf.id)}
-                    className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
+                    <div className="absolute right-1 top-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => moveMedia(index, index - 1)}
+                        className="rounded-full bg-black/60 p-1 text-white disabled:opacity-30"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === mediaFiles.length - 1}
+                        onClick={() => moveMedia(index, index + 1)}
+                        className="rounded-full bg-black/60 p-1 text-white disabled:opacity-30"
+                      >
+                        <ChevronDown className="h-3 w-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeMedia(mf.id)}
+                        className="rounded-full bg-black/60 p-1 text-white"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {mediaFiles.length}/5 files
+              </p>
             </div>
           )}
 
@@ -392,6 +442,7 @@ export function PostComposer({
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-muted-foreground hover:text-primary"
+                    disabled={mediaFiles.length >= 5}
                     onClick={() => imageInputRef.current?.click()}
                   >
                     <ImagePlus className="h-4 w-4" />
@@ -407,6 +458,7 @@ export function PostComposer({
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-muted-foreground hover:text-primary"
+                    disabled={mediaFiles.length >= 5}
                     onClick={() => videoInputRef.current?.click()}
                   >
                     <Video className="h-4 w-4" />
@@ -422,6 +474,7 @@ export function PostComposer({
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 text-muted-foreground hover:text-primary"
+                    disabled={mediaFiles.length >= 5}
                     onClick={() => audioInputRef.current?.click()}
                   >
                     <Music className="h-4 w-4" />

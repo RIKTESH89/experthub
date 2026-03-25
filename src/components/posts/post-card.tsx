@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Music, Crown } from "lucide-react";
+import { Play, Crown } from "lucide-react";
 import { cn, formatRelativeDate, truncate, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -59,48 +59,126 @@ interface PostCardProps {
   onBookmarkToggle?: (postId: string) => void;
 }
 
+function ImageLayout({ images }: { images: PostMedia[] }) {
+  const count = images.length;
+
+  if (count === 1) {
+    return (
+      <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+        <Image
+          src={images[0].url}
+          alt=""
+          fill
+          className="object-cover transition-transform duration-300 hover:scale-105"
+        />
+      </div>
+    );
+  }
+
+  if (count === 2) {
+    return (
+      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
+        {images.map((img, i) => (
+          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
+            <Image
+              src={img.url}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (count === 3) {
+    return (
+      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
+        <div className="relative row-span-2 aspect-square overflow-hidden bg-muted">
+          <Image
+            src={images[0].url}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+        {images.slice(1, 3).map((img, i) => (
+          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
+            <Image
+              src={img.url}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (count === 4) {
+    return (
+      <div className="grid grid-cols-2 gap-1 overflow-hidden rounded-lg">
+        {images.map((img, i) => (
+          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
+            <Image
+              src={img.url}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // 5+ images: first full width, then 2x2 grid below with +N overlay on last
+  const displayCount = 5;
+  const remaining = count - displayCount;
+  return (
+    <div className="space-y-1 overflow-hidden rounded-lg">
+      <div className="relative aspect-video overflow-hidden bg-muted">
+        <Image
+          src={images[0].url}
+          alt=""
+          fill
+          className="object-cover transition-transform duration-300 hover:scale-105"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-1">
+        {images.slice(1, 5).map((img, i) => (
+          <div key={i} className="relative aspect-video overflow-hidden bg-muted">
+            <Image
+              src={img.url}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
+            />
+            {remaining > 0 && i === 3 && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <span className="text-lg font-semibold text-white">
+                  +{remaining}
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function MediaGrid({ media }: { media: PostMedia[] }) {
-  const images = media.filter((m) => m.type === "IMAGE");
-  const videos = media.filter((m) => m.type === "VIDEO");
-  const audio = media.filter((m) => m.type === "AUDIO");
+  const sorted = [...media].sort((a, b) => a.order - b.order);
+  const images = sorted.filter((m) => m.type === "IMAGE");
+  const videos = sorted.filter((m) => m.type === "VIDEO");
+  const audio = sorted.filter((m) => m.type === "AUDIO");
 
   return (
     <div className="space-y-2">
-      {images.length > 0 && (
-        <div
-          className={cn(
-            "grid gap-1 overflow-hidden rounded-lg",
-            images.length === 1 && "grid-cols-1",
-            images.length === 2 && "grid-cols-2",
-            images.length >= 3 && "grid-cols-2"
-          )}
-        >
-          {images.slice(0, 4).map((img, i) => (
-            <div
-              key={i}
-              className={cn(
-                "relative aspect-video overflow-hidden bg-muted",
-                images.length === 3 && i === 0 && "row-span-2 aspect-square",
-                images.length >= 4 && i < 2 && "aspect-video"
-              )}
-            >
-              <Image
-                src={img.url}
-                alt=""
-                fill
-                className="object-cover transition-transform duration-300 hover:scale-105"
-              />
-              {images.length > 4 && i === 3 && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                  <span className="text-lg font-semibold text-white">
-                    +{images.length - 4}
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      {images.length > 0 && <ImageLayout images={images} />}
 
       {videos.map((video, i) => (
         <div
@@ -131,9 +209,14 @@ function MediaGrid({ media }: { media: PostMedia[] }) {
           className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Music className="h-5 w-5" />
+            <Play className="h-5 w-5" />
           </div>
-          <div className="min-w-0 flex-1">
+          <svg viewBox="0 0 100 32" className="h-8 flex-1 text-primary/30">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <rect key={i} x={i * 5} y={16 - (((i * 7 + 3) % 12) + 2)} width="3" height={((i * 7 + 3) % 12) + 4} rx="1" fill="currentColor" />
+            ))}
+          </svg>
+          <div className="min-w-0 shrink-0">
             <p className="truncate text-sm font-medium">Audio</p>
             {a.duration && (
               <p className="text-xs text-muted-foreground">
