@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { TrendingUp } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { SearchBar } from "@/components/hub/search-bar";
-import { TrendingTopics } from "@/components/hub/trending-topics";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
 import { PostFeed } from "@/components/posts/post-feed";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -122,9 +121,6 @@ export default function SubscriberHubPage() {
           </p>
           <div className="relative mt-4 w-full max-w-2xl">
             <SearchBar className="w-full" />
-          </div>
-          <div className="mt-3">
-            <TrendingTopics />
           </div>
         </div>
       </div>
