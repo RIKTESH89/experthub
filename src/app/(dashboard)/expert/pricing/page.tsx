@@ -92,9 +92,11 @@ export default function ExpertPricingPage() {
           price: t.tier === "FREE" ? 0 : parseFloat(values.price) || 0,
           description: values.description || null,
           monthlyQuestions:
-            t.tier === "STANDARD"
-              ? parseInt(values.monthlyQuestions) || 20
-              : null,
+            t.tier === "FREE"
+              ? parseInt(values.monthlyQuestions) || 3
+              : t.tier === "PREMIUM"
+                ? null
+                : parseInt(values.monthlyQuestions) || null,
           features: values.features
             .split("\n")
             .map((f) => f.trim())
@@ -132,8 +134,8 @@ export default function ExpertPricingPage() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {[1, 2].map((i) => (
             <Skeleton key={i} className="h-80" />
           ))}
         </div>
@@ -141,38 +143,30 @@ export default function ExpertPricingPage() {
     );
   }
 
-  const tierOrder = ["FREE", "STANDARD", "PREMIUM"];
-  const sortedTiers = [...tiers].sort(
-    (a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)
-  );
+  const tierOrder = ["FREE", "PREMIUM"];
+  const sortedTiers = [...tiers]
+    .filter((t) => tierOrder.includes(t.tier))
+    .sort((a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier));
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <svg viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
-          {/* Tier card 1 (short/free) */}
-          <rect x="12" y="50" width="32" height="40" rx="4" fill="#f5f3ff" stroke="#8b5cf6" strokeWidth="1.5"/>
-          <line x1="18" y1="60" x2="38" y2="60" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="18" y1="68" x2="34" y2="68" stroke="#ede9fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="28" cy="80" r="4" fill="#ede9fe" stroke="#8b5cf6" strokeWidth="1"/>
-          {/* Tier card 2 (medium/standard) */}
-          <rect x="52" y="34" width="32" height="56" rx="4" fill="#e0e7ff" stroke="#6366f1" strokeWidth="2"/>
-          <line x1="58" y1="44" x2="78" y2="44" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="58" y1="52" x2="74" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="58" y1="60" x2="76" y2="60" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="68" cy="78" r="5" fill="#ede9fe" stroke="#6366f1" strokeWidth="1.5"/>
-          <path d="M66 78l2 2 4-4" stroke="#6366f1" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-          {/* Tier card 3 (tall/premium) */}
-          <rect x="92" y="18" width="32" height="72" rx="4" fill="#ede9fe" stroke="#6366f1" strokeWidth="2"/>
-          <line x1="98" y1="28" x2="118" y2="28" stroke="#6366f1" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="98" y1="36" x2="114" y2="36" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="98" y1="44" x2="116" y2="44" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="98" y1="52" x2="112" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="108" cy="76" r="6" fill="#ddd6fe" stroke="#8b5cf6" strokeWidth="1.5"/>
-          {/* Dollar sign in premium */}
-          <text x="104.5" y="80" fontSize="10" fill="#6366f1" fontWeight="bold">$</text>
+        <svg viewBox="0 0 110 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
+          {/* Tier card 1 (free) */}
+          <rect x="10" y="40" width="36" height="50" rx="4" fill="#f5f3ff" stroke="#8b5cf6" strokeWidth="1.5"/>
+          <line x1="17" y1="52" x2="39" y2="52" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
+          <line x1="17" y1="60" x2="35" y2="60" stroke="#ede9fe" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="28" cy="78" r="4" fill="#ede9fe" stroke="#8b5cf6" strokeWidth="1"/>
+          {/* Tier card 2 (premium) */}
+          <rect x="56" y="18" width="36" height="72" rx="4" fill="#ede9fe" stroke="#6366f1" strokeWidth="2"/>
+          <line x1="63" y1="30" x2="85" y2="30" stroke="#6366f1" strokeWidth="2" strokeLinecap="round"/>
+          <line x1="63" y1="38" x2="81" y2="38" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="63" y1="46" x2="83" y2="46" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="63" y1="54" x2="79" y2="54" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="74" cy="76" r="6" fill="#ddd6fe" stroke="#8b5cf6" strokeWidth="1.5"/>
+          <text x="70.5" y="80" fontSize="10" fill="#6366f1" fontWeight="bold">$</text>
           {/* Sparkle */}
-          <path d="M130 10l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#8b5cf6" opacity="0.5"/>
+          <path d="M98 10l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#8b5cf6" opacity="0.5"/>
         </svg>
         <div>
           <h1 className="text-2xl font-bold">Pricing</h1>
@@ -182,7 +176,7 @@ export default function ExpertPricingPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {sortedTiers.map((t) => {
           const values = formValues[t.tier];
           if (!values) return null;
@@ -198,10 +192,8 @@ export default function ExpertPricingPage() {
                 </CardTitle>
                 <CardDescription>
                   {isFree
-                    ? "Free access for all followers"
-                    : isPremium
-                    ? "Full access with unlimited features"
-                    : "Mid-tier with limited twin access"}
+                    ? "Free access with limited Digital Twin questions"
+                    : "Full access with unlimited Digital Twin"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -244,12 +236,6 @@ export default function ExpertPricingPage() {
                       value="Unlimited"
                       disabled
                     />
-                  ) : isFree ? (
-                    <Input
-                      id={`${t.tier}-questions`}
-                      value="0"
-                      disabled
-                    />
                   ) : (
                     <Input
                       id={`${t.tier}-questions`}
@@ -263,6 +249,7 @@ export default function ExpertPricingPage() {
                           e.target.value
                         )
                       }
+                      placeholder="e.g. 3"
                     />
                   )}
                 </div>

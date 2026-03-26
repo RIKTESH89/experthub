@@ -65,7 +65,7 @@ export const TIER_LABELS: Record<string, string> = {
 };
 
 export const TIER_DESCRIPTIONS: Record<string, string> = {
-  FREE: "Access to all public posts",
+  FREE: "Limited Digital Twin access",
   STANDARD: "Posts + limited Digital Twin access",
   PREMIUM: "Unlimited Digital Twin + exclusive content",
 };
@@ -76,4 +76,7 @@ export const DEFAULT_TIER_PRICES: Record<string, number> = {
   PREMIUM: 29.99,
 };
 
+export const DEFAULT_FREE_QUESTIONS = 3;
 export const DEFAULT_STANDARD_QUESTIONS = 20;
+
+export const ACTIVE_TIERS: string[] = ["FREE", "PREMIUM"];

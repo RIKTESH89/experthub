@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArrowLeft, Lock, Zap } from "lucide-react";
@@ -35,7 +35,6 @@ interface TrialStatus {
 
 export default function SubscriberChatPage() {
   const params = useParams();
-  const router = useRouter();
   const { data: session } = useSession();
   const expertId = params.expertId as string;
 
@@ -112,28 +111,18 @@ export default function SubscriberChatPage() {
               <div className="text-left">
                 <p className="font-semibold">{expert.displayName}</p>
                 <p className="text-sm text-muted-foreground">
-                  ${expert.monthlyPrice.toFixed(2)}/month
+                  Plans from Free
                 </p>
               </div>
             </div>
             <Button
               className="w-full"
-              onClick={async () => {
-                try {
-                  const res = await fetch(
-                    `/api/experts/${expertId}/subscribe`,
-                    { method: "POST" }
-                  );
-                  if (!res.ok) throw new Error("Failed");
-                  toast.success("Subscribed successfully!");
-                  router.refresh();
-                } catch {
-                  toast.error("Failed to subscribe");
-                }
-              }}
+              asChild
             >
-              <Zap className="mr-2 h-4 w-4" />
-              Subscribe - ${expert.monthlyPrice.toFixed(2)}/mo
+              <Link href={`/subscriber/experts/${expertId}`}>
+                <Zap className="mr-2 h-4 w-4" />
+                View Plans & Subscribe
+              </Link>
             </Button>
             <Button variant="outline" className="w-full" asChild>
               <Link href={`/subscriber/experts/${expertId}`}>

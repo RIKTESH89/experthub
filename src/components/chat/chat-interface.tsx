@@ -39,6 +39,8 @@ export function ChatInterface({
     questionsAllowed: number;
     hasSubscription: boolean;
     hasTrialAccess: boolean;
+    tier?: string | null;
+    isUnlimited?: boolean;
   } | null>(null);
   const [showPaywall, setShowPaywall] = useState(false);
   const [memoryCount, setMemoryCount] = useState(0);
@@ -274,6 +276,21 @@ export function ChatInterface({
                 setIsStreaming(false);
                 return;
               }
+              if (errorData.code === "QUOTA_EXHAUSTED") {
+                setTrialStatus((prev) => ({
+                  questionsUsed: errorData.questionsUsed ?? prev?.questionsUsed ?? 0,
+                  questionsAllowed: errorData.questionsAllowed ?? prev?.questionsAllowed ?? 0,
+                  hasSubscription: true,
+                  hasTrialAccess: false,
+                  tier: errorData.tier ?? prev?.tier,
+                  isUnlimited: false,
+                }));
+                setShowPaywall(true);
+                setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+                setIsTyping(false);
+                setIsStreaming(false);
+                return;
+              }
             } catch {
               // Fall through to generic error
             }
@@ -341,14 +358,14 @@ export function ChatInterface({
           .then(d => setMemoryCount(d.count))
           .catch(() => {});
 
-        // Update trial status after successful send in trial mode
-        if (trialStatus && !trialStatus.hasSubscription) {
+        // Update usage counter after successful send
+        if (trialStatus && !trialStatus.isUnlimited) {
           setTrialStatus((prev) =>
             prev
               ? {
                   ...prev,
                   questionsUsed: prev.questionsUsed + 1,
-                  hasTrialAccess:
+                  hasTrialAccess: prev.questionsAllowed === -1 ||
                     prev.questionsUsed + 1 < prev.questionsAllowed,
                 }
               : prev
@@ -411,11 +428,12 @@ export function ChatInterface({
         </div>
         <div className="ml-auto flex items-center gap-2">
           {trialStatus &&
-            !trialStatus.hasSubscription &&
+            !trialStatus.isUnlimited &&
             trialStatus.questionsAllowed > 0 && (
               <TrialCounter
                 questionsUsed={trialStatus.questionsUsed}
                 questionsAllowed={trialStatus.questionsAllowed}
+                isSubscribed={trialStatus.hasSubscription}
               />
             )}
           <ShareButton sessionId={sessionId} />
@@ -511,6 +529,7 @@ export function ChatInterface({
         expertId={expertId}
         questionsUsed={trialStatus?.questionsUsed ?? 0}
         questionsAllowed={trialStatus?.questionsAllowed ?? 3}
+        isQuotaExhausted={trialStatus?.hasSubscription && !trialStatus?.hasTrialAccess}
       />
     </div>
   );

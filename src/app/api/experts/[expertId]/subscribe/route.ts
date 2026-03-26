@@ -100,7 +100,7 @@ export async function POST(
     } else {
       // Create new subscription
       const body = await request.json().catch(() => ({}));
-      const requestedTier = body?.tier || "PREMIUM";
+      const requestedTier = body?.tier || "FREE";
 
       let subscriptionPrice = expertProfile.monthlyPrice;
       const subscriptionTier = requestedTier;

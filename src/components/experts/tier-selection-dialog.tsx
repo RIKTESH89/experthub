@@ -81,15 +81,15 @@ export function TierSelectionDialog({
     }
   };
 
-  // Sort tiers in order: FREE, STANDARD, PREMIUM
-  const tierOrder = ["FREE", "STANDARD", "PREMIUM"];
-  const sortedTiers = [...tiers].sort(
-    (a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)
-  );
+  // Sort and filter to active tiers: FREE, PREMIUM
+  const tierOrder = ["FREE", "PREMIUM"];
+  const sortedTiers = [...tiers]
+    .filter((t) => tierOrder.includes(t.tier))
+    .sort((a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier));
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[95vw] sm:max-w-3xl">
+      <DialogContent className="max-w-[95vw] sm:max-w-xl">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
             Subscribe to {expertName}
@@ -99,7 +99,7 @@ export function TierSelectionDialog({
           </p>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
           {sortedTiers.map((t) => {
             const Icon = tierIcons[t.tier] || User;
             const isPremium = t.tier === "PREMIUM";

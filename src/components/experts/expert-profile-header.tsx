@@ -115,10 +115,8 @@ export function ExpertProfileHeader({
           </div>
 
           <div className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">
-              ${(expert.monthlyPrice ?? 0).toFixed(2)}
-            </span>
-            /month
+            From{" "}
+            <span className="font-semibold text-foreground">Free</span>
           </div>
 
           {expert.socialLinks && (

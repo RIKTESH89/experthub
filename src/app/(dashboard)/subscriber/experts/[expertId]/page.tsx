@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Bot } from "lucide-react";
+import { Bot, Crown, Star, User, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { ExpertProfileHeader } from "@/components/experts/expert-profile-header";
 import { PostFeed } from "@/components/posts/post-feed";
 import { Badge } from "@/components/ui/badge";
@@ -38,20 +39,57 @@ interface ExpertDetail {
   isSubscribed: boolean;
 }
 
+interface PricingTier {
+  id: string;
+  tier: "FREE" | "STANDARD" | "PREMIUM";
+  price: number;
+  description?: string | null;
+  monthlyQuestions?: number | null;
+  features: string[];
+}
+
+const tierIcons = {
+  FREE: User,
+  STANDARD: Star,
+  PREMIUM: Crown,
+};
+
+const tierLabels = {
+  FREE: "Free",
+  STANDARD: "Standard",
+  PREMIUM: "Premium",
+};
+
 export default function SubscriberExpertProfilePage() {
   const params = useParams();
   const expertId = params.expertId as string;
 
   const [expert, setExpert] = useState<ExpertDetail | null>(null);
+  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchExpert() {
       try {
-        const res = await fetch(`/api/experts/${expertId}`);
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setExpert(data);
+        const [expertRes, pricingRes] = await Promise.all([
+          fetch(`/api/experts/${expertId}`),
+          fetch(`/api/experts/${expertId}/pricing`),
+        ]);
+
+        if (expertRes.ok) {
+          const data = await expertRes.json();
+          setExpert(data);
+        } else {
+          throw new Error("Failed to fetch");
+        }
+
+        if (pricingRes.ok) {
+          const pricingData = await pricingRes.json();
+          const tiers: PricingTier[] = pricingData.tiers ?? [];
+          const tierOrder = ["FREE", "STANDARD", "PREMIUM"];
+          tiers.sort((a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier));
+          setPricingTiers(tiers);
+        }
       } catch {
         toast.error("Failed to load expert profile");
       } finally {
@@ -202,19 +240,64 @@ export default function SubscriberExpertProfilePage() {
                 </div>
               )}
 
-            {/* Pricing */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">Subscription</h3>
-              <p className="text-sm text-muted-foreground">
-                <span className="text-2xl font-bold text-foreground">
-                  ${(expert.monthlyPrice ?? 0).toFixed(2)}
-                </span>
-                /month
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Includes access to all posts, Digital Twin chat, and exclusive
-                content.
-              </p>
+            {/* Pricing Tiers */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Plans</h3>
+              {pricingTiers.length > 0 ? (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {pricingTiers.map((t) => {
+                    const Icon = tierIcons[t.tier] || User;
+                    const isPremium = t.tier === "PREMIUM";
+                    return (
+                      <div
+                        key={t.tier}
+                        className={cn(
+                          "relative rounded-lg border p-4",
+                          isPremium ? "border-primary bg-primary/[0.03]" : "border-border"
+                        )}
+                      >
+                        {isPremium && (
+                          <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px]">
+                            Popular
+                          </Badge>
+                        )}
+                        <div className="flex items-center gap-2 mb-2">
+                          <Icon
+                            className={cn(
+                              "h-4 w-4",
+                              t.tier === "FREE" && "text-muted-foreground",
+                              t.tier === "STANDARD" && "text-blue-500",
+                              t.tier === "PREMIUM" && "text-amber-500"
+                            )}
+                          />
+                          <span className="text-sm font-semibold">{tierLabels[t.tier]}</span>
+                        </div>
+                        <p className="text-xl font-bold">
+                          {t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}
+                          {t.price > 0 && <span className="text-xs font-normal text-muted-foreground">/mo</span>}
+                        </p>
+                        {t.features.length > 0 && (
+                          <ul className="mt-2 space-y-1">
+                            {t.features.map((feature, i) => (
+                              <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                                <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  <span className="text-2xl font-bold text-foreground">
+                    ${(expert.monthlyPrice ?? 0).toFixed(2)}
+                  </span>
+                  /month
+                </p>
+              )}
             </div>
           </div>
         </TabsContent>

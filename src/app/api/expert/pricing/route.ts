@@ -5,7 +5,8 @@ import prisma from "@/lib/prisma";
 import {
   DEFAULT_TIER_PRICES,
   TIER_DESCRIPTIONS,
-  DEFAULT_STANDARD_QUESTIONS,
+  DEFAULT_FREE_QUESTIONS,
+  ACTIVE_TIERS,
 } from "@/lib/constants";
 
 const updatePricingSchema = z.object({
@@ -58,18 +59,10 @@ export async function GET() {
           tier: "FREE" as const,
           price: DEFAULT_TIER_PRICES.FREE,
           description: TIER_DESCRIPTIONS.FREE,
-          monthlyQuestions: null,
-          features: ["Access to all public posts"],
-        },
-        {
-          expertProfileId: expertProfile.id,
-          tier: "STANDARD" as const,
-          price: DEFAULT_TIER_PRICES.STANDARD,
-          description: TIER_DESCRIPTIONS.STANDARD,
-          monthlyQuestions: DEFAULT_STANDARD_QUESTIONS,
+          monthlyQuestions: DEFAULT_FREE_QUESTIONS,
           features: [
             "Access to all public posts",
-            `${DEFAULT_STANDARD_QUESTIONS} Digital Twin questions/month`,
+            `${DEFAULT_FREE_QUESTIONS} Digital Twin questions/month`,
           ],
         },
         {
@@ -96,7 +89,10 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json({ tiers });
+    // Filter to active tiers only
+    const activeTiers = tiers.filter((t) => ACTIVE_TIERS.includes(t.tier));
+
+    return NextResponse.json({ tiers: activeTiers });
   } catch (error) {
     console.error("Get pricing error:", error);
     return NextResponse.json(
@@ -173,7 +169,9 @@ export async function PUT(request: NextRequest) {
       orderBy: { price: "asc" },
     });
 
-    return NextResponse.json({ tiers: updatedTiers });
+    const activeUpdated = updatedTiers.filter((t) => ACTIVE_TIERS.includes(t.tier));
+
+    return NextResponse.json({ tiers: activeUpdated });
   } catch (error) {
     console.error("Update pricing error:", error);
     return NextResponse.json(

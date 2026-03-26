@@ -68,6 +68,59 @@ export async function POST(
           { status: 403 }
         );
       }
+    } else {
+      // Subscribed user — enforce tier-based monthly limits
+      const subscription = await prisma.expertSubscription.findUnique({
+        where: {
+          subscriberId_expertProfileId: {
+            subscriberId: session.user.id,
+            expertProfileId: chatSession.expertProfileId,
+          },
+        },
+      });
+
+      if (subscription && subscription.status === "ACTIVE") {
+        const pricingTier = await prisma.expertPricingTier.findUnique({
+          where: {
+            expertProfileId_tier: {
+              expertProfileId: chatSession.expertProfileId,
+              tier: subscription.tier,
+            },
+          },
+        });
+
+        const monthlyLimit = pricingTier?.monthlyQuestions ?? null;
+
+        if (monthlyLimit !== null) {
+          const now = new Date();
+          const monthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
+
+          const monthlyUsage = await prisma.monthlyTwinUsage.findUnique({
+            where: {
+              subscriberId_expertProfileId_month: {
+                subscriberId: session.user.id,
+                expertProfileId: chatSession.expertProfileId,
+                month: monthKey,
+              },
+            },
+          });
+
+          const questionsUsed = monthlyUsage?.questionCount ?? 0;
+
+          if (questionsUsed >= monthlyLimit) {
+            return NextResponse.json(
+              {
+                error: "Monthly question limit reached",
+                code: "QUOTA_EXHAUSTED",
+                questionsUsed,
+                questionsAllowed: monthlyLimit,
+                tier: subscription.tier,
+              },
+              { status: 403 }
+            );
+          }
+        }
+      }
     }
 
     const body = await request.json();
@@ -92,9 +145,32 @@ export async function POST(
       },
     });
 
-    // Increment trial usage if this is a trial session
+    // Increment usage counters
     if (chatSession.isTrial) {
       await incrementTrialUsage(session.user.id, chatSession.expertProfileId);
+    } else {
+      // Increment monthly usage for subscribed users
+      const now = new Date();
+      const monthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
+
+      await prisma.monthlyTwinUsage.upsert({
+        where: {
+          subscriberId_expertProfileId_month: {
+            subscriberId: session.user.id,
+            expertProfileId: chatSession.expertProfileId,
+            month: monthKey,
+          },
+        },
+        create: {
+          subscriberId: session.user.id,
+          expertProfileId: chatSession.expertProfileId,
+          month: monthKey,
+          questionCount: 1,
+        },
+        update: {
+          questionCount: { increment: 1 },
+        },
+      });
     }
 
     // Build chat history for context

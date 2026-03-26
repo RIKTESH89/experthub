@@ -41,11 +41,41 @@ export async function GET(
       !!subscription && subscription.status === "ACTIVE";
 
     if (hasSubscription) {
+      // Look up the tier's monthly question limit
+      const pricingTier = await prisma.expertPricingTier.findUnique({
+        where: {
+          expertProfileId_tier: {
+            expertProfileId: expertProfile.id,
+            tier: subscription.tier,
+          },
+        },
+      });
+
+      const monthlyLimit = pricingTier?.monthlyQuestions ?? null; // null = unlimited
+
+      // Get current month's usage
+      const now = new Date();
+      const monthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
+
+      const monthlyUsage = await prisma.monthlyTwinUsage.findUnique({
+        where: {
+          subscriberId_expertProfileId_month: {
+            subscriberId: session.user.id,
+            expertProfileId: expertProfile.id,
+            month: monthKey,
+          },
+        },
+      });
+
+      const questionsUsed = monthlyUsage?.questionCount ?? 0;
+
       return NextResponse.json({
-        questionsUsed: 0,
-        questionsAllowed: 0,
+        questionsUsed,
+        questionsAllowed: monthlyLimit ?? -1, // -1 signals unlimited
         hasSubscription: true,
-        hasTrialAccess: true,
+        hasTrialAccess: monthlyLimit === null || questionsUsed < monthlyLimit,
+        tier: subscription.tier,
+        isUnlimited: monthlyLimit === null,
       });
     }
 
@@ -57,6 +87,8 @@ export async function GET(
       questionsAllowed: trial.limit,
       hasSubscription: false,
       hasTrialAccess: trial.allowed,
+      tier: null,
+      isUnlimited: false,
     });
   } catch (error) {
     console.error("Trial status error:", error);

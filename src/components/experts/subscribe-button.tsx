@@ -142,7 +142,7 @@ export function SubscribeButton({
         ) : (
           <>
             <Zap className="mr-2 h-4 w-4" />
-            Subscribe &middot; ${monthlyPrice.toFixed(2)}/mo
+            View Plans
           </>
         )}
       </Button>
