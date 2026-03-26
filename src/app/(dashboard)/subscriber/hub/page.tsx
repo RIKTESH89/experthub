@@ -239,7 +239,7 @@ export default function SubscriberHubPage() {
           </h2>
         </div>
         <PostFeed
-          endpoint="/api/posts?sort=recent&limit=5"
+          endpoint="/api/posts?limit=10"
           emptyTitle="No posts yet"
           emptyDescription="Check back soon for new content."
         />

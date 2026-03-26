@@ -315,34 +315,34 @@ const features = [
 ];
 
 const testimonials = [
-  { name: "Sarah C.", role: "Product Manager", content: "Like having a personal mentor always available.", rating: 5 },
-  { name: "James R.", role: "Startup Founder", content: "The AI twin responds with incredible accuracy.", rating: 5 },
-  { name: "Emily P.", role: "Graduate Student", content: "Invaluable for my research — real expertise, not generic AI.", rating: 5 },
+  { name: "Priya S.", role: "Product Manager", content: "Like having a personal mentor always available.", rating: 5 },
+  { name: "Arjun M.", role: "Startup Founder", content: "The AI twin responds with incredible accuracy.", rating: 5 },
+  { name: "Neha R.", role: "Graduate Student", content: "Invaluable for my research — real expertise, not generic AI.", rating: 5 },
 ];
 
 const pricingTiers = [
   {
-    name: "Free",
+    name: "Free Tier",
     price: "$0",
-    description: "Explore the platform",
-    features: ["Browse expert profiles", "Read public posts", "Basic search", "Community access"],
+    description: "Follow experts and try their Digital Twin",
+    features: ["Browse expert profiles", "Read all public posts", "Limited Digital Twin questions/month", "Bookmarks & collections"],
     cta: "Get Started",
     popular: false,
   },
   {
-    name: "Subscriber",
+    name: "Premium Tier",
     price: "Varies",
     period: "/mo per expert",
     description: "Each expert sets their own pricing",
-    features: ["Unlimited Digital Twin chats", "All expert posts & content", "Bookmarks & collections", "Priority responses", "Source citations"],
+    features: ["Unlimited Digital Twin chats", "All posts including exclusive content", "Priority responses with source citations", "Long-term memory across sessions"],
     cta: "Start Learning",
     popular: true,
   },
   {
-    name: "Expert",
+    name: "For Experts",
     price: "Free",
-    description: "Share your knowledge",
-    features: ["Create your Digital Twin", "Build your knowledge base", "Subscriber management", "Analytics dashboard", "Set your own pricing"],
+    description: "Monetize your expertise with AI",
+    features: ["Create your AI Digital Twin", "Build & manage knowledge base", "Set your own pricing tiers", "Analytics & subscriber management"],
     cta: "Become an Expert",
     popular: false,
   },
@@ -364,9 +364,16 @@ export default async function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
+            <svg viewBox="0 0 512 512" className="h-8 w-8 shrink-0 rounded-lg" aria-hidden="true">
+              <rect width="512" height="512" rx="112" fill="#312E81"/>
+              <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+              <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+              <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+              <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+              <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+              <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+              <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+            </svg>
             <span className="text-xl font-bold tracking-tight">ExpertHub</span>
           </Link>
 
@@ -435,7 +442,7 @@ export default async function LandingPage() {
               {/* Compact social proof */}
               <div className="mt-8 flex items-center justify-center gap-3 lg:justify-start">
                 <div className="flex -space-x-2">
-                  {["SC", "JR", "EP", "MW"].map((initials, i) => (
+                  {["PS", "AM", "NR", "VK"].map((initials, i) => (
                     <div
                       key={i}
                       className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-gradient-to-br from-indigo-400 to-violet-500 text-[10px] font-bold text-white"
@@ -445,7 +452,7 @@ export default async function LandingPage() {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-gradient">15,000+</span> learners
+                  Trusted by <span className="font-semibold text-gradient">experts & learners</span>
                 </span>
               </div>
             </div>
@@ -719,9 +726,16 @@ export default async function LandingPage() {
           <div className="grid gap-8 sm:grid-cols-4">
             <div className="sm:col-span-1">
               <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
-                  <Sparkles className="h-4 w-4 text-white" />
-                </div>
+                <svg viewBox="0 0 512 512" className="h-8 w-8 shrink-0 rounded-lg" aria-hidden="true">
+                  <rect width="512" height="512" rx="112" fill="#312E81"/>
+                  <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+                  <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+                  <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+                  <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+                  <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+                  <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+                  <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+                </svg>
                 <span className="text-lg font-bold">ExpertHub</span>
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

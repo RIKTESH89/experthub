@@ -1,48 +1,47 @@
 import Link from "next/link";
-import { CheckCircle, Sparkles, ArrowRight } from "lucide-react";
+import { CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 
 const pricingTiers = [
   {
-    name: "Free",
+    name: "Free Tier",
     price: "$0",
-    description: "Explore the platform and discover experts",
+    description: "Follow experts and try their Digital Twin",
     features: [
       "Browse expert profiles",
-      "Read public posts",
+      "Read all public posts",
+      "Limited Digital Twin questions/month",
+      "Bookmarks & collections",
       "Basic search",
-      "Community access",
     ],
     cta: "Get Started",
     popular: false,
   },
   {
-    name: "Subscriber",
+    name: "Premium Tier",
     price: "Varies",
     period: "/mo per expert",
     description: "Each expert sets their own pricing",
     features: [
       "Unlimited Digital Twin chats",
-      "All expert posts & content",
-      "Bookmarks & collections",
-      "Priority responses",
-      "Source citations",
+      "All posts including exclusive content",
+      "Priority responses with source citations",
       "Long-term memory across sessions",
+      "Bookmarks & collections",
     ],
     cta: "Start Learning",
     popular: true,
   },
   {
-    name: "Expert",
+    name: "For Experts",
     price: "Free",
-    description: "Share your knowledge and grow your audience",
+    description: "Monetize your expertise with AI",
     features: [
-      "Create your Digital Twin",
-      "Build your knowledge base",
-      "Subscriber management",
-      "Analytics dashboard",
-      "Set your own pricing",
+      "Create your AI Digital Twin",
+      "Build & manage knowledge base",
+      "Set your own pricing tiers",
+      "Analytics & subscriber management",
       "Personality analysis",
-      "Knowledge graph",
+      "Embeddable chat widget",
     ],
     cta: "Become an Expert",
     popular: false,
@@ -61,9 +60,9 @@ const faqs = [
       "Yes. Each expert sets their own subscription price. You can subscribe to as many experts as you like, and each subscription is billed independently on a monthly basis.",
   },
   {
-    question: "Is there a free trial for the Subscriber plan?",
+    question: "What do I get on the Free tier?",
     answer:
-      "Every account starts on the Free tier, which lets you browse profiles, read public posts, and explore the platform. Once you subscribe to an expert, you gain full access to their Digital Twin and premium content.",
+      "The Free tier lets you browse expert profiles, read all public posts, and ask a limited number of questions to any expert's Digital Twin each month. Upgrade to Premium for unlimited chats and exclusive content.",
   },
   {
     question: "How do experts get paid?",
@@ -84,9 +83,16 @@ export default function PricingPage() {
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
+            <svg viewBox="0 0 512 512" className="h-8 w-8 shrink-0 rounded-lg" aria-hidden="true">
+              <rect width="512" height="512" rx="112" fill="#312E81"/>
+              <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+              <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+              <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+              <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+              <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+              <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+              <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+            </svg>
             <span className="text-xl font-bold tracking-tight">ExpertHub</span>
           </Link>
 

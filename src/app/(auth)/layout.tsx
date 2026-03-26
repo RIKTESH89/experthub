@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { Sparkles } from "lucide-react";
 
 export default async function AuthLayout({
   children,
@@ -20,7 +19,16 @@ export default async function AuthLayout({
       {/* Mobile top banner */}
       <div className="md:hidden bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-6">
         <div className="flex items-center gap-2 text-white">
-          <Sparkles className="h-6 w-6" />
+          <svg viewBox="0 0 512 512" className="h-7 w-7 shrink-0 rounded-md" aria-hidden="true">
+            <rect width="512" height="512" rx="112" fill="#312E81"/>
+            <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+            <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+            <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+            <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+            <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+            <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+            <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+          </svg>
           <span className="text-xl font-bold tracking-tight">ExpertHub</span>
         </div>
         <p className="text-indigo-100 text-sm mt-1">
@@ -102,7 +110,16 @@ export default async function AuthLayout({
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3 mb-8">
-          <Sparkles className="h-10 w-10 text-white" />
+          <svg viewBox="0 0 512 512" className="h-12 w-12 shrink-0 rounded-xl" aria-hidden="true">
+            <rect width="512" height="512" rx="112" fill="rgba(255,255,255,0.15)"/>
+            <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+            <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+            <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+            <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+            <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+            <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+            <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+          </svg>
           <span className="text-3xl font-bold tracking-tight text-white">
             ExpertHub
           </span>

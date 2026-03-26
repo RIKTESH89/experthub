@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, Bell, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -35,8 +36,9 @@ interface SettingsValues {
 
 export default function SubscriberSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { watch, setValue, register, handleSubmit } = useForm<SettingsValues>({
+  const { watch, setValue, register, handleSubmit, reset } = useForm<SettingsValues>({
     defaultValues: {
       emailOnNewPost: true,
       emailOnReply: true,
@@ -46,6 +48,29 @@ export default function SubscriberSettingsPage() {
       newPassword: "",
     },
   });
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/subscriber/settings");
+        if (!res.ok) return;
+        const data = await res.json();
+        reset({
+          emailOnNewPost: data.emailOnNewPost ?? true,
+          emailOnReply: data.emailOnReply ?? true,
+          emailDigest: data.emailDigest ?? "weekly",
+          twoFactorEnabled: data.twoFactorEnabled ?? false,
+          currentPassword: "",
+          newPassword: "",
+        });
+      } catch {
+        // Use defaults on failure
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchSettings();
+  }, [reset]);
 
   const onSubmit = async (data: SettingsValues) => {
     setIsSubmitting(true);
@@ -63,6 +88,21 @@ export default function SubscriberSettingsPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage your notification preferences and account security
+          </p>
+        </div>
+        <Skeleton className="h-64 rounded-lg" />
+        <Skeleton className="h-64 rounded-lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

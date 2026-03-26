@@ -12,13 +12,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
     const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "10")));
+    const sort = searchParams.get("sort") === "oldest" ? "asc" as const : "desc" as const;
     const skip = (page - 1) * limit;
 
     // Get bookmarked post IDs
     const bookmarks = await prisma.bookmark.findMany({
       where: { userId: session.user.id },
       select: { postId: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: sort },
       skip,
       take: limit,
     });
