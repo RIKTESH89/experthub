@@ -547,8 +547,8 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
       </Card>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-h-[85vh] max-w-[95vw] sm:max-w-2xl p-0">
-          <DialogHeader className="border-b border-border px-6 py-4">
+        <DialogContent className="flex max-h-[85vh] flex-col max-w-[95vw] sm:max-w-2xl p-0 overflow-hidden">
+          <DialogHeader className="shrink-0 border-b border-border px-6 py-4">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={post.author.image ?? undefined} alt={post.author.name} />
@@ -565,7 +565,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             </div>
           </DialogHeader>
 
-          <ScrollArea className="max-h-[calc(85vh-140px)]">
+          <ScrollArea className="min-h-0 flex-1">
             <div className="space-y-4 px-6 py-4">
               {post.title && (
                 <h2 className="text-xl font-bold leading-tight">{post.title}</h2>
@@ -589,7 +589,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             </div>
           </ScrollArea>
 
-          <div className="border-t border-border/50 px-4 py-2.5 sm:px-6 sm:py-2">
+          <div className="shrink-0 border-t border-border/50 px-4 py-2.5 sm:px-6 sm:py-2">
             <PostActions
               postId={post.id}
               likes={post._count?.likes ?? 0}

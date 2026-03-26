@@ -91,13 +91,13 @@ export function PostActions({
   const handleShare = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(
-        `${window.location.origin}/subscriber/feed`
+        `${window.location.origin}/posts/${postId}`
       );
       toast.success("Link copied to clipboard");
     } catch {
       toast.error("Failed to copy link");
     }
-  }, []);
+  }, [postId]);
 
   return (
     <TooltipProvider delayDuration={300}>
