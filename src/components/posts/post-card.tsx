@@ -14,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { PostActions } from "./post-actions";
 
 interface PostMedia {
@@ -565,7 +564,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             </div>
           </DialogHeader>
 
-          <ScrollArea className="min-h-0 flex-1">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="space-y-4 px-6 py-4">
               {post.title && (
                 <h2 className="text-xl font-bold leading-tight">{post.title}</h2>
@@ -587,7 +586,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           <div className="shrink-0 border-t border-border/50 px-4 py-2.5 sm:px-6 sm:py-2">
             <PostActions
