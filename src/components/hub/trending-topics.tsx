@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { Hash, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, formatNumber } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -71,9 +70,9 @@ export function TrendingTopics() {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {topics.map((topic) => (
-          <Link
+          <a
             key={topic.name}
-            href={`/hub/topics/${topic.name}`}
+            href="#latest-posts"
             className={cn(
               "flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5",
               "text-sm transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
@@ -84,7 +83,7 @@ export function TrendingTopics() {
             <span className="text-xs text-muted-foreground">
               {formatNumber(topic.postCount)}
             </span>
-          </Link>
+          </a>
         ))}
       </div>
 
