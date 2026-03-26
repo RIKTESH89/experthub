@@ -1,16 +1,28 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { TrendingUp } from "lucide-react";
+import { formatNumber } from "@/lib/utils";
 import { SearchBar } from "@/components/hub/search-bar";
+import { TrendingTopics } from "@/components/hub/trending-topics";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
 import { PostFeed } from "@/components/posts/post-feed";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface TrendingPost {
   id: string;
-  title: string;
-  slug?: string;
+  title?: string | null;
+  content?: string;
+  author?: {
+    name?: string | null;
+    expertProfile?: {
+      displayName?: string | null;
+    } | null;
+  };
+  _count?: {
+    likes: number;
+    comments: number;
+  };
 }
 
 export default function SubscriberHubPage() {
@@ -53,10 +65,18 @@ export default function SubscriberHubPage() {
 
     async function fetchTrending() {
       try {
-        const res = await fetch("/api/posts/trending?limit=4");
+        const res = await fetch("/api/posts/trending?limit=5");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setTrendingPosts(data.posts ?? data);
+        const raw: TrendingPost[] = data.posts ?? data;
+        // Deduplicate by id
+        const seen = new Set<string>();
+        const unique = raw.filter((p) => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return true;
+        });
+        setTrendingPosts(unique.slice(0, 5));
       } catch {
         // Silently fail
       }
@@ -86,100 +106,98 @@ export default function SubscriberHubPage() {
             <circle cx="18" cy="18" r="4" stroke="currentColor" strokeWidth="1" opacity="0.4" />
           </svg>
         </div>
-        <div className="flex overflow-x-auto sm:flex-wrap items-center gap-2 pb-1 sm:pb-0">
-          {["AI", "Finance", "Health", "Tech", "Marketing"].map((topic) => (
-            <button
-              key={topic}
-              className="shrink-0 rounded-full border border-border px-3 py-1 text-xs hover:border-primary/50 hover:bg-primary/5 transition-colors"
-            >
-              {topic}
-            </button>
-          ))}
-        </div>
+        <TrendingTopics />
       </div>
 
-      {/* Featured Experts + Trending This Week */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Featured Experts — horizontal scroll */}
-        <div className="space-y-3 lg:col-span-2">
-          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            {/* Star SVG */}
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-amber-500" aria-hidden="true">
-              <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="currentColor" opacity="0.85" />
-            </svg>
-            Featured Experts
-          </h2>
-          {isLoading ? (
-            <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="w-44 sm:w-48 shrink-0 space-y-3 rounded-lg border border-border p-4"
-                >
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
-              {featuredExperts.map((expert) => (
-                <div key={expert.id} className="w-44 sm:w-48 shrink-0">
-                  <ExpertCard expert={expert} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Trending This Week */}
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold tracking-tight">
-            Trending This Week
-          </h2>
-          {trendingPosts.length > 0 ? (
-            <>
-              {/* Mobile: horizontal chip row */}
-              <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden" style={{ scrollbarWidth: "none" }}>
-                {trendingPosts.map((post, index) => (
-                  <Link
-                    key={post.id}
-                    href={`/subscriber/hub`}
-                    className="shrink-0 rounded-full border border-border px-3 py-1.5 text-xs hover:border-primary/50 hover:bg-primary/5 transition-colors"
-                  >
-                    <span className="font-semibold text-muted-foreground mr-1">{index + 1}.</span>
-                    {post.title}
-                  </Link>
-                ))}
+      {/* Featured Experts */}
+      <div className="space-y-3">
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          {/* Star SVG */}
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-amber-500" aria-hidden="true">
+            <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="currentColor" opacity="0.85" />
+          </svg>
+          Featured Experts
+        </h2>
+        {isLoading ? (
+          <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-44 sm:w-48 shrink-0 space-y-3 rounded-lg border border-border p-4"
+              >
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-3 w-32" />
               </div>
-              {/* Desktop: vertical list */}
-              <ol className="hidden lg:block space-y-2">
-                {trendingPosts.map((post, index) => (
-                  <li key={post.id} className="flex items-start gap-2.5">
-                    <span className="mt-0.5 text-sm font-semibold text-muted-foreground">
-                      {index + 1}
-                    </span>
-                    <Link
-                      href={`/subscriber/hub`}
-                      className="text-sm leading-snug hover:underline"
-                    >
-                      {post.title}
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No trending posts yet.
-            </p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
+            {featuredExperts.map((expert) => (
+              <div key={expert.id} className="w-44 sm:w-48 shrink-0">
+                <ExpertCard expert={expert} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Trending This Week */}
+      {trendingPosts.length > 0 && (
+        <div className="rounded-xl border border-border bg-card/50 p-4 sm:p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-orange-500/10">
+              <TrendingUp className="h-4 w-4 text-orange-500" />
+            </div>
+            <h2 className="text-sm font-semibold tracking-tight">
+              Trending This Week
+            </h2>
+          </div>
+
+          <ol className="space-y-0 divide-y divide-border/50">
+            {trendingPosts.map((post, index) => {
+              const authorName =
+                post.author?.expertProfile?.displayName ??
+                post.author?.name ??
+                "Expert";
+              const engagement =
+                (post._count?.likes ?? 0) + (post._count?.comments ?? 0);
+              const displayTitle =
+                post.title ||
+                (post.content ? post.content.slice(0, 60) + "..." : "Untitled post");
+
+              return (
+                <a
+                  key={post.id}
+                  href="#latest-posts"
+                  className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0 group transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
+                >
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground mt-0.5">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      {displayTitle}
+                    </p>
+                    <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{authorName}</span>
+                      {engagement > 0 && (
+                        <>
+                          <span className="text-border">·</span>
+                          <span>{formatNumber(engagement)} interactions</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </ol>
+        </div>
+      )}
 
       {/* Latest Posts */}
-      <section className="space-y-3">
+      <section id="latest-posts" className="space-y-3 scroll-mt-6">
         <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
           {/* Document/feed SVG */}
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-primary/70" aria-hidden="true">

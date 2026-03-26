@@ -1,10 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await auth();
+    const limit = Math.min(20, Math.max(1, parseInt(request.nextUrl.searchParams.get("limit") || "20")));
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -67,7 +68,8 @@ export async function GET() {
         engagementScore:
           post.viewCount + post._count.likes * 3 + post._count.comments * 2,
       }))
-      .sort((a: { engagementScore: number }, b: { engagementScore: number }) => b.engagementScore - a.engagementScore);
+      .sort((a: { engagementScore: number }, b: { engagementScore: number }) => b.engagementScore - a.engagementScore)
+      .slice(0, limit);
 
     return NextResponse.json(scoredPosts);
   } catch (error) {
