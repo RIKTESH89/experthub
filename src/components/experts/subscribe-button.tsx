@@ -29,7 +29,6 @@ interface SubscribeButtonProps {
 export function SubscribeButton({
   expertId,
   expertName,
-  monthlyPrice,
   isSubscribed: initialSubscribed,
   currentTier: initialTier,
   className,
