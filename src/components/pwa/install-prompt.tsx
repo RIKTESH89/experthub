@@ -40,38 +40,58 @@ export function PWAInstallPrompt() {
       return () => clearTimeout(timer);
     }
 
-    // Android/desktop: listen for install prompt
+    // Android/desktop: listen for native install prompt
+    let nativePromptFired = false;
     const handler = (e: Event) => {
       e.preventDefault();
+      nativePromptFired = true;
       setInstallPrompt(e as BeforeInstallPromptEvent);
       setShowBanner(true);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+
+    // Fallback: if native prompt doesn't fire within 5s (e.g. incognito,
+    // unsupported browser, already installed via different path), show
+    // the banner anyway so users can still be guided to install.
+    const fallbackTimer = setTimeout(() => {
+      if (!nativePromptFired) {
+        setShowBanner(true);
+      }
+    }, 5000);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
+  const [showManualGuide, setShowManualGuide] = useState(false);
+
   const handleInstall = useCallback(async () => {
-    if (!installPrompt) {
-      if (isIOS) {
-        setShowIOSGuide(true);
-        return;
+    if (installPrompt) {
+      // Native install prompt available (Chrome/Edge on Android/Desktop)
+      await installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      if (outcome === "accepted") {
+        setShowBanner(false);
       }
+      setInstallPrompt(null);
       return;
     }
 
-    await installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      setShowBanner(false);
+    // No native prompt — show platform-specific manual guide
+    if (isIOS) {
+      setShowIOSGuide(true);
+    } else {
+      setShowManualGuide(true);
     }
-    setInstallPrompt(null);
   }, [installPrompt, isIOS]);
 
   const handleDismiss = useCallback(() => {
     setShowBanner(false);
     setShowIOSGuide(false);
+    setShowManualGuide(false);
     localStorage.setItem("pwa-install-dismissed", Date.now().toString());
   }, []);
 
@@ -169,6 +189,68 @@ export function PWAInstallPrompt() {
             <Button
               className="mt-6 w-full rounded-xl"
               onClick={() => setShowIOSGuide(false)}
+            >
+              Got it
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Android/Desktop Manual Install Guide */}
+      {showManualGuide && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center">
+          <div className="w-full max-w-sm animate-slide-up rounded-t-2xl bg-card p-6 sm:rounded-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Install ExpertHub</h3>
+              <button
+                onClick={() => setShowManualGuide(false)}
+                className="rounded-md p-1 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mt-4 space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                  1
+                </span>
+                <p className="text-sm text-muted-foreground">
+                  Tap the{" "}
+                  <span className="font-medium text-foreground">menu</span>{" "}
+                  button (three dots) in your browser
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                  2
+                </span>
+                <p className="text-sm text-muted-foreground">
+                  Tap{" "}
+                  <span className="font-medium text-foreground">
+                    &quot;Install app&quot;
+                  </span>{" "}
+                  or{" "}
+                  <span className="font-medium text-foreground">
+                    &quot;Add to Home Screen&quot;
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                  3
+                </span>
+                <p className="text-sm text-muted-foreground">
+                  Tap{" "}
+                  <span className="font-medium text-foreground">
+                    &quot;Install&quot;
+                  </span>{" "}
+                  to confirm
+                </p>
+              </div>
+            </div>
+            <Button
+              className="mt-6 w-full rounded-xl"
+              onClick={() => setShowManualGuide(false)}
             >
               Got it
             </Button>

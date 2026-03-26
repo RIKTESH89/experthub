@@ -61,6 +61,14 @@ export async function GET(request: NextRequest) {
           media: true,
           tags: { include: { tag: true } },
           _count: { select: { likes: true, comments: true, bookmarks: true } },
+          likes: {
+            where: { userId: session.user.id },
+            select: { id: true },
+          },
+          bookmarks: {
+            where: { userId: session.user.id },
+            select: { id: true },
+          },
         },
       }),
       prisma.post.count({ where }),
@@ -69,6 +77,10 @@ export async function GET(request: NextRequest) {
     const formattedPosts = posts.map((post) => ({
       ...post,
       tags: post.tags.map((pt) => pt.tag.name),
+      isLiked: (post as unknown as { likes: unknown[] }).likes?.length > 0,
+      isBookmarked: (post as unknown as { bookmarks: unknown[] }).bookmarks?.length > 0,
+      likes: undefined,
+      bookmarks: undefined,
     }));
 
     return NextResponse.json({

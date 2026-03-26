@@ -21,6 +21,7 @@ interface PostActionsProps {
   isBookmarked: boolean;
   onLikeToggle?: (postId: string) => void;
   onBookmarkToggle?: (postId: string) => void;
+  onCommentClick?: () => void;
 }
 
 export function PostActions({
@@ -32,6 +33,7 @@ export function PostActions({
   isBookmarked: initialBookmarked,
   onLikeToggle,
   onBookmarkToggle,
+  onCommentClick,
 }: PostActionsProps) {
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
@@ -89,13 +91,13 @@ export function PostActions({
   const handleShare = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(
-        `${window.location.origin}/posts/${postId}`
+        `${window.location.origin}/subscriber/feed`
       );
       toast.success("Link copied to clipboard");
     } catch {
       toast.error("Failed to copy link");
     }
-  }, [postId]);
+  }, []);
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -127,12 +129,10 @@ export function PostActions({
               variant="ghost"
               size="sm"
               className="gap-1.5 text-muted-foreground"
-              asChild
+              onClick={onCommentClick}
             >
-              <a href={`/posts/${postId}#comments`}>
-                <MessageCircle className="h-4 w-4" />
-                <span className="text-xs">{formatNumber(comments)}</span>
-              </a>
+              <MessageCircle className="h-4 w-4" />
+              <span className="text-xs">{formatNumber(comments)}</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>Comment</TooltipContent>

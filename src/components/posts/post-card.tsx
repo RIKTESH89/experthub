@@ -541,6 +541,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             isBookmarked={post.isBookmarked ?? false}
             onLikeToggle={onLikeToggle}
             onBookmarkToggle={onBookmarkToggle}
+            onCommentClick={() => setIsOpen(true)}
           />
         </CardFooter>
       </Card>
