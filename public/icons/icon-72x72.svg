@@ -1,26 +1,10 @@
 <svg width="72" height="72" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4338CA"/>
-      <stop offset="100%" stop-color="#6D28D9"/>
-    </linearGradient>
-    <linearGradient id="circle-left" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818CF8"/>
-      <stop offset="100%" stop-color="#6366F1"/>
-    </linearGradient>
-    <linearGradient id="circle-right" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#A78BFA"/>
-      <stop offset="100%" stop-color="#8B5CF6"/>
-    </linearGradient>
-    <mask id="overlap-mask">
-      <rect width="512" height="512" fill="white"/>
-      <circle cx="224" cy="256" r="108" fill="black"/>
-    </mask>
-  </defs>
-  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
-  <circle cx="224" cy="256" r="108" fill="url(#circle-left)" opacity="0.9"/>
-  <circle cx="288" cy="256" r="108" fill="url(#circle-right)" opacity="0.9" mask="url(#overlap-mask)"/>
-  <ellipse cx="256" cy="256" rx="44" ry="108" fill="white" opacity="0.25"/>
-  <circle cx="256" cy="256" r="8" fill="white" opacity="0.9"/>
-  <circle cx="256" cy="256" r="16" fill="white" opacity="0.15"/>
+  <rect width="512" height="512" rx="112" fill="#312E81"/>
+  <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+  <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+  <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+  <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+  <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+  <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+  <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
 </svg>
