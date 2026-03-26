@@ -18,7 +18,6 @@ import {
   Compass,
   CreditCard,
   Bookmark,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   DollarSign,
@@ -124,9 +123,16 @@ export function Sidebar({ navItems, className }: SidebarProps) {
           collapsed ? "justify-center" : "gap-2.5"
         )}
       >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-purple-600 shadow-warm-sm">
-          <Sparkles className="h-4 w-4 text-white" />
-        </div>
+        <svg viewBox="0 0 512 512" className="h-8 w-8 shrink-0 rounded-lg shadow-warm-sm" aria-hidden="true">
+          <rect width="512" height="512" rx="112" fill="#312E81"/>
+          <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+          <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+          <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+          <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+          <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+          <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+          <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+        </svg>
         {!collapsed && (
           <span className="text-lg font-bold tracking-tight text-gradient">ExpertHub</span>
         )}

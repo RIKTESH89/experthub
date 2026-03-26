@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Sparkles, type LucideIcon, LayoutDashboard, Users, FileText, Flag, GraduationCap, BarChart3, Settings, BookOpen, Bot, User, Compass, CreditCard, Bookmark, Newspaper } from "lucide-react";
+import { Menu, type LucideIcon, LayoutDashboard, Users, FileText, Flag, GraduationCap, BarChart3, Settings, BookOpen, Bot, User, Compass, CreditCard, Bookmark, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +52,16 @@ export function MobileNav({ navItems }: MobileNavProps) {
       <SheetContent side="left" className="w-72 p-0">
         <SheetHeader className="border-b border-border px-4 py-4">
           <SheetTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <svg viewBox="0 0 512 512" className="h-6 w-6 shrink-0 rounded-md" aria-hidden="true">
+              <rect width="512" height="512" rx="112" fill="#312E81"/>
+              <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+              <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+              <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+              <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+              <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+              <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+              <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+            </svg>
             ExpertHub
           </SheetTitle>
         </SheetHeader>
