@@ -72,7 +72,7 @@ export async function PATCH(request: NextRequest) {
     } = validation.data;
 
     // Handle password change
-    if (currentPassword && newPassword) {
+    if (newPassword) {
       const user = await prisma.user.findUnique({
         where: { id: session.user.id },
         select: { hashedPassword: true },
@@ -82,13 +82,23 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
 
-      const isPasswordValid = await compare(currentPassword, user.hashedPassword);
-      if (!isPasswordValid) {
-        return NextResponse.json(
-          { error: "Current password is incorrect" },
-          { status: 400 }
-        );
+      // If user has an existing password, verify it first
+      if (user.hashedPassword) {
+        if (!currentPassword) {
+          return NextResponse.json(
+            { error: "Current password is required" },
+            { status: 400 }
+          );
+        }
+        const isPasswordValid = await compare(currentPassword, user.hashedPassword);
+        if (!isPasswordValid) {
+          return NextResponse.json(
+            { error: "Current password is incorrect" },
+            { status: 400 }
+          );
+        }
       }
+      // If user has no password (Google sign-in), they can set one directly
 
       if (newPassword.length < 8) {
         return NextResponse.json(
