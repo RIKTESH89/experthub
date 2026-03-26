@@ -58,10 +58,10 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
   const accentColor = getAccentColor(expert.specialty?.[0]);
 
   return (
-    <Link href={`/subscriber/experts/${expert.id}`}>
+    <Link href={`/subscriber/experts/${expert.id}`} className="block h-full">
       <Card
         className={cn(
-          "group relative overflow-hidden border-l-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+          "group relative h-full overflow-hidden border-l-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
           "before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-primary/20 before:to-transparent",
           accentColor,
           className
@@ -81,7 +81,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
 
-        <CardContent className="flex flex-col gap-3 p-3">
+        <CardContent className="flex h-full flex-col gap-3 p-3">
           {/* Avatar + Name row */}
           <div className="flex items-center gap-2.5 min-w-0">
             <Avatar className="h-10 w-10 shrink-0 transition-transform duration-200 group-hover:scale-105">
@@ -103,16 +103,14 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                   <BadgeCheck className="h-3.5 w-3.5 shrink-0 fill-primary text-primary-foreground" />
                 )}
               </div>
-              {expert.headline && (
-                <p className="line-clamp-1 text-[11px] text-muted-foreground">
-                  {expert.headline}
-                </p>
-              )}
+              <p className="line-clamp-1 text-[11px] text-muted-foreground">
+                {expert.headline || "\u00A0"}
+              </p>
             </div>
           </div>
 
           {/* Specialties */}
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 min-h-[22px]">
             {(expert.specialty ?? []).slice(0, 2).map((spec) => (
               <span
                 key={spec}
@@ -126,8 +124,8 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
             ))}
           </div>
 
-          {/* Stats + button */}
-          <div className="flex items-center justify-between gap-2">
+          {/* Stats + button — pushed to bottom */}
+          <div className="mt-auto flex items-center justify-between gap-2">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Users className="h-3 w-3" />
               <span>{formatNumber(expert._count?.subscribers ?? 0)}</span>
