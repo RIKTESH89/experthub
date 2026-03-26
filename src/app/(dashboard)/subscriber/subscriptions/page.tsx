@@ -45,7 +45,11 @@ export default function SubscriberSubscriptionsPage() {
             <span className="font-medium text-green-600">●</span> {summary.activeCount} active
           </span>
           <span className="text-muted-foreground">·</span>
-          <span className="text-muted-foreground">${summary.totalMonthly.toFixed(2)}/mo total</span>
+          <span className="text-muted-foreground">
+            {summary.totalMonthly > 0
+              ? `$${summary.totalMonthly.toFixed(2)}/mo total`
+              : "Free plans"}
+          </span>
         </div>
       ) : null}
       <SubscriptionList />

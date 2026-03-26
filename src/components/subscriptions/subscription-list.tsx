@@ -11,6 +11,7 @@ interface Subscription {
   id: string;
   status: "ACTIVE" | "CANCELLED" | "EXPIRED";
   monthlyPrice: number;
+  tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
   expert: {
     id: string;

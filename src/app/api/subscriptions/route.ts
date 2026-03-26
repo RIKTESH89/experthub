@@ -38,7 +38,8 @@ export async function GET() {
     const transformed = subscriptions.map((sub) => ({
       id: sub.id,
       status: sub.status,
-      monthlyPrice: sub.expertProfile.monthlyPrice,
+      monthlyPrice: sub.price,
+      tier: sub.tier,
       startDate: sub.startDate.toISOString(),
       expert: {
         id: sub.expertProfile.user.id,

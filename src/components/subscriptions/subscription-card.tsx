@@ -9,6 +9,7 @@ interface Subscription {
   id: string;
   status: "ACTIVE" | "CANCELLED" | "EXPIRED";
   monthlyPrice: number;
+  tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
   expert: {
     id: string;
@@ -101,7 +102,14 @@ export function SubscriptionCard({
         </div>
 
         <span className="shrink-0 text-xs text-muted-foreground">
-          ${(subscription.monthlyPrice ?? 0).toFixed(2)}/mo
+          {subscription.monthlyPrice > 0
+            ? `$${subscription.monthlyPrice.toFixed(2)}/mo`
+            : "Free"}
+          {subscription.tier && (
+            <span className="ml-1 text-[10px] text-muted-foreground/70">
+              ({subscription.tier.charAt(0) + subscription.tier.slice(1).toLowerCase()})
+            </span>
+          )}
         </span>
 
         <div className="flex shrink-0 items-center gap-1">
