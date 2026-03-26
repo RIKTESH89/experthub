@@ -273,7 +273,7 @@ export default function SubscriberExpertProfilePage() {
                           <span className="text-sm font-semibold">{tierLabels[t.tier]}</span>
                         </div>
                         <p className="text-xl font-bold">
-                          {t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}
+                          {t.price > 0 ? `₹${t.price.toFixed(2)}` : "Free"}
                           {t.price > 0 && <span className="text-xs font-normal text-muted-foreground">/mo</span>}
                         </p>
                         {t.features.length > 0 && (
@@ -293,7 +293,7 @@ export default function SubscriberExpertProfilePage() {
               ) : (
                 <p className="text-sm text-muted-foreground">
                   <span className="text-2xl font-bold text-foreground">
-                    ${(expert.monthlyPrice ?? 0).toFixed(2)}
+                    ₹{(expert.monthlyPrice ?? 0).toFixed(2)}
                   </span>
                   /month
                 </p>

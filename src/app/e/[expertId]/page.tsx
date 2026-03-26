@@ -175,7 +175,7 @@ export default function PublicExpertProfilePage() {
                 </Link>
               </Button>
               <span className="text-xs text-muted-foreground">
-                Free trial available · Then ${expert.monthlyPrice.toFixed(2)}/mo
+                Free trial available · Then ₹{expert.monthlyPrice.toFixed(2)}/mo
               </span>
             </div>
           </div>

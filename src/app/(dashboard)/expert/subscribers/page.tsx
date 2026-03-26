@@ -188,7 +188,7 @@ export default function ExpertSubscribersPage() {
         />
         <StatCard
           title="Monthly Revenue"
-          value={`$${stats.mrr.toFixed(2)}`}
+          value={`₹${stats.mrr.toFixed(2)}`}
           icon={TrendingUp}
           trend={stats.revenueTrend.direction !== "neutral" || stats.revenueTrend.percentage > 0 ? stats.revenueTrend : undefined}
           description="from last month"
@@ -269,7 +269,7 @@ export default function ExpertSubscribersPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm">
-                        ${(sub.monthlyAmount ?? 0).toFixed(2)}/mo
+                        ₹{(sub.monthlyAmount ?? 0).toFixed(2)}/mo
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {formatDate(sub.subscriptionDate)}

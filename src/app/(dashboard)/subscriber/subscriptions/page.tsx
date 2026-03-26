@@ -47,7 +47,7 @@ export default function SubscriberSubscriptionsPage() {
           <span className="text-muted-foreground">·</span>
           <span className="text-muted-foreground">
             {summary.totalMonthly > 0
-              ? `$${summary.totalMonthly.toFixed(2)}/mo total`
+              ? `₹${summary.totalMonthly.toFixed(2)}/mo total`
               : "Free plans"}
           </span>
         </div>

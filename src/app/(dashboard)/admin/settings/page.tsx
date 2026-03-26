@@ -150,7 +150,7 @@ export default function AdminSettingsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="defaultExpertRate">
-                  Default Expert Rate ($/month)
+                  Default Expert Rate (₹/month)
                 </Label>
                 <Input
                   id="defaultExpertRate"

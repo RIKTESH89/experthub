@@ -136,7 +136,7 @@ export function TierSelectionDialog({
 
                 <div className="mb-2 sm:mb-4">
                   <span className="text-2xl font-bold sm:text-3xl">
-                    {t.price > 0 ? `$${t.price.toFixed(2)}` : "Free"}
+                    {t.price > 0 ? `₹${t.price.toFixed(2)}` : "Free"}
                   </span>
                   {t.price > 0 && <span className="text-xs sm:text-sm text-muted-foreground">/mo</span>}
                 </div>

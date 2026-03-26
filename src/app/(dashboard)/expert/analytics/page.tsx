@@ -205,8 +205,8 @@ export default function ExpertAnalyticsPage() {
         />
         <StatCard
           title="Revenue"
-          value={`$${(overview?.periodRevenue ?? 0).toFixed(2)}`}
-          description={`$${(overview?.totalRevenue ?? 0).toFixed(2)} total`}
+          value={`₹${(overview?.periodRevenue ?? 0).toFixed(2)}`}
+          description={`₹${(overview?.totalRevenue ?? 0).toFixed(2)} total`}
           icon={DollarSign}
         />
         <StatCard

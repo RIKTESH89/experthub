@@ -103,7 +103,7 @@ export function SubscriptionCard({
 
         <span className="shrink-0 text-xs text-muted-foreground">
           {subscription.monthlyPrice > 0
-            ? `$${subscription.monthlyPrice.toFixed(2)}/mo`
+            ? `₹${subscription.monthlyPrice.toFixed(2)}/mo`
             : "Free"}
           {subscription.tier && (
             <span className="ml-1 text-[10px] text-muted-foreground/70">

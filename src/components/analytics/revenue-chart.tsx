@@ -45,10 +45,10 @@ export function RevenueChart({ data }: RevenueChartProps) {
                 tickFormatter={formatDate}
                 fontSize={12}
               />
-              <YAxis fontSize={12} tickFormatter={(v) => `$${v}`} />
+              <YAxis fontSize={12} tickFormatter={(v) => `₹${v}`} />
               <Tooltip
                 labelFormatter={formatDate}
-                formatter={(value: unknown) => [`$${Number(value).toFixed(2)}`, "Revenue"]}
+                formatter={(value: unknown) => [`₹${Number(value).toFixed(2)}`, "Revenue"]}
               />
               <Bar
                 dataKey="amount"

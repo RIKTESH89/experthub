@@ -323,7 +323,7 @@ const testimonials = [
 const pricingTiers = [
   {
     name: "Free Tier",
-    price: "$0",
+    price: "Free",
     description: "Follow experts and try their Digital Twin",
     features: ["Browse expert profiles", "Read all public posts", "Limited Digital Twin questions/month", "Bookmarks & collections"],
     cta: "Get Started",

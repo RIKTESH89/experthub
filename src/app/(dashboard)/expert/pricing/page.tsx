@@ -164,7 +164,7 @@ export default function ExpertPricingPage() {
           <line x1="63" y1="46" x2="83" y2="46" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
           <line x1="63" y1="54" x2="79" y2="54" stroke="#ddd6fe" strokeWidth="1.5" strokeLinecap="round"/>
           <circle cx="74" cy="76" r="6" fill="#ddd6fe" stroke="#8b5cf6" strokeWidth="1.5"/>
-          <text x="70.5" y="80" fontSize="10" fill="#6366f1" fontWeight="bold">$</text>
+          <text x="70.5" y="80" fontSize="10" fill="#6366f1" fontWeight="bold">₹</text>
           {/* Sparkle */}
           <path d="M98 10l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#8b5cf6" opacity="0.5"/>
         </svg>
@@ -199,7 +199,7 @@ export default function ExpertPricingPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${t.tier}-price`}>
-                    Price ($/month)
+                    Price (₹/month)
                   </Label>
                   <Input
                     id={`${t.tier}-price`}

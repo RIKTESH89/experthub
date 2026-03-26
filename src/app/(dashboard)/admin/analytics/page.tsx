@@ -112,7 +112,7 @@ export default function AdminAnalyticsPage() {
         />
         <StatCard
           title="Monthly Revenue"
-          value={`$${latestMonth.revenue.toLocaleString()}`}
+          value={`₹${latestMonth.revenue.toLocaleString()}`}
           icon={DollarSign}
           trend={{ direction: "up", percentage: 8.2 }}
           description="from last month"
@@ -171,8 +171,8 @@ export default function AdminAnalyticsPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(value) => [`$${Number(value).toLocaleString()}`, "Revenue"]} />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Revenue"]} />
                 <Area type="monotone" dataKey="revenue" stroke="hsl(142, 76%, 36%)" strokeWidth={2} fill="url(#revGrad)" />
               </AreaChart>
             </ResponsiveContainer>

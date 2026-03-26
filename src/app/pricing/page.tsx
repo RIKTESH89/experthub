@@ -4,7 +4,7 @@ import { CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 const pricingTiers = [
   {
     name: "Free Tier",
-    price: "$0",
+    price: "Free",
     description: "Follow experts and try their Digital Twin",
     features: [
       "Browse expert profiles",

@@ -175,7 +175,7 @@ export function AnalyticsOverview() {
               <YAxis
                 className="text-xs"
                 tick={{ fill: "hsl(var(--muted-foreground))" }}
-                tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
               />
               <Tooltip
                 contentStyle={{
@@ -186,7 +186,7 @@ export function AnalyticsOverview() {
                 }}
                 labelStyle={{ color: "hsl(var(--foreground))" }}
                 formatter={(value) => [
-                  `$${Number(value).toLocaleString()}`,
+                  `₹${Number(value).toLocaleString()}`,
                   "Revenue",
                 ]}
               />
