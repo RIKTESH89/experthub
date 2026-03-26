@@ -39,8 +39,10 @@ export function getDigitalTwinSystemPrompt(
     if (sections.length > 0) {
       prompt += `\n\nPersonality Profile (mimic this style closely):\n${sections.join("\n\n")}`;
     }
-  } else if (personality) {
-    prompt += `\n\nAdditional personality guidelines: ${personality}`;
+  }
+
+  if (personality) {
+    prompt += `\n\nAdditional personality guidelines from the expert: ${personality}`;
   }
 
   return prompt;
