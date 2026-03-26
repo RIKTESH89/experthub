@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Users } from "lucide-react";
+import { BadgeCheck, Users } from "lucide-react";
 import { cn, getInitials, formatNumber } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export interface Expert {
@@ -111,21 +110,23 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
             ))}
           </div>
 
-          {/* Stats + button — pushed to bottom */}
+          {/* Stats + decorative indicator — pushed to bottom */}
           <div className="mt-auto flex items-center justify-between gap-2">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Users className="h-3 w-3" />
               <span>{formatNumber(expert._count?.subscribers ?? 0)}</span>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 text-xs px-2 sm:px-3"
-              tabIndex={-1}
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="text-muted-foreground/40 transition-colors duration-200 group-hover:text-primary/60"
+              aria-hidden="true"
             >
-              <span className="hidden sm:inline">View Profile</span>
-              <ArrowRight className="h-3.5 w-3.5 sm:hidden" />
-            </Button>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10 8l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </div>
         </CardContent>
       </Card>

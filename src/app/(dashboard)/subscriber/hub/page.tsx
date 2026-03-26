@@ -131,17 +131,9 @@ export default function SubscriberHubPage() {
 
       {/* Featured Experts */}
       <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10">
-            {/* Star SVG */}
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-amber-500" aria-hidden="true">
-              <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="currentColor" opacity="0.85" />
-            </svg>
-          </div>
-          <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-            Featured Experts
-          </h2>
-        </div>
+        <h2 className="text-base font-semibold tracking-tight sm:text-lg">
+          Featured Experts
+        </h2>
         {isLoading ? (
           <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
             {Array.from({ length: 4 }).map((_, i) => (
