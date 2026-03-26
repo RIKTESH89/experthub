@@ -66,7 +66,7 @@ export default function SubscriberChatPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[calc(100vh-12rem)] flex-col space-y-4">
+      <div className="flex h-[calc(100vh-6rem)] md:h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] flex-col space-y-4">
         <Skeleton className="h-12 w-full rounded-lg" />
         <Skeleton className="flex-1 rounded-lg" />
       </div>
@@ -136,9 +136,9 @@ export default function SubscriberChatPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] flex-col">
+    <div className="flex h-[calc(100vh-6rem)] md:h-[calc(100vh-7rem)] lg:h-[calc(100vh-8rem)] flex-col">
       {/* Chat Header */}
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-2 flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
           <Link href={`/subscriber/experts/${expertId}`}>
             <ArrowLeft className="h-4 w-4" />
