@@ -1,11 +1,26 @@
-<svg width="384" height="384" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+<svg width="384" height="384" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#7C3AED"/>
+      <stop offset="0%" stop-color="#4338CA"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
     </linearGradient>
+    <linearGradient id="circle-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="circle-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <mask id="overlap-mask">
+      <rect width="512" height="512" fill="white"/>
+      <circle cx="224" cy="256" r="108" fill="black"/>
+    </mask>
   </defs>
-  <rect width="384" height="384" rx="69" fill="url(#bg)"/>
-  <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="134" fill="white">E</text>
-  <circle cx="276" cy="108" r="31" fill="#F59E0B" opacity="0.9"/>
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <circle cx="224" cy="256" r="108" fill="url(#circle-left)" opacity="0.9"/>
+  <circle cx="288" cy="256" r="108" fill="url(#circle-right)" opacity="0.9" mask="url(#overlap-mask)"/>
+  <ellipse cx="256" cy="256" rx="44" ry="108" fill="white" opacity="0.25"/>
+  <circle cx="256" cy="256" r="8" fill="white" opacity="0.9"/>
+  <circle cx="256" cy="256" r="16" fill="white" opacity="0.15"/>
 </svg>
