@@ -531,7 +531,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
           )}
         </CardContent>
 
-        <CardFooter className="border-t border-border/50 px-6 py-2">
+        <CardFooter className="border-t border-border/50 px-4 py-2.5 sm:px-6 sm:py-2">
           <PostActions
             postId={post.id}
             likes={post._count?.likes ?? 0}
@@ -588,7 +588,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             </div>
           </ScrollArea>
 
-          <div className="border-t border-border/50 px-6 py-2">
+          <div className="border-t border-border/50 px-4 py-2.5 sm:px-6 sm:py-2">
             <PostActions
               postId={post.id}
               likes={post._count?.likes ?? 0}

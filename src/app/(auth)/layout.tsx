@@ -13,7 +13,7 @@ export default async function AuthLayout({
     const role = (session.user as { role?: string }).role || "";
     if (role === "ADMIN") redirect("/admin");
     if (role === "EXPERT") redirect("/expert");
-    redirect("/subscriber");
+    redirect("/subscriber/feed");
   }
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

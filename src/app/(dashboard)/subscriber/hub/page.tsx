@@ -24,7 +24,26 @@ export default function SubscriberHubPage() {
         const res = await fetch("/api/experts/featured?limit=8");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setFeaturedExperts(data.experts ?? data);
+        const rawExperts = data.experts ?? data;
+        setFeaturedExperts(
+          rawExperts.map((e: Record<string, unknown>) => {
+            const profile = e.expertProfile as Record<string, unknown> | undefined;
+            if (profile) {
+              return {
+                id: e.id,
+                displayName: profile.displayName ?? e.name ?? "",
+                headline: e.headline ?? null,
+                specialty: profile.specialty ?? [],
+                image: e.image ?? null,
+                isVerified: profile.isVerified ?? false,
+                _count: {
+                  subscribers: (profile.totalSubscribers as number) ?? 0,
+                },
+              };
+            }
+            return e;
+          })
+        );
       } catch {
         // Silently fail
       } finally {

@@ -77,7 +77,7 @@ export default function RegisterPage() {
       if (data.role === "EXPERT") {
         router.push("/expert");
       } else {
-        router.push("/subscriber");
+        router.push("/subscriber/feed");
       }
 
       router.refresh();

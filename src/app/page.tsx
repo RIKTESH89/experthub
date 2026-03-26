@@ -355,7 +355,7 @@ export default async function LandingPage() {
     const role = (session.user as { role?: string }).role || "";
     if (role === "ADMIN") redirect("/admin");
     if (role === "EXPERT") redirect("/expert");
-    redirect("/subscriber");
+    redirect("/subscriber/feed");
   }
 
   return (

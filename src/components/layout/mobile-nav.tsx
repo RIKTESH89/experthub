@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Sparkles, type LucideIcon, LayoutDashboard, Users, FileText, Flag, GraduationCap, BarChart3, Settings, BookOpen, Bot, User, Compass, CreditCard, Bookmark } from "lucide-react";
+import { Menu, Sparkles, type LucideIcon, LayoutDashboard, Users, FileText, Flag, GraduationCap, BarChart3, Settings, BookOpen, Bot, User, Compass, CreditCard, Bookmark, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +30,7 @@ const iconMap: Record<string, LucideIcon> = {
   Compass,
   CreditCard,
   Bookmark,
+  Newspaper,
 };
 
 interface MobileNavProps {

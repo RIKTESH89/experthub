@@ -23,6 +23,7 @@ import {
   ChevronRight,
   DollarSign,
   Code,
+  Newspaper,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,7 @@ const iconMap: Record<string, LucideIcon> = {
   Bookmark,
   DollarSign,
   Code,
+  Newspaper,
 };
 
 // Group nav items by logical section based on their nature
@@ -60,7 +62,7 @@ function groupNavItems(items: NavItem[]): { label: string; items: NavItem[] }[] 
   const settingsIcons = new Set(["Settings", "User"]);
 
   for (const item of items) {
-    if (item.title === "Dashboard" || item.title === "Hub") {
+    if (item.title === "Feed" || item.title === "Dashboard" || item.title === "Hub") {
       mainItems.push(item);
     } else if (settingsIcons.has(item.icon) || item.title === "Profile") {
       settingsItems.push(item);

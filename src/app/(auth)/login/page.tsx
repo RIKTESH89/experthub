@@ -63,7 +63,7 @@ export default function LoginPage() {
       } else if (role === "EXPERT") {
         router.push("/expert");
       } else {
-        router.push("/subscriber");
+        router.push("/subscriber/feed");
       }
 
       router.refresh();

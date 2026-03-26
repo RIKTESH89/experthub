@@ -28,6 +28,7 @@ export const expertNav: NavItem[] = [
 ];
 
 export const subscriberNav: NavItem[] = [
+  { title: "Feed", href: "/subscriber/feed", icon: "Newspaper" },
   { title: "Dashboard", href: "/subscriber", icon: "LayoutDashboard" },
   { title: "Hub", href: "/subscriber/hub", icon: "Compass" },
   { title: "Subscriptions", href: "/subscriber/subscriptions", icon: "CreditCard" },

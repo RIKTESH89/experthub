@@ -12,12 +12,10 @@ import {
 } from "lucide-react";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { StatCard } from "@/components/dashboard/stat-card";
-import { PostFeed } from "@/components/posts/post-feed";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getInitials } from "@/lib/utils";
 
 interface SubscriberStats {
@@ -58,7 +56,26 @@ export default function SubscriberDashboardPage() {
 
         if (expertsRes.ok) {
           const expertsData = await expertsRes.json();
-          setRecommendedExperts(expertsData.experts ?? expertsData ?? []);
+          const rawExperts = expertsData.experts ?? expertsData ?? [];
+          setRecommendedExperts(
+            rawExperts.map((e: Record<string, unknown>) => {
+              const profile = e.expertProfile as Record<string, unknown> | undefined;
+              if (profile) {
+                return {
+                  id: e.id,
+                  displayName: profile.displayName ?? e.name ?? "",
+                  headline: e.headline ?? null,
+                  specialty: profile.specialty ?? [],
+                  image: e.image ?? null,
+                  isVerified: profile.isVerified ?? false,
+                  _count: {
+                    subscribers: (profile.totalSubscribers as number) ?? 0,
+                  },
+                };
+              }
+              return e;
+            })
+          );
         }
 
         if (subscribedRes.ok) {
@@ -228,75 +245,57 @@ export default function SubscriberDashboardPage() {
         </div>
       </div>
 
-      {/* Row 2: Tabbed content area */}
-      <Tabs defaultValue="feed" className="w-full">
-        <TabsList className="sticky top-0 z-10 w-full justify-start overflow-x-auto bg-muted/80 backdrop-blur-sm rounded-lg">
-          <TabsTrigger value="feed">Feed</TabsTrigger>
-          <TabsTrigger value="discover">Discover</TabsTrigger>
-        </TabsList>
+      {/* Row 2: Discover Experts */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold tracking-tight">Discover Experts</h2>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/subscriber/hub">
+              See All
+              <ArrowRight className="ml-1 h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
 
-        <TabsContent value="feed" className="mt-4 rounded-lg bg-gradient-to-b from-muted/20 to-transparent p-4 -mx-4 sm:mx-0 sm:p-4">
-          <PostFeed
-            endpoint="/api/subscriber/feed"
-            emptyTitle="Your feed is empty"
-            emptyDescription="Subscribe to experts to see their posts here."
-          />
-        </TabsContent>
-
-        <TabsContent value="discover" className="mt-4">
-          {expertsLoading ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-56 rounded-xl" />
-              ))}
-            </div>
-          ) : recommendedExperts.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  Experts you might be interested in
-                </p>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/subscriber/hub">
-                    See All
-                    <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {recommendedExperts.map((expert) => (
-                  <ExpertCard key={expert.id} expert={expert} />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              {/* Empty search illustration */}
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 64 64"
-                fill="none"
-                className="mb-3 text-muted-foreground/30"
-                aria-hidden="true"
-              >
-                <circle cx="28" cy="28" r="18" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
-                <line x1="41" y1="41" x2="56" y2="56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx="28" cy="22" r="3" fill="currentColor" opacity="0.3" />
-                <circle cx="22" cy="32" r="2" fill="currentColor" opacity="0.2" />
-                <circle cx="34" cy="30" r="2.5" fill="currentColor" opacity="0.25" />
-              </svg>
-              <Sparkles className="h-8 w-8 text-muted-foreground/50 mb-3" />
-              <p className="text-sm font-medium text-muted-foreground">
-                No recommendations yet
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground/70">
-                Check back soon for expert suggestions.
-              </p>
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+        {expertsLoading ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-56 rounded-xl" />
+            ))}
+          </div>
+        ) : recommendedExperts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {recommendedExperts.map((expert) => (
+              <ExpertCard key={expert.id} expert={expert} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            {/* Empty search illustration */}
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 64 64"
+              fill="none"
+              className="mb-3 text-muted-foreground/30"
+              aria-hidden="true"
+            >
+              <circle cx="28" cy="28" r="18" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
+              <line x1="41" y1="41" x2="56" y2="56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+              <circle cx="28" cy="22" r="3" fill="currentColor" opacity="0.3" />
+              <circle cx="22" cy="32" r="2" fill="currentColor" opacity="0.2" />
+              <circle cx="34" cy="30" r="2.5" fill="currentColor" opacity="0.25" />
+            </svg>
+            <Sparkles className="h-8 w-8 text-muted-foreground/50 mb-3" />
+            <p className="text-sm font-medium text-muted-foreground">
+              No recommendations yet
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground/70">
+              Check back soon for expert suggestions.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
