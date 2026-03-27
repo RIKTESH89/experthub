@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Play, Pause, Crown, ChevronLeft, ChevronRight, X, Volume2 } from "lucide-react";
@@ -457,6 +457,15 @@ function MediaGrid({ media }: { media: PostMedia[] }) {
 export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const isTruncated = (post.content || "").length > 300;
+  const viewTracked = useRef(false);
+
+  // Track view when modal opens
+  useEffect(() => {
+    if (isOpen && !viewTracked.current) {
+      viewTracked.current = true;
+      fetch(`/api/posts/${post.id}/view`, { method: "POST" }).catch(() => {});
+    }
+  }, [isOpen, post.id]);
 
   return (
     <>
