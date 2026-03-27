@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/auth/session-provider";
 import { Toaster } from "sonner";
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
+import * as Sentry from "@sentry/nextjs";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,24 +19,29 @@ const dmSerif = DM_Serif_Display({
   variable: "--font-display",
 });
 
-export const metadata: Metadata = {
-  title: "ExpertHub - Connect with Expert Digital Twins",
-  description:
-    "Connect with experts, access their digital twins powered by AI, and learn from the best minds in any field.",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "ExpertHub",
-  },
-  formatDetection: {
-    telephone: false,
-  },
-  icons: {
-    icon: "/icons/icon-192x192.svg",
-    apple: "/icons/icon-192x192.svg",
-  },
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: "ExpertHub - Connect with Expert Digital Twins",
+    description:
+      "Connect with experts, access their digital twins powered by AI, and learn from the best minds in any field.",
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "ExpertHub",
+    },
+    formatDetection: {
+      telephone: false,
+    },
+    icons: {
+      icon: "/icons/icon-192x192.svg",
+      apple: "/icons/icon-192x192.svg",
+    },
+    other: {
+      ...Sentry.getTraceData(),
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [
