@@ -74,40 +74,82 @@ class PgVectorStore {
     query: string,
     topK: number = 15
   ): Promise<QueryResult[]> {
-    // PostgreSQL full-text search
-    const sanitizedQuery = query
+    const words = query
       .replace(/[^\w\s]/g, " ")
       .split(/\s+/)
-      .filter((w) => w.length > 2)
-      .join(" | ");
+      .filter((w) => w.length > 2);
 
-    if (!sanitizedQuery) return [];
+    if (words.length === 0) return [];
 
+    const allResults: QueryResult[] = [];
+    const seenIds = new Set<string>();
+
+    // Method 1: Full-text search using plainto_tsquery (handles plain text naturally)
     try {
-      const results = await prisma.$queryRawUnsafe<
+      const plainQuery = words.join(" ");
+      const tsResults = await prisma.$queryRawUnsafe<
         { vectorId: string; content: string; metadata: string | null; rank: number }[]
       >(
         `SELECT "vectorId", "content", "metadata",
-                ts_rank_cd(to_tsvector('english', "content"), to_tsquery('english', $1)) AS rank
+                ts_rank_cd(to_tsvector('simple', "content"), plainto_tsquery('simple', $1)) AS rank
          FROM "VectorChunk"
          WHERE "namespace" = $2
-           AND to_tsvector('english', "content") @@ to_tsquery('english', $1)
+           AND to_tsvector('simple', "content") @@ plainto_tsquery('simple', $1)
          ORDER BY rank DESC
          LIMIT $3`,
-        sanitizedQuery,
+        plainQuery,
         namespace,
         topK
       );
 
-      return results.map((r) => ({
-        id: r.vectorId,
-        score: Math.min(r.rank, 1),
-        content: r.content,
-        metadata: r.metadata ? (typeof r.metadata === "string" ? JSON.parse(r.metadata) : r.metadata) : {},
-      }));
+      for (const r of tsResults) {
+        if (!seenIds.has(r.vectorId)) {
+          seenIds.add(r.vectorId);
+          allResults.push({
+            id: r.vectorId,
+            score: Math.min(r.rank + 0.5, 1),
+            content: r.content,
+            metadata: r.metadata ? (typeof r.metadata === "string" ? JSON.parse(r.metadata) : r.metadata) : {},
+          });
+        }
+      }
     } catch {
-      return [];
+      // Full-text search failed — continue to ILIKE fallback
     }
+
+    // Method 2: ILIKE substring search (catches exact terms like "MemGPT" that full-text misses)
+    for (const word of words) {
+      if (allResults.length >= topK) break;
+      try {
+        const likeResults = await prisma.$queryRawUnsafe<
+          { vectorId: string; content: string; metadata: string | null }[]
+        >(
+          `SELECT "vectorId", "content", "metadata"
+           FROM "VectorChunk"
+           WHERE "namespace" = $1 AND "content" ILIKE $2
+           LIMIT $3`,
+          namespace,
+          `%${word}%`,
+          5
+        );
+
+        for (const r of likeResults) {
+          if (!seenIds.has(r.vectorId)) {
+            seenIds.add(r.vectorId);
+            allResults.push({
+              id: r.vectorId,
+              score: 0.6,
+              content: r.content,
+              metadata: r.metadata ? (typeof r.metadata === "string" ? JSON.parse(r.metadata) : r.metadata) : {},
+            });
+          }
+        }
+      } catch {
+        // Individual word search failed — continue
+      }
+    }
+
+    return allResults.slice(0, topK);
   }
 
   async deleteByIds(namespace: string, ids: string[]) {
