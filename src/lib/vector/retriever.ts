@@ -88,9 +88,9 @@ async function rerankWithLLM(
   }
 
   // Prepare numbered chunk previews (truncate to save tokens)
-  const chunkPreviews = candidates
-    .slice(0, 25) // Max 25 candidates to re-rank (token budget)
-    .map((c, i) => `[${i + 1}] ${c.content.slice(0, 300)}`)
+  const toRerank = candidates.slice(0, 15); // Max 15 candidates
+  const chunkPreviews = toRerank
+    .map((c, i) => `[${i + 1}] ${c.content.slice(0, 250)}`)
     .join("\n\n");
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -127,7 +127,7 @@ async function rerankWithLLM(
   const rankedIndices = rankingText
     .split(/[,\s]+/)
     .map((s: string) => parseInt(s.trim(), 10) - 1) // Convert 1-indexed to 0-indexed
-    .filter((i: number) => !isNaN(i) && i >= 0 && i < candidates.length);
+    .filter((i: number) => !isNaN(i) && i >= 0 && i < toRerank.length);
 
   // Build re-ranked results
   const reranked: RetrievalResult[] = [];
@@ -137,15 +137,15 @@ async function rerankWithLLM(
     if (!usedIndices.has(idx) && reranked.length < topK) {
       usedIndices.add(idx);
       reranked.push({
-        ...candidates[idx],
-        score: 1 - reranked.length * 0.1, // Assign descending scores based on rank
+        ...toRerank[idx],
+        score: 1 - reranked.length * 0.1,
       });
     }
   }
 
   // If LLM returned fewer than topK, fill with highest original scores
   if (reranked.length < topK) {
-    const remaining = candidates
+    const remaining = toRerank
       .filter((_, i) => !usedIndices.has(i))
       .sort((a, b) => b.score - a.score);
     for (const r of remaining) {

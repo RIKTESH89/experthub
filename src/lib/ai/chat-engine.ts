@@ -60,8 +60,9 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
     const namespace = expert?.vectorNamespace || `expert_${expertId}`;
-    retrievalResults = await retrieveContext(namespace, query, 8);
-    contextTexts = retrievalResults.map((r) => r.content);
+    retrievalResults = await retrieveContext(namespace, query, 5);
+    // Truncate each chunk to limit total prompt size
+    contextTexts = retrievalResults.map((r) => r.content.slice(0, 1500));
   } else {
     thinkingSteps.push("Knowledge base search disabled by expert");
   }
