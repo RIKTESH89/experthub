@@ -59,7 +59,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
 
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
-    const namespace = `expert_${expertId}`;
+    const namespace = expert?.vectorNamespace || `expert_${expertId}`;
     retrievalResults = await retrieveContext(namespace, query, 8);
     contextTexts = retrievalResults.map((r) => r.content);
   } else {
