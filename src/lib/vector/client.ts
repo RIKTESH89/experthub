@@ -25,7 +25,7 @@ class PgVectorStore {
       // Use raw SQL for the vector column since Prisma doesn't natively support it
       await prisma.$executeRawUnsafe(
         `INSERT INTO "VectorChunk" ("id", "vectorId", "namespace", "content", "metadata", "embedding", "createdAt")
-         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5::vector, NOW())
+         VALUES (gen_random_uuid(), $1, $2, $3, $4::jsonb, $5::vector, NOW())
          ON CONFLICT ("vectorId") DO UPDATE SET
            "content" = EXCLUDED."content",
            "metadata" = EXCLUDED."metadata",
