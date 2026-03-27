@@ -58,24 +58,21 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   let contextTexts: string[] = [];
 
   if (ragEnabled) {
-    thinkingSteps.push("Searching knowledge base...");
+    thinkingSteps.push("Searching knowledge base (hybrid search)...");
     const namespace = `expert_${expertId}`;
-    retrievalResults = await retrieveContext(namespace, query, 5);
+    retrievalResults = await retrieveContext(namespace, query, 8);
     contextTexts = retrievalResults.map((r) => r.content);
   } else {
     thinkingSteps.push("Knowledge base search disabled by expert");
   }
 
   if (retrievalResults.length > 0) {
-    thinkingSteps.push(`Found ${retrievalResults.length} relevant sources`);
-    // Show top 3 sources in thinking
+    thinkingSteps.push(`Found ${retrievalResults.length} relevant sources (re-ranked)`);
     for (const result of retrievalResults.slice(0, 3)) {
-      if (result.score > 0.3) {
-        const title =
-          (result.metadata?.title as string) ||
-          result.content.slice(0, 60).replace(/\n/g, " ") + "...";
-        thinkingSteps.push(`Considering: "${title}"`);
-      }
+      const title =
+        (result.metadata?.title as string) ||
+        result.content.slice(0, 60).replace(/\n/g, " ") + "...";
+      thinkingSteps.push(`Considering: "${title}"`);
     }
   } else {
     thinkingSteps.push("No direct matches found in knowledge base");

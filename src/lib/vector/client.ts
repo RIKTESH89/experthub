@@ -69,6 +69,47 @@ class PgVectorStore {
     }));
   }
 
+  async keywordSearch(
+    namespace: string,
+    query: string,
+    topK: number = 15
+  ): Promise<QueryResult[]> {
+    // PostgreSQL full-text search
+    const sanitizedQuery = query
+      .replace(/[^\w\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 2)
+      .join(" | ");
+
+    if (!sanitizedQuery) return [];
+
+    try {
+      const results = await prisma.$queryRawUnsafe<
+        { vectorId: string; content: string; metadata: string | null; rank: number }[]
+      >(
+        `SELECT "vectorId", "content", "metadata",
+                ts_rank_cd(to_tsvector('english', "content"), to_tsquery('english', $1)) AS rank
+         FROM "VectorChunk"
+         WHERE "namespace" = $2
+           AND to_tsvector('english', "content") @@ to_tsquery('english', $1)
+         ORDER BY rank DESC
+         LIMIT $3`,
+        sanitizedQuery,
+        namespace,
+        topK
+      );
+
+      return results.map((r) => ({
+        id: r.vectorId,
+        score: Math.min(r.rank, 1),
+        content: r.content,
+        metadata: r.metadata ? (typeof r.metadata === "string" ? JSON.parse(r.metadata) : r.metadata) : {},
+      }));
+    } catch {
+      return [];
+    }
+  }
+
   async deleteByIds(namespace: string, ids: string[]) {
     if (ids.length === 0) return;
 
