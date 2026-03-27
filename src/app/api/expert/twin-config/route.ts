@@ -22,6 +22,9 @@ export async function GET() {
         twinPersonality: true,
         twinGreeting: true,
         ragEnabled: true,
+        twinOpinions: true,
+        twinFramework: true,
+        twinBoundaries: true,
       },
     });
 
@@ -68,7 +71,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { twinPersonality, twinGreeting, ragEnabled } = body;
+    const { twinPersonality, twinGreeting, ragEnabled, twinOpinions, twinFramework, twinBoundaries } = body;
 
     const updated = await prisma.expertProfile.update({
       where: { id: expertProfile.id },
@@ -76,11 +79,17 @@ export async function PATCH(request: NextRequest) {
         ...(twinPersonality !== undefined && { twinPersonality }),
         ...(twinGreeting !== undefined && { twinGreeting }),
         ...(ragEnabled !== undefined && { ragEnabled }),
+        ...(twinOpinions !== undefined && { twinOpinions }),
+        ...(twinFramework !== undefined && { twinFramework }),
+        ...(twinBoundaries !== undefined && { twinBoundaries }),
       },
       select: {
         twinPersonality: true,
         twinGreeting: true,
         ragEnabled: true,
+        twinOpinions: true,
+        twinFramework: true,
+        twinBoundaries: true,
       },
     });
 

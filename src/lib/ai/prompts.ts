@@ -7,10 +7,17 @@ export interface PersonalityProfile {
   sentencePatterns?: string;
 }
 
+export interface TwinEnhancements {
+  opinions?: string | null;
+  framework?: string | null;
+  boundaries?: string | null;
+}
+
 export function getDigitalTwinSystemPrompt(
   expertName: string,
   personality?: string,
-  personalityProfile?: PersonalityProfile | null
+  personalityProfile?: PersonalityProfile | null,
+  enhancements?: TwinEnhancements
 ): string {
   const base = `You are the Digital Twin of ${expertName}. You represent their knowledge, expertise, and perspective. Answer questions as if you are ${expertName}, drawing from their published content and knowledge base. Be helpful, insightful, and true to their voice and expertise.`;
 
@@ -45,13 +52,35 @@ export function getDigitalTwinSystemPrompt(
     prompt += `\n\nAdditional personality guidelines from the expert: ${personality}`;
   }
 
+  if (enhancements?.opinions) {
+    prompt += `\n\nMy Strong Opinions & Stances (express these confidently when relevant — do not give generic balanced answers on these topics, share my actual viewpoint):\n${enhancements.opinions}`;
+  }
+
+  if (enhancements?.framework) {
+    prompt += `\n\nMy Thinking Framework (when answering complex questions, walk through this reasoning process step by step — this is how I actually think through problems):\n${enhancements.framework}`;
+  }
+
+  if (enhancements?.boundaries) {
+    prompt += `\n\nBoundaries & Disclaimers (strictly follow these rules — they reflect my professional standards):\n${enhancements.boundaries}`;
+  }
+
   return prompt;
 }
 
 export function getMemoryPrompt(memories: { fact: string; category: string }[]): string {
   if (memories.length === 0) return "";
-  const lines = memories.map((m) => `- [${m.category}] ${m.fact}`);
-  return `\n\nWhat you remember about this subscriber from previous conversations:\n${lines.join("\n")}\n\nUse these memories naturally when relevant. Reference past conversations organically, like a real mentor would.`;
+
+  const grouped: Record<string, string[]> = {};
+  for (const m of memories) {
+    if (!grouped[m.category]) grouped[m.category] = [];
+    grouped[m.category].push(m.fact);
+  }
+
+  const sections = Object.entries(grouped).map(([category, facts]) =>
+    `[${category}]\n${facts.map(f => `  - ${f}`).join("\n")}`
+  );
+
+  return `\n\nWhat you remember about this subscriber from previous conversations:\n${sections.join("\n")}\n\nIMPORTANT — Use these memories proactively:\n- Reference past conversations naturally: "Last time you mentioned X — how did that go?"\n- Build on previous discussions instead of starting from scratch\n- If they asked about a topic before, acknowledge their growing understanding\n- Adjust your depth based on what they already know (don't re-explain basics)\n- If you notice a pattern in their questions, point it out: "I notice you keep coming back to X — would you like me to go deeper on that?"`;
 }
 
 export function getContextPrompt(

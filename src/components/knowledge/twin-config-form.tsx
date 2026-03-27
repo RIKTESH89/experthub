@@ -24,6 +24,9 @@ interface TwinConfigValues {
   twinPersonality: string;
   twinGreeting: string;
   ragEnabled: boolean;
+  twinOpinions: string;
+  twinFramework: string;
+  twinBoundaries: string;
 }
 
 interface TwinConfigFormProps {
@@ -31,6 +34,9 @@ interface TwinConfigFormProps {
     twinPersonality?: string;
     twinGreeting?: string;
     ragEnabled?: boolean;
+    twinOpinions?: string;
+    twinFramework?: string;
+    twinBoundaries?: string;
   };
   personalityProfile?: PersonalityProfile | null;
   onSuccess?: () => void;
@@ -49,6 +55,9 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
       twinGreeting:
         initialData?.twinGreeting ?? "Hello! How can I help you today?",
       ragEnabled: initialData?.ragEnabled ?? true,
+      twinOpinions: initialData?.twinOpinions ?? "",
+      twinFramework: initialData?.twinFramework ?? "",
+      twinBoundaries: initialData?.twinBoundaries ?? "",
     },
   });
 
@@ -212,6 +221,54 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
             <p className="text-xs text-muted-foreground">
               This defines the personality and behavior of your AI twin when
               responding to subscribers.
+            </p>
+          </div>
+
+          {/* Opinions & Stances */}
+          <div className="space-y-2">
+            <Label htmlFor="twinOpinions">
+              My Opinions & Stances
+            </Label>
+            <Textarea
+              id="twinOpinions"
+              placeholder={"e.g.,\n- I believe index funds beat active trading 95% of the time\n- Microservices are overused — start with a monolith\n- Python is the best first programming language\n- Remote work is more productive than office work"}
+              className="min-h-[120px] resize-y"
+              {...register("twinOpinions")}
+            />
+            <p className="text-xs text-muted-foreground">
+              Your strong opinions and hot takes. Your twin will express these confidently instead of giving generic balanced answers.
+            </p>
+          </div>
+
+          {/* Reasoning Framework */}
+          <div className="space-y-2">
+            <Label htmlFor="twinFramework">
+              My Thinking Framework
+            </Label>
+            <Textarea
+              id="twinFramework"
+              placeholder={"e.g., When someone asks me about investing, I always think through:\n1. What's their risk tolerance?\n2. What's their time horizon?\n3. What's their current portfolio diversification?\n4. What are the macro conditions?\nOnly then do I give a recommendation."}
+              className="min-h-[120px] resize-y"
+              {...register("twinFramework")}
+            />
+            <p className="text-xs text-muted-foreground">
+              How you approach problems step by step. Your twin will walk through this same reasoning process when answering complex questions.
+            </p>
+          </div>
+
+          {/* Boundaries */}
+          <div className="space-y-2">
+            <Label htmlFor="twinBoundaries">
+              Boundaries & Disclaimers
+            </Label>
+            <Textarea
+              id="twinBoundaries"
+              placeholder={"e.g.,\n- Never give specific stock picks without a risk disclaimer\n- Always recommend consulting a licensed professional for medical/legal advice\n- Don't make promises about returns or outcomes\n- If I don't know something, say so honestly"}
+              className="min-h-[100px] resize-y"
+              {...register("twinBoundaries")}
+            />
+            <p className="text-xs text-muted-foreground">
+              What your twin should avoid or add disclaimers to. These reflect your professional standards.
             </p>
           </div>
 

@@ -5,6 +5,7 @@ import {
   getContextPrompt,
   getMemoryPrompt,
   type PersonalityProfile,
+  type TwinEnhancements,
 } from "@/lib/ai/prompts";
 import { getMemories } from "@/lib/ai/memory-manager";
 import { graphEnhancedRetrieval } from "@/lib/graph/graph-retriever";
@@ -46,6 +47,11 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     ? (expert.personalityProfile as unknown as PersonalityProfile)
     : null;
   const ragEnabled = expert?.ragEnabled ?? true;
+  const enhancements: TwinEnhancements = {
+    opinions: (expert as unknown as { twinOpinions?: string })?.twinOpinions || null,
+    framework: (expert as unknown as { twinFramework?: string })?.twinFramework || null,
+    boundaries: (expert as unknown as { twinBoundaries?: string })?.twinBoundaries || null,
+  };
 
   // Step 1: Retrieve context from vector store (only if RAG is enabled)
   let retrievalResults: RetrievalResult[] = [];
@@ -113,7 +119,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
 
   // Build system prompt with all context
   const systemPrompt =
-    getDigitalTwinSystemPrompt(expertName, personality, personalityProfile) +
+    getDigitalTwinSystemPrompt(expertName, personality, personalityProfile, enhancements) +
     getMemoryPrompt(memories) +
     getContextPrompt(contextTexts, webResults, graphContext);
 

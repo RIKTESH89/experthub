@@ -109,6 +109,9 @@ model ExpertProfile {
   ragEnabled       Boolean  @default(true)
   twinPersonality  String?
   twinGreeting     String?  @default("Hello! I'm the digital twin of this expert. Ask me anything about their expertise!")
+  twinOpinions     String?
+  twinFramework    String?
+  twinBoundaries   String?
   freeTrialQuestions Int      @default(3)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
