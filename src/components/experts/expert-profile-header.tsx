@@ -114,10 +114,16 @@ export function ExpertProfileHeader({
             subscribers
           </div>
 
-          <div className="text-sm text-muted-foreground">
-            From{" "}
-            <span className="font-semibold text-foreground">Free</span>
-          </div>
+          {isSubscribed ? (
+            <div className="text-sm text-green-600 dark:text-green-400 font-medium">
+              ● Subscribed
+            </div>
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              From{" "}
+              <span className="font-semibold text-foreground">Free</span>
+            </div>
+          )}
 
           {expert.socialLinks && (
             <div className="ml-auto flex items-center gap-2">

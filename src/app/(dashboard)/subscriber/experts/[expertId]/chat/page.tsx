@@ -49,8 +49,32 @@ export default function SubscriberChatPage() {
           fetch(`/api/experts/${expertId}`),
           fetch(`/api/experts/${expertId}/trial-status`),
         ]);
+
+        let expertData = null;
         if (expertRes.ok) {
-          setExpert(await expertRes.json());
+          expertData = await expertRes.json();
+
+          // Auto-verify PENDING payment if exists
+          if (!expertData.isSubscribed && expertData.subscription?.razorpaySubscriptionId && expertData.subscription?.status === "PENDING") {
+            try {
+              const verifyRes = await fetch("/api/payments/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ razorpaySubscriptionId: expertData.subscription.razorpaySubscriptionId }),
+              });
+              if (verifyRes.ok) {
+                const verifyData = await verifyRes.json();
+                if (verifyData.verified) {
+                  const refreshRes = await fetch(`/api/experts/${expertId}`);
+                  if (refreshRes.ok) {
+                    expertData = await refreshRes.json();
+                  }
+                }
+              }
+            } catch { /* use original data */ }
+          }
+
+          setExpert(expertData);
         }
         if (trialRes.ok) {
           setTrialStatus(await trialRes.json());

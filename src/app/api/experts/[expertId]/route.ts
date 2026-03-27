@@ -74,9 +74,11 @@ export async function GET(
         },
       });
 
-      if (sub && sub.status === "ACTIVE") {
-        isSubscribed = true;
+      if (sub) {
         subscription = sub;
+        if (sub.status === "ACTIVE") {
+          isSubscribed = true;
+        }
       }
     }
 

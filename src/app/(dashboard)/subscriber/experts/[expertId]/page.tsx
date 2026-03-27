@@ -78,7 +78,38 @@ export default function SubscriberExpertProfilePage() {
 
         if (expertRes.ok) {
           const data = await expertRes.json();
-          setExpert(data);
+
+          // If subscription exists but not active, check if there's a PENDING payment to verify
+          if (!data.isSubscribed && data.subscription?.razorpaySubscriptionId && data.subscription?.status === "PENDING") {
+            try {
+              const verifyRes = await fetch("/api/payments/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ razorpaySubscriptionId: data.subscription.razorpaySubscriptionId }),
+              });
+              if (verifyRes.ok) {
+                const verifyData = await verifyRes.json();
+                if (verifyData.verified) {
+                  // Re-fetch expert data with updated subscription status
+                  const refreshRes = await fetch(`/api/experts/${expertId}`);
+                  if (refreshRes.ok) {
+                    const refreshData = await refreshRes.json();
+                    setExpert(refreshData);
+                  } else {
+                    setExpert(data);
+                  }
+                } else {
+                  setExpert(data);
+                }
+              } else {
+                setExpert(data);
+              }
+            } catch {
+              setExpert(data);
+            }
+          } else {
+            setExpert(data);
+          }
         } else {
           throw new Error("Failed to fetch");
         }

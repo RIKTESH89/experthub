@@ -126,24 +126,66 @@ export async function POST(request: NextRequest) {
       }
 
       case "subscription.charged": {
-        // Monthly recurring payment succeeded
+        // Payment succeeded (first payment or monthly recurring)
         const subscriptionId =
           event.payload?.subscription?.entity?.id;
         const paymentId =
           event.payload?.payment?.entity?.id;
         if (!subscriptionId) break;
 
-        const currentPeriodEnd = new Date();
-        currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
-
-        await prisma.expertSubscription.updateMany({
+        const chargedSub = await prisma.expertSubscription.findFirst({
           where: { razorpaySubscriptionId: subscriptionId },
-          data: {
-            status: "ACTIVE",
-            razorpayPaymentId: paymentId || undefined,
-            currentPeriodEnd,
-          },
         });
+
+        if (chargedSub) {
+          const wasPending = chargedSub.status === "PENDING";
+          const currentPeriodEnd = new Date();
+          currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+
+          await prisma.expertSubscription.update({
+            where: { id: chargedSub.id },
+            data: {
+              status: "ACTIVE",
+              razorpayPaymentId: paymentId || undefined,
+              currentPeriodEnd,
+            },
+          });
+
+          // First payment — increment subscriber count if was PENDING
+          if (wasPending) {
+            await prisma.expertProfile.update({
+              where: { id: chargedSub.expertProfileId },
+              data: { totalSubscribers: { increment: 1 } },
+            });
+
+            const expertProfile = await prisma.expertProfile.findUnique({
+              where: { id: chargedSub.expertProfileId },
+              select: { userId: true },
+            });
+
+            if (expertProfile) {
+              const subscriber = await prisma.user.findUnique({
+                where: { id: chargedSub.subscriberId },
+                select: { name: true },
+              });
+
+              await prisma.notification.create({
+                data: {
+                  userId: expertProfile.userId,
+                  title: "New Premium Subscriber",
+                  message: `${subscriber?.name || "Someone"} subscribed to your Premium plan!`,
+                  link: "/expert/subscribers",
+                },
+              });
+
+              sendNotificationEmail({
+                type: "new_subscriber",
+                recipientUserId: expertProfile.userId,
+                data: { subscriberName: subscriber?.name || "Someone" },
+              }).catch(() => {});
+            }
+          }
+        }
         break;
       }
 

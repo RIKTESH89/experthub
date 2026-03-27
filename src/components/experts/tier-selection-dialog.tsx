@@ -107,10 +107,28 @@ export function TierSelectionDialog({
           subscription_id: data.subscriptionId,
           name: "ExpertHub",
           description: `${data.expertName} - Premium Plan`,
-          handler: () => {
+          handler: async () => {
             toast.success("Payment successful! Activating your subscription...");
             onClose();
-            // Poll for activation
+
+            // Verify payment directly with our API (doesn't depend on webhook timing)
+            try {
+              const verifyRes = await fetch("/api/payments/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ razorpaySubscriptionId: data.subscriptionId }),
+              });
+              if (verifyRes.ok) {
+                const verifyData = await verifyRes.json();
+                if (verifyData.verified) {
+                  onSubscribe(tier, true);
+                  window.location.reload();
+                  return;
+                }
+              }
+            } catch { /* fall through to polling */ }
+
+            // Fallback: poll if verify didn't confirm immediately
             const poll = setInterval(async () => {
               try {
                 const checkRes = await fetch(`/api/experts/${expertId}`);
@@ -123,7 +141,7 @@ export function TierSelectionDialog({
                   }
                 }
               } catch { /* retry */ }
-            }, 2000);
+            }, 3000);
             setTimeout(() => clearInterval(poll), 30000);
           },
           modal: {
