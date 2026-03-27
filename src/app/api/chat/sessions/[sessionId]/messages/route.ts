@@ -202,7 +202,7 @@ export async function POST(
             if (data === "[DONE]") {
               controller.enqueue(
                 encoder.encode(
-                  `data: ${JSON.stringify({ done: true, sources })}\n\n`
+                  `data: ${JSON.stringify({ done: true, sources: sources.map((s: { content: string; score: number; metadata: Record<string, unknown> }) => ({ title: (s.metadata?.title as string) || s.content.split("\n")[0]?.slice(0, 80) || "Source", snippet: s.content.slice(0, 200), score: s.score })) })}\n\n`
                 )
               );
               continue;

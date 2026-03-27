@@ -100,6 +100,12 @@ export function getContextPrompt(
   if (webResults && webResults.length > 0) {
     prompt += `\n\nRelevant information from the web:\n${webResults.map((r, i) => `[Web ${i + 1}] ${r}`).join("\n")}`;
   }
-  prompt += `\n\nImportant: Base your answers primarily on the expert's content. Use graph connections and web results to supplement. Always maintain the expert's voice and perspective. If you don't have enough information, say so honestly.`;
+  prompt += `\n\nCRITICAL INSTRUCTIONS FOR ANSWERING:
+- You MUST base your answers on the expert's content provided above. This is your primary and most trusted source.
+- When the expert's content mentions specific names, tools, projects, or examples, you MUST use those exact names in your answer — do NOT substitute with your own knowledge.
+- If the expert's content directly answers the question, use that answer even if your general knowledge suggests something different.
+- Only supplement with your general knowledge when the expert's content does not cover the topic at all.
+- Always maintain the expert's voice and perspective.
+- If you don't have enough information from the expert's content, say so honestly.`;
   return prompt;
 }
