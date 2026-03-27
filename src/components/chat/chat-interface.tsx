@@ -57,14 +57,31 @@ export function ChatInterface({
   const [showHistory, setShowHistory] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const prevMessageCount = useRef(0);
+  const userScrolledUp = useRef(false);
 
   const scrollToBottom = useCallback(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!userScrolledUp.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
 
+  // Only auto-scroll when a new message is added (not during streaming updates)
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping, scrollToBottom]);
+    if (messages.length !== prevMessageCount.current) {
+      prevMessageCount.current = messages.length;
+      userScrolledUp.current = false; // Reset on new message
+      scrollToBottom();
+    }
+  }, [messages.length, scrollToBottom]);
+
+  // Auto-scroll when typing indicator appears
+  useEffect(() => {
+    if (isTyping) {
+      userScrolledUp.current = false;
+      scrollToBottom();
+    }
+  }, [isTyping, scrollToBottom]);
 
   // Create a new chat session and return its id
   const createSession = useCallback(async (): Promise<string | null> => {
@@ -595,7 +612,15 @@ export function ChatInterface({
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+        <div
+          className="flex-1 overflow-y-auto p-4"
+          ref={scrollRef}
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+            userScrolledUp.current = !isNearBottom;
+          }}
+        >
           {messages.length === 0 && !isTyping && !isLoading && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
@@ -653,7 +678,7 @@ export function ChatInterface({
           )}
 
           <div ref={bottomRef} />
-        </ScrollArea>
+        </div>
 
         {/* Input */}
         <ChatInput onSend={handleSend} isDisabled={isStreaming || isLoading} />
