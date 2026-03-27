@@ -43,7 +43,7 @@ const pricingTiers = [
       "Personality analysis",
       "Embeddable chat widget",
     ],
-    cta: "Become an Expert",
+    cta: "Apply as Expert",
     popular: false,
   },
 ];
@@ -175,7 +175,7 @@ export default function PricingPage() {
                 </ul>
 
                 <Link
-                  href="/register"
+                  href="/login"
                   className={`mt-8 flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all ${
                     tier.popular
                       ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:brightness-110"
@@ -232,7 +232,7 @@ export default function PricingPage() {
           </p>
           <div className="mt-8">
             <Link
-              href="/register"
+              href="/login"
               className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-8 text-base font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110"
             >
               Sign Up Free

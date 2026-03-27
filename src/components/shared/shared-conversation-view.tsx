@@ -42,7 +42,7 @@ export function SharedConversationView({
             <span className="text-sm font-semibold">Digital Twin Chat</span>
           </div>
           <Button size="sm" asChild>
-            <Link href="/register">Sign Up Free</Link>
+            <Link href="/login">Sign Up Free</Link>
           </Button>
         </div>
       </header>
@@ -136,7 +136,7 @@ export function SharedConversationView({
           </p>
           <div className="mt-4 flex items-center justify-center gap-3">
             <Button asChild>
-              <Link href="/register">Get Started Free</Link>
+              <Link href="/login">Get Started Free</Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href="/">Learn More</Link>

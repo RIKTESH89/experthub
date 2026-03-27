@@ -378,6 +378,26 @@ model ExpertPricingTier {
   @@index([expertProfileId])
 }
 
+model ExpertApplication {
+  id        String                  @id @default(cuid())
+  name      String
+  email     String
+  specialty String
+  reason    String
+  status    ExpertApplicationStatus @default(PENDING)
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+
+  @@index([status])
+  @@index([email])
+}
+
+enum ExpertApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model MonthlyTwinUsage {
   id              String   @id @default(cuid())
   subscriberId    String

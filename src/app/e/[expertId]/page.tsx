@@ -105,7 +105,7 @@ export default function PublicExpertProfilePage() {
               <Link href="/login">Log In</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/register">Sign Up</Link>
+              <Link href="/login">Sign Up</Link>
             </Button>
           </div>
         </div>

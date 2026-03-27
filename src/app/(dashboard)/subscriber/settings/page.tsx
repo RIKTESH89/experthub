@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Loader2, Save, Bell, Shield } from "lucide-react";
+import { Loader2, Save, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -29,23 +28,17 @@ interface SettingsValues {
   emailOnNewPost: boolean;
   emailOnReply: boolean;
   emailDigest: string;
-  twoFactorEnabled: boolean;
-  currentPassword: string;
-  newPassword: string;
 }
 
 export default function SubscriberSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { watch, setValue, register, handleSubmit, reset } = useForm<SettingsValues>({
+  const { watch, setValue, handleSubmit, reset } = useForm<SettingsValues>({
     defaultValues: {
       emailOnNewPost: true,
       emailOnReply: true,
       emailDigest: "weekly",
-      twoFactorEnabled: false,
-      currentPassword: "",
-      newPassword: "",
     },
   });
 
@@ -59,9 +52,6 @@ export default function SubscriberSettingsPage() {
           emailOnNewPost: data.emailOnNewPost ?? true,
           emailOnReply: data.emailOnReply ?? true,
           emailDigest: data.emailDigest ?? "weekly",
-          twoFactorEnabled: data.twoFactorEnabled ?? false,
-          currentPassword: "",
-          newPassword: "",
         });
       } catch {
         // Use defaults on failure
@@ -170,55 +160,6 @@ export default function SubscriberSettingsPage() {
                   <SelectItem value="never">Never</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Security */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                <Shield className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <CardTitle>Security</CardTitle>
-                <CardDescription>
-                  Manage your account security
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label>Two-Factor Authentication</Label>
-                <p className="text-xs text-muted-foreground">
-                  Add an extra layer of security to your account
-                </p>
-              </div>
-              <Switch
-                checked={watch("twoFactorEnabled")}
-                onCheckedChange={(v) => setValue("twoFactorEnabled", v)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                placeholder="Enter current password"
-                {...register("currentPassword")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                placeholder="Enter new password"
-                {...register("newPassword")}
-              />
             </div>
           </CardContent>
           <CardFooter className="flex justify-end border-t pt-4">

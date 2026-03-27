@@ -1,29 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   async function handleGoogleSignIn() {
@@ -36,70 +26,20 @@ export default function LoginPage() {
     }
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  async function onSubmit(data: LoginInput) {
-    setIsLoading(true);
-    try {
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        toast.error("Invalid email or password. Please try again.");
-        return;
-      }
-
-      toast.success("Welcome back!");
-
-      // Fetch session to determine role-based redirect
-      const res = await fetch("/api/auth/session");
-      const session = await res.json();
-      const role = session?.user?.role;
-
-      if (role === "ADMIN") {
-        router.push("/admin");
-      } else if (role === "EXPERT") {
-        router.push("/expert");
-      } else {
-        router.push("/subscriber/feed");
-      }
-
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   return (
     <Card className="border-border/50 shadow-lg">
       <CardHeader className="space-y-3 text-center">
-        <CardTitle className="text-xl">Welcome back</CardTitle>
+        <CardTitle className="text-xl">Welcome to ExpertHub</CardTitle>
         <CardDescription>
-          Sign in to your account to continue
+          Sign in with your Google account to continue
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button
-          type="button"
           variant="outline"
-          className="w-full gap-2"
+          className="w-full gap-2 h-11"
           onClick={handleGoogleSignIn}
-          disabled={isLoading || isGoogleLoading}
+          disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -113,76 +53,15 @@ export default function LoginPage() {
           )}
           Continue with Google
         </Button>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">or</span>
-          </div>
-        </div>
+        <p className="text-center text-xs text-muted-foreground">
+          New users are automatically registered as subscribers.
+          <br />
+          Want to become an expert?{" "}
+          <a href="/#apply-expert" className="font-medium text-primary hover:text-primary/80 transition-colors">
+            Apply here
+          </a>
+        </p>
       </CardContent>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent className="space-y-4 pt-0">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              autoComplete="email"
-              disabled={isLoading}
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/forgot-password"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              disabled={isLoading}
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
-          </Button>
-          <p className="text-sm text-muted-foreground text-center">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-primary hover:text-primary/80 transition-colors"
-            >
-              Create one
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
     </Card>
   );
 }

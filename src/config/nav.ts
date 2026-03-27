@@ -10,6 +10,7 @@ export const adminNav: NavItem[] = [
   { title: "Content", href: "/admin/content", icon: "FileText" },
   { title: "Reports", href: "/admin/reports", icon: "Flag" },
   { title: "Experts", href: "/admin/experts", icon: "GraduationCap" },
+  { title: "Applications", href: "/admin/applications", icon: "UserPlus" },
   { title: "Analytics", href: "/admin/analytics", icon: "BarChart3" },
   { title: "Settings", href: "/admin/settings", icon: "Settings" },
 ];

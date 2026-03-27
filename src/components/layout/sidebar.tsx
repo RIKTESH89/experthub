@@ -23,6 +23,7 @@ import {
   DollarSign,
   Code,
   Newspaper,
+  UserPlus,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ const iconMap: Record<string, LucideIcon> = {
   DollarSign,
   Code,
   Newspaper,
+  UserPlus,
 };
 
 // Group nav items by logical section based on their nature
@@ -65,7 +67,7 @@ function groupNavItems(items: NavItem[]): { label: string; items: NavItem[] }[] 
       mainItems.push(item);
     } else if (settingsIcons.has(item.icon) || item.title === "Profile") {
       settingsItems.push(item);
-    } else if (contentIcons.has(item.icon) || ["Posts", "Knowledge Base", "Digital Twin", "Subscriptions", "Bookmarks", "Content", "Reports", "Embed Widget", "Pricing"].includes(item.title)) {
+    } else if (contentIcons.has(item.icon) || ["Posts", "Knowledge Base", "Digital Twin", "Subscriptions", "Bookmarks", "Content", "Reports", "Embed Widget", "Pricing", "Applications"].includes(item.title)) {
       contentItems.push(item);
     } else {
       // Users, Analytics, Experts, Subscribers go to main

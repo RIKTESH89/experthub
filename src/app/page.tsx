@@ -7,6 +7,7 @@ import {
   CheckCircle,
   Sparkles,
 } from "lucide-react";
+import { ExpertApplicationSection } from "@/components/landing/expert-application-section";
 
 /* ================================================================
    INLINE SVG ILLUSTRATIONS
@@ -343,7 +344,7 @@ const pricingTiers = [
     price: "Free",
     description: "Monetize your expertise with AI",
     features: ["Create your AI Digital Twin", "Build & manage knowledge base", "Set your own pricing tiers", "Analytics & subscriber management"],
-    cta: "Become an Expert",
+    cta: "Apply as Expert",
     popular: false,
   },
 ];
@@ -386,7 +387,7 @@ export default async function LandingPage() {
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Log In</Link>
             <Link
-              href="/register"
+              href="/login"
               className="inline-flex h-9 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-500 to-violet-600 px-4 text-sm font-medium text-white shadow-sm transition-all hover:opacity-90 hover:shadow-md"
             >
               Sign Up
@@ -425,7 +426,7 @@ export default async function LandingPage() {
 
               <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
                 <Link
-                  href="/register"
+                  href="/login"
                   className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-8 text-base font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110"
                 >
                   Get Started Free
@@ -661,7 +662,7 @@ export default async function LandingPage() {
                 </ul>
 
                 <Link
-                  href="/register"
+                  href="/login"
                   className={`mt-8 flex h-11 items-center justify-center rounded-xl text-sm font-medium transition-all ${
                     tier.popular
                       ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:brightness-110"
@@ -675,6 +676,9 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ==================== APPLY AS EXPERT ==================== */}
+      <ExpertApplicationSection />
 
       {/* ==================== CTA BANNER ==================== */}
       <section className="border-t border-border/50">
@@ -702,7 +706,7 @@ export default async function LandingPage() {
               </h2>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link
-                  href="/register"
+                  href="/login"
                   className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-8 text-base font-semibold text-indigo-700 shadow-lg transition-all hover:bg-indigo-50 hover:shadow-xl"
                 >
                   Get Started Free
@@ -750,7 +754,7 @@ export default async function LandingPage() {
                   { label: "Features", href: "/#features" },
                   { label: "Pricing", href: "/pricing" },
                   { label: "How It Works", href: "/#how-it-works" },
-                  { label: "For Experts", href: "/register" },
+                  { label: "For Experts", href: "#apply-expert" },
                 ].map((item) => (
                   <li key={item.label}>
                     <Link href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.label}</Link>

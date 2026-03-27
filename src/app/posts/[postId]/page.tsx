@@ -681,7 +681,7 @@ export default function PublicPostPage() {
             </p>
             <div className="mt-4 flex items-center justify-center gap-3">
               <Button asChild>
-                <Link href="/register">Get Started</Link>
+                <Link href="/login">Get Started</Link>
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/login">Sign In</Link>
