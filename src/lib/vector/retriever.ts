@@ -103,7 +103,7 @@ async function rerankWithLLM(
   // Prepare numbered chunk previews (truncate to save tokens)
   const toRerank = candidates.slice(0, 15); // Max 15 candidates
   const chunkPreviews = toRerank
-    .map((c, i) => `[${i + 1}] ${c.content.slice(0, 250)}`)
+    .map((c, i) => `[${i + 1}] ${c.content.slice(0, 500)}`)
     .join("\n\n");
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -135,6 +135,8 @@ async function rerankWithLLM(
 
   const data = await response.json();
   const rankingText = data.choices?.[0]?.message?.content || "";
+  console.log(`[RAG Rerank] LLM returned: "${rankingText}"`);
+  console.log(`[RAG Rerank] MemGPT chunk index: ${toRerank.findIndex(c => c.content.includes("MemGPT"))}`);
 
   // Parse the ranked numbers
   const rankedIndices = rankingText
