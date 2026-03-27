@@ -26,6 +26,16 @@ export async function retrieveContext(
     vectorStore.keywordSearch(namespace, query, 15),
   ]);
 
+  console.log(`[RAG] Namespace: ${namespace}`);
+  console.log(`[RAG] Vector results: ${vectorResults.length}, Keyword results: ${keywordResults.length}`);
+  console.log(`[RAG] Vector IDs: ${vectorResults.map(r => r.id).join(", ")}`);
+  console.log(`[RAG] Keyword IDs: ${keywordResults.map(r => r.id).join(", ")}`);
+
+  // Check if MemGPT chunk was found
+  const memgptInVector = vectorResults.some(r => r.content.includes("MemGPT"));
+  const memgptInKeyword = keywordResults.some(r => r.content.includes("MemGPT"));
+  console.log(`[RAG] MemGPT in vector: ${memgptInVector}, in keyword: ${memgptInKeyword}`);
+
   // Merge and deduplicate by chunk ID
   const seen = new Set<string>();
   const candidates: RetrievalResult[] = [];
@@ -48,14 +58,17 @@ export async function retrieveContext(
       seen.add(r.id);
       candidates.push({
         content: r.content,
-        score: r.score * 0.8, // Slightly lower weight for keyword-only matches
+        score: r.score * 0.8,
         metadata: { ...r.metadata, source: "keyword" },
       });
     }
   }
 
+  console.log(`[RAG] Total candidates: ${candidates.length}`);
+
   // Filter out very low quality results
   const filtered = candidates.filter((r) => r.score > 0.05);
+  console.log(`[RAG] After filtering: ${filtered.length}`);
 
   // If few candidates, skip re-ranking
   if (filtered.length <= topK) {
