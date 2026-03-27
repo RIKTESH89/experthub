@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 interface Subscription {
   id: string;
-  status: "ACTIVE" | "CANCELLED" | "EXPIRED";
+  status: "ACTIVE" | "CANCELLED" | "EXPIRED" | "PAST_DUE" | "PENDING";
   monthlyPrice: number;
   tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
@@ -46,16 +46,18 @@ export function SubscriptionList() {
     if (!subscription) return;
 
     try {
-      const res = await fetch(`/api/experts/${subscription.expert.id}/subscribe`, {
+      // Use the payment cancel API which handles both Razorpay and free subscriptions
+      const res = await fetch("/api/payments/cancel", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscriptionId }),
       });
       if (!res.ok) throw new Error("Failed to cancel");
 
-      const data = await res.json();
       setSubscriptions((prev) =>
         prev.map((sub) =>
           sub.id === subscriptionId
-            ? { ...sub, status: data.isSubscribed ? "ACTIVE" as const : "CANCELLED" as const }
+            ? { ...sub, status: "CANCELLED" as const }
             : sub
         )
       );

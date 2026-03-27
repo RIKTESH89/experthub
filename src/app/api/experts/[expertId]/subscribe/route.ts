@@ -46,7 +46,18 @@ export async function POST(
     let isSubscribed: boolean;
 
     if (existingSubscription && existingSubscription.status === "ACTIVE") {
-      // Cancel subscription
+      // If it's a paid subscription with Razorpay, cancel via payment API
+      if (existingSubscription.razorpaySubscriptionId) {
+        try {
+          const { getRazorpay } = await import("@/lib/razorpay");
+          const razorpay = getRazorpay();
+          await razorpay.subscriptions.cancel(existingSubscription.razorpaySubscriptionId);
+        } catch (error) {
+          console.error("Failed to cancel Razorpay subscription:", error);
+        }
+      }
+
+      // Cancel subscription in DB
       await prisma.expertSubscription.update({
         where: { id: existingSubscription.id },
         data: {
@@ -62,39 +73,51 @@ export async function POST(
 
       isSubscribed = false;
     } else if (existingSubscription) {
-      // Re-activate cancelled/expired subscription
+      // Re-activate existing subscription (FREE tier only — paid goes through payment API)
       const { tier } = await request.json().catch(() => ({}));
+      const requestedTier = tier || "FREE";
 
-      const updateData: Record<string, unknown> = {
-        status: "ACTIVE",
-        startDate: new Date(),
-        endDate: null,
-      };
+      if (requestedTier !== "FREE") {
+        return NextResponse.json(
+          { error: "Paid subscriptions require payment. Use the payment API.", requiresPayment: true },
+          { status: 402 }
+        );
+      }
 
-      if (tier) {
-        const pricingTier = await prisma.expertPricingTier.findUnique({
-          where: {
-            expertProfileId_tier: {
-              expertProfileId: expertProfile.id,
-              tier,
-            },
-          },
-        });
-        if (pricingTier) {
-          updateData.tier = tier;
-          updateData.price = pricingTier.price;
+      // If PENDING, cancel the orphaned Razorpay subscription first
+      if (existingSubscription.status === "PENDING" && existingSubscription.razorpaySubscriptionId) {
+        try {
+          const { getRazorpay } = await import("@/lib/razorpay");
+          const razorpay = getRazorpay();
+          await razorpay.subscriptions.cancel(existingSubscription.razorpaySubscriptionId);
+        } catch {
+          // Safe to ignore — may already be expired on Razorpay
         }
       }
 
+      const wasPreviouslyActive = existingSubscription.status === "ACTIVE";
+
       await prisma.expertSubscription.update({
         where: { id: existingSubscription.id },
-        data: updateData,
+        data: {
+          status: "ACTIVE",
+          tier: "FREE",
+          price: 0,
+          startDate: new Date(),
+          endDate: null,
+          razorpaySubscriptionId: null,
+          razorpayPaymentId: null,
+          currentPeriodEnd: null,
+        },
       });
 
-      await prisma.expertProfile.update({
-        where: { id: expertProfile.id },
-        data: { totalSubscribers: { increment: 1 } },
-      });
+      // Only increment if wasn't already active
+      if (!wasPreviouslyActive) {
+        await prisma.expertProfile.update({
+          where: { id: expertProfile.id },
+          data: { totalSubscribers: { increment: 1 } },
+        });
+      }
 
       isSubscribed = true;
     } else {
@@ -102,20 +125,12 @@ export async function POST(
       const body = await request.json().catch(() => ({}));
       const requestedTier = body?.tier || "FREE";
 
-      let subscriptionPrice = expertProfile.monthlyPrice;
-      const subscriptionTier = requestedTier;
-
-      const pricingTier = await prisma.expertPricingTier.findUnique({
-        where: {
-          expertProfileId_tier: {
-            expertProfileId: expertProfile.id,
-            tier: requestedTier,
-          },
-        },
-      });
-
-      if (pricingTier) {
-        subscriptionPrice = pricingTier.price;
+      // Paid tiers must go through /api/payments/create-subscription
+      if (requestedTier !== "FREE") {
+        return NextResponse.json(
+          { error: "Paid subscriptions require payment. Use the payment API.", requiresPayment: true },
+          { status: 402 }
+        );
       }
 
       await prisma.expertSubscription.create({
@@ -123,8 +138,8 @@ export async function POST(
           subscriberId: session.user.id,
           expertProfileId: expertProfile.id,
           status: "ACTIVE",
-          price: subscriptionPrice,
-          tier: subscriptionTier,
+          price: 0,
+          tier: "FREE",
         },
       });
 

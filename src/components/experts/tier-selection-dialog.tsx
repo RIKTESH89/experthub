@@ -57,27 +57,108 @@ export function TierSelectionDialog({
 
   const handleSelect = async (tier: string) => {
     setIsLoading(tier);
+
+    if (tier === "FREE") {
+      try {
+        const res = await fetch(`/api/experts/${expertId}/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tier: "FREE" }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to subscribe");
+        }
+
+        const data = await res.json();
+        toast.success(`You are now following ${expertName}!`);
+        onSubscribe(tier, data.isSubscribed);
+        onClose();
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Failed to subscribe. Please try again.");
+      } finally {
+        setIsLoading(null);
+      }
+      return;
+    }
+
+    // Paid tier — create Razorpay subscription
     try {
-      const res = await fetch(`/api/experts/${expertId}/subscribe`, {
+      const res = await fetch("/api/payments/create-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify({ expertId, tier }),
       });
 
-      if (!res.ok) throw new Error("Failed to subscribe");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to create subscription");
+      }
 
       const data = await res.json();
-      toast.success(
-        tier === "FREE"
-          ? `You are now following ${expertName}!`
-          : `Subscribed to ${expertName} (${tier})!`
-      );
-      onSubscribe(tier, data.isSubscribed);
-      onClose();
-    } catch {
-      toast.error("Failed to subscribe. Please try again.");
-    } finally {
+
+      // Load Razorpay checkout
+      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+
+      const openCheckout = () => {
+        const options = {
+          key: data.razorpayKeyId,
+          subscription_id: data.subscriptionId,
+          name: "ExpertHub",
+          description: `${data.expertName} - Premium Plan`,
+          handler: () => {
+            toast.success("Payment successful! Activating your subscription...");
+            onClose();
+            // Poll for activation
+            const poll = setInterval(async () => {
+              try {
+                const checkRes = await fetch(`/api/experts/${expertId}`);
+                if (checkRes.ok) {
+                  const checkData = await checkRes.json();
+                  if (checkData.isSubscribed) {
+                    clearInterval(poll);
+                    onSubscribe(tier, true);
+                    window.location.reload();
+                  }
+                }
+              } catch { /* retry */ }
+            }, 2000);
+            setTimeout(() => clearInterval(poll), 30000);
+          },
+          modal: {
+            ondismiss: () => {
+              setIsLoading(null);
+              toast.error("Payment was cancelled");
+            },
+          },
+          theme: {
+            color: "#4F46E5",
+          },
+        };
+
+        const rzp = new (window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay(options);
+        rzp.open();
+        // NOTE: Do NOT clear isLoading here — Razorpay modal's ondismiss handles it
+      };
+
+      if (existingScript) {
+        openCheckout();
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        script.onload = openCheckout;
+        script.onerror = () => {
+          setIsLoading(null);
+          toast.error("Failed to load payment gateway. Please try again.");
+        };
+        document.body.appendChild(script);
+      }
+      // Do NOT have a finally block here — loading is managed by Razorpay modal callbacks
+    } catch (e) {
       setIsLoading(null);
+      toast.error(e instanceof Error ? e.message : "Failed to subscribe. Please try again.");
     }
   };
 

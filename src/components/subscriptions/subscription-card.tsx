@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface Subscription {
   id: string;
-  status: "ACTIVE" | "CANCELLED" | "EXPIRED";
+  status: "ACTIVE" | "CANCELLED" | "EXPIRED" | "PAST_DUE" | "PENDING";
   monthlyPrice: number;
   tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
@@ -24,7 +24,7 @@ interface SubscriptionCardProps {
   onCancel?: (subscriptionId: string) => void;
 }
 
-const statusConfig = {
+const statusConfig: Record<string, { label: string; dotClass: string; textClass: string; borderClass: string }> = {
   ACTIVE: {
     label: "Active",
     dotClass: "bg-green-500",
@@ -42,6 +42,18 @@ const statusConfig = {
     dotClass: "bg-red-500",
     textClass: "text-red-600 dark:text-red-400",
     borderClass: "border-l-red-500",
+  },
+  PAST_DUE: {
+    label: "Past Due",
+    dotClass: "bg-amber-500",
+    textClass: "text-amber-600 dark:text-amber-400",
+    borderClass: "border-l-amber-500",
+  },
+  PENDING: {
+    label: "Pending",
+    dotClass: "bg-blue-500",
+    textClass: "text-blue-600 dark:text-blue-400",
+    borderClass: "border-l-blue-500",
   },
 };
 
