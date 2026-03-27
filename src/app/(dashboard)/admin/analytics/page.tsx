@@ -1,3 +1,4 @@
+// Analytics page — will be implemented with real data when needed
 "use client";
 
 import { useMemo } from "react";

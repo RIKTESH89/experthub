@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, Globe, Shield, CreditCard, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,14 +41,13 @@ interface PlatformSettings {
 export default function AdminSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, watch, setValue } =
+  const { register, handleSubmit, watch, setValue, reset } =
     useForm<PlatformSettings>({
       defaultValues: {
         siteName: "ExpertHub",
-        siteDescription:
-          "Connect with expert minds through AI-powered digital twins",
-        supportEmail: "support@experthub.com",
-        defaultExpertRate: "9.99",
+        siteDescription: "",
+        supportEmail: "",
+        defaultExpertRate: "0",
         platformFeePercent: "15",
         maintenanceMode: false,
         registrationEnabled: true,
@@ -57,6 +56,20 @@ export default function AdminSettingsPage() {
         contentModeration: "moderate",
       },
     });
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch("/api/admin/settings");
+        if (!res.ok) return;
+        const data = await res.json();
+        reset(data);
+      } catch {
+        // Use defaults
+      }
+    }
+    loadSettings();
+  }, [reset]);
 
   const maintenanceMode = watch("maintenanceMode");
   const registrationEnabled = watch("registrationEnabled");

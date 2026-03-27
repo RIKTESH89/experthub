@@ -1,69 +1,9 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { AdminStatCards } from "@/components/admin/admin-stat-cards";
-import { AnalyticsOverview } from "@/components/admin/analytics-overview";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-const recentActivity = [
-  {
-    id: "1",
-    user: "Sarah Chen",
-    action: "registered as an expert",
-    time: "2 minutes ago",
-    type: "user" as const,
-  },
-  {
-    id: "2",
-    user: "Mike Johnson",
-    action: "published a new post",
-    time: "15 minutes ago",
-    type: "content" as const,
-  },
-  {
-    id: "3",
-    user: "Emily Davis",
-    action: "subscribed to Dr. Alex Rivera",
-    time: "32 minutes ago",
-    type: "subscription" as const,
-  },
-  {
-    id: "4",
-    user: "James Wilson",
-    action: "reported a post for spam",
-    time: "1 hour ago",
-    type: "report" as const,
-  },
-  {
-    id: "5",
-    user: "Lisa Park",
-    action: "updated their knowledge base",
-    time: "2 hours ago",
-    type: "content" as const,
-  },
-  {
-    id: "6",
-    user: "Tom Harris",
-    action: "cancelled subscription",
-    time: "3 hours ago",
-    type: "subscription" as const,
-  },
-];
-
-const activityBadgeColors = {
-  user: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  content: "bg-green-500/10 text-green-600 dark:text-green-400",
-  subscription: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-  report: "bg-red-500/10 text-red-600 dark:text-red-400",
-};
 
 export default async function AdminDashboardPage() {
   const session = await auth();
@@ -80,54 +20,51 @@ export default async function AdminDashboardPage() {
       {/* Stat Cards */}
       <AdminStatCards />
 
-      {/* Analytics Charts */}
-      <AnalyticsOverview />
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>
-            Latest actions across the platform
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentActivity.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-center gap-4 rounded-lg border border-border/50 p-3 transition-colors hover:bg-muted/50"
-              >
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="text-xs">
-                    {activity.user
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm">
-                    <span className="font-medium">{activity.user}</span>{" "}
-                    <span className="text-muted-foreground">
-                      {activity.action}
-                    </span>
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {activity.time}
-                  </p>
-                </div>
-                <Badge
-                  variant="secondary"
-                  className={activityBadgeColors[activity.type]}
-                >
-                  {activity.type}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Actions */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Link href="/admin/users" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">Manage Users</h3>
+          <p className="mt-1 text-sm text-muted-foreground">View, edit, and manage all users on the platform</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            View Users <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+        <Link href="/admin/applications" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">Expert Applications</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Review and approve pending expert applications</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            Review Applications <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+        <Link href="/admin/experts" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">Manage Experts</h3>
+          <p className="mt-1 text-sm text-muted-foreground">View expert profiles and manage verification</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            View Experts <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+        <Link href="/admin/content" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">Content Moderation</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Review and moderate posts across the platform</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            View Content <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+        <Link href="/admin/reports" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">User Reports</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Review reports submitted by users</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            View Reports <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+        <Link href="/admin/settings" className="group rounded-lg border border-border p-5 transition-all hover:border-primary/30 hover:shadow-sm">
+          <h3 className="font-semibold">Platform Settings</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Configure platform-wide settings</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            Settings <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }
