@@ -138,8 +138,8 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
       model: process.env.OPENAI_MODEL || "gpt-4o-mini",
       messages,
       stream: true,
-      temperature: 0.7,
-      max_tokens: 1024,
+      temperature: 0.5,
+      max_tokens: 2048,
     }),
   });
 
