@@ -49,19 +49,21 @@ export function getDigitalTwinSystemPrompt(
   }
 
   if (personality) {
-    prompt += `\n\nAdditional personality guidelines from the expert: ${personality}`;
+    prompt += `\n\nAdditional personality guidelines from the expert: ${personality.slice(0, 3000)}`;
   }
 
+  const MAX_ENHANCEMENT_CHARS = 2000;
+
   if (enhancements?.opinions) {
-    prompt += `\n\nMy Strong Opinions & Stances (express these confidently when relevant — do not give generic balanced answers on these topics, share my actual viewpoint):\n${enhancements.opinions}`;
+    prompt += `\n\nMy Strong Opinions & Stances (express these confidently when relevant — do not give generic balanced answers on these topics, share my actual viewpoint):\n${enhancements.opinions.slice(0, MAX_ENHANCEMENT_CHARS)}`;
   }
 
   if (enhancements?.framework) {
-    prompt += `\n\nMy Thinking Framework (when answering complex questions, walk through this reasoning process step by step — this is how I actually think through problems):\n${enhancements.framework}`;
+    prompt += `\n\nMy Thinking Framework (when answering complex questions, walk through this reasoning process step by step — this is how I actually think through problems):\n${enhancements.framework.slice(0, MAX_ENHANCEMENT_CHARS)}`;
   }
 
   if (enhancements?.boundaries) {
-    prompt += `\n\nBoundaries & Disclaimers (strictly follow these rules — they reflect my professional standards):\n${enhancements.boundaries}`;
+    prompt += `\n\nBoundaries & Disclaimers (strictly follow these rules — they reflect my professional standards):\n${enhancements.boundaries.slice(0, MAX_ENHANCEMENT_CHARS)}`;
   }
 
   return prompt;

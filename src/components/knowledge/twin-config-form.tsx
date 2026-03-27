@@ -216,12 +216,16 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
               id="twinPersonality"
               placeholder="Describe how your AI twin should behave, its tone of voice, areas of expertise, and any specific instructions..."
               className="min-h-[160px] resize-y"
+              maxLength={3000}
               {...register("twinPersonality")}
             />
-            <p className="text-xs text-muted-foreground">
-              This defines the personality and behavior of your AI twin when
-              responding to subscribers.
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                This defines the personality and behavior of your AI twin when
+                responding to subscribers.
+              </p>
+              <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinPersonality") || "").length}/3000</span>
+            </div>
           </div>
 
           {/* Opinions & Stances */}
@@ -233,11 +237,15 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
               id="twinOpinions"
               placeholder={"e.g.,\n- I believe index funds beat active trading 95% of the time\n- Microservices are overused — start with a monolith\n- Python is the best first programming language\n- Remote work is more productive than office work"}
               className="min-h-[120px] resize-y"
+              maxLength={2000}
               {...register("twinOpinions")}
             />
-            <p className="text-xs text-muted-foreground">
-              Your strong opinions and hot takes. Your twin will express these confidently instead of giving generic balanced answers.
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Your strong opinions and hot takes. Your twin will express these confidently instead of giving generic balanced answers.
+              </p>
+              <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinOpinions") || "").length}/2000</span>
+            </div>
           </div>
 
           {/* Reasoning Framework */}
@@ -249,11 +257,15 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
               id="twinFramework"
               placeholder={"e.g., When someone asks me about investing, I always think through:\n1. What's their risk tolerance?\n2. What's their time horizon?\n3. What's their current portfolio diversification?\n4. What are the macro conditions?\nOnly then do I give a recommendation."}
               className="min-h-[120px] resize-y"
+              maxLength={2000}
               {...register("twinFramework")}
             />
-            <p className="text-xs text-muted-foreground">
-              How you approach problems step by step. Your twin will walk through this same reasoning process when answering complex questions.
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                How you approach problems step by step. Your twin will walk through this same reasoning process when answering complex questions.
+              </p>
+              <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinFramework") || "").length}/2000</span>
+            </div>
           </div>
 
           {/* Boundaries */}
@@ -265,11 +277,15 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
               id="twinBoundaries"
               placeholder={"e.g.,\n- Never give specific stock picks without a risk disclaimer\n- Always recommend consulting a licensed professional for medical/legal advice\n- Don't make promises about returns or outcomes\n- If I don't know something, say so honestly"}
               className="min-h-[100px] resize-y"
+              maxLength={2000}
               {...register("twinBoundaries")}
             />
-            <p className="text-xs text-muted-foreground">
-              What your twin should avoid or add disclaimers to. These reflect your professional standards.
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                What your twin should avoid or add disclaimers to. These reflect your professional standards.
+              </p>
+              <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinBoundaries") || "").length}/2000</span>
+            </div>
           </div>
 
           <div className="space-y-2">
