@@ -398,7 +398,10 @@ export default function AdminContentPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-44 rounded-xl border-muted/60 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-                              <DropdownMenuItem className="cursor-pointer rounded-lg">
+                              <DropdownMenuItem
+                                className="cursor-pointer rounded-lg"
+                                onClick={() => window.open(`/posts/${post.id}`, "_blank")}
+                              >
                                 <Eye className="mr-2 h-3.5 w-3.5" />
                                 View Post
                               </DropdownMenuItem>

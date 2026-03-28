@@ -486,7 +486,12 @@ export default function AdminUserDetailPage() {
                   <StaggerContainer className="space-y-3">
                     {user.recentPosts.map((post) => (
                       <StaggerItem key={post.id}>
-                        <div className="group flex items-start justify-between rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:bg-secondary hover:border-border hover:shadow-sm">
+                        <a
+                          href={`/posts/${post.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-start justify-between rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:bg-secondary hover:border-border hover:shadow-sm cursor-pointer"
+                        >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium leading-snug group-hover:text-foreground transition-colors duration-200 font-sans">
                               {post.title || (post.content || "").slice(0, 60) + "..."}
@@ -507,7 +512,7 @@ export default function AdminUserDetailPage() {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </a>
                       </StaggerItem>
                     ))}
                   </StaggerContainer>

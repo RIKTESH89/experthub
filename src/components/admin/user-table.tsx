@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
   Eye,
   Ban,
@@ -137,6 +138,7 @@ function TableSkeleton() {
 }
 
 export function UserTable() {
+  const router = useRouter();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -448,7 +450,10 @@ export function UserTable() {
                               "p-1.5"
                             )}
                           >
-                            <DropdownMenuItem className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-secondary">
+                            <DropdownMenuItem
+                              className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-secondary"
+                              onClick={() => router.push(`/admin/users/${user.id}`)}
+                            >
                               <Eye className="h-4 w-4 text-muted-foreground" />
                               <span>View Details</span>
                             </DropdownMenuItem>

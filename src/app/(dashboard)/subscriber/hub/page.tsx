@@ -126,7 +126,7 @@ export default function SubscriberHubPage() {
       <div className="space-y-10 font-sans">
         {/* ─── Hero Search Banner ─── */}
         <FadeIn delay={0.05} direction="up">
-          <div className="relative isolate overflow-hidden rounded-2xl border border-border/40 bg-card p-6 sm:p-8 lg:p-10">
+          <div className="relative isolate rounded-2xl border border-border/40 bg-card p-6 sm:p-8 lg:p-10">
             {/* Subtle grid pattern */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
               <svg className="absolute inset-0 h-full w-full opacity-[0.03]" aria-hidden="true">
