@@ -52,16 +52,21 @@ interface UserRow {
   name: string;
   email: string;
   image?: string | null;
-  role: "USER" | "EXPERT" | "ADMIN";
+  role: "SUBSCRIBER" | "USER" | "EXPERT" | "ADMIN";
   status: "active" | "banned";
   createdAt: string;
 }
 
-const roleConfig = {
+const roleConfig: Record<string, { label: string; icon: typeof User; className: string }> = {
+  SUBSCRIBER: {
+    label: "Subscriber",
+    icon: User,
+    className: "bg-secondary/50 text-muted-foreground dark:text-muted-foreground border-border/20",
+  },
   USER: {
     label: "User",
     icon: User,
-    className: "bg-secondary0/10 text-muted-foreground dark:text-muted-foreground border-border/20",
+    className: "bg-secondary/50 text-muted-foreground dark:text-muted-foreground border-border/20",
   },
   EXPERT: {
     label: "Expert",
@@ -260,10 +265,10 @@ export function UserTable() {
                   All Roles
                 </span>
               </SelectItem>
-              <SelectItem value="USER" className="cursor-pointer rounded-lg">
+              <SelectItem value="SUBSCRIBER" className="cursor-pointer rounded-lg">
                 <span className="flex items-center gap-2">
                   <User className="h-3.5 w-3.5" />
-                  Users
+                  Subscribers
                 </span>
               </SelectItem>
               <SelectItem value="EXPERT" className="cursor-pointer rounded-lg">
@@ -331,7 +336,7 @@ export function UserTable() {
                 </TableRow>
               ) : (
                 filteredUsers.map((user, index) => {
-                  const role = roleConfig[user.role];
+                  const role = roleConfig[user.role] ?? roleConfig.SUBSCRIBER;
                   const RoleIcon = role.icon;
 
                   return (
