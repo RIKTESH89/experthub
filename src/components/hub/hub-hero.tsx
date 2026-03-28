@@ -130,13 +130,13 @@ export function HubHero({ className }: HubHeroProps) {
   return (
     <section className={`relative overflow-hidden rounded-2xl ${className ?? ""}`}>
       {/* Background layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background pointer-events-none" />
       <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
 
       {/* Dot pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage:
             "radial-gradient(circle, currentColor 1px, transparent 1px)",

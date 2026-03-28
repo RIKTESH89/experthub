@@ -217,7 +217,7 @@ export default function AdminApplicationsPage() {
                   )}>
                     {/* Top accent bar */}
                     <div className={cn(
-                      "absolute inset-x-0 top-0 h-0.5",
+                      "absolute inset-x-0 top-0 h-0.5 pointer-events-none",
                       app.status === "PENDING" && "bg-amber-500/60",
                       app.status === "APPROVED" && "bg-emerald-500/60",
                       app.status === "REJECTED" && "bg-red-500/60",

@@ -26,7 +26,7 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
       className="relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-r from-[#1E40AF]/[0.06] via-transparent to-[#1E40AF]/[0.03] p-5 sm:p-6"
     >
       {/* Subtle top-edge accent */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent pointer-events-none" />
 
       <div className="relative z-10">
         <motion.p

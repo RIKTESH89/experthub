@@ -307,7 +307,7 @@ export default function AdminUserDetailPage() {
         <FadeIn delay={0.1} className="lg:col-span-1">
           <Card className="relative overflow-hidden border-border">
             {/* Top accent bar */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/50" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/50 pointer-events-none" />
 
             <CardContent className="relative flex flex-col items-center pt-8 pb-6">
               {/* Avatar */}
@@ -406,7 +406,7 @@ export default function AdminUserDetailPage() {
           {/* Role Management */}
           <FadeIn delay={0.2}>
             <Card className="relative overflow-hidden border-border">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 pointer-events-none" />
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1E40AF]/10">
@@ -458,7 +458,7 @@ export default function AdminUserDetailPage() {
           {/* Recent Posts */}
           <FadeIn delay={0.3}>
             <Card className="relative overflow-hidden border-border">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 pointer-events-none" />
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1E40AF]/10">

@@ -126,7 +126,7 @@ export default async function AdminDashboardPage() {
                 >
                   {/* Top accent bar */}
                   <div
-                    className={`absolute inset-x-0 top-0 h-[2px] ${action.accent} opacity-60 transition-opacity duration-200 group-hover:opacity-100`}
+                    className={`absolute inset-x-0 top-0 h-[2px] ${action.accent} opacity-60 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none`}
                   />
 
                   {/* Icon */}

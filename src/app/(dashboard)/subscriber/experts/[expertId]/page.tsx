@@ -375,7 +375,7 @@ export default function SubscriberExpertProfilePage() {
                               {/* Tier background */}
                               <div
                                 className={cn(
-                                  "absolute inset-0 rounded-xl bg-gradient-to-br opacity-50",
+                                  "absolute inset-0 rounded-xl bg-gradient-to-br opacity-50 pointer-events-none",
                                   tierGradients[t.tier]
                                 )}
                               />

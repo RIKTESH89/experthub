@@ -295,7 +295,7 @@ export default function ExpertPostsPage() {
                     <StaggerItem key={post.id}>
                       <Card className="group relative overflow-hidden rounded-xl border-border/60 bg-background transition-all duration-200 hover:border-blue-600/30 hover:shadow-lg hover:-translate-y-0.5">
                         {/* Subtle top accent line */}
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
 
                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between gap-3">

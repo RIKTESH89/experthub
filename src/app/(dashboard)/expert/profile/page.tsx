@@ -255,7 +255,7 @@ export default function ExpertProfilePage() {
           {/* Profile Info */}
           <FadeIn delay={0.1}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
@@ -336,7 +336,7 @@ export default function ExpertProfilePage() {
           {/* Specialty Tags */}
           <FadeIn delay={0.15}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
@@ -410,7 +410,7 @@ export default function ExpertProfilePage() {
           {/* Pricing */}
           <FadeIn delay={0.2}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
@@ -457,7 +457,7 @@ export default function ExpertProfilePage() {
           {/* Social Links */}
           <FadeIn delay={0.25}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">

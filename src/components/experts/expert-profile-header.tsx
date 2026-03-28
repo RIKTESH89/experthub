@@ -54,7 +54,7 @@ export function ExpertProfileHeader({
 
         {/* Grid pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
           style={{
             backgroundImage:
               "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
@@ -63,7 +63,7 @@ export function ExpertProfileHeader({
         />
 
         {/* Bottom fade to card */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card to-transparent pointer-events-none" />
       </div>
 
       <div className="relative bg-card px-4 pb-8 sm:px-6 md:px-8">

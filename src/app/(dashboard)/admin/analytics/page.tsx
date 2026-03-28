@@ -241,7 +241,7 @@ export default function AdminAnalyticsPage() {
           {/* Role Distribution */}
           <FadeIn delay={0.3}>
             <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-[#1E40AF]/20 hover:-translate-y-0.5">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <CardHeader className="relative space-y-1.5 pb-2">
                 <div className="relative flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/20">
@@ -306,7 +306,7 @@ export default function AdminAnalyticsPage() {
           {/* Top Experts */}
           <FadeIn delay={0.35}>
             <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-[#1E40AF]/20 hover:-translate-y-0.5">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-amber-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-amber-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <CardHeader className="relative space-y-1.5 pb-2">
                 <div className="relative flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 ring-1 ring-amber-500/20">

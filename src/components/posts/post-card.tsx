@@ -492,7 +492,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
       >
         <Card className="group relative overflow-hidden border-border/50 bg-card transition-all duration-200 hover:border-border hover:shadow-md">
           {post.isPremiumOnly && (
-            <div className="absolute inset-x-0 top-0 h-px bg-amber-500/50" />
+            <div className="absolute inset-x-0 top-0 h-px bg-amber-500/50 pointer-events-none" />
           )}
 
           <CardHeader className="flex flex-row items-start gap-3 space-y-0 pb-3">

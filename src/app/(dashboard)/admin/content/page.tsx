@@ -214,7 +214,7 @@ export default function AdminContentPage() {
       <StaggerContainer className="grid gap-4 sm:grid-cols-4">
         <StaggerItem>
           <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
                 <FileText className="h-5 w-5 text-[#1E40AF]" />
@@ -228,7 +228,7 @@ export default function AdminContentPage() {
         </StaggerItem>
         <StaggerItem>
           <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-green-500" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-green-500 pointer-events-none" />
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10 ring-1 ring-green-500/10">
                 <CheckCircle className="h-5 w-5 text-green-500" />
@@ -242,7 +242,7 @@ export default function AdminContentPage() {
         </StaggerItem>
         <StaggerItem>
           <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-gray-400" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-gray-400 pointer-events-none" />
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-500/10 ring-1 ring-gray-500/10">
                 <Archive className="h-5 w-5 text-gray-500" />
@@ -256,7 +256,7 @@ export default function AdminContentPage() {
         </StaggerItem>
         <StaggerItem>
           <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-red-500" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-red-500 pointer-events-none" />
             <CardContent className="flex items-center gap-4 p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 ring-1 ring-red-500/10">
                 <AlertTriangle className="h-5 w-5 text-red-500" />

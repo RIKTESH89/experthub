@@ -37,7 +37,7 @@ export default function SubscriberSubscriptionsPage() {
       {/* Page header */}
       <FadeIn delay={0.05}>
         <div className="relative overflow-hidden rounded-xl border bg-card px-6 py-5">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
           <h2 className="text-2xl font-bold tracking-tight font-sans">Subscriptions</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage and track your active plans
@@ -52,7 +52,7 @@ export default function SubscriberSubscriptionsPage() {
         ) : summary.activeCount > 0 ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors duration-200 hover:bg-secondary">
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Active Plans
               </p>
@@ -66,7 +66,7 @@ export default function SubscriberSubscriptionsPage() {
             </div>
 
             <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors duration-200 hover:bg-secondary">
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Monthly Total
               </p>

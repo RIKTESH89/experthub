@@ -378,9 +378,9 @@ export default function ExpertDashboardPage() {
           <FadeIn delay={0.2} direction="up" className="sm:col-span-1 lg:col-span-3">
             <Link href="/expert/posts/new" className="block h-full">
               <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40 hover:scale-[1.01] rounded-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-blue-500/5 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-200" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-blue-500/5 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
                 {/* Subtle shimmer line on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                   <div className="absolute top-0 left-[-100%] h-full w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-200" />
                 </div>
                 {/* Decorative floating document/pen SVG pattern */}
@@ -419,7 +419,7 @@ export default function ExpertDashboardPage() {
           {/* Twin Accuracy Score */}
           <FadeIn delay={0.3} direction="up" className="sm:col-span-1 lg:col-span-2">
             <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
               <CardContent className="relative flex h-full flex-col items-center justify-center gap-3 p-5 text-center">
                 {accuracyScore && accuracyScore.overallScore > 0 ? (
                   <>
@@ -467,7 +467,7 @@ export default function ExpertDashboardPage() {
         {/* Post Views Sparkline */}
         <StaggerItem className="md:col-span-1 lg:col-span-4">
           <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -494,7 +494,7 @@ export default function ExpertDashboardPage() {
         {/* Recent Subscribers */}
         <StaggerItem className="md:col-span-1 lg:col-span-3">
           <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/10">
@@ -565,7 +565,7 @@ export default function ExpertDashboardPage() {
         {/* Knowledge Base Status */}
         <StaggerItem className="md:col-span-2 lg:col-span-5">
           <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -724,7 +724,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
 
   return (
     <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl hover:shadow-md transition-all duration-200">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none" />
       <CardContent className="p-4 sm:p-5">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">

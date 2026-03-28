@@ -228,7 +228,7 @@ export default function SubscriberDashboardPage() {
         <FadeIn delay={0.15} duration={0.5} direction="right" className="md:col-span-2 flex flex-col">
           <div className="relative flex-1 rounded-2xl bg-card border border-border/40 p-6 flex flex-col justify-between overflow-hidden">
             {/* Subtle top edge highlight */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent pointer-events-none" />
 
             <div className="relative">
               {/* Section header */}

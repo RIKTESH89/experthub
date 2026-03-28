@@ -176,7 +176,7 @@ export default function ExpertWidgetPage() {
             {/* Status Toggle */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
@@ -232,7 +232,7 @@ export default function ExpertWidgetPage() {
             {/* Appearance */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
@@ -295,7 +295,7 @@ export default function ExpertWidgetPage() {
             {/* Greeting */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
@@ -324,7 +324,7 @@ export default function ExpertWidgetPage() {
             {/* Free Questions */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
@@ -362,7 +362,7 @@ export default function ExpertWidgetPage() {
             {/* Allowed Domains */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50">
@@ -451,7 +451,7 @@ export default function ExpertWidgetPage() {
             {config && (
               <StaggerItem>
                 <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent pointer-events-none" />
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">

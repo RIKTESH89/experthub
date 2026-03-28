@@ -14,7 +14,7 @@ export default function SubscriberBookmarksPage() {
       {/* Page header + sort controls */}
       <FadeIn delay={0.05}>
         <div className="relative overflow-hidden rounded-xl border bg-card px-6 py-5">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight font-sans">Bookmarks</h2>

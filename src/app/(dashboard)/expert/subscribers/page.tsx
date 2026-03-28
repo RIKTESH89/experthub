@@ -261,7 +261,7 @@ export default function ExpertSubscribersPage() {
         ) : (
           <Card className="relative overflow-hidden border-border/50">
             {/* Top accent */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/40 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/40 to-transparent pointer-events-none" />
             <CardContent className="overflow-x-auto p-0">
               <Table>
                 <TableHeader>

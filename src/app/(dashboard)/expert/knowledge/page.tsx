@@ -121,7 +121,7 @@ export default function ExpertKnowledgePage() {
             {/* Indexed */}
             <StaggerItem>
               <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/5 hover:-translate-y-0.5">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.03] to-green-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.03] to-green-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
                 <CardContent className="relative flex items-center gap-4 p-5">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 ring-1 ring-emerald-500/10 transition-all duration-300 group-hover:ring-emerald-500/20 group-hover:shadow-md group-hover:shadow-emerald-500/10">
                     <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
@@ -141,7 +141,7 @@ export default function ExpertKnowledgePage() {
             {/* Pending */}
             <StaggerItem>
               <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] to-yellow-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] to-yellow-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
                 <CardContent className="relative flex items-center gap-4 p-5">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 ring-1 ring-amber-500/10 transition-all duration-300 group-hover:ring-amber-500/20 group-hover:shadow-md group-hover:shadow-amber-500/10">
                     <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />

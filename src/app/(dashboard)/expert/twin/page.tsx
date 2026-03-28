@@ -63,7 +63,7 @@ function PremiumStatCard({
     >
       <Card className="group relative overflow-hidden border-border/50 hover:border-border hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 transition-all duration-200 hover:-translate-y-0.5">
         {/* Gradient accent top bar */}
-        <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-200`} />
+        <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`} />
         {/* Hover glow */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-200 pointer-events-none`} />
         <CardContent className="relative flex items-center gap-3.5 p-4">
@@ -265,7 +265,7 @@ export default function ExpertTwinPage() {
             >
               <Card className="relative overflow-hidden border-border/50">
                 {/* Premium accent */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/60 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/60 to-transparent pointer-events-none" />
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600/15 to-blue-500/15 ring-1 ring-blue-600/20">
@@ -298,7 +298,7 @@ export default function ExpertTwinPage() {
             >
               <Card className="relative overflow-hidden border-border/50 group">
                 {/* Premium accent */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/60 to-transparent pointer-events-none" />
                 {/* Subtle background pattern */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,64,175,0.04),transparent_60%)] pointer-events-none" />
                 <CardHeader>

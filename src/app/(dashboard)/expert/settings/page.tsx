@@ -242,7 +242,7 @@ export default function ExpertSettingsPage() {
           <FadeIn delay={0.05}>
             <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm hover:shadow-md transition-all duration-200 ease-out hover:border-border/60">
               {/* Top accent line */}
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-600/0 via-blue-600/40 to-blue-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-600/0 via-blue-600/40 to-blue-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
               <CardHeader className="relative pb-4">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent rounded-t-xl pointer-events-none" />
@@ -292,7 +292,7 @@ export default function ExpertSettingsPage() {
           <FadeIn delay={0.1}>
             <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm hover:shadow-md transition-all duration-200 ease-out hover:border-border/60">
               {/* Top accent line */}
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-sky-500/0 via-sky-500/40 to-sky-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-sky-500/0 via-sky-500/40 to-sky-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
               <CardHeader className="relative pb-4">
                 <div className="absolute inset-0 bg-gradient-to-br from-sky-500/[0.02] to-transparent rounded-t-xl pointer-events-none" />

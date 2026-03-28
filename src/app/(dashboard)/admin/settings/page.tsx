@@ -113,7 +113,7 @@ function SettingsCard({
     <FadeIn delay={delay}>
       <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-border/60">
         {/* Top accent line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         <CardHeader className="relative pb-4">
           <div className="relative flex items-center gap-3.5">

@@ -97,7 +97,7 @@ export default function SubscriberProfilePage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="relative overflow-hidden rounded-2xl border bg-card px-6 py-6">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
 
             <div className="relative flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF] text-white">

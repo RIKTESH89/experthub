@@ -259,7 +259,7 @@ export default function ExpertPricingPage() {
                 )}
               >
                 {/* Gradient border effect */}
-                <div className="absolute inset-0 rounded-xl p-px">
+                <div className="absolute inset-0 rounded-xl p-px pointer-events-none">
                   <div
                     className={cn(
                       "absolute inset-0 rounded-xl bg-gradient-to-b opacity-60",
@@ -269,7 +269,7 @@ export default function ExpertPricingPage() {
                 </div>
 
                 {/* Inner background */}
-                <div className="absolute inset-px rounded-[11px] bg-card" />
+                <div className="absolute inset-px rounded-[11px] bg-card pointer-events-none" />
 
                 {/* Header gradient overlay */}
                 <div
@@ -461,7 +461,7 @@ export default function ExpertPricingPage() {
               )}
             >
               {/* Shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-200" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-200 pointer-events-none" />
               <span className="relative flex items-center gap-2">
                 {isSaving ? (
                   <Loader2 className="h-4.5 w-4.5 animate-spin" />
