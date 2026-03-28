@@ -227,11 +227,11 @@ export default function AdminUserDetailPage() {
   if (!user) {
     return (
       <FadeIn className="flex flex-col items-center justify-center py-20 font-sans">
-        <div className="rounded-full bg-slate-100 p-5">
-          <User className="h-10 w-10 text-slate-500" />
+        <div className="rounded-full bg-muted p-5">
+          <User className="h-10 w-10 text-muted-foreground" />
         </div>
-        <h2 className="mt-5 text-xl font-semibold tracking-tight text-slate-900 font-sans">User Not Found</h2>
-        <p className="mt-2 text-sm text-slate-500 max-w-sm text-center font-sans">
+        <h2 className="mt-5 text-xl font-semibold tracking-tight text-foreground font-sans">User Not Found</h2>
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm text-center font-sans">
           The user you are looking for does not exist or may have been removed.
         </p>
         <Button className="mt-6 cursor-pointer" onClick={() => router.push("/admin/users")}>
@@ -252,7 +252,7 @@ export default function AdminUserDetailPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="cursor-pointer rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50 transition-colors duration-200"
+            className="cursor-pointer rounded-lg border border-border bg-card shadow-sm hover:bg-secondary transition-colors duration-200"
             asChild
           >
             <Link href="/admin/users">
@@ -260,12 +260,12 @@ export default function AdminUserDetailPage() {
             </Link>
           </Button>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground font-sans">
               User Details
             </h2>
-            <p className="text-sm text-slate-500 font-sans">
+            <p className="text-sm text-muted-foreground font-sans">
               Viewing profile for{" "}
-              <span className="font-medium text-slate-700">{user.name}</span>
+              <span className="font-medium text-foreground">{user.name}</span>
             </p>
           </div>
           <DropdownMenu>
@@ -305,7 +305,7 @@ export default function AdminUserDetailPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* User Profile Card */}
         <FadeIn delay={0.1} className="lg:col-span-1">
-          <Card className="relative overflow-hidden border-slate-200">
+          <Card className="relative overflow-hidden border-border">
             {/* Top accent bar */}
             <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/50" />
 
@@ -331,7 +331,7 @@ export default function AdminUserDetailPage() {
                 />
               </div>
 
-              <h3 className="mt-4 text-lg font-semibold tracking-tight text-slate-900 font-sans">{user.name}</h3>
+              <h3 className="mt-4 text-lg font-semibold tracking-tight text-foreground font-sans">{user.name}</h3>
 
               <div className="mt-2 flex items-center gap-2">
                 <Badge variant="secondary" className={`${role.className} shadow-sm`}>
@@ -355,7 +355,7 @@ export default function AdminUserDetailPage() {
               </div>
 
               {user.headline && (
-                <p className="mt-3 text-center text-sm text-slate-500 leading-relaxed font-sans">
+                <p className="mt-3 text-center text-sm text-muted-foreground leading-relaxed font-sans">
                   {user.headline}
                 </p>
               )}
@@ -364,26 +364,26 @@ export default function AdminUserDetailPage() {
 
               <div className="w-full space-y-3.5">
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100">
-                    <Mail className="h-3.5 w-3.5 text-slate-500" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+                    <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
-                  <span className="truncate text-slate-600 text-[13px] font-sans">
+                  <span className="truncate text-muted-foreground text-[13px] font-sans">
                     {user.email}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100">
-                    <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
-                  <span className="text-slate-600 text-[13px] font-sans">
+                  <span className="text-muted-foreground text-[13px] font-sans">
                     Joined {formatDate(user.createdAt)}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100">
-                    <FileText className="h-3.5 w-3.5 text-slate-500" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+                    <FileText className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
-                  <span className="text-slate-600 text-[13px] font-sans">
+                  <span className="text-muted-foreground text-[13px] font-sans">
                     {user._count.posts} post{user._count.posts !== 1 ? "s" : ""}
                   </span>
                 </div>
@@ -392,7 +392,7 @@ export default function AdminUserDetailPage() {
               {user.bio && (
                 <>
                   <Separator className="my-5 w-full" />
-                  <p className="w-full text-sm leading-relaxed text-slate-500 font-sans">
+                  <p className="w-full text-sm leading-relaxed text-muted-foreground font-sans">
                     {user.bio}
                   </p>
                 </>
@@ -405,7 +405,7 @@ export default function AdminUserDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           {/* Role Management */}
           <FadeIn delay={0.2}>
-            <Card className="relative overflow-hidden border-slate-200">
+            <Card className="relative overflow-hidden border-border">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40" />
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -413,8 +413,8 @@ export default function AdminUserDetailPage() {
                     <Shield className="h-4 w-4 text-[#1E40AF] dark:text-blue-400" />
                   </div>
                   <div>
-                    <CardTitle className="text-base text-slate-900 font-sans">Role Management</CardTitle>
-                    <CardDescription className="text-slate-500 font-sans">
+                    <CardTitle className="text-base text-foreground font-sans">Role Management</CardTitle>
+                    <CardDescription className="text-muted-foreground font-sans">
                       Change this user&apos;s role to adjust their permissions.
                     </CardDescription>
                   </div>
@@ -429,7 +429,7 @@ export default function AdminUserDetailPage() {
                     <SelectContent>
                       <SelectItem value="SUBSCRIBER" className="cursor-pointer">
                         <span className="flex items-center gap-2">
-                          <User className="h-3.5 w-3.5 text-slate-500" />
+                          <User className="h-3.5 w-3.5 text-muted-foreground" />
                           Subscriber
                         </span>
                       </SelectItem>
@@ -448,7 +448,7 @@ export default function AdminUserDetailPage() {
                     </SelectContent>
                   </Select>
                   {isUpdating && (
-                    <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                   )}
                 </div>
               </CardContent>
@@ -457,7 +457,7 @@ export default function AdminUserDetailPage() {
 
           {/* Recent Posts */}
           <FadeIn delay={0.3}>
-            <Card className="relative overflow-hidden border-slate-200">
+            <Card className="relative overflow-hidden border-border">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40" />
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -465,8 +465,8 @@ export default function AdminUserDetailPage() {
                     <FileText className="h-4 w-4 text-[#1E40AF]" />
                   </div>
                   <div>
-                    <CardTitle className="text-base text-slate-900 font-sans">Recent Posts</CardTitle>
-                    <CardDescription className="text-slate-500 font-sans">
+                    <CardTitle className="text-base text-foreground font-sans">Recent Posts</CardTitle>
+                    <CardDescription className="text-muted-foreground font-sans">
                       Latest posts by this user
                     </CardDescription>
                   </div>
@@ -475,10 +475,10 @@ export default function AdminUserDetailPage() {
               <CardContent>
                 {user.recentPosts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10">
-                    <div className="rounded-full bg-slate-100 p-3">
-                      <FileText className="h-6 w-6 text-slate-400" />
+                    <div className="rounded-full bg-muted p-3">
+                      <FileText className="h-6 w-6 text-muted-foreground" />
                     </div>
-                    <p className="mt-3 text-sm text-slate-500 font-sans">
+                    <p className="mt-3 text-sm text-muted-foreground font-sans">
                       No posts yet
                     </p>
                   </div>
@@ -486,7 +486,7 @@ export default function AdminUserDetailPage() {
                   <StaggerContainer className="space-y-3">
                     {user.recentPosts.map((post) => (
                       <StaggerItem key={post.id}>
-                        <div className="group flex items-start justify-between rounded-xl border border-slate-200 bg-white p-4 transition-all duration-200 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm">
+                        <div className="group flex items-start justify-between rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:bg-secondary hover:border-border hover:shadow-sm">
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium leading-snug group-hover:text-foreground transition-colors duration-200 font-sans">
                               {post.title || (post.content || "").slice(0, 60) + "..."}
@@ -502,7 +502,7 @@ export default function AdminUserDetailPage() {
                               >
                                 {post.status.toLowerCase()}
                               </Badge>
-                              <span className="text-xs text-slate-500 font-sans">
+                              <span className="text-xs text-muted-foreground font-sans">
                                 {formatDate(post.createdAt)}
                               </span>
                             </div>

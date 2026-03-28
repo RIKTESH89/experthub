@@ -197,7 +197,7 @@ export default function SubscriberDashboardPage() {
                           >
                             <Icon className={`h-4 w-4 ${card.iconColor} transition-colors duration-200`} />
                           </div>
-                          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">
+                          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
                             {card.title}
                           </span>
                         </div>
@@ -212,7 +212,7 @@ export default function SubscriberDashboardPage() {
                         </div>
 
                         {/* Description */}
-                        <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">
+                        <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">
                           {card.description}
                         </p>
                       </div>
@@ -240,7 +240,7 @@ export default function SubscriberDashboardPage() {
                   <h3 className="text-sm font-bold tracking-tight font-sans">
                     Your Experts
                   </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
                     Quick access to your network
                   </p>
                 </div>
@@ -280,17 +280,17 @@ export default function SubscriberDashboardPage() {
                       </Link>
                     ))}
                     {subscribedExperts.length > 5 && (
-                      <span className="z-[1] flex h-13 w-13 items-center justify-center rounded-full bg-slate-100 ring-[3px] ring-background text-xs font-bold text-slate-600 shadow-sm">
+                      <span className="z-[1] flex h-13 w-13 items-center justify-center rounded-full bg-muted ring-[3px] ring-background text-xs font-bold text-muted-foreground shadow-sm">
                         +{subscribedExperts.length - 5}
                       </span>
                     )}
                   </>
                 ) : (
                   <div className="flex items-center gap-3 py-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200">
-                      <Users className="h-4 w-4 text-slate-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted ring-1 ring-border">
+                      <Users className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       No subscriptions yet. Discover experts below.
                     </p>
                   </div>
@@ -302,7 +302,7 @@ export default function SubscriberDashboardPage() {
             <div className="relative mt-5 flex items-center justify-between pt-4 border-t border-border/30">
               <div className="flex items-center gap-1.5">
                 <Crown className="h-3 w-3 text-[#1E40AF]/60" />
-                <span className="text-xs font-medium text-slate-500">
+                <span className="text-xs font-medium text-muted-foreground">
                   <AnimatedCounter value={stats?.activeSubscriptions ?? 0} duration={1} className="font-bold text-foreground" />
                   {" "}subscription{(stats?.activeSubscriptions ?? 0) !== 1 ? "s" : ""}
                 </span>
@@ -333,7 +333,7 @@ export default function SubscriberDashboardPage() {
               </div>
               <div>
                 <h2 className="text-base font-bold tracking-tight font-sans">Discover Experts</h2>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-[11px] text-muted-foreground mt-0.5">
                   Handpicked recommendations for you
                 </p>
               </div>
@@ -366,14 +366,14 @@ export default function SubscriberDashboardPage() {
               ))}
             </StaggerContainer>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-slate-200 bg-white">
+            <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-border bg-card">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1E40AF]/5 mb-4">
                 <Users className="h-8 w-8 text-[#1E40AF]/40" />
               </div>
-              <p className="text-sm font-semibold text-slate-700">
+              <p className="text-sm font-semibold text-foreground">
                 No recommendations yet
               </p>
-              <p className="mt-1.5 text-xs text-slate-500 max-w-[240px]">
+              <p className="mt-1.5 text-xs text-muted-foreground max-w-[240px]">
                 Check back soon for expert suggestions tailored to your interests.
               </p>
             </div>

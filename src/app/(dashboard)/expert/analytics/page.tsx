@@ -148,7 +148,7 @@ export default function ExpertAnalyticsPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Analytics</h1>
-              <p className="text-sm text-slate-500">Track your performance and growth</p>
+              <p className="text-sm text-muted-foreground">Track your performance and growth</p>
             </div>
           </div>
           <div className="shrink-0">
@@ -173,12 +173,12 @@ export default function ExpertAnalyticsPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Analytics</h1>
-              <p className="text-sm text-slate-500">Track your performance and growth</p>
+              <p className="text-sm text-muted-foreground">Track your performance and growth</p>
             </div>
           </div>
         </FadeIn>
         <FadeIn direction="right" delay={0.1}>
-          <div className="shrink-0 rounded-xl bg-slate-100 p-1 ring-1 ring-border/50 ">
+          <div className="shrink-0 rounded-xl bg-muted p-1 ring-1 ring-border/50 ">
             <DateRangeSelector value={period} onChange={handlePeriodChange} />
           </div>
         </FadeIn>
@@ -251,15 +251,15 @@ export default function ExpertAnalyticsPage() {
               </div>
               <div>
                 <CardTitle className="text-base font-semibold">Twin Usage</CardTitle>
-                <p className="text-xs text-slate-500 mt-0.5">Questions asked to your digital twin</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Questions asked to your digital twin</p>
               </div>
             </div>
           </CardHeader>
           <CardContent className="relative pt-2">
             {(analytics?.twinUsage ?? []).length === 0 ? (
-              <div className="flex h-[300px] flex-col items-center justify-center gap-3 text-slate-500">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 ring-1 ring-slate-200">
-                  <Sparkles className="h-5 w-5 text-slate-400" />
+              <div className="flex h-[300px] flex-col items-center justify-center gap-3 text-muted-foreground">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted ring-1 ring-border">
+                  <Sparkles className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <p className="text-sm">No twin usage data for this period</p>
               </div>

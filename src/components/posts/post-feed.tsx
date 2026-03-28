@@ -175,7 +175,7 @@ export function PostFeed({
           className="flex items-center justify-center gap-2 py-8"
         >
           <div className="h-px flex-1 bg-border/50" />
-          <span className="text-sm font-sans text-slate-500">
+          <span className="text-sm font-sans text-muted-foreground">
             You&apos;ve seen it all
           </span>
           <div className="h-px flex-1 bg-border/50" />

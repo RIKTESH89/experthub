@@ -152,7 +152,7 @@ export default function SubscriberChatPage() {
             <CardContent className="space-y-5 pb-8">
               {/* Expert info card */}
               <FadeIn delay={0.45}>
-                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center gap-3 rounded-xl border border-border bg-secondary p-4">
                   <div className="relative">
                     <Avatar className="h-14 w-14 ring-2 ring-[#1E40AF]/20 ring-offset-2 ring-offset-background">
                       <AvatarImage src={expert.image ?? undefined} />
@@ -166,7 +166,7 @@ export default function SubscriberChatPage() {
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-sm">{expert.displayName}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       Plans from Free
                     </p>
                   </div>
@@ -181,7 +181,7 @@ export default function SubscriberChatPage() {
                     { icon: MessageCircle, text: "Ask unlimited questions" },
                     { icon: Shield, text: "Priority response quality" },
                   ].map((feature, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-xs text-slate-600">
+                    <div key={i} className="flex items-center gap-2.5 text-xs text-muted-foreground">
                       <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#1E40AF]/10">
                         <feature.icon className="h-3 w-3 text-[#1E40AF]" />
                       </div>
@@ -249,7 +249,7 @@ export default function SubscriberChatPage() {
             </h2>
             <div className="flex items-center gap-1.5">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground">
                 AI-powered assistant &middot; Online
               </p>
             </div>

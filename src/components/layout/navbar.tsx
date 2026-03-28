@@ -61,7 +61,7 @@ export function Navbar({ navItems }: NavbarProps) {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-      className="sticky top-0 z-50 w-full"
+      className="sticky top-0 z-50 w-full isolate"
     >
       <div
         className={cn(
@@ -84,7 +84,7 @@ export function Navbar({ navItems }: NavbarProps) {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.2, delay: 0.05 }}
             >
-              <Home className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+              <Home className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             </motion.span>
 
             {breadcrumbs.map((crumb, index) => (
@@ -99,13 +99,13 @@ export function Navbar({ navItems }: NavbarProps) {
                 }}
                 className="flex items-center gap-1.5 min-w-0"
               >
-                <ChevronRight className="h-3 w-3 text-slate-400 shrink-0" />
+                <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />
                 <span
                   className={cn(
                     "text-sm truncate transition-colors duration-200",
                     crumb.isActive
                       ? "font-semibold text-foreground"
-                      : "font-medium text-slate-500 hover:text-foreground cursor-pointer"
+                      : "font-medium text-muted-foreground hover:text-foreground cursor-pointer"
                   )}
                 >
                   {crumb.label}

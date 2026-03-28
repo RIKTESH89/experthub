@@ -219,7 +219,7 @@ export default function AdminReportsPage() {
               Reports Management
             </h2>
           </div>
-          <p className="mt-1.5 text-sm text-slate-500 font-sans">
+          <p className="mt-1.5 text-sm text-muted-foreground font-sans">
             Review and handle user reports across the platform.
           </p>
         </div>
@@ -236,7 +236,7 @@ export default function AdminReportsPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.total}</p>
-                <p className="text-xs font-medium text-slate-500">Total Reports</p>
+                <p className="text-xs font-medium text-muted-foreground">Total Reports</p>
               </div>
             </CardContent>
           </Card>
@@ -250,7 +250,7 @@ export default function AdminReportsPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.pending}</p>
-                <p className="text-xs font-medium text-slate-500">Pending</p>
+                <p className="text-xs font-medium text-muted-foreground">Pending</p>
               </div>
             </CardContent>
           </Card>
@@ -264,7 +264,7 @@ export default function AdminReportsPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.resolved}</p>
-                <p className="text-xs font-medium text-slate-500">Resolved</p>
+                <p className="text-xs font-medium text-muted-foreground">Resolved</p>
               </div>
             </CardContent>
           </Card>
@@ -278,7 +278,7 @@ export default function AdminReportsPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.dismissed}</p>
-                <p className="text-xs font-medium text-slate-500">Dismissed</p>
+                <p className="text-xs font-medium text-muted-foreground">Dismissed</p>
               </div>
             </CardContent>
           </Card>
@@ -289,7 +289,7 @@ export default function AdminReportsPage() {
       <FadeIn delay={0.15}>
         <div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-background p-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search reports..."
               value={searchQuery}
@@ -299,7 +299,7 @@ export default function AdminReportsPage() {
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full cursor-pointer border-0 bg-muted/40 shadow-none transition-colors duration-200 hover:bg-muted/60 sm:w-[180px]">
-              <Filter className="mr-2 h-4 w-4 text-slate-400" />
+              <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -319,12 +319,12 @@ export default function AdminReportsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="border-b border-muted/60 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="font-semibold text-slate-600 font-sans">Reporter</TableHead>
-                  <TableHead className="font-semibold text-slate-600 font-sans">Reason</TableHead>
-                  <TableHead className="font-semibold text-slate-600 font-sans">Reported Post</TableHead>
-                  <TableHead className="font-semibold text-slate-600 font-sans">Status</TableHead>
-                  <TableHead className="font-semibold text-slate-600 font-sans">Date</TableHead>
-                  <TableHead className="text-right font-semibold text-slate-600 font-sans">Actions</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground font-sans">Reporter</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground font-sans">Reason</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground font-sans">Reported Post</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground font-sans">Status</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground font-sans">Date</TableHead>
+                  <TableHead className="text-right font-semibold text-muted-foreground font-sans">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -332,13 +332,13 @@ export default function AdminReportsPage() {
                   <TableRow className="hover:bg-transparent">
                     <TableCell colSpan={6} className="py-16">
                       <div className="flex flex-col items-center justify-center text-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
-                          <Inbox className="h-8 w-8 text-slate-400" />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+                          <Inbox className="h-8 w-8 text-muted-foreground" />
                         </div>
-                        <p className="mt-4 text-sm font-medium text-slate-500 font-sans">
+                        <p className="mt-4 text-sm font-medium text-muted-foreground font-sans">
                           No reports found
                         </p>
-                        <p className="mt-1 text-xs text-slate-400 font-sans">
+                        <p className="mt-1 text-xs text-muted-foreground font-sans">
                           Try adjusting your search or filter criteria
                         </p>
                       </div>
@@ -379,7 +379,7 @@ export default function AdminReportsPage() {
                             {report.post?.title ||
                               (report.post?.content || "").slice(0, 40) + "..."}
                           </p>
-                          <p className="text-xs text-slate-500 font-sans">
+                          <p className="text-xs text-muted-foreground font-sans">
                             by {report.post?.author?.name || "Unknown"}
                           </p>
                         </TableCell>
@@ -392,7 +392,7 @@ export default function AdminReportsPage() {
                             {status.label}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-sm text-slate-500 font-sans">
+                        <TableCell className="text-sm text-muted-foreground font-sans">
                           {formatDate(report.createdAt)}
                         </TableCell>
                         <TableCell className="text-right">
@@ -453,7 +453,7 @@ export default function AdminReportsPage() {
       </FadeIn>
 
       <FadeIn delay={0.25}>
-        <p className="text-xs text-slate-500 font-sans">
+        <p className="text-xs text-muted-foreground font-sans">
           Showing {filteredReports.length} of {reports.length} reports
         </p>
       </FadeIn>

@@ -136,19 +136,6 @@ const sidebarVariants = {
   closed: { width: "3.05rem" },
 };
 
-const itemVariants = {
-  open: {
-    x: 0,
-    opacity: 1,
-    transition: { x: { stiffness: 1000, velocity: -100 } },
-  },
-  closed: {
-    x: -20,
-    opacity: 0,
-    transition: { x: { stiffness: 100 } },
-  },
-};
-
 const staggerVariants = {
   open: {
     transition: { staggerChildren: 0.03, delayChildren: 0.02 },
@@ -265,7 +252,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.15 }}
                       className={cn(
-                        "px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500",
+                        "px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
                         gi === 0 ? "pb-2 pt-1" : "pb-2 pt-4"
                       )}
                     >
@@ -294,18 +281,16 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                             "min-h-[44px] min-w-[44px]",
                             "transition-colors duration-150",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                            isOpen ? "gap-3 px-3" : "justify-center px-0",
+                            isOpen ? "gap-3 px-3" : "justify-center",
                             isActive
                               ? "bg-primary/10 text-primary"
-                              : "text-slate-500 hover:bg-accent hover:text-foreground"
+                              : "text-muted-foreground hover:bg-accent hover:text-foreground"
                           )}
                         >
                           {/* Active left border accent */}
                           {isActive && (
-                            <motion.div
-                              layoutId="sidebar-active-indicator"
+                            <div
                               className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-primary"
-                              transition={transitionProps}
                             />
                           )}
 
@@ -315,24 +300,21 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                               "h-[18px] w-[18px] shrink-0",
                               isActive
                                 ? "text-primary"
-                                : "text-slate-500 group-hover:text-foreground"
+                                : "text-muted-foreground group-hover:text-foreground"
                             )}
                           />
 
-                          {/* Label with stagger animation */}
-                          <AnimatePresence mode="wait">
-                            {isOpen && (
-                              <motion.span
-                                variants={itemVariants}
-                                initial="closed"
-                                animate="open"
-                                exit="closed"
-                                className="whitespace-nowrap"
-                              >
-                                {item.title}
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
+                          {/* Label — hidden when collapsed via overflow */}
+                          {isOpen && (
+                            <motion.span
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.15, delay: 0.05 }}
+                              className="whitespace-nowrap overflow-hidden"
+                            >
+                              {item.title}
+                            </motion.span>
+                          )}
                         </Link>
                       </TooltipTrigger>
                       {!isOpen && (
@@ -362,7 +344,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center gap-3 rounded-md bg-white p-2.5"
+              className="flex items-center gap-3 rounded-md bg-card p-2.5"
             >
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">

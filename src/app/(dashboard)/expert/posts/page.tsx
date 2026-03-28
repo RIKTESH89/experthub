@@ -196,7 +196,7 @@ export default function ExpertPostsPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">My Posts</h2>
-                <p className="mt-0.5 text-sm text-slate-500">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   Manage and track your published content
                 </p>
               </div>
@@ -218,7 +218,7 @@ export default function ExpertPostsPage() {
       <FadeIn delay={0.1}>
         <div className="relative group">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 transition-colors duration-200 group-focus-within:text-blue-700" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200 group-focus-within:text-blue-700" />
             <Input
               placeholder="Search your posts..."
               value={searchQuery}
@@ -232,7 +232,7 @@ export default function ExpertPostsPage() {
       {/* Tabs */}
       <FadeIn delay={0.15}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="h-11 w-full justify-start gap-1 rounded-xl border bg-slate-100 p-1  sm:w-auto">
+          <TabsList className="h-11 w-full justify-start gap-1 rounded-xl border bg-muted p-1  sm:w-auto">
             <TabsTrigger
               value="all"
               className="rounded-lg px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm"
@@ -306,7 +306,7 @@ export default function ExpertPostsPage() {
                               >
                                 {post.title || "Untitled Post"}
                               </Link>
-                              <p className="mt-1.5 text-xs text-slate-500">
+                              <p className="mt-1.5 text-xs text-muted-foreground">
                                 {formatRelativeDate(post.createdAt)}
                               </p>
                             </div>
@@ -357,7 +357,7 @@ export default function ExpertPostsPage() {
                         </CardHeader>
 
                         <CardContent className="pb-3">
-                          <p className="text-sm leading-relaxed text-slate-600">
+                          <p className="text-sm leading-relaxed text-muted-foreground">
                             {truncate(post.content, 120)}
                           </p>
                           <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -393,7 +393,7 @@ export default function ExpertPostsPage() {
                         </CardContent>
 
                         <CardFooter className="border-t border-border/50 pt-3">
-                          <div className="flex items-center gap-5 text-xs text-slate-500">
+                          <div className="flex items-center gap-5 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1.5 transition-colors hover:text-foreground">
                               <Eye className="h-3.5 w-3.5" />
                               {post._count.views}

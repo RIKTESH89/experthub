@@ -92,7 +92,7 @@ export function ExpertProfileHeader({
                   )}
                 </div>
                 {expert.headline && (
-                  <p className="text-sm font-sans text-slate-500 sm:text-base max-w-md">
+                  <p className="text-sm font-sans text-muted-foreground sm:text-base max-w-md">
                     {expert.headline}
                   </p>
                 )}
@@ -117,7 +117,7 @@ export function ExpertProfileHeader({
         {/* Bio */}
         {expert.bio && (
           <FadeIn delay={0.25} direction="up">
-            <p className="mt-5 max-w-2xl text-sm font-sans leading-relaxed text-slate-700">
+            <p className="mt-5 max-w-2xl text-sm font-sans leading-relaxed text-foreground">
               {expert.bio}
             </p>
           </FadeIn>
@@ -151,7 +151,7 @@ export function ExpertProfileHeader({
                   className="font-bold text-foreground text-base font-sans"
                   duration={1}
                 />
-                <span className="text-xs font-sans text-slate-500">subscribers</span>
+                <span className="text-xs font-sans text-muted-foreground">subscribers</span>
               </div>
             </div>
 

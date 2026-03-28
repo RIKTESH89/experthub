@@ -250,13 +250,13 @@ export function PostComposer({
               <div className="min-w-0 flex-1 space-y-2">
                 <Input
                   placeholder="Title (optional)"
-                  className="h-auto border-0 bg-transparent px-0 py-1 text-lg font-semibold font-sans tracking-tight placeholder:text-slate-500 focus-visible:ring-0"
+                  className="h-auto border-0 bg-transparent px-0 py-1 text-lg font-semibold font-sans tracking-tight placeholder:text-muted-foreground focus-visible:ring-0"
                   {...register("title")}
                   onFocus={() => setIsFocused(true)}
                 />
                 <textarea
                   placeholder="Share your thoughts, insights, or expertise..."
-                  className="w-full resize-none border-0 bg-transparent text-sm font-sans leading-relaxed placeholder:text-slate-500 focus:outline-none"
+                  className="w-full resize-none border-0 bg-transparent text-sm font-sans leading-relaxed placeholder:text-muted-foreground focus:outline-none"
                   style={{ minHeight: "120px" }}
                   {...register("content", {
                     onChange: autoResize,
@@ -300,11 +300,11 @@ export function PostComposer({
                         ) : (
                           <div className="flex aspect-video items-center justify-center bg-muted">
                             {mf.type === "VIDEO" ? (
-                              <Video className="h-8 w-8 text-slate-500" />
+                              <Video className="h-8 w-8 text-muted-foreground" />
                             ) : (
-                              <Music className="h-8 w-8 text-slate-500" />
+                              <Music className="h-8 w-8 text-muted-foreground" />
                             )}
-                            <span className="ml-2 max-w-[100px] truncate text-xs font-sans text-slate-500">
+                            <span className="ml-2 max-w-[100px] truncate text-xs font-sans text-muted-foreground">
                               {mf.file.name}
                             </span>
                           </div>
@@ -351,7 +351,7 @@ export function PostComposer({
                         style={{ width: `${(mediaFiles.length / 5) * 100}%` }}
                       />
                     </div>
-                    <span className="text-xs font-medium font-sans text-slate-500">
+                    <span className="text-xs font-medium font-sans text-muted-foreground">
                       {mediaFiles.length}/5
                     </span>
                   </div>
@@ -397,14 +397,14 @@ export function PostComposer({
 
             {/* Tag input */}
             <div className="relative">
-              <Hash className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Hash className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Add tags (press Enter)..."
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={addTag}
                 onFocus={() => setIsFocused(true)}
-                className="border-0 bg-transparent pl-6 text-sm font-sans placeholder:text-slate-500 focus-visible:ring-0"
+                className="border-0 bg-transparent pl-6 text-sm font-sans placeholder:text-muted-foreground focus-visible:ring-0"
               />
             </div>
 
@@ -495,7 +495,7 @@ export function PostComposer({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-xs font-sans text-slate-700"
+                  className="flex items-center gap-1.5 rounded-lg bg-card px-3 py-2 text-xs font-sans text-foreground"
                 >
                   <EyeOff className="h-3 w-3 shrink-0" />
                   This post will only be added to your knowledge base and won&apos;t appear in feeds.
@@ -518,7 +518,7 @@ export function PostComposer({
             </AnimatePresence>
           </CardContent>
 
-          <CardFooter className="flex items-center justify-between border-t border-border/40 bg-white px-5 py-3">
+          <CardFooter className="flex items-center justify-between border-t border-border/40 bg-card px-5 py-3">
             <TooltipProvider delayDuration={300}>
               <div className="flex items-center gap-0.5">
                 <input

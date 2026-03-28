@@ -216,7 +216,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                         "hover:bg-accent",
                         isActive
                           ? "text-[#1E40AF] dark:text-blue-400"
-                          : "text-slate-500 hover:text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
                       )}
                     >
                       {/* Active background */}
@@ -250,7 +250,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                           "relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors duration-200",
                           isActive
                             ? "bg-[#1E40AF]/10"
-                            : "bg-white group-hover:bg-accent"
+                            : "bg-card group-hover:bg-accent"
                         )}
                       >
                         <Icon
@@ -258,7 +258,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                             "h-[18px] w-[18px] transition-colors duration-200",
                             isActive
                               ? "text-[#1E40AF] dark:text-blue-400"
-                              : "text-slate-500 group-hover:text-foreground"
+                              : "text-muted-foreground group-hover:text-foreground"
                           )}
                         />
                       </div>
@@ -275,7 +275,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
         {/* User Footer */}
         {session?.user && (
           <div className="absolute inset-x-0 bottom-0 border-t border-border/50 bg-background/80 backdrop-blur-xl p-3">
-            <div className="flex items-center gap-3 rounded-lg bg-white p-2.5">
+            <div className="flex items-center gap-3 rounded-lg bg-card p-2.5">
               <Avatar className="h-8 w-8 ring-1 ring-border/50">
                 <AvatarFallback className="bg-[#1E40AF]/10 text-[#1E40AF] text-xs font-semibold">
                   {userInitials}

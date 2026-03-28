@@ -45,7 +45,7 @@ function CustomTooltip({
       <p className="mt-1 text-lg font-bold font-sans text-foreground">
         {payload[0].value}
       </p>
-      <p className="text-[11px] font-sans text-slate-500">Subscribers</p>
+      <p className="text-[11px] font-sans text-muted-foreground">Subscribers</p>
     </div>
   );
 }
@@ -71,12 +71,12 @@ export function SubscriberGrowthChart({ data }: SubscriberGrowthChartProps) {
       <CardContent className="pb-4">
         {data.length === 0 ? (
           <div className="flex h-[300px] flex-col items-center justify-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white">
-              <Users className="h-7 w-7 text-slate-500" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-card">
+              <Users className="h-7 w-7 text-muted-foreground" />
             </div>
             <div className="text-center">
               <p className="text-sm font-medium font-sans text-muted-foreground">No subscriber data</p>
-              <p className="mt-1 text-xs font-sans text-slate-500">
+              <p className="mt-1 text-xs font-sans text-muted-foreground">
                 Growth metrics will appear as subscribers join
               </p>
             </div>

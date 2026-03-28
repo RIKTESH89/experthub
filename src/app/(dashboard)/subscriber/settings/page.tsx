@@ -135,7 +135,7 @@ export default function SubscriberSettingsPage() {
                 <h2 className="text-2xl font-bold tracking-tight font-sans">
                   Settings
                 </h2>
-                <p className="mt-0.5 text-sm text-slate-500">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   Manage your notification preferences and account settings
                 </p>
               </div>
@@ -149,14 +149,14 @@ export default function SubscriberSettingsPage() {
             {/* Notifications card */}
             <div className="overflow-hidden rounded-2xl border bg-card">
               {/* Card header */}
-              <div className="border-b border-slate-200 bg-slate-50 px-6 py-5">
+              <div className="border-b border-border bg-secondary px-6 py-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10">
                     <Bell className="h-5 w-5 text-amber-500" />
                   </div>
                   <div>
                     <h3 className="text-base font-semibold text-foreground font-sans">Notifications</h3>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       Choose what you want to be notified about
                     </p>
                   </div>
@@ -175,7 +175,7 @@ export default function SubscriberSettingsPage() {
                       <Label className="text-sm font-medium cursor-pointer">
                         New Posts from Experts
                       </Label>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted-foreground">
                         Get notified when subscribed experts publish new content
                       </p>
                     </div>
@@ -199,7 +199,7 @@ export default function SubscriberSettingsPage() {
                       <Label className="text-sm font-medium cursor-pointer">
                         Replies to Comments
                       </Label>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted-foreground">
                         Get notified when someone replies to your comments
                       </p>
                     </div>
@@ -219,7 +219,7 @@ export default function SubscriberSettingsPage() {
                     </div>
                     <div className="space-y-0.5">
                       <Label className="text-sm font-medium">Email Digest</Label>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted-foreground">
                         How often to receive a summary of activity
                       </p>
                     </div>
@@ -228,7 +228,7 @@ export default function SubscriberSettingsPage() {
                     value={watch("emailDigest")}
                     onValueChange={(v) => setValue("emailDigest", v)}
                   >
-                    <SelectTrigger className="h-11 rounded-lg border-slate-200 bg-slate-50 transition-colors duration-200 focus:bg-background cursor-pointer">
+                    <SelectTrigger className="h-11 rounded-lg border-border bg-secondary transition-colors duration-200 focus:bg-background cursor-pointer">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-lg">
@@ -236,7 +236,7 @@ export default function SubscriberSettingsPage() {
                         <SelectItem key={opt.value} value={opt.value} className="rounded-md cursor-pointer">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{opt.label}</span>
-                            <span className="text-xs text-slate-500">
+                            <span className="text-xs text-muted-foreground">
                               {opt.description}
                             </span>
                           </div>
@@ -248,8 +248,8 @@ export default function SubscriberSettingsPage() {
               </div>
 
               {/* Card footer */}
-              <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-4">
-                <p className="text-xs text-slate-500">
+              <div className="flex items-center justify-between border-t border-border bg-secondary px-6 py-4">
+                <p className="text-xs text-muted-foreground">
                   Changes are saved to your account
                 </p>
                 <Button

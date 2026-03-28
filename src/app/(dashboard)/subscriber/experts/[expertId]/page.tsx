@@ -74,13 +74,13 @@ const tierGradients = {
 };
 
 const tierBorderColors = {
-  FREE: "border-slate-200 dark:border-slate-700",
+  FREE: "border-border dark:border-border",
   STANDARD: "border-[#1E40AF]/20 dark:border-blue-800",
   PREMIUM: "border-amber-300 dark:border-amber-700",
 };
 
 const tierIconColors = {
-  FREE: "text-slate-500",
+  FREE: "text-muted-foreground",
   STANDARD: "text-[#1E40AF]",
   PREMIUM: "text-amber-500",
 };
@@ -168,11 +168,11 @@ export default function SubscriberExpertProfilePage() {
   if (!expert) {
     return (
       <FadeIn className="flex flex-col items-center justify-center py-16 font-sans">
-        <div className="rounded-full bg-slate-100 p-6 mb-4">
-          <User className="h-10 w-10 text-slate-500" />
+        <div className="rounded-full bg-muted p-6 mb-4">
+          <User className="h-10 w-10 text-muted-foreground" />
         </div>
         <h2 className="text-lg font-semibold">Expert Not Found</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           This expert profile does not exist.
         </p>
         <Button className="mt-4 cursor-pointer" asChild>
@@ -265,7 +265,7 @@ export default function SubscriberExpertProfilePage() {
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold tracking-tight font-sans">About</h3>
                     <div className="rounded-xl border bg-card p-5">
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
                         {expert.bio}
                       </p>
                     </div>
@@ -391,7 +391,7 @@ export default function SubscriberExpertProfilePage() {
                                   <div
                                     className={cn(
                                       "flex h-9 w-9 items-center justify-center rounded-lg",
-                                      t.tier === "FREE" && "bg-slate-100 dark:bg-slate-800",
+                                      t.tier === "FREE" && "bg-muted dark:bg-slate-800",
                                       t.tier === "STANDARD" && "bg-[#1E40AF]/10 dark:bg-blue-900/30",
                                       t.tier === "PREMIUM" && "bg-amber-100 dark:bg-amber-900/30"
                                     )}
@@ -408,14 +408,14 @@ export default function SubscriberExpertProfilePage() {
                                     {t.price > 0 ? `₹${t.price.toFixed(2)}` : "Free"}
                                   </p>
                                   {t.price > 0 && (
-                                    <span className="text-xs font-medium text-slate-500">
+                                    <span className="text-xs font-medium text-muted-foreground">
                                       per month
                                     </span>
                                   )}
                                 </div>
 
                                 {t.description && (
-                                  <p className="text-xs text-slate-500 mb-3">
+                                  <p className="text-xs text-muted-foreground mb-3">
                                     {t.description}
                                   </p>
                                 )}
@@ -425,12 +425,12 @@ export default function SubscriberExpertProfilePage() {
                                     {t.features.map((feature, i) => (
                                       <li
                                         key={i}
-                                        className="flex items-start gap-2 text-xs text-slate-600"
+                                        className="flex items-start gap-2 text-xs text-muted-foreground"
                                       >
                                         <div
                                           className={cn(
                                             "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
-                                            t.tier === "FREE" && "bg-slate-100 dark:bg-slate-800",
+                                            t.tier === "FREE" && "bg-muted dark:bg-slate-800",
                                             t.tier === "STANDARD" && "bg-[#1E40AF]/10 dark:bg-blue-900/30",
                                             t.tier === "PREMIUM" && "bg-amber-100 dark:bg-amber-900/30"
                                           )}
@@ -455,7 +455,7 @@ export default function SubscriberExpertProfilePage() {
                     </div>
                   ) : (
                     <div className="rounded-xl border bg-card p-5">
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-muted-foreground">
                         <span className="text-2xl font-bold text-foreground font-sans">
                           ₹{(expert.monthlyPrice ?? 0).toFixed(2)}
                         </span>

@@ -114,8 +114,8 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
 
   if (isLoading) {
     return (
-      <div className="overflow-hidden rounded-xl border border-border/50 bg-white">
-        <div className="border-b border-border/30 bg-white px-4 py-3">
+      <div className="overflow-hidden rounded-xl border border-border/50 bg-card">
+        <div className="border-b border-border/30 bg-card px-4 py-3">
           <div className="flex items-center gap-12">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-3 w-14" />
@@ -155,20 +155,20 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
     <div className="overflow-hidden rounded-xl border border-border/50 bg-background">
       <Table>
         <TableHeader>
-          <TableRow className="border-border/30 bg-white hover:bg-white">
-            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-slate-500">
+          <TableRow className="border-border/30 bg-card hover:bg-card">
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground">
               Title
             </TableHead>
-            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-slate-500">
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground">
               Source
             </TableHead>
-            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-slate-500">
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground">
               Status
             </TableHead>
-            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-slate-500">
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground">
               Created
             </TableHead>
-            <TableHead className="text-right text-xs font-semibold font-sans uppercase tracking-wider text-slate-500">
+            <TableHead className="text-right text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground">
               Actions
             </TableHead>
           </TableRow>
@@ -220,7 +220,7 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
                         </span>
                       </div>
                     ) : (
-                      <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-white px-2.5 py-1">
+                      <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-card px-2.5 py-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs font-medium font-sans text-muted-foreground">
                           Pending

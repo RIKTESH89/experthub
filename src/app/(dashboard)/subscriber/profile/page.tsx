@@ -79,7 +79,7 @@ export default function SubscriberProfilePage() {
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
           </div>
-          <p className="mt-4 text-sm font-medium text-slate-600">Failed to load profile</p>
+          <p className="mt-4 text-sm font-medium text-muted-foreground">Failed to load profile</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-3 text-sm font-medium text-[#1E40AF] hover:text-[#1E40AF]/80 transition-colors duration-200 cursor-pointer"
@@ -110,7 +110,7 @@ export default function SubscriberProfilePage() {
                 <h2 className="text-2xl font-bold tracking-tight font-sans">
                   My Profile
                 </h2>
-                <p className="mt-0.5 text-sm text-slate-500">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   Manage your personal information and public presence
                 </p>
               </div>

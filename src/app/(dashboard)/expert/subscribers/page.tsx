@@ -173,7 +173,7 @@ export default function ExpertSubscribersPage() {
           </svg>
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Subscribers</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Track and manage your audience
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function ExpertSubscribersPage() {
       <FadeIn direction="up" delay={0.2}>
         <div className="relative group">
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors duration-200" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-600 transition-colors duration-200" />
             <Input
               placeholder="Search subscribers by name or email..."
               value={searchQuery}
@@ -227,7 +227,7 @@ export default function ExpertSubscribersPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground bg-muted px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-200"
               >
                 Clear
               </motion.button>
@@ -252,7 +252,7 @@ export default function ExpertSubscribersPage() {
                   <Users className="h-8 w-8 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold mb-1.5">No subscribers yet</h3>
-                <p className="text-sm text-slate-500 max-w-sm">
+                <p className="text-sm text-muted-foreground max-w-sm">
                   Share your profile to attract subscribers and grow your audience.
                 </p>
               </motion.div>
@@ -265,11 +265,11 @@ export default function ExpertSubscribersPage() {
             <CardContent className="overflow-x-auto p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50 hover:bg-slate-50 border-b border-slate-200">
-                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Subscriber</TableHead>
-                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</TableHead>
-                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Amount</TableHead>
-                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Since</TableHead>
+                  <TableRow className="bg-secondary hover:bg-secondary border-b border-border">
+                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Subscriber</TableHead>
+                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
+                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Amount</TableHead>
+                    <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Since</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -280,8 +280,8 @@ export default function ExpertSubscribersPage() {
                         className="py-12 text-center"
                       >
                         <div className="flex flex-col items-center gap-2">
-                          <Search className="h-5 w-5 text-slate-400" />
-                          <p className="text-sm text-slate-500">No matching subscribers</p>
+                          <Search className="h-5 w-5 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">No matching subscribers</p>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -313,7 +313,7 @@ export default function ExpertSubscribersPage() {
                             </motion.div>
                             <div className="min-w-0">
                               <p className="text-sm font-medium truncate group-hover:text-foreground transition-colors">{sub.name}</p>
-                              <p className="text-xs text-slate-500 truncate">
+                              <p className="text-xs text-muted-foreground truncate">
                                 {sub.email}
                               </p>
                             </div>
@@ -338,9 +338,9 @@ export default function ExpertSubscribersPage() {
                         </TableCell>
                         <TableCell className="text-sm font-medium tabular-nums">
                           ₹{(sub.monthlyAmount ?? 0).toFixed(2)}
-                          <span className="text-slate-400 font-normal">/mo</span>
+                          <span className="text-muted-foreground font-normal">/mo</span>
                         </TableCell>
-                        <TableCell className="text-sm text-slate-500">
+                        <TableCell className="text-sm text-muted-foreground">
                           {formatDate(sub.subscriptionDate)}
                         </TableCell>
                       </motion.tr>
@@ -356,8 +356,8 @@ export default function ExpertSubscribersPage() {
       {/* Footer count */}
       <FadeIn direction="up" delay={0.4}>
         <div className="flex items-center justify-between">
-          <p className="text-xs text-slate-500">
-            Showing <span className="font-medium text-slate-600">{filteredSubscribers.length}</span> of <span className="font-medium text-slate-600">{subscribers.length}</span> subscribers
+          <p className="text-xs text-muted-foreground">
+            Showing <span className="font-medium text-muted-foreground">{filteredSubscribers.length}</span> of <span className="font-medium text-muted-foreground">{subscribers.length}</span> subscribers
           </p>
           {searchQuery && filteredSubscribers.length !== subscribers.length && (
             <button

@@ -76,7 +76,7 @@ export function ChatInput({
             rows={1}
             className={cn(
               "w-full resize-none bg-transparent px-4 py-3 text-sm font-sans leading-relaxed",
-              "placeholder:text-slate-500 focus:outline-none",
+              "placeholder:text-muted-foreground focus:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "scrollbar-none"
             )}
@@ -95,7 +95,7 @@ export function ChatInput({
                 "relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-200",
                 hasContent && !isDisabled
                   ? "cursor-pointer bg-blue-700 text-white hover:bg-blue-800"
-                  : "bg-muted text-slate-500 cursor-not-allowed"
+                  : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -110,10 +110,10 @@ export function ChatInput({
         </div>
       </div>
 
-      <p className="mt-2 text-center text-[10px] font-sans text-slate-500">
+      <p className="mt-2 text-center text-[10px] font-sans text-muted-foreground">
         AI responses are generated from the expert&apos;s knowledge base
-        <span className="mx-1.5 inline-block h-0.5 w-0.5 rounded-full bg-slate-400 align-middle" />
-        <kbd className="rounded-md border border-border/50 bg-white px-1.5 py-0.5 font-mono text-[9px] text-slate-500">
+        <span className="mx-1.5 inline-block h-0.5 w-0.5 rounded-full bg-muted-foreground align-middle" />
+        <kbd className="rounded-md border border-border/50 bg-card px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
           Shift+Enter
         </kbd>{" "}
         for new line

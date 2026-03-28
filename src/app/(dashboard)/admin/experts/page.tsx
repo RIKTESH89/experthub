@@ -194,7 +194,7 @@ export default function AdminExpertsPage() {
             <h2 className="text-2xl font-bold tracking-tight font-sans">
               Expert Verification
             </h2>
-            <p className="text-sm text-slate-500 font-sans">
+            <p className="text-sm text-muted-foreground font-sans">
               Review and manage expert verification status.
             </p>
           </div>
@@ -223,7 +223,7 @@ export default function AdminExpertsPage() {
                       value={statValues[card.key]}
                       className="text-3xl font-bold tracking-tight"
                     />
-                    <p className="text-xs font-medium text-slate-500 mt-0.5 font-sans">
+                    <p className="text-xs font-medium text-muted-foreground mt-0.5 font-sans">
                       {card.label}
                     </p>
                   </div>
@@ -261,7 +261,7 @@ export default function AdminExpertsPage() {
                   "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold transition-colors duration-200",
                   activeTab === tab.value
                     ? "bg-[#1E40AF]/10 text-[#1E40AF]"
-                    : "bg-slate-200 text-slate-500"
+                    : "bg-muted text-muted-foreground"
                 )}>
                   {tab.count}
                 </span>
@@ -269,7 +269,7 @@ export default function AdminExpertsPage() {
             ))}
           </TabsList>
           <div className="relative w-full sm:w-[300px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search experts..."
               value={searchQuery}
@@ -285,13 +285,13 @@ export default function AdminExpertsPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-muted-foreground/10">
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Expert</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Specialties</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Subscribers</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Posts</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Status</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Joined</TableHead>
-                    <TableHead className="text-right font-semibold text-xs uppercase tracking-wider text-slate-500 font-sans">Actions</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Expert</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Specialties</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Subscribers</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Posts</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Status</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Joined</TableHead>
+                    <TableHead className="text-right font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -302,11 +302,11 @@ export default function AdminExpertsPage() {
                         className="py-16 text-center"
                       >
                         <div className="flex flex-col items-center gap-2">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                            <Search className="h-5 w-5 text-slate-400" />
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                            <Search className="h-5 w-5 text-muted-foreground" />
                           </div>
-                          <p className="text-sm font-medium text-slate-500 font-sans">No experts found</p>
-                          <p className="text-xs text-slate-400 font-sans">Try adjusting your search or filter</p>
+                          <p className="text-sm font-medium text-muted-foreground font-sans">No experts found</p>
+                          <p className="text-xs text-muted-foreground font-sans">Try adjusting your search or filter</p>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -345,7 +345,7 @@ export default function AdminExpertsPage() {
                               <p className="text-sm font-semibold group-hover:text-[#1E40AF] transition-colors duration-200 font-sans">
                                 {expert.displayName}
                               </p>
-                              <p className="text-xs text-slate-500 font-sans">
+                              <p className="text-xs text-muted-foreground font-sans">
                                 {expert.email}
                               </p>
                             </div>
@@ -401,7 +401,7 @@ export default function AdminExpertsPage() {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-sm text-slate-500 font-sans">
+                        <TableCell className="text-sm text-muted-foreground font-sans">
                           {formatDate(expert.createdAt)}
                         </TableCell>
                         <TableCell className="text-right">

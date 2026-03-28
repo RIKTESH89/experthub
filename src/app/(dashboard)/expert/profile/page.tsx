@@ -325,7 +325,7 @@ export default function ExpertProfilePage() {
                     disabled
                     className="bg-gray-50/80 text-gray-500"
                   />
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted-foreground">
                     Email cannot be changed
                   </p>
                 </div>
@@ -398,7 +398,7 @@ export default function ExpertProfilePage() {
                     className="transition-all focus:ring-2 focus:ring-blue-600/20"
                   />
                   {specialties.length > 0 && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                       {specialties.length}/8
                     </span>
                   )}
@@ -441,11 +441,11 @@ export default function ExpertProfilePage() {
                       className="pl-7 font-medium transition-all focus:ring-2 focus:ring-blue-600/20"
                       {...register("monthlyPrice", { required: true })}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                       /month
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted-foreground">
                     This is the amount subscribers will pay per month for access to
                     your Digital Twin and exclusive content.
                   </p>

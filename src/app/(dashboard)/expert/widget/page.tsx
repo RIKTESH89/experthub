@@ -351,7 +351,7 @@ export default function ExpertWidgetPage() {
                       max={100}
                       className="w-28 text-center font-medium"
                     />
-                    <span className="text-sm text-slate-500">
+                    <span className="text-sm text-muted-foreground">
                       questions per visitor
                     </span>
                   </div>
@@ -380,7 +380,7 @@ export default function ExpertWidgetPage() {
                 <CardContent className="space-y-4">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         value={domainInput}
                         onChange={(e) => setDomainInput(e.target.value)}
@@ -439,7 +439,7 @@ export default function ExpertWidgetPage() {
                     )}
                   </AnimatePresence>
                   {allowedDomains.length === 0 && (
-                    <p className="text-xs text-slate-500 italic">
+                    <p className="text-xs text-muted-foreground italic">
                       No domain restrictions -- widget can be embedded anywhere
                     </p>
                   )}

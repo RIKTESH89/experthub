@@ -38,7 +38,7 @@ export function LoadingSpinner({
             r={config.radius}
             stroke="currentColor"
             strokeWidth={config.stroke}
-            className="text-slate-200"
+            className="text-muted-foreground"
           />
         </svg>
 

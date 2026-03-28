@@ -67,7 +67,7 @@ const pillColors = [
   "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300 ring-1 ring-amber-500/10",
   "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 ring-1 ring-rose-500/10",
   "bg-cyan-100 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300 ring-1 ring-cyan-500/10",
-  "bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300 ring-1 ring-slate-500/10",
+  "bg-muted text-foreground dark:bg-secondary0/20 dark:text-muted-foreground ring-1 ring-border/10",
 ];
 
 function getPillColor(specialty: string): string {
@@ -119,7 +119,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                     <BadgeCheck className="h-4 w-4 shrink-0 fill-blue-700 text-white dark:fill-blue-500" />
                   )}
                 </div>
-                <p className="line-clamp-1 text-[11px] font-sans text-slate-500 mt-0.5">
+                <p className="line-clamp-1 text-[11px] font-sans text-muted-foreground mt-0.5">
                   {expert.headline || "\u00A0"}
                 </p>
               </div>
@@ -148,7 +148,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                   {formatNumber(expert._count?.subscribers ?? 0)}
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-slate-500 transition-all duration-200 group-hover:text-blue-700 group-hover:gap-1.5">
+              <div className="flex items-center gap-1 text-muted-foreground transition-all duration-200 group-hover:text-blue-700 group-hover:gap-1.5">
                 <span className="text-[10px] font-medium font-sans opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                   View
                 </span>

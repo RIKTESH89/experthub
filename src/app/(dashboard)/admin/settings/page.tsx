@@ -79,7 +79,7 @@ function ToggleRow({
     <div className="group flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 p-4 transition-all duration-200 hover:bg-muted/40 hover:border-border/70">
       <div className="space-y-0.5 pr-4">
         <Label className="cursor-pointer text-sm font-medium font-sans">{label}</Label>
-        <p className="text-xs text-slate-500 leading-relaxed font-sans">
+        <p className="text-xs text-muted-foreground leading-relaxed font-sans">
           {description}
         </p>
       </div>
@@ -122,7 +122,7 @@ function SettingsCard({
               <CardTitle className="text-base font-semibold tracking-tight font-sans">
                 {title}
               </CardTitle>
-              <CardDescription className="text-[13px] text-slate-500 font-sans">
+              <CardDescription className="text-[13px] text-muted-foreground font-sans">
                 {description}
               </CardDescription>
             </div>
@@ -158,14 +158,14 @@ function PremiumInput({
     <div className="space-y-2">
       <Label
         htmlFor={id}
-        className="text-sm font-medium text-slate-700 font-sans"
+        className="text-sm font-medium text-foreground font-sans"
       >
         {label}
       </Label>
       <Input
         id={id}
         type={type}
-        className="border-border/50 bg-white focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+        className="border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
         {...register(id as keyof PlatformSettings)}
         {...props}
       />
@@ -245,7 +245,7 @@ export default function AdminSettingsPage() {
               <h2 className="text-2xl font-bold tracking-tight font-sans">
                 Platform Settings
               </h2>
-              <p className="text-sm text-slate-500 font-sans">
+              <p className="text-sm text-muted-foreground font-sans">
                 Configure global platform settings and preferences.
               </p>
             </div>
@@ -265,13 +265,13 @@ export default function AdminSettingsPage() {
             <div className="space-y-2">
               <Label
                 htmlFor="siteDescription"
-                className="text-sm font-medium text-slate-700 font-sans"
+                className="text-sm font-medium text-foreground font-sans"
               >
                 Site Description
               </Label>
               <Textarea
                 id="siteDescription"
-                className="resize-none border-border/50 bg-white focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40 min-h-[80px]"
+                className="resize-none border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40 min-h-[80px]"
                 {...register("siteDescription")}
               />
             </div>
@@ -295,19 +295,19 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="defaultExpertRate"
-                  className="text-sm font-medium text-slate-700 font-sans"
+                  className="text-sm font-medium text-foreground font-sans"
                 >
                   Default Expert Rate (per month)
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 font-medium">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
                     ₹
                   </span>
                   <Input
                     id="defaultExpertRate"
                     type="number"
                     step="0.01"
-                    className="pl-7 border-border/50 bg-white focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    className="pl-7 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
                     {...register("defaultExpertRate")}
                   />
                 </div>
@@ -315,7 +315,7 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="platformFeePercent"
-                  className="text-sm font-medium text-slate-700 font-sans"
+                  className="text-sm font-medium text-foreground font-sans"
                 >
                   Platform Fee
                 </Label>
@@ -323,10 +323,10 @@ export default function AdminSettingsPage() {
                   <Input
                     id="platformFeePercent"
                     type="number"
-                    className="pr-8 border-border/50 bg-white focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    className="pr-8 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
                     {...register("platformFeePercent")}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 font-medium">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
                     %
                   </span>
                 </div>
@@ -364,14 +364,14 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <Label className="text-sm font-medium text-slate-700 font-sans">
+              <Label className="text-sm font-medium text-foreground font-sans">
                 Content Moderation Level
               </Label>
               <Select
                 value={watch("contentModeration")}
                 onValueChange={(v) => setValue("contentModeration", v)}
               >
-                <SelectTrigger className="cursor-pointer border-border/50 bg-white focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40">
+                <SelectTrigger className="cursor-pointer border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

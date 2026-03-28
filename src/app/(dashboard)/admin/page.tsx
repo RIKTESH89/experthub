@@ -71,8 +71,8 @@ const quickActions = [
     description: "Configure platform-wide settings",
     cta: "Settings",
     icon: Settings,
-    accent: "bg-slate-500",
-    iconColor: "text-slate-500",
+    accent: "bg-secondary0",
+    iconColor: "text-muted-foreground",
   },
 ];
 
@@ -93,10 +93,10 @@ export default async function AdminDashboardPage() {
       {/* Page Header */}
       <FadeIn delay={0.15}>
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground font-sans">
             Admin Dashboard
           </h2>
-          <p className="text-slate-500 font-sans">
+          <p className="text-muted-foreground font-sans">
             Monitor platform health and manage operations at a glance.
           </p>
         </div>
@@ -110,7 +110,7 @@ export default async function AdminDashboardPage() {
       {/* Quick Actions */}
       <div className="space-y-4">
         <FadeIn delay={0.35}>
-          <h3 className="text-lg font-semibold tracking-tight text-slate-900 font-sans">
+          <h3 className="text-lg font-semibold tracking-tight text-foreground font-sans">
             Quick Actions
           </h3>
         </FadeIn>
@@ -122,7 +122,7 @@ export default async function AdminDashboardPage() {
               <StaggerItem key={action.href}>
                 <Link
                   href={action.href}
-                  className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:border-[#1E40AF]/25 hover:shadow-[0_4px_12px_rgba(30,64,175,0.08)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/30"
+                  className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:border-[#1E40AF]/25 hover:shadow-[0_4px_12px_rgba(30,64,175,0.08)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/30"
                 >
                   {/* Top accent bar */}
                   <div
@@ -131,16 +131,16 @@ export default async function AdminDashboardPage() {
 
                   {/* Icon */}
                   <div
-                    className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-200 ${action.iconColor}`}
+                    className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-card shadow-sm ring-1 ring-border ${action.iconColor}`}
                   >
                     <Icon className="h-5 w-5" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="font-semibold leading-none tracking-tight text-slate-900 font-sans">
+                  <h3 className="font-semibold leading-none tracking-tight text-foreground font-sans">
                     {action.title}
                   </h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-500 font-sans">
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground font-sans">
                     {action.description}
                   </p>
 
