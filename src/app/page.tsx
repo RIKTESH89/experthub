@@ -11,17 +11,17 @@ import {
 } from "lucide-react";
 import { ExpertApplicationSection } from "@/components/landing/expert-application-section";
 import {
+  HeroAnimated,
+  HeroText,
   ScrollReveal,
   ScrollStagger,
   ScrollStaggerItem,
   AnimatedGradientBorder,
   ScrollCounter,
-  HeroTextEntrance,
   HoverCard,
   FloatingDeco,
   GlassNav,
-  HeroSection,
-} from "@/components/landing/landing-animations";
+} from "@/components/ui/animated-hero";
 
 /* ================================================================
    DATA
@@ -119,81 +119,82 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* ==================== NAVIGATION ==================== */}
-      <GlassNav className="fixed top-0 z-50 w-full border-b border-white/[0.06] bg-[#030303]/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <svg viewBox="0 0 512 512" className="h-9 w-9 shrink-0 rounded-xl shadow-lg shadow-[#1E40AF]/20 transition-transform duration-300 group-hover:scale-105" aria-hidden="true">
-              <rect width="512" height="512" rx="112" fill="#1E40AF"/>
-              <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
-              <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
-              <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
-              <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
-              <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
-              <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
-              <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
-            </svg>
-            <span className="text-xl font-bold tracking-tight text-white">ExpertHub</span>
-          </Link>
+    <div className="min-h-screen bg-white overflow-x-hidden">
+      {/* ==================== HERO SECTION (Dark + Pillar Silhouette) ==================== */}
+      <HeroAnimated>
+        {/* ==================== NAVIGATION ==================== */}
+        <GlassNav className="fixed top-0 z-50 w-full border-b border-white/[0.06] bg-[#030303]/80 backdrop-blur-xl">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <svg viewBox="0 0 512 512" className="h-9 w-9 shrink-0 rounded-xl shadow-lg shadow-[#1E40AF]/20 transition-transform duration-300 group-hover:scale-105" aria-hidden="true">
+                <rect width="512" height="512" rx="112" fill="#1E40AF"/>
+                <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
+                <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
+                <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
+                <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
+                <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
+                <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
+                <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+              </svg>
+              <span className="text-xl font-bold tracking-tight text-white">ExpertHub</span>
+            </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {[
-              { label: "Features", href: "#features" },
-              { label: "How It Works", href: "#how-it-works" },
-              { label: "Pricing", href: "#pricing" },
-            ].map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+            <nav className="hidden items-center gap-8 md:flex">
+              {[
+                { label: "Features", href: "#features" },
+                { label: "How It Works", href: "#how-it-works" },
+                { label: "Pricing", href: "#pricing" },
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Link href="/login" className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
+                Log In
+              </Link>
+              <Link
+                href="/login"
+                className="relative inline-flex h-9 items-center justify-center rounded-lg bg-[#22C55E] px-5 text-sm font-medium text-white shadow-lg shadow-[#22C55E]/25 transition-all duration-300 hover:shadow-xl hover:shadow-[#22C55E]/30 hover:brightness-110"
               >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
-              Log In
-            </Link>
-            <Link
-              href="/login"
-              className="relative inline-flex h-9 items-center justify-center rounded-lg bg-[#22C55E] px-5 text-sm font-medium text-white shadow-lg shadow-[#22C55E]/25 transition-all duration-300 hover:shadow-xl hover:shadow-[#22C55E]/30 hover:brightness-110"
-            >
-              Sign Up
-            </Link>
+                Sign Up
+              </Link>
+            </div>
           </div>
-        </div>
-      </GlassNav>
+        </GlassNav>
 
-      {/* ==================== HERO SECTION (Dark + ElegantShape) ==================== */}
-      <HeroSection>
+        {/* ==================== HERO CONTENT ==================== */}
         <div className="mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8 lg:py-48">
           <div className="mx-auto max-w-3xl text-center">
-            <HeroTextEntrance delay={0}>
+            <HeroText delay={0}>
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-1.5 text-sm text-slate-300 backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5 text-[#22C55E]" />
                 AI-Powered Expert Platform
               </div>
-            </HeroTextEntrance>
+            </HeroText>
 
-            <HeroTextEntrance delay={0.15}>
+            <HeroText delay={0.15}>
               <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-8xl">
                 Learn from Expert{" "}
                 <span className="bg-gradient-to-r from-[#1E40AF] via-[#22C55E] to-[#CA8A04] bg-clip-text text-transparent">
                   Digital Twins
                 </span>
               </h1>
-            </HeroTextEntrance>
+            </HeroText>
 
-            <HeroTextEntrance delay={0.3}>
+            <HeroText delay={0.3}>
               <p className="mx-auto mt-6 max-w-xl text-lg text-slate-400 sm:text-xl leading-relaxed">
                 Chat with AI replicas of top experts. Instant answers, 24/7.
               </p>
-            </HeroTextEntrance>
+            </HeroText>
 
-            <HeroTextEntrance delay={0.45}>
+            <HeroText delay={0.45}>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link
                   href="/login"
@@ -209,10 +210,10 @@ export default async function LandingPage() {
                   Sign In
                 </Link>
               </div>
-            </HeroTextEntrance>
+            </HeroText>
 
             {/* Social proof */}
-            <HeroTextEntrance delay={0.6}>
+            <HeroText delay={0.6}>
               <div className="mt-12 flex items-center justify-center gap-4">
                 <div className="flex -space-x-2.5">
                   {["PS", "AM", "NR", "VK"].map((initials, i) => (
@@ -228,10 +229,10 @@ export default async function LandingPage() {
                   Trusted by <span className="font-semibold text-slate-200">experts & learners</span>
                 </span>
               </div>
-            </HeroTextEntrance>
+            </HeroText>
           </div>
         </div>
-      </HeroSection>
+      </HeroAnimated>
 
       {/* ==================== STATS BAR ==================== */}
       <section className="relative z-10 -mt-10 px-4 sm:px-6 lg:px-8 bg-[#F8FAFC]">
@@ -259,7 +260,7 @@ export default async function LandingPage() {
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
               <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#1E40AF] to-[#22C55E]" />
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 Why ExpertHub?
               </h2>
               <p className="mt-4 text-slate-600 text-lg">
@@ -282,7 +283,7 @@ export default async function LandingPage() {
                         <feature.icon className="h-6 w-6" />
                       </div>
 
-                      <h3 className="relative text-lg font-semibold sm:text-xl">{feature.title}</h3>
+                      <h3 className="relative text-lg font-semibold text-slate-900 sm:text-xl">{feature.title}</h3>
                       <p className="relative mt-2 text-sm text-slate-600 leading-relaxed">
                         {feature.description}
                       </p>
@@ -301,7 +302,7 @@ export default async function LandingPage() {
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
               <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#1E40AF] to-[#22C55E]" />
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 Three Simple Steps
               </h2>
               <p className="mt-4 text-slate-600 text-lg">
@@ -324,7 +325,7 @@ export default async function LandingPage() {
                     <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#1E40AF]/20 bg-[#F8FAFC] transition-all duration-500 group-hover:border-[#1E40AF]/40 group-hover:shadow-lg group-hover:shadow-[#1E40AF]/10">
                       <span className="text-2xl font-bold text-[#1E40AF]">{step.num}</span>
                     </div>
-                    <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
+                    <h3 className="mt-6 text-xl font-semibold text-slate-900">{step.title}</h3>
                     <p className="mt-2 text-sm text-slate-600 leading-relaxed">{step.description}</p>
                   </div>
                 </ScrollStaggerItem>
@@ -340,7 +341,7 @@ export default async function LandingPage() {
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
               <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#1E40AF] to-[#22C55E]" />
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 Loved by Learners
               </h2>
               <p className="mt-4 text-slate-600 text-lg">
@@ -378,7 +379,7 @@ export default async function LandingPage() {
                         {t.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold">{t.name}</p>
+                        <p className="text-sm font-semibold text-slate-900">{t.name}</p>
                         <p className="text-xs text-slate-500">{t.role}</p>
                       </div>
                     </div>
@@ -396,7 +397,7 @@ export default async function LandingPage() {
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
               <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#1E40AF] to-[#22C55E]" />
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 Simple Pricing
               </h2>
               <p className="mt-4 text-slate-600 text-lg">
@@ -420,7 +421,7 @@ export default async function LandingPage() {
                         </div>
                       </div>
 
-                      <h3 className="text-lg font-semibold">{tier.name}</h3>
+                      <h3 className="text-lg font-semibold text-slate-900">{tier.name}</h3>
                       <div className="mt-4 flex items-baseline gap-1">
                         <span className="text-5xl font-bold text-[#1E40AF]">{tier.price}</span>
                         {tier.period && (
@@ -433,7 +434,7 @@ export default async function LandingPage() {
                         {tier.features.map((feature) => (
                           <li key={feature} className="flex items-start gap-3">
                             <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#22C55E]" />
-                            <span className="text-sm">{feature}</span>
+                            <span className="text-sm text-slate-600">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -447,7 +448,7 @@ export default async function LandingPage() {
                     </AnimatedGradientBorder>
                   ) : (
                     <div className="relative overflow-hidden rounded-2xl border border-[#1E40AF]/10 bg-white p-8 shadow-sm transition-all duration-500 hover:shadow-lg hover:border-[#1E40AF]/20">
-                      <h3 className="text-lg font-semibold">{tier.name}</h3>
+                      <h3 className="text-lg font-semibold text-slate-900">{tier.name}</h3>
                       <div className="mt-4 flex items-baseline gap-1">
                         <span className="text-5xl font-bold text-[#1E40AF]">{tier.price}</span>
                         {tier.period && (
@@ -460,7 +461,7 @@ export default async function LandingPage() {
                         {tier.features.map((feature) => (
                           <li key={feature} className="flex items-start gap-3">
                             <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#1E40AF]" />
-                            <span className="text-sm">{feature}</span>
+                            <span className="text-sm text-slate-600">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -545,7 +546,7 @@ export default async function LandingPage() {
                   <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
                   <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
                 </svg>
-                <span className="text-lg font-bold">ExpertHub</span>
+                <span className="text-lg font-bold text-slate-900">ExpertHub</span>
               </Link>
               <p className="mt-4 text-sm leading-relaxed text-slate-500">
                 Connect with expert minds through AI-powered Digital Twins.
@@ -553,7 +554,7 @@ export default async function LandingPage() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold">Product</h4>
+              <h4 className="text-sm font-semibold text-slate-900">Product</h4>
               <ul className="mt-4 space-y-2.5">
                 {[
                   { label: "Features", href: "/#features" },
@@ -569,7 +570,7 @@ export default async function LandingPage() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold">Company</h4>
+              <h4 className="text-sm font-semibold text-slate-900">Company</h4>
               <ul className="mt-4 space-y-2.5">
                 {[
                   { label: "About", href: "/about" },
@@ -585,7 +586,7 @@ export default async function LandingPage() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold">Legal</h4>
+              <h4 className="text-sm font-semibold text-slate-900">Legal</h4>
               <ul className="mt-4 space-y-2.5">
                 {[
                   { label: "Privacy Policy", href: "/about" },
