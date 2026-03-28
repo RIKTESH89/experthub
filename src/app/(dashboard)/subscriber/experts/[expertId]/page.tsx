@@ -80,7 +80,7 @@ const tierBorderColors = {
 };
 
 const tierIconColors = {
-  FREE: "text-muted-foreground",
+  FREE: "text-slate-500",
   STANDARD: "text-[#1E40AF]",
   PREMIUM: "text-amber-500",
 };
@@ -168,11 +168,11 @@ export default function SubscriberExpertProfilePage() {
   if (!expert) {
     return (
       <FadeIn className="flex flex-col items-center justify-center py-16 font-sans">
-        <div className="rounded-full bg-muted/50 p-6 mb-4">
-          <User className="h-10 w-10 text-muted-foreground" />
+        <div className="rounded-full bg-slate-100 p-6 mb-4">
+          <User className="h-10 w-10 text-slate-500" />
         </div>
         <h2 className="text-lg font-semibold">Expert Not Found</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-slate-500">
           This expert profile does not exist.
         </p>
         <Button className="mt-4 cursor-pointer" asChild>
@@ -265,7 +265,7 @@ export default function SubscriberExpertProfilePage() {
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold tracking-tight font-sans">About</h3>
                     <div className="rounded-xl border bg-card p-5">
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
                         {expert.bio}
                       </p>
                     </div>
@@ -408,14 +408,14 @@ export default function SubscriberExpertProfilePage() {
                                     {t.price > 0 ? `₹${t.price.toFixed(2)}` : "Free"}
                                   </p>
                                   {t.price > 0 && (
-                                    <span className="text-xs font-medium text-muted-foreground">
+                                    <span className="text-xs font-medium text-slate-500">
                                       per month
                                     </span>
                                   )}
                                 </div>
 
                                 {t.description && (
-                                  <p className="text-xs text-muted-foreground mb-3">
+                                  <p className="text-xs text-slate-500 mb-3">
                                     {t.description}
                                   </p>
                                 )}
@@ -425,7 +425,7 @@ export default function SubscriberExpertProfilePage() {
                                     {t.features.map((feature, i) => (
                                       <li
                                         key={i}
-                                        className="flex items-start gap-2 text-xs text-muted-foreground"
+                                        className="flex items-start gap-2 text-xs text-slate-600"
                                       >
                                         <div
                                           className={cn(
@@ -455,7 +455,7 @@ export default function SubscriberExpertProfilePage() {
                     </div>
                   ) : (
                     <div className="rounded-xl border bg-card p-5">
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-slate-500">
                         <span className="text-2xl font-bold text-foreground font-sans">
                           ₹{(expert.monthlyPrice ?? 0).toFixed(2)}
                         </span>

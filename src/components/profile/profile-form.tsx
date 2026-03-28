@@ -202,7 +202,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
         </CardContent>
 
         <CardFooter className="flex justify-end border-t pt-4">
-          <Button type="submit" disabled={isSubmitting || (!isDirty && !avatarFile)}>
+          <Button type="submit" className="cursor-pointer" disabled={isSubmitting || (!isDirty && !avatarFile)}>
             {isSubmitting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (

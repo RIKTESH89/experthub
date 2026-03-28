@@ -70,7 +70,7 @@ const statusConfig: Record<
 };
 
 const tierConfig: Record<string, { icon: typeof Crown; color: string; bg: string }> = {
-  FREE: { icon: Zap, color: "text-muted-foreground", bg: "bg-muted/50" },
+  FREE: { icon: Zap, color: "text-slate-500", bg: "bg-white" },
   STANDARD: { icon: Star, color: "text-blue-700 dark:text-blue-400", bg: "bg-blue-700/10" },
   PREMIUM: { icon: Crown, color: "text-amber-500", bg: "bg-amber-500/10" },
 };
@@ -154,7 +154,7 @@ export function SubscriptionCard({
               </span>
             </div>
             {subscription.expert.headline && (
-              <p className="mt-0.5 truncate text-xs font-sans text-muted-foreground/80">
+              <p className="mt-0.5 truncate text-xs font-sans text-slate-500">
                 {subscription.expert.headline}
               </p>
             )}
@@ -167,7 +167,7 @@ export function SubscriptionCard({
                 : "Free"}
             </span>
             {subscription.monthlyPrice > 0 && (
-              <span className="text-[10px] font-sans text-muted-foreground/60">/month</span>
+              <span className="text-[10px] font-sans text-slate-500">/month</span>
             )}
             {tier && TierIcon && (
               <span

@@ -91,7 +91,7 @@ function PremiumStatCard({
                 className="text-2xl font-bold tracking-tight text-foreground"
               />
             )}
-            <p className="text-[11px] font-medium text-muted-foreground/70 uppercase tracking-wider mt-0.5">
+            <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wider mt-0.5">
               {label}
             </p>
           </div>
@@ -191,7 +191,7 @@ export default function ExpertTwinPage() {
             <h2 className="text-2xl font-bold tracking-tight">
               Digital Twin Configuration
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-slate-500">
               Configure your AI-powered Twin
             </p>
           </div>
@@ -315,7 +315,7 @@ export default function ExpertTwinPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="rounded-xl border border-border/60 bg-gradient-to-b from-muted/40 to-muted/20 p-4 shadow-inner">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-inner">
                     {/* Chat Header Preview */}
                     <motion.div
                       className="flex items-center gap-3 border-b border-border/60 pb-3"
@@ -335,7 +335,7 @@ export default function ExpertTwinPage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold">Your AI Twin</p>
-                        <p className="text-[11px] text-muted-foreground/70">
+                        <p className="text-[11px] text-slate-500">
                           AI Digital Twin
                         </p>
                       </div>
@@ -392,7 +392,7 @@ export default function ExpertTwinPage() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="rounded-xl rounded-tl-sm bg-card border border-border/60 p-3 shadow-sm max-w-[85%]">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-sm text-slate-600 leading-relaxed">
                           I can answer questions based on my expert&apos;s knowledge
                           base, covering their areas of expertise and published
                           content...

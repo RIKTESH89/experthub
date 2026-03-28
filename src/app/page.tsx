@@ -146,7 +146,7 @@ export default async function LandingPage() {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm font-medium text-white/60 transition-colors hover:text-white"
+                className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
               >
                 {item.label}
               </a>
@@ -154,7 +154,7 @@ export default async function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-white/60 transition-colors hover:text-white">
+            <Link href="/login" className="text-sm font-medium text-slate-300 transition-colors hover:text-white">
               Log In
             </Link>
             <Link
@@ -172,7 +172,7 @@ export default async function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8 lg:py-48">
           <div className="mx-auto max-w-3xl text-center">
             <HeroTextEntrance delay={0}>
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 text-sm text-white/60 backdrop-blur-sm">
+              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-1.5 text-sm text-slate-300 backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5 text-[#22C55E]" />
                 AI-Powered Expert Platform
               </div>
@@ -188,7 +188,7 @@ export default async function LandingPage() {
             </HeroTextEntrance>
 
             <HeroTextEntrance delay={0.3}>
-              <p className="mx-auto mt-6 max-w-xl text-lg text-white/40 sm:text-xl leading-relaxed">
+              <p className="mx-auto mt-6 max-w-xl text-lg text-slate-400 sm:text-xl leading-relaxed">
                 Chat with AI replicas of top experts. Instant answers, 24/7.
               </p>
             </HeroTextEntrance>
@@ -204,7 +204,7 @@ export default async function LandingPage() {
                 </Link>
                 <Link
                   href="/login"
-                  className="inline-flex h-13 items-center justify-center gap-2 rounded-xl border border-white/[0.12] px-8 text-base font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white/[0.06] hover:border-white/[0.2]"
+                  className="inline-flex h-13 items-center justify-center gap-2 rounded-xl border border-white/[0.15] px-8 text-base font-medium text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/[0.08] hover:border-white/[0.25]"
                 >
                   Sign In
                 </Link>
@@ -224,8 +224,8 @@ export default async function LandingPage() {
                     </div>
                   ))}
                 </div>
-                <span className="text-sm text-white/40">
-                  Trusted by <span className="font-semibold text-white/70">experts & learners</span>
+                <span className="text-sm text-slate-400">
+                  Trusted by <span className="font-semibold text-slate-200">experts & learners</span>
                 </span>
               </div>
             </HeroTextEntrance>
@@ -234,7 +234,7 @@ export default async function LandingPage() {
       </HeroSection>
 
       {/* ==================== STATS BAR ==================== */}
-      <section className="relative z-10 -mt-10 px-4 sm:px-6 lg:px-8 bg-[#EFF6FF]">
+      <section className="relative z-10 -mt-10 px-4 sm:px-6 lg:px-8 bg-[#F8FAFC]">
         <ScrollReveal>
           <div className="mx-auto max-w-4xl">
             <div className="rounded-2xl border border-[#1E40AF]/10 bg-white px-6 py-6 shadow-xl shadow-[#1E40AF]/5 sm:px-10 sm:py-8">
@@ -244,7 +244,7 @@ export default async function LandingPage() {
                     <div className="text-2xl font-bold text-[#1E40AF] sm:text-3xl lg:text-4xl tabular-nums">
                       <ScrollCounter value={stat.value} suffix={stat.suffix} />
                     </div>
-                    <p className="mt-1 text-xs font-medium text-muted-foreground sm:text-sm">{stat.label}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -254,7 +254,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ==================== FEATURES SECTION ==================== */}
-      <section id="features" className="relative bg-[#EFF6FF] pb-20 pt-20 sm:pb-28 sm:pt-24">
+      <section id="features" className="relative bg-[#F8FAFC] pb-20 pt-20 sm:pb-28 sm:pt-24">
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
@@ -262,7 +262,7 @@ export default async function LandingPage() {
               <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 Why ExpertHub?
               </h2>
-              <p className="mt-4 text-muted-foreground text-lg">
+              <p className="mt-4 text-slate-600 text-lg">
                 Everything you need to learn from the world&apos;s best minds
               </p>
             </div>
@@ -283,7 +283,7 @@ export default async function LandingPage() {
                       </div>
 
                       <h3 className="relative text-lg font-semibold sm:text-xl">{feature.title}</h3>
-                      <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">
+                      <p className="relative mt-2 text-sm text-slate-600 leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
@@ -304,7 +304,7 @@ export default async function LandingPage() {
               <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 Three Simple Steps
               </h2>
-              <p className="mt-4 text-muted-foreground text-lg">
+              <p className="mt-4 text-slate-600 text-lg">
                 Start learning from expert AI twins in minutes
               </p>
             </div>
@@ -321,11 +321,11 @@ export default async function LandingPage() {
                 <ScrollStaggerItem key={step.num}>
                   <div className="relative text-center group">
                     {/* Step number circle */}
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#1E40AF]/20 bg-[#EFF6FF] transition-all duration-500 group-hover:border-[#1E40AF]/40 group-hover:shadow-lg group-hover:shadow-[#1E40AF]/10">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#1E40AF]/20 bg-[#F8FAFC] transition-all duration-500 group-hover:border-[#1E40AF]/40 group-hover:shadow-lg group-hover:shadow-[#1E40AF]/10">
                       <span className="text-2xl font-bold text-[#1E40AF]">{step.num}</span>
                     </div>
                     <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">{step.description}</p>
                   </div>
                 </ScrollStaggerItem>
               ))}
@@ -335,7 +335,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ==================== TESTIMONIALS ==================== */}
-      <section className="relative bg-[#EFF6FF] pb-20 pt-20 sm:pb-24 sm:pt-24">
+      <section className="relative bg-[#F8FAFC] pb-20 pt-20 sm:pb-24 sm:pt-24">
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
@@ -343,7 +343,7 @@ export default async function LandingPage() {
               <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 Loved by Learners
               </h2>
-              <p className="mt-4 text-muted-foreground text-lg">
+              <p className="mt-4 text-slate-600 text-lg">
                 See what our community has to say
               </p>
             </div>
@@ -372,14 +372,14 @@ export default async function LandingPage() {
                         <Star key={i} className="h-4 w-4 fill-[#CA8A04] text-[#CA8A04]" />
                       ))}
                     </div>
-                    <p className="mt-4 text-sm text-muted-foreground leading-relaxed sm:text-base">&ldquo;{t.content}&rdquo;</p>
+                    <p className="mt-4 text-sm text-slate-600 leading-relaxed sm:text-base">&ldquo;{t.content}&rdquo;</p>
                     <div className="mt-5 flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#1E40AF] to-[#22C55E] text-xs font-semibold text-white shadow-lg shadow-[#1E40AF]/20">
                         {t.name.charAt(0)}
                       </div>
                       <div>
                         <p className="text-sm font-semibold">{t.name}</p>
-                        <p className="text-xs text-muted-foreground">{t.role}</p>
+                        <p className="text-xs text-slate-500">{t.role}</p>
                       </div>
                     </div>
                   </div>
@@ -399,7 +399,7 @@ export default async function LandingPage() {
               <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 Simple Pricing
               </h2>
-              <p className="mt-4 text-muted-foreground text-lg">
+              <p className="mt-4 text-slate-600 text-lg">
                 Start free, upgrade when you&apos;re ready
               </p>
             </div>
@@ -424,10 +424,10 @@ export default async function LandingPage() {
                       <div className="mt-4 flex items-baseline gap-1">
                         <span className="text-5xl font-bold text-[#1E40AF]">{tier.price}</span>
                         {tier.period && (
-                          <span className="text-sm text-muted-foreground">{tier.period}</span>
+                          <span className="text-sm text-slate-500">{tier.period}</span>
                         )}
                       </div>
-                      <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
+                      <p className="mt-3 text-sm text-slate-500">{tier.description}</p>
 
                       <ul className="mt-8 space-y-3">
                         {tier.features.map((feature) => (
@@ -451,10 +451,10 @@ export default async function LandingPage() {
                       <div className="mt-4 flex items-baseline gap-1">
                         <span className="text-5xl font-bold text-[#1E40AF]">{tier.price}</span>
                         {tier.period && (
-                          <span className="text-sm text-muted-foreground">{tier.period}</span>
+                          <span className="text-sm text-slate-500">{tier.period}</span>
                         )}
                       </div>
-                      <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
+                      <p className="mt-3 text-sm text-slate-500">{tier.description}</p>
 
                       <ul className="mt-8 space-y-3">
                         {tier.features.map((feature) => (
@@ -467,7 +467,7 @@ export default async function LandingPage() {
 
                       <Link
                         href="/login"
-                        className="mt-10 flex h-12 items-center justify-center rounded-xl border border-[#1E40AF]/20 bg-[#EFF6FF] text-sm font-medium text-[#1E40AF] transition-all duration-300 hover:bg-[#1E40AF] hover:text-white hover:-translate-y-0.5"
+                        className="mt-10 flex h-12 items-center justify-center rounded-xl border border-[#1E40AF]/20 bg-[#F8FAFC] text-sm font-medium text-[#1E40AF] transition-all duration-300 hover:bg-[#1E40AF] hover:text-white hover:-translate-y-0.5"
                       >
                         {tier.cta}
                       </Link>
@@ -505,7 +505,7 @@ export default async function LandingPage() {
                 <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                   Ready to Learn from the Best?
                 </h2>
-                <p className="mx-auto mt-4 max-w-xl text-lg text-white/60">
+                <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">
                   Join thousands of learners already benefiting from expert AI twins
                 </p>
                 <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -530,7 +530,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ==================== FOOTER ==================== */}
-      <footer className="border-t border-[#1E40AF]/10 bg-[#EFF6FF]/50">
+      <footer className="border-t border-[#1E40AF]/10 bg-[#F8FAFC]/50">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="grid gap-10 sm:grid-cols-4">
             <div className="sm:col-span-1">
@@ -547,7 +547,7 @@ export default async function LandingPage() {
                 </svg>
                 <span className="text-lg font-bold">ExpertHub</span>
               </Link>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-4 text-sm leading-relaxed text-slate-500">
                 Connect with expert minds through AI-powered Digital Twins.
               </p>
             </div>
@@ -562,7 +562,7 @@ export default async function LandingPage() {
                   { label: "For Experts", href: "#apply-expert" },
                 ].map((item) => (
                   <li key={item.label}>
-                    <Link href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.label}</Link>
+                    <Link href={item.href} className="text-sm text-slate-500 transition-colors hover:text-slate-900">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -578,7 +578,7 @@ export default async function LandingPage() {
                   { label: "Contact", href: "/about" },
                 ].map((item) => (
                   <li key={item.label}>
-                    <Link href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.label}</Link>
+                    <Link href={item.href} className="text-sm text-slate-500 transition-colors hover:text-slate-900">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -593,14 +593,14 @@ export default async function LandingPage() {
                   { label: "Cookie Policy", href: "/about" },
                 ].map((item) => (
                   <li key={item.label}>
-                    <Link href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.label}</Link>
+                    <Link href={item.href} className="text-sm text-slate-500 transition-colors hover:text-slate-900">{item.label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          <div className="mt-14 border-t border-[#1E40AF]/10 pt-8 text-center text-sm text-muted-foreground">
+          <div className="mt-14 border-t border-[#1E40AF]/10 pt-8 text-center text-sm text-slate-500">
             &copy; {new Date().getFullYear()} ExpertHub. All rights reserved.
           </div>
         </div>

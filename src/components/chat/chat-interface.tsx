@@ -540,9 +540,9 @@ export function ChatInterface({
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
                     <History className="h-3.5 w-3.5 text-primary" />
                   </div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">History</h3>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">History</h3>
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg sm:hidden" onClick={() => setShowHistory(false)}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer rounded-lg sm:hidden" onClick={() => setShowHistory(false)}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -556,7 +556,7 @@ export function ChatInterface({
                       transition={{ delay: index * 0.04, duration: 0.2 }}
                       onClick={() => handleSwitchSession(s.id)}
                       className={cn(
-                        "group w-full rounded-lg px-3 py-2.5 text-left transition-all duration-200",
+                        "group w-full cursor-pointer rounded-lg px-3 py-2.5 text-left transition-all duration-200",
                         s.id === sessionId
                           ? "bg-primary/8 border border-primary/20 shadow-sm shadow-primary/5"
                           : "hover:bg-muted/60 border border-transparent"
@@ -565,7 +565,7 @@ export function ChatInterface({
                       <div className="flex items-center gap-2">
                         <MessageSquare className={cn(
                           "h-3.5 w-3.5 shrink-0 transition-colors",
-                          s.id === sessionId ? "text-primary" : "text-muted-foreground/50 group-hover:text-muted-foreground"
+                          s.id === sessionId ? "text-primary" : "text-slate-500 group-hover:text-slate-700"
                         )} />
                         <p className={cn(
                           "truncate text-xs font-medium",
@@ -575,19 +575,19 @@ export function ChatInterface({
                         </p>
                       </div>
                       {s.lastMessage && (
-                        <p className="mt-1 truncate pl-[22px] text-[10px] text-muted-foreground/60">
+                        <p className="mt-1 truncate pl-[22px] text-[10px] text-slate-500">
                           {s.lastMessage}
                         </p>
                       )}
-                      <p className="mt-0.5 pl-[22px] text-[10px] text-muted-foreground/40">
+                      <p className="mt-0.5 pl-[22px] text-[10px] text-slate-500">
                         {formatRelativeDate(s.updatedAt)}
                       </p>
                     </motion.button>
                   ))}
                   {sessionHistory.length === 0 && (
                     <div className="px-3 py-8 text-center">
-                      <MessageSquare className="mx-auto h-8 w-8 text-muted-foreground/20" />
-                      <p className="mt-2 text-xs text-muted-foreground/50">
+                      <MessageSquare className="mx-auto h-8 w-8 text-slate-500" />
+                      <p className="mt-2 text-xs text-slate-500">
                         No previous chats
                       </p>
                     </div>
@@ -607,7 +607,7 @@ export function ChatInterface({
             variant="ghost"
             size="icon"
             className={cn(
-              "h-8 w-8 shrink-0 rounded-lg transition-colors",
+              "h-8 w-8 shrink-0 cursor-pointer rounded-lg transition-colors",
               showHistory && "bg-primary/10 text-primary"
             )}
             onClick={() => setShowHistory(!showHistory)}
@@ -630,8 +630,8 @@ export function ChatInterface({
           <div className="min-w-0">
             <h3 className="truncate text-sm font-semibold">{expertName}</h3>
             <div className="flex items-center gap-1.5">
-              <Sparkles className="h-2.5 w-2.5 text-primary/60" />
-              <p className="text-[10px] text-muted-foreground/70 sm:text-xs">AI Digital Twin</p>
+              <Sparkles className="h-2.5 w-2.5 text-primary" />
+              <p className="text-[10px] text-slate-500 sm:text-xs">AI Digital Twin</p>
             </div>
           </div>
 
@@ -647,15 +647,15 @@ export function ChatInterface({
               )}
             <ShareButton sessionId={sessionId} />
             {memoryCount > 0 && (
-              <div className="hidden items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-2.5 py-1 text-[10px] text-muted-foreground/70 sm:flex">
-                <Brain className="h-3 w-3 text-primary/50" />
+              <div className="hidden items-center gap-1.5 rounded-full border border-border/50 bg-white px-2.5 py-1 text-[10px] text-slate-500 sm:flex">
+                <Brain className="h-3 w-3 text-primary" />
                 <span className="font-medium">{memoryCount}</span>
               </div>
             )}
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 gap-1.5 rounded-lg border border-border/40 bg-background/50 text-xs hover:bg-muted/80 hover:border-border"
+              className="h-8 cursor-pointer gap-1.5 rounded-lg border border-border/40 bg-white text-xs hover:bg-muted hover:border-border"
               onClick={handleNewChat}
               disabled={isStreaming || isLoading}
             >
@@ -693,7 +693,7 @@ export function ChatInterface({
               <h3 className="mt-6 text-lg font-semibold">
                 Chat with {expertName}&apos;s AI Twin
               </h3>
-              <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground/70">
+              <p className="mt-2 max-w-sm text-sm leading-relaxed text-slate-500">
                 Ask questions and get answers based on {expertName}&apos;s
                 knowledge base and expertise.
               </p>
@@ -707,7 +707,7 @@ export function ChatInterface({
                 <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
                 <div className="absolute inset-0 animate-ping rounded-full border border-primary/10" />
               </div>
-              <p className="mt-5 text-sm text-muted-foreground/60">
+              <p className="mt-5 text-sm text-slate-500">
                 Loading conversation...
               </p>
             </div>
@@ -777,7 +777,7 @@ export function ChatInterface({
             >
               <button
                 onClick={handleForceScrollToBottom}
-                className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/90 px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-lg shadow-black/10 backdrop-blur-sm transition-all hover:bg-card hover:text-foreground hover:shadow-xl"
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-border/60 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-700 shadow-lg shadow-black/10 backdrop-blur-sm transition-all hover:bg-card hover:text-foreground hover:shadow-xl"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
                 New messages

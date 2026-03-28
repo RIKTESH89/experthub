@@ -265,7 +265,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.15 }}
                       className={cn(
-                        "px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/50",
+                        "px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500",
                         gi === 0 ? "pb-2 pt-1" : "pb-2 pt-4"
                       )}
                     >
@@ -297,7 +297,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                             isOpen ? "gap-3 px-3" : "justify-center px-0",
                             isActive
                               ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                              : "text-slate-500 hover:bg-accent hover:text-foreground"
                           )}
                         >
                           {/* Active left border accent */}
@@ -315,7 +315,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                               "h-[18px] w-[18px] shrink-0",
                               isActive
                                 ? "text-primary"
-                                : "text-muted-foreground group-hover:text-foreground"
+                                : "text-slate-500 group-hover:text-foreground"
                             )}
                           />
 
@@ -362,7 +362,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center gap-3 rounded-md bg-muted/40 p-2.5"
+              className="flex items-center gap-3 rounded-md bg-white p-2.5"
             >
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">

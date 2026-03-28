@@ -59,7 +59,7 @@ export default function ExpertKnowledgePage() {
               <h2 className="text-3xl font-bold tracking-tight">
                 Knowledge Base
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-slate-500">
                 Power your AI Twin with expert content and insights
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function ExpertKnowledgePage() {
                     <p className="text-3xl font-bold tracking-tight">
                       <AnimatedCounter value={stats.total} />
                     </p>
-                    <p className="text-xs font-medium text-muted-foreground">
+                    <p className="text-xs font-medium text-slate-500">
                       Total Items
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export default function ExpertKnowledgePage() {
                     <p className="text-3xl font-bold tracking-tight">
                       <AnimatedCounter value={stats.indexed} />
                     </p>
-                    <p className="text-xs font-medium text-muted-foreground">
+                    <p className="text-xs font-medium text-slate-500">
                       Indexed
                     </p>
                   </div>
@@ -150,7 +150,7 @@ export default function ExpertKnowledgePage() {
                     <p className="text-3xl font-bold tracking-tight">
                       <AnimatedCounter value={stats.pending} />
                     </p>
-                    <p className="text-xs font-medium text-muted-foreground">
+                    <p className="text-xs font-medium text-slate-500">
                       Pending
                     </p>
                   </div>

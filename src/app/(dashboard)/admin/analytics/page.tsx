@@ -118,7 +118,7 @@ export default function AdminAnalyticsPage() {
                 <h2 className="text-2xl font-bold tracking-tight font-sans">
                   Analytics Dashboard
                 </h2>
-                <p className="text-sm text-muted-foreground font-sans">
+                <p className="text-sm text-slate-500 font-sans">
                   Detailed platform metrics and performance analytics.
                 </p>
               </div>
@@ -248,10 +248,10 @@ export default function AdminAnalyticsPage() {
                     <PieChartIcon className="h-4 w-4 text-[#1E40AF]" />
                   </div>
                   <div>
-                    <CardTitle className="text-base font-semibold tracking-tight text-foreground/90 font-sans">
+                    <CardTitle className="text-base font-semibold tracking-tight text-slate-900 font-sans">
                       User Distribution
                     </CardTitle>
-                    <CardDescription className="text-[13px] leading-relaxed text-muted-foreground/80 font-sans">
+                    <CardDescription className="text-[13px] leading-relaxed text-slate-500 font-sans">
                       Breakdown by role
                     </CardDescription>
                   </div>
@@ -283,7 +283,7 @@ export default function AdminAnalyticsPage() {
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="text-center">
                       <p className="text-2xl font-bold tracking-tight">{totalUsers.toLocaleString()}</p>
-                      <p className="text-xs text-muted-foreground font-sans">Total Users</p>
+                      <p className="text-xs text-slate-500 font-sans">Total Users</p>
                     </div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function AdminAnalyticsPage() {
                         className="inline-block h-2.5 w-2.5 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
-                      <span className="text-xs font-medium text-muted-foreground font-sans">{item.label}</span>
+                      <span className="text-xs font-medium text-slate-500 font-sans">{item.label}</span>
                     </div>
                   ))}
                 </div>
@@ -313,10 +313,10 @@ export default function AdminAnalyticsPage() {
                     <Crown className="h-4 w-4 text-amber-500" />
                   </div>
                   <div>
-                    <CardTitle className="text-base font-semibold tracking-tight text-foreground/90 font-sans">
+                    <CardTitle className="text-base font-semibold tracking-tight text-slate-900 font-sans">
                       Top Experts
                     </CardTitle>
-                    <CardDescription className="text-[13px] leading-relaxed text-muted-foreground/80 font-sans">
+                    <CardDescription className="text-[13px] leading-relaxed text-slate-500 font-sans">
                       By subscriber count and revenue
                     </CardDescription>
                   </div>
@@ -345,7 +345,7 @@ export default function AdminAnalyticsPage() {
                         {/* Name + subscribers */}
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-semibold truncate font-sans">{expert.name}</p>
-                          <p className="text-xs text-muted-foreground font-sans">
+                          <p className="text-xs text-slate-500 font-sans">
                             {expert.subscribers.toLocaleString()} subscribers
                           </p>
                         </div>
@@ -355,7 +355,7 @@ export default function AdminAnalyticsPage() {
                           <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                             ${expert.revenue.toLocaleString()}
                           </p>
-                          <p className="text-[10px] text-muted-foreground/70 uppercase tracking-wider font-sans">
+                          <p className="text-[10px] text-slate-400 uppercase tracking-wider font-sans">
                             revenue
                           </p>
                         </div>

@@ -147,8 +147,8 @@ export function KnowledgeForm({
                 id="title"
                 placeholder="Enter a descriptive title..."
                 className={cn(
-                  "h-11 rounded-lg border-border/50 bg-muted/30 px-4 font-sans transition-all duration-200",
-                  "placeholder:text-muted-foreground/50",
+                  "h-11 rounded-lg border-border/50 bg-white px-4 font-sans transition-all duration-200",
+                  "placeholder:text-slate-500",
                   "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
                   errors.title && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
@@ -186,7 +186,7 @@ export function KnowledgeForm({
               >
                 <SelectTrigger
                   className={cn(
-                    "h-11 cursor-pointer rounded-lg border-border/50 bg-muted/30 font-sans transition-all duration-200",
+                    "h-11 cursor-pointer rounded-lg border-border/50 bg-white font-sans transition-all duration-200",
                     "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10"
                   )}
                 >
@@ -233,8 +233,8 @@ export function KnowledgeForm({
                 id="content"
                 placeholder="Enter the knowledge content..."
                 className={cn(
-                  "min-h-[200px] resize-y rounded-lg border-border/50 bg-muted/30 px-4 py-3 font-sans transition-all duration-200",
-                  "placeholder:text-muted-foreground/50",
+                  "min-h-[200px] resize-y rounded-lg border-border/50 bg-white px-4 py-3 font-sans transition-all duration-200",
+                  "placeholder:text-slate-500",
                   "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
                   errors.content && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
@@ -252,14 +252,14 @@ export function KnowledgeForm({
             </motion.div>
           </CardContent>
 
-          <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-muted/10 px-6 py-4">
+          <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-white px-6 py-4">
             {onCancel && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={onCancel}
                 disabled={isSubmitting}
-                className="cursor-pointer rounded-lg border-border/50 px-5 font-sans transition-colors duration-200 hover:bg-muted/50"
+                className="cursor-pointer rounded-lg border-border/50 px-5 font-sans transition-colors duration-200 hover:bg-muted"
               >
                 Cancel
               </Button>

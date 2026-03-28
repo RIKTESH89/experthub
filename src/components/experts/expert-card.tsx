@@ -119,7 +119,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                     <BadgeCheck className="h-4 w-4 shrink-0 fill-blue-700 text-white dark:fill-blue-500" />
                   )}
                 </div>
-                <p className="line-clamp-1 text-[11px] font-sans text-muted-foreground/80 mt-0.5">
+                <p className="line-clamp-1 text-[11px] font-sans text-slate-500 mt-0.5">
                   {expert.headline || "\u00A0"}
                 </p>
               </div>
@@ -148,7 +148,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                   {formatNumber(expert._count?.subscribers ?? 0)}
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-muted-foreground/40 transition-all duration-200 group-hover:text-blue-700/70 group-hover:gap-1.5">
+              <div className="flex items-center gap-1 text-slate-500 transition-all duration-200 group-hover:text-blue-700 group-hover:gap-1.5">
                 <span className="text-[10px] font-medium font-sans opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                   View
                 </span>

@@ -325,7 +325,7 @@ export default function ExpertProfilePage() {
                     disabled
                     className="bg-gray-50/80 text-gray-500"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-slate-500">
                     Email cannot be changed
                   </p>
                 </div>
@@ -379,7 +379,7 @@ export default function ExpertProfilePage() {
                                   prev.filter((s) => s !== spec)
                                 )
                               }
-                              className="ml-0.5 rounded-full p-0.5 text-blue-400 transition-colors hover:bg-blue-200 hover:text-blue-800"
+                              className="ml-0.5 rounded-full p-0.5 text-blue-400 cursor-pointer transition-colors duration-200 hover:bg-blue-200 hover:text-blue-800"
                             >
                               <X className="h-3 w-3" />
                             </button>
@@ -398,7 +398,7 @@ export default function ExpertProfilePage() {
                     className="transition-all focus:ring-2 focus:ring-blue-600/20"
                   />
                   {specialties.length > 0 && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
                       {specialties.length}/8
                     </span>
                   )}
@@ -441,11 +441,11 @@ export default function ExpertProfilePage() {
                       className="pl-7 font-medium transition-all focus:ring-2 focus:ring-blue-600/20"
                       {...register("monthlyPrice", { required: true })}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
                       /month
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-slate-500">
                     This is the amount subscribers will pay per month for access to
                     your Digital Twin and exclusive content.
                   </p>

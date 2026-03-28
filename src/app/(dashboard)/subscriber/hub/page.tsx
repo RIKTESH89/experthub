@@ -151,7 +151,7 @@ export default function SubscriberHubPage() {
                 </h1>
               </FadeIn>
               <FadeIn delay={0.25} direction="up">
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                <p className="mt-2 text-sm leading-relaxed text-slate-500 sm:text-base">
                   Find experts, trending topics, and content that matters to you.
                 </p>
               </FadeIn>
@@ -182,7 +182,7 @@ export default function SubscriberHubPage() {
                   <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
                     Featured Experts
                   </h2>
-                  <p className="text-xs text-muted-foreground hidden sm:block">
+                  <p className="text-xs text-slate-500 hidden sm:block">
                     Top minds curated for you
                   </p>
                 </div>
@@ -262,7 +262,7 @@ export default function SubscriberHubPage() {
                     <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
                       Trending This Week
                     </h2>
-                    <p className="text-xs text-muted-foreground hidden sm:block">
+                    <p className="text-xs text-slate-500 hidden sm:block">
                       Most engaged content right now
                     </p>
                   </div>
@@ -291,7 +291,7 @@ export default function SubscriberHubPage() {
                       <StaggerItem key={post.id}>
                         <a
                           href="#latest-posts"
-                          className="flex items-start gap-3.5 py-3.5 first:pt-0 last:pb-0 group transition-all duration-200 hover:bg-muted/30 -mx-2 px-2 rounded-lg cursor-pointer"
+                          className="flex items-start gap-3.5 py-3.5 first:pt-0 last:pb-0 group transition-all duration-200 hover:bg-slate-50 -mx-2 px-2 rounded-lg cursor-pointer"
                         >
                           <span
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5 transition-transform duration-200 group-hover:scale-110 ${
@@ -346,7 +346,7 @@ export default function SubscriberHubPage() {
                 <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
                   Latest Posts
                 </h2>
-                <p className="text-xs text-muted-foreground hidden sm:block">
+                <p className="text-xs text-slate-500 hidden sm:block">
                   Fresh content from your network
                 </p>
               </div>

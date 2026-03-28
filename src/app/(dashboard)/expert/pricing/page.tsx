@@ -79,7 +79,7 @@ function FeaturePreview({ features }: { features: string }) {
 
   return (
     <div className="mt-3 space-y-1.5">
-      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
         Preview
       </p>
       <div className="space-y-1.5">
@@ -94,7 +94,7 @@ function FeaturePreview({ features }: { features: string }) {
             <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 ring-1 ring-emerald-500/20">
               <Check className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <span className="text-xs text-muted-foreground leading-relaxed">
+            <span className="text-xs text-slate-500 leading-relaxed">
               {feature}
             </span>
           </motion.div>
@@ -201,7 +201,7 @@ export default function ExpertPricingPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Pricing</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-slate-500">
               Configure your subscription tiers
             </p>
           </div>
@@ -230,7 +230,7 @@ export default function ExpertPricingPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Pricing</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-slate-500">
               Configure your subscription tiers
             </p>
           </div>
@@ -324,12 +324,12 @@ export default function ExpertPricingPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor={`${t.tier}-price`}
-                        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70"
+                        className="text-xs font-semibold uppercase tracking-wider text-slate-500"
                       >
                         Price (per month)
                       </Label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground/50">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">
                           ₹
                         </span>
                         <Input
@@ -343,7 +343,7 @@ export default function ExpertPricingPage() {
                           }
                           disabled={isFree}
                           className={cn(
-                            "pl-7 h-11 rounded-lg border-border/60 bg-muted/30 transition-all",
+                            "pl-7 h-11 rounded-lg border-border/60 bg-slate-50 transition-all",
                             "focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary/40",
                             isFree && "opacity-50"
                           )}
@@ -355,7 +355,7 @@ export default function ExpertPricingPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor={`${t.tier}-description`}
-                        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70"
+                        className="text-xs font-semibold uppercase tracking-wider text-slate-500"
                       >
                         Description
                       </Label>
@@ -367,7 +367,7 @@ export default function ExpertPricingPage() {
                         }
                         rows={2}
                         className={cn(
-                          "rounded-lg border-border/60 bg-muted/30 resize-none transition-all",
+                          "rounded-lg border-border/60 bg-slate-50 resize-none transition-all",
                           "focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                         )}
                       />
@@ -377,7 +377,7 @@ export default function ExpertPricingPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor={`${t.tier}-questions`}
-                        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70"
+                        className="text-xs font-semibold uppercase tracking-wider text-slate-500"
                       >
                         Monthly Twin Questions
                       </Label>
@@ -403,7 +403,7 @@ export default function ExpertPricingPage() {
                           }
                           placeholder="e.g. 3"
                           className={cn(
-                            "h-11 rounded-lg border-border/60 bg-muted/30 transition-all",
+                            "h-11 rounded-lg border-border/60 bg-slate-50 transition-all",
                             "focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                           )}
                         />
@@ -414,7 +414,7 @@ export default function ExpertPricingPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor={`${t.tier}-features`}
-                        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70"
+                        className="text-xs font-semibold uppercase tracking-wider text-slate-500"
                       >
                         Features (one per line)
                       </Label>
@@ -427,7 +427,7 @@ export default function ExpertPricingPage() {
                         rows={4}
                         placeholder="Enter each feature on a new line"
                         className={cn(
-                          "rounded-lg border-border/60 bg-muted/30 resize-none transition-all",
+                          "rounded-lg border-border/60 bg-slate-50 resize-none transition-all",
                           "focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                         )}
                       />

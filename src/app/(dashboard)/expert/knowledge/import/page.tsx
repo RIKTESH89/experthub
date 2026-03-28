@@ -19,7 +19,7 @@ export default function KnowledgeImportPage() {
         <div>
           <Link
             href="/expert/knowledge"
-            className="cursor-pointer mb-5 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-blue-50/60 hover:text-blue-700 dark:hover:bg-blue-500/5 dark:hover:text-blue-400"
+            className="cursor-pointer mb-5 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-500/5 dark:hover:text-blue-400"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to Knowledge Base
@@ -33,7 +33,7 @@ export default function KnowledgeImportPage() {
               <h2 className="text-3xl font-bold tracking-tight">
                 Import Content
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-slate-500">
                 Import blog articles and PDF documents into your Digital Twin&apos;s knowledge base.
               </p>
             </div>
@@ -44,7 +44,7 @@ export default function KnowledgeImportPage() {
       {/* Tabs */}
       <FadeIn delay={0.2} direction="up">
         <Tabs defaultValue="blog" className="space-y-6">
-          <TabsList className="inline-flex h-12 w-full gap-1 rounded-xl border border-border/50 bg-muted/50 p-1 shadow-sm  sm:w-auto">
+          <TabsList className="inline-flex h-12 w-full gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1 shadow-sm  sm:w-auto">
             <TabsTrigger
               value="blog"
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer data-[state=active]:bg-[#1E40AF] data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-700/20"

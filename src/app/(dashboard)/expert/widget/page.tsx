@@ -351,7 +351,7 @@ export default function ExpertWidgetPage() {
                       max={100}
                       className="w-28 text-center font-medium"
                     />
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-slate-500">
                       questions per visitor
                     </span>
                   </div>
@@ -380,7 +380,7 @@ export default function ExpertWidgetPage() {
                 <CardContent className="space-y-4">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                       <Input
                         value={domainInput}
                         onChange={(e) => setDomainInput(e.target.value)}
@@ -398,7 +398,7 @@ export default function ExpertWidgetPage() {
                       type="button"
                       variant="outline"
                       onClick={handleAddDomain}
-                      className="gap-1.5 border-blue-200 text-blue-800 hover:bg-blue-50"
+                      className="cursor-pointer gap-1.5 border-blue-200 text-blue-800 hover:bg-blue-50 transition-all duration-200"
                     >
                       <Plus className="h-4 w-4" />
                       Add
@@ -428,7 +428,7 @@ export default function ExpertWidgetPage() {
                               {domain}
                               <button
                                 onClick={() => handleRemoveDomain(domain)}
-                                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-blue-200 hover:text-blue-900"
+                                className="ml-0.5 rounded-full p-0.5 cursor-pointer transition-colors duration-200 hover:bg-blue-200 hover:text-blue-900"
                               >
                                 <X className="h-3 w-3" />
                               </button>
@@ -439,7 +439,7 @@ export default function ExpertWidgetPage() {
                     )}
                   </AnimatePresence>
                   {allowedDomains.length === 0 && (
-                    <p className="text-xs text-muted-foreground italic">
+                    <p className="text-xs text-slate-500 italic">
                       No domain restrictions -- widget can be embedded anywhere
                     </p>
                   )}

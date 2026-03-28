@@ -79,7 +79,7 @@ export function ChatMessage({
             "rounded-2xl px-4 py-3",
             isUser
               ? "rounded-tr-md bg-blue-700 text-white"
-              : "rounded-tl-md border border-border bg-muted/50"
+              : "rounded-tl-md border border-border bg-white"
           )}
         >
           <p className="whitespace-pre-wrap text-sm font-sans leading-relaxed">
@@ -92,8 +92,8 @@ export function ChatMessage({
           "flex items-center gap-1 px-1",
           isUser && "justify-end"
         )}>
-          <Clock className="h-2.5 w-2.5 text-muted-foreground/40" />
-          <p className="text-[10px] font-sans text-muted-foreground/60">
+          <Clock className="h-2.5 w-2.5 text-slate-500" />
+          <p className="text-[10px] font-sans text-slate-500">
             {formatRelativeDate(message.createdAt)}
           </p>
         </div>
@@ -119,7 +119,7 @@ export function ChatMessage({
                 "inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 transition-colors duration-200",
                 message.rating === 1
                   ? "bg-emerald-500/10 text-emerald-500"
-                  : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/80"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-muted"
               )}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -134,7 +134,7 @@ export function ChatMessage({
                 "inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 transition-colors duration-200",
                 message.rating === -1
                   ? "bg-red-500/10 text-red-500"
-                  : "text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/80"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-muted"
               )}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}

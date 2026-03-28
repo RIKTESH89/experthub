@@ -39,7 +39,7 @@ export default function SubscriberSubscriptionsPage() {
         <div className="relative overflow-hidden rounded-xl border bg-card px-6 py-5">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
           <h2 className="text-2xl font-bold tracking-tight font-sans">Subscriptions</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-slate-500">
             Manage and track your active plans
           </p>
         </div>
@@ -51,9 +51,9 @@ export default function SubscriberSubscriptionsPage() {
           <Skeleton className="h-20 w-full rounded-xl" />
         ) : summary.activeCount > 0 ? (
           <div className="grid grid-cols-2 gap-4">
-            <div className="group relative overflow-hidden rounded-xl border bg-card p-4 transition-colors duration-200 hover:bg-muted/30">
+            <div className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 transition-colors duration-200 hover:bg-slate-50">
               <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
                 Active Plans
               </p>
               <div className="mt-1.5 flex items-baseline gap-2">
@@ -65,9 +65,9 @@ export default function SubscriberSubscriptionsPage() {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-xl border bg-card p-4 transition-colors duration-200 hover:bg-muted/30">
+            <div className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 transition-colors duration-200 hover:bg-slate-50">
               <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
                 Monthly Total
               </p>
               <p className="mt-1.5 text-2xl font-bold text-foreground font-sans">
@@ -78,10 +78,10 @@ export default function SubscriberSubscriptionsPage() {
                       prefix="$"
                       className="text-2xl font-bold font-sans"
                     />
-                    <span className="ml-0.5 text-sm font-normal text-muted-foreground">/mo</span>
+                    <span className="ml-0.5 text-sm font-normal text-slate-500">/mo</span>
                   </>
                 ) : (
-                  <span className="text-base font-medium text-muted-foreground">Free plans</span>
+                  <span className="text-base font-medium text-slate-500">Free plans</span>
                 )}
               </p>
             </div>

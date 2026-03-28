@@ -33,7 +33,7 @@ export function EmptyState({
       transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
       className={cn(
         "flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed border-border/60 p-10 text-center",
-        "bg-muted/10",
+        "bg-white",
         className
       )}
     >

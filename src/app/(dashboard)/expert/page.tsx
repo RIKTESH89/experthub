@@ -93,13 +93,13 @@ function generateViewsData(totalViews: number) {
 function MiniTrendIcon({ direction }: { direction: "up" | "down" | "neutral" }) {
   if (direction === "up") return <TrendingUp className="h-3 w-3 text-emerald-500" />;
   if (direction === "down") return <TrendingDown className="h-3 w-3 text-red-400" />;
-  return <Minus className="h-3 w-3 text-muted-foreground" />;
+  return <Minus className="h-3 w-3 text-slate-500" />;
 }
 
 function trendColor(direction: "up" | "down" | "neutral") {
   if (direction === "up") return "text-emerald-500";
   if (direction === "down") return "text-red-400";
-  return "text-muted-foreground";
+  return "text-slate-500";
 }
 
 function SparklineChart({ data }: { data: { views: number }[] }) {
@@ -349,7 +349,7 @@ export default function ExpertDashboardPage() {
                         <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${style.iconBg}`}>
                           <s.icon className={`h-3.5 w-3.5 shrink-0 ${style.iconColor}`} />
                         </div>
-                        <span className="text-[11px] font-medium text-muted-foreground tracking-wide uppercase truncate min-w-0">
+                        <span className="text-[11px] font-medium text-slate-500 tracking-wide uppercase truncate min-w-0">
                           {s.label}
                         </span>
                       </div>
@@ -404,7 +404,7 @@ export default function ExpertDashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-base tracking-tight">Create Post</h3>
-                    <p className="mt-1 text-xs text-muted-foreground leading-snug">
+                    <p className="mt-1 text-xs text-slate-500 leading-snug">
                       Share your expertise with subscribers
                     </p>
                   </div>
@@ -433,7 +433,7 @@ export default function ExpertDashboardPage() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Sparkles className="h-3 w-3 text-primary/60" />
-                      <span className="text-xs text-muted-foreground font-semibold tracking-wide">Twin Accuracy</span>
+                      <span className="text-xs text-slate-500 font-semibold tracking-wide">Twin Accuracy</span>
                     </div>
                   </>
                 ) : (
@@ -441,7 +441,7 @@ export default function ExpertDashboardPage() {
                     <div className="relative">
                       <CircularProgress percentage={0} />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg text-muted-foreground">?</span>
+                        <span className="text-lg text-slate-500">?</span>
                       </div>
                     </div>
                     <Link
@@ -476,7 +476,7 @@ export default function ExpertDashboardPage() {
                   </div>
                   <span className="text-sm font-semibold text-foreground">Post Views</span>
                 </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">7d trend</span>
+                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">7d trend</span>
               </div>
               <div className="flex-1 min-h-[100px] w-full">
                 <SparklineChart data={viewsData} />
@@ -485,7 +485,7 @@ export default function ExpertDashboardPage() {
                 <span className="text-2xl font-bold tracking-tight">
                   <AnimatedCounter value={totalViews} />
                 </span>
-                <span className="text-sm font-medium text-muted-foreground">total views</span>
+                <span className="text-sm font-medium text-slate-500">total views</span>
               </div>
             </CardContent>
           </Card>
@@ -511,7 +511,7 @@ export default function ExpertDashboardPage() {
                     viewBox="0 0 48 32"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="text-muted-foreground/30"
+                    className="text-slate-400"
                     aria-hidden="true"
                   >
                     <circle cx="24" cy="10" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
@@ -521,14 +521,14 @@ export default function ExpertDashboardPage() {
                     <circle cx="38" cy="13" r="4" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.5" />
                     <path d="M46 28c0-4.418-3.582-8-8-8" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.5" />
                   </svg>
-                  <p className="text-center text-xs text-muted-foreground">
+                  <p className="text-center text-xs text-slate-500">
                     No subscribers yet
                   </p>
                 </div>
               ) : (
                 <div className="mt-3 flex-1 space-y-2.5">
                   {displayedSubs.map((sub) => (
-                    <div key={sub.id} className="flex items-center gap-3 rounded-xl p-2 -mx-2 transition-colors hover:bg-muted/40">
+                    <div key={sub.id} className="flex items-center gap-3 rounded-xl p-2 -mx-2 transition-colors hover:bg-slate-100">
                       <Avatar className="h-9 w-9 ring-2 ring-background shadow-sm">
                         <AvatarFallback className="bg-gradient-to-br from-primary/20 to-blue-600/20 text-primary text-[10px] font-bold">
                           {sub.name
@@ -599,20 +599,20 @@ export default function ExpertDashboardPage() {
                   <div className="text-2xl font-bold tracking-tight">
                     <AnimatedCounter value={knowledgeStatus.total} />
                   </div>
-                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Total Items</span>
+                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Total Items</span>
                 </div>
                 <div>
                   <div className="text-2xl font-bold tracking-tight">
                     <AnimatedCounter value={knowledgeStatus.indexed} />
                   </div>
-                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Indexed</span>
+                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Indexed</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Progress</span>
+                    <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Progress</span>
                     <span className="text-xs font-bold text-foreground">{kbProgress}%</span>
                   </div>
-                  <div className="h-2.5 w-full rounded-full bg-muted/80 overflow-hidden">
+                  <div className="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-200 ease-out shadow-sm shadow-emerald-500/25"
                       style={{ width: `${kbProgress}%` }}
@@ -737,7 +737,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
             href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/50 px-3 py-1 text-[11px] font-medium text-primary hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 shrink-0"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-slate-100 px-3 py-1 text-[11px] font-medium text-primary hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 shrink-0"
           >
             Preview <ExternalLink className="h-3 w-3" />
           </a>
@@ -746,16 +746,16 @@ function ShareProfileCard({ userId }: { userId: string }) {
           {snippets.map((snippet) => (
             <div
               key={snippet.id}
-              className="group overflow-hidden rounded-xl border border-border/40 p-3 sm:p-3.5 transition-all duration-200 hover:border-primary/30 hover:bg-muted/20 hover:shadow-sm"
+              className="group overflow-hidden rounded-xl border border-border/40 p-3 sm:p-3.5 transition-all duration-200 hover:border-primary/30 hover:bg-slate-50 hover:shadow-sm"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold tracking-tight">{snippet.label}</p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground truncate">{snippet.description}</p>
+                  <p className="mt-0.5 text-[10px] text-slate-500 truncate">{snippet.description}</p>
                 </div>
                 <button
                   onClick={() => handleCopy(snippet.id, snippet.value)}
-                  className="shrink-0 rounded-lg border border-border/60 p-1.5 text-muted-foreground transition-all duration-200 hover:bg-primary/5 hover:border-primary/30 hover:text-primary"
+                  className="cursor-pointer shrink-0 rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-all duration-200 hover:bg-primary/5 hover:border-primary/30 hover:text-primary"
                   title="Copy to clipboard"
                 >
                   {copied === snippet.id ? (
@@ -765,7 +765,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
                   )}
                 </button>
               </div>
-              <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-muted/50 px-2.5 py-1.5 font-mono text-[10px] text-muted-foreground border border-border/30">
+              <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-slate-100 px-2.5 py-1.5 font-mono text-[10px] text-slate-500 border border-border/30">
                 {snippet.value.split("\n")[0]}
               </p>
             </div>

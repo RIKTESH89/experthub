@@ -65,7 +65,7 @@ function ToggleRow({
 }) {
   return (
     <motion.div
-      className="group flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 p-4 transition-all duration-200 hover:bg-muted/40 hover:border-border/70"
+      className="group flex items-center justify-between rounded-xl border border-border/50 bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100 hover:border-border/70"
       whileHover={{ x: 1 }}
       transition={{ duration: 0.15 }}
     >
@@ -75,7 +75,7 @@ function ToggleRow({
         </div>
         <div className="space-y-0.5">
           <Label className="cursor-pointer text-sm font-medium">{label}</Label>
-          <p className="text-xs text-muted-foreground/80 leading-relaxed">
+          <p className="text-xs text-slate-500 leading-relaxed">
             {description}
           </p>
         </div>
@@ -107,10 +107,10 @@ function DigestOption({
     <motion.button
       type="button"
       onClick={() => onSelect(value)}
-      className={`relative flex w-full flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 ${
+      className={`cursor-pointer relative flex w-full flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 ${
         isSelected
           ? "border-primary/40 bg-primary/5 ring-1 ring-primary/20 shadow-sm"
-          : "border-border/50 bg-muted/10 hover:bg-muted/30 hover:border-border/70"
+          : "border-border/50 bg-slate-50 hover:bg-slate-100 hover:border-border/70"
       }`}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
@@ -142,7 +142,7 @@ function DigestOption({
           )}
         </div>
       </div>
-      <p className="mt-0.5 text-xs text-muted-foreground/80">{description}</p>
+      <p className="mt-0.5 text-xs text-slate-500">{description}</p>
     </motion.button>
   );
 }
@@ -214,7 +214,7 @@ export default function ExpertSettingsPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-slate-500">
                 Manage your notification preferences and account settings
               </p>
             </div>
@@ -227,7 +227,7 @@ export default function ExpertSettingsPage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5">
                 <Loader2 className="h-6 w-6 animate-spin text-primary/60" />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-slate-500">
                 Loading settings...
               </p>
             </div>
@@ -255,7 +255,7 @@ export default function ExpertSettingsPage() {
                     <CardTitle className="text-base font-semibold tracking-tight">
                       Notifications
                     </CardTitle>
-                    <CardDescription className="text-[13px] text-muted-foreground/80">
+                    <CardDescription className="text-[13px] text-slate-500">
                       Choose what you want to be notified about
                     </CardDescription>
                   </div>
@@ -305,7 +305,7 @@ export default function ExpertSettingsPage() {
                     <CardTitle className="text-base font-semibold tracking-tight">
                       Email Digest
                     </CardTitle>
-                    <CardDescription className="text-[13px] text-muted-foreground/80">
+                    <CardDescription className="text-[13px] text-slate-500">
                       How often would you like to receive summary emails?
                     </CardDescription>
                   </div>
@@ -346,9 +346,9 @@ export default function ExpertSettingsPage() {
               </CardContent>
 
               {/* Save Footer */}
-              <CardFooter className="border-t border-border/40 bg-muted/10 px-6 py-4">
+              <CardFooter className="border-t border-border/40 bg-slate-50 px-6 py-4">
                 <div className="flex w-full items-center justify-between">
-                  <p className="text-xs text-muted-foreground/70">
+                  <p className="text-xs text-slate-500">
                     Changes are saved when you click the button
                   </p>
                   <motion.div
@@ -358,7 +358,7 @@ export default function ExpertSettingsPage() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="relative min-w-[160px] bg-gradient-to-r from-primary to-primary/90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow duration-200"
+                      className="cursor-pointer relative min-w-[160px] bg-gradient-to-r from-primary to-primary/90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow duration-200"
                     >
                       {isSubmitting ? (
                         <motion.span

@@ -203,11 +203,11 @@ export function StatCard({
         <CardContent className="relative p-5">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wider font-sans">
+            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-sans">
               {title}
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/[0.08]">
-              <Icon className="h-4 w-4 text-[#1E40AF]/70" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700/10">
+              <Icon className="h-4 w-4 text-blue-700" />
             </div>
           </div>
 
@@ -250,7 +250,7 @@ export function StatCard({
           {/* Description */}
           {description && (
             <motion.p
-              className="mt-1 text-[11px] text-muted-foreground/70 font-sans"
+              className="mt-1 text-[11px] text-slate-500 font-sans"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2, delay: 0.25 }}

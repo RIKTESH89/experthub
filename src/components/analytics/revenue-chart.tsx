@@ -45,7 +45,7 @@ function CustomTooltip({
       <p className="mt-1 text-lg font-bold font-sans text-foreground">
         ₹{payload[0].value.toFixed(2)}
       </p>
-      <p className="text-[11px] font-sans text-muted-foreground/70">Revenue</p>
+      <p className="text-[11px] font-sans text-slate-500">Revenue</p>
     </div>
   );
 }
@@ -71,12 +71,12 @@ export function RevenueChart({ data }: RevenueChartProps) {
       <CardContent className="pb-4">
         {data.length === 0 ? (
           <div className="flex h-[300px] flex-col items-center justify-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
-              <TrendingUp className="h-7 w-7 text-muted-foreground/40" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white">
+              <TrendingUp className="h-7 w-7 text-slate-500" />
             </div>
             <div className="text-center">
               <p className="text-sm font-medium font-sans text-muted-foreground">No revenue data</p>
-              <p className="mt-1 text-xs font-sans text-muted-foreground/60">
+              <p className="mt-1 text-xs font-sans text-slate-500">
                 Revenue will appear here once transactions are recorded
               </p>
             </div>

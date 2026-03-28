@@ -204,7 +204,7 @@ export default function AdminContentPage() {
               Content Moderation
             </h2>
           </div>
-          <p className="mt-1.5 text-sm text-muted-foreground font-sans">
+          <p className="mt-1.5 text-sm text-slate-500 font-sans">
             Review and moderate all posts across the platform.
           </p>
         </div>
@@ -221,7 +221,7 @@ export default function AdminContentPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.total}</p>
-                <p className="text-xs font-medium text-muted-foreground">Total Posts</p>
+                <p className="text-xs font-medium text-slate-500">Total Posts</p>
               </div>
             </CardContent>
           </Card>
@@ -235,7 +235,7 @@ export default function AdminContentPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.published}</p>
-                <p className="text-xs font-medium text-muted-foreground">Published</p>
+                <p className="text-xs font-medium text-slate-500">Published</p>
               </div>
             </CardContent>
           </Card>
@@ -249,7 +249,7 @@ export default function AdminContentPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.archived}</p>
-                <p className="text-xs font-medium text-muted-foreground">Archived</p>
+                <p className="text-xs font-medium text-slate-500">Archived</p>
               </div>
             </CardContent>
           </Card>
@@ -263,7 +263,7 @@ export default function AdminContentPage() {
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.reported}</p>
-                <p className="text-xs font-medium text-muted-foreground">Reported</p>
+                <p className="text-xs font-medium text-slate-500">Reported</p>
               </div>
             </CardContent>
           </Card>
@@ -274,7 +274,7 @@ export default function AdminContentPage() {
       <FadeIn delay={0.15}>
         <div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-background p-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Search posts by title, content, or author..."
               value={searchQuery}
@@ -284,7 +284,7 @@ export default function AdminContentPage() {
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full cursor-pointer border-0 bg-muted/40 shadow-none transition-colors duration-200 hover:bg-muted/60 sm:w-[180px]">
-              <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
+              <Filter className="mr-2 h-4 w-4 text-slate-400" />
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -305,12 +305,12 @@ export default function AdminContentPage() {
             <Table>
               <TableHeader>
                 <TableRow className="border-b border-muted/60 bg-muted/30 hover:bg-muted/30">
-                  <TableHead className="font-semibold text-foreground/70 font-sans">Post</TableHead>
-                  <TableHead className="font-semibold text-foreground/70 font-sans">Author</TableHead>
-                  <TableHead className="font-semibold text-foreground/70 font-sans">Status</TableHead>
-                  <TableHead className="font-semibold text-foreground/70 font-sans">Engagement</TableHead>
-                  <TableHead className="font-semibold text-foreground/70 font-sans">Date</TableHead>
-                  <TableHead className="text-right font-semibold text-foreground/70 font-sans">Actions</TableHead>
+                  <TableHead className="font-semibold text-slate-600 font-sans">Post</TableHead>
+                  <TableHead className="font-semibold text-slate-600 font-sans">Author</TableHead>
+                  <TableHead className="font-semibold text-slate-600 font-sans">Status</TableHead>
+                  <TableHead className="font-semibold text-slate-600 font-sans">Engagement</TableHead>
+                  <TableHead className="font-semibold text-slate-600 font-sans">Date</TableHead>
+                  <TableHead className="text-right font-semibold text-slate-600 font-sans">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -318,13 +318,13 @@ export default function AdminContentPage() {
                   <TableRow className="hover:bg-transparent">
                     <TableCell colSpan={6} className="py-16">
                       <div className="flex flex-col items-center justify-center text-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
-                          <Inbox className="h-8 w-8 text-muted-foreground/50" />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+                          <Inbox className="h-8 w-8 text-slate-400" />
                         </div>
-                        <p className="mt-4 text-sm font-medium text-muted-foreground font-sans">
+                        <p className="mt-4 text-sm font-medium text-slate-500 font-sans">
                           No posts found
                         </p>
-                        <p className="mt-1 text-xs text-muted-foreground/60 font-sans">
+                        <p className="mt-1 text-xs text-slate-400 font-sans">
                           Try adjusting your search or filter criteria
                         </p>
                       </div>
@@ -368,9 +368,9 @@ export default function AdminContentPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground font-sans">
-                            <span className="rounded-md bg-muted/50 px-1.5 py-0.5">{post._count.likes} likes</span>
-                            <span className="rounded-md bg-muted/50 px-1.5 py-0.5">{post._count.comments} comments</span>
+                          <div className="flex items-center gap-3 text-xs text-slate-500 font-sans">
+                            <span className="rounded-md bg-slate-100 px-1.5 py-0.5">{post._count.likes} likes</span>
+                            <span className="rounded-md bg-slate-100 px-1.5 py-0.5">{post._count.comments} comments</span>
                             {post._count.reports > 0 && (
                               <Badge variant="destructive" className="rounded-full text-[10px] shadow-sm">
                                 {post._count.reports} reports
@@ -378,7 +378,7 @@ export default function AdminContentPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground font-sans">
+                        <TableCell className="text-sm text-slate-500 font-sans">
                           {formatDate(post.createdAt)}
                         </TableCell>
                         <TableCell className="text-right">
@@ -451,7 +451,7 @@ export default function AdminContentPage() {
       </FadeIn>
 
       <FadeIn delay={0.25}>
-        <p className="text-xs text-muted-foreground font-sans">
+        <p className="text-xs text-slate-500 font-sans">
           Showing {filteredPosts.length} of {posts.length} posts
         </p>
       </FadeIn>

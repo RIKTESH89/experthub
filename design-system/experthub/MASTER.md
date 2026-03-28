@@ -7,8 +7,8 @@
 ---
 
 **Project:** ExpertHub
-**Generated:** 2026-03-28 11:22:20
-**Category:** Knowledge Base/Documentation
+**Generated:** 2026-03-28 13:31:43
+**Category:** Financial Dashboard
 
 ---
 
@@ -18,24 +18,24 @@
 
 | Role | Hex | CSS Variable |
 |------|-----|--------------|
-| Primary | `#1E40AF` | `--color-primary` |
-| Secondary | `#3B82F6` | `--color-secondary` |
-| CTA/Accent | `#22C55E` | `--color-cta` |
-| Background | `#EFF6FF` | `--color-background` |
-| Text | `#1E3A8A` | `--color-text` |
+| Primary | `#0F172A` | `--color-primary` |
+| Secondary | `#334155` | `--color-secondary` |
+| CTA/Accent | `#0369A1` | `--color-cta` |
+| Background | `#F8FAFC` | `--color-background` |
+| Text | `#020617` | `--color-text` |
 
-**Color Notes:** Professional blue + join green
+**Color Notes:** High contrast navy + blue
 
 ### Typography
 
-- **Heading Font:** Satoshi
-- **Body Font:** General Sans
-- **Mood:** premium, modern, clean, sophisticated, versatile, balanced
-- **Google Fonts:** [Satoshi + General Sans](https://fonts.google.com/share?selection.family=DM+Sans:wght@400;500;700)
+- **Heading Font:** Bodoni Moda
+- **Body Font:** Jost
+- **Mood:** luxury, minimalist, high-end, sophisticated, refined, premium
+- **Google Fonts:** [Bodoni Moda + Jost](https://fonts.google.com/share?selection.family=Bodoni+Moda:wght@400;500;600;700|Jost:wght@300;400;500;600;700)
 
 **CSS Import:**
 ```css
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700&family=Jost:wght@300;400;500;600;700&display=swap');
 ```
 
 ### Spacing Variables
@@ -68,7 +68,7 @@
 ```css
 /* Primary Button */
 .btn-primary {
-  background: #22C55E;
+  background: #0369A1;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -85,8 +85,8 @@
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: #1E40AF;
-  border: 2px solid #1E40AF;
+  color: #0F172A;
+  border: 2px solid #0F172A;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -99,7 +99,7 @@
 
 ```css
 .card {
-  background: #EFF6FF;
+  background: #F8FAFC;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -125,9 +125,9 @@
 }
 
 .input:focus {
-  border-color: #1E40AF;
+  border-color: #0F172A;
   outline: none;
-  box-shadow: 0 0 0 3px #1E40AF20;
+  box-shadow: 0 0 0 3px #0F172A20;
 }
 ```
 
@@ -153,28 +153,28 @@
 
 ## Style Guidelines
 
-**Style:** Minimalism & Swiss Style
+**Style:** Dark Mode (OLED)
 
-**Keywords:** Clean, simple, spacious, functional, white space, high contrast, geometric, sans-serif, grid-based, essential
+**Keywords:** Dark theme, low light, high contrast, deep black, midnight blue, eye-friendly, OLED, night mode, power efficient
 
-**Best For:** Enterprise apps, dashboards, documentation sites, SaaS platforms, professional tools
+**Best For:** Night-mode apps, coding platforms, entertainment, eye-strain prevention, OLED devices, low-light
 
-**Key Effects:** Subtle hover (200-250ms), smooth transitions, sharp shadows if any, clear type hierarchy, fast loading
+**Key Effects:** Minimal glow (text-shadow: 0 0 10px), dark-to-light transitions, low white emission, high readability, visible focus
 
 ### Page Pattern
 
-**Pattern Name:** App Store Style Landing
+**Pattern Name:** Enterprise Gateway
 
-- **Conversion Strategy:** Show real screenshots. Include ratings (4.5+ stars). QR code for mobile. Platform-specific CTAs.
-- **CTA Placement:** Download buttons prominent (App Store + Play Store) throughout
-- **Section Order:** 1. Hero with device mockup, 2. Screenshots carousel, 3. Features with icons, 4. Reviews/ratings, 5. Download CTAs
+- **Conversion Strategy:**  logo carousel,  tab switching for industries, Path selection (I am a...). Mega menu navigation. Trust signals prominent.
+- **CTA Placement:** Contact Sales (Primary) + Login (Secondary)
+- **Section Order:** 1. Hero (Video/Mission), 2. Solutions by Industry, 3. Solutions by Role, 4. Client Logos, 5. Contact Sales
 
 ---
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ Poor navigation
-- ❌ No search
+- ❌ Light mode default
+- ❌ Slow rendering
 
 ### Additional Forbidden Patterns
 

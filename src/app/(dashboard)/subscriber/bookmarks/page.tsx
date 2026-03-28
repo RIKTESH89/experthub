@@ -18,13 +18,13 @@ export default function SubscriberBookmarksPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight font-sans">Bookmarks</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-slate-500">
                 Your saved posts for easy access
               </p>
             </div>
 
             {/* Sort toggle */}
-            <div className="flex items-center rounded-lg border bg-muted/40 p-0.5">
+            <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
               <Button
                 variant="ghost"
                 size="sm"

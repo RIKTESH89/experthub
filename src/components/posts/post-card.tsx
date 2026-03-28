@@ -181,7 +181,7 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 p-3.5 transition-colors duration-200 hover:border-border">
+    <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-white p-3.5 transition-colors duration-200 hover:border-border">
       <audio
         ref={audioRef}
         src={audio.url}
@@ -213,7 +213,7 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
 
       <div className="min-w-0 flex-1 space-y-1">
         <div className="relative h-8 w-full overflow-hidden rounded-lg">
-          <svg viewBox="0 0 200 32" className="h-full w-full text-muted-foreground/15" preserveAspectRatio="none">
+          <svg viewBox="0 0 200 32" className="h-full w-full text-slate-300" preserveAspectRatio="none">
             {Array.from({ length: 40 }).map((_, i) => {
               const h = ((i * 7 + 3) % 12) + 4;
               return <rect key={i} x={i * 5} y={16 - h / 2} width="3" height={h} rx="1.5" fill="currentColor" />;
@@ -228,13 +228,13 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
             </svg>
           </div>
         </div>
-        <div className="flex items-center justify-between text-[10px] font-medium font-sans text-muted-foreground/70">
+        <div className="flex items-center justify-between text-[10px] font-medium font-sans text-slate-500">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
       </div>
 
-      <Volume2 className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+      <Volume2 className="h-4 w-4 shrink-0 text-slate-500" />
     </div>
   );
 }
@@ -522,7 +522,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                   </Badge>
                 )}
               </div>
-              <p className="text-xs font-sans text-muted-foreground/70">
+              <p className="text-xs font-sans text-slate-500">
                 {formatRelativeDate(post.createdAt)}
               </p>
             </div>
@@ -536,7 +536,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
               <h3 className="text-lg font-semibold font-sans leading-tight tracking-tight">{post.title}</h3>
             )}
 
-            <p className="whitespace-pre-wrap text-sm font-sans leading-relaxed text-foreground/85">
+            <p className="whitespace-pre-wrap text-sm font-sans leading-relaxed text-slate-700">
               {truncate(post.content, 300)}
             </p>
 
@@ -615,7 +615,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs font-sans text-muted-foreground/70">
+                <p className="text-xs font-sans text-slate-500">
                   {formatRelativeDate(post.createdAt)}
                 </p>
               </div>
@@ -628,7 +628,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                 <h2 className="text-xl font-bold font-sans leading-tight tracking-tight">{post.title}</h2>
               )}
 
-              <p className="whitespace-pre-wrap text-sm font-sans leading-relaxed text-foreground/85">
+              <p className="whitespace-pre-wrap text-sm font-sans leading-relaxed text-slate-700">
                 {post.content}
               </p>
 

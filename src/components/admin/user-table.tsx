@@ -95,9 +95,9 @@ function TableSkeleton() {
         </div>
 
         {/* Table skeleton */}
-        <div className="overflow-hidden rounded-xl border border-border/50 bg-card/50">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
           {/* Header */}
-          <div className="border-b border-border/50 bg-muted/30 px-6 py-3.5">
+          <div className="border-b border-slate-200 bg-[#F8FAFC] px-6 py-3.5">
             <div className="flex items-center gap-4">
               <ShimmerBlock className="h-3.5 w-20" />
               <ShimmerBlock className="h-3.5 w-14 ml-auto" />
@@ -223,15 +223,15 @@ export function UserTable() {
         {/* Filters Bar */}
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60 transition-colors duration-200" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors duration-200" />
             <Input
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={cn(
-                "pl-10 h-11 rounded-xl border-border/50",
-                "bg-card/80",
-                "placeholder:text-muted-foreground/40",
+                "pl-10 h-11 rounded-xl border-slate-200",
+                "bg-white",
+                "placeholder:text-slate-400",
                 "focus-visible:ring-[#1E40AF]/20 focus-visible:border-[#1E40AF]/30",
                 "transition-all duration-200"
               )}
@@ -240,18 +240,18 @@ export function UserTable() {
           <Select value={roleFilter} onValueChange={setRoleFilter}>
             <SelectTrigger
               className={cn(
-                "w-full sm:w-[160px] h-11 rounded-xl border-border/50 cursor-pointer",
-                "bg-card/80",
+                "w-full sm:w-[160px] h-11 rounded-xl border-slate-200 cursor-pointer",
+                "bg-white",
                 "focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/30",
                 "transition-all duration-200"
               )}
             >
               <div className="flex items-center gap-2">
-                <Filter className="h-3.5 w-3.5 text-muted-foreground/60" />
+                <Filter className="h-3.5 w-3.5 text-slate-400" />
                 <SelectValue placeholder="Filter by role" />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-border/50 bg-card/95 shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
+            <SelectContent className="rounded-xl border-slate-200 bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
               <SelectItem value="all" className="cursor-pointer rounded-lg">
                 <span className="flex items-center gap-2">
                   <Users className="h-3.5 w-3.5" />
@@ -283,27 +283,27 @@ export function UserTable() {
         {/* Table */}
         <div
           className={cn(
-            "overflow-x-auto rounded-xl border border-border/50",
-            "bg-card/50",
+            "overflow-x-auto rounded-xl border border-slate-200",
+            "bg-white",
             "shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
           )}
         >
           <Table>
             <TableHeader>
-              <TableRow className="border-border/50 bg-muted/30 hover:bg-muted/30">
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+              <TableRow className="border-slate-200 bg-[#F8FAFC] hover:bg-[#F8FAFC]">
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-sans">
                   User
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-sans">
                   Role
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-sans">
                   Status
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-sans">
                   Joined
                 </TableHead>
-                <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-slate-500 font-sans">
                   Actions
                 </TableHead>
               </TableRow>
@@ -313,14 +313,14 @@ export function UserTable() {
                 <TableRow>
                   <TableCell colSpan={5} className="py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
-                        <Users className="h-5 w-5 text-muted-foreground/50" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                        <Users className="h-5 w-5 text-slate-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground font-sans">
+                        <p className="text-sm font-medium text-slate-500 font-sans">
                           No users found
                         </p>
-                        <p className="text-xs text-muted-foreground/60 mt-1 font-sans">
+                        <p className="text-xs text-slate-400 mt-1 font-sans">
                           Try adjusting your search or filter criteria
                         </p>
                       </div>
@@ -378,7 +378,7 @@ export function UserTable() {
                             <p className="text-sm font-semibold truncate group-hover:text-[#1E40AF]/90 transition-colors duration-200 font-sans">
                               {user.name}
                             </p>
-                            <p className="text-xs text-muted-foreground/60 truncate font-sans">
+                            <p className="text-xs text-slate-500 truncate font-sans">
                               {user.email}
                             </p>
                           </div>
@@ -414,7 +414,7 @@ export function UserTable() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground/70 tabular-nums font-sans">
+                        <span className="text-sm text-slate-500 tabular-nums font-sans">
                           {formatDate(user.createdAt)}
                         </span>
                       </TableCell>
@@ -442,22 +442,22 @@ export function UserTable() {
                           <DropdownMenuContent
                             align="end"
                             className={cn(
-                              "w-48 rounded-xl border-border/50",
-                              "bg-card/95",
+                              "w-48 rounded-xl border-slate-200",
+                              "bg-white",
                               "shadow-[0_4px_16px_rgba(0,0,0,0.12)]",
                               "p-1.5"
                             )}
                           >
-                            <DropdownMenuItem className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-muted/60">
-                              <Eye className="h-4 w-4 text-muted-foreground" />
+                            <DropdownMenuItem className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-slate-50">
+                              <Eye className="h-4 w-4 text-slate-500" />
                               <span>View Details</span>
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator className="my-1.5 bg-border/50" />
+                            <DropdownMenuSeparator className="my-1.5 bg-slate-200" />
                             <DropdownMenuItem
                               onClick={() =>
                                 handleBanToggle(user.id, user.status)
                               }
-                              className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-muted/60"
+                              className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-slate-50"
                             >
                               <Ban className="h-4 w-4 text-amber-500" />
                               <span>
@@ -486,13 +486,13 @@ export function UserTable() {
 
         {/* Footer count */}
         <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground/60 font-sans">
+          <p className="text-xs text-slate-500 font-sans">
             Showing{" "}
-            <span className="font-semibold text-muted-foreground">
+            <span className="font-semibold text-slate-700">
               {filteredUsers.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-muted-foreground">
+            <span className="font-semibold text-slate-700">
               {users.length}
             </span>{" "}
             users

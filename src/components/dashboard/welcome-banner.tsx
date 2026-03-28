@@ -30,7 +30,7 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
 
       <div className="relative z-10">
         <motion.p
-          className="text-xs font-medium tracking-wide text-muted-foreground/70 font-sans uppercase"
+          className="text-xs font-medium tracking-wide text-slate-500 font-sans uppercase"
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.4, 0.25, 1] }}

@@ -37,7 +37,7 @@ export default function ExpertNewKnowledgePage() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Add Knowledge Item
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-slate-500">
                 Add content to your knowledge base to power your Digital Twin
               </p>
             </div>

@@ -35,7 +35,7 @@ export default function ExpertNewPostPage() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Create New Post
               </h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">
+              <p className="mt-0.5 text-sm text-slate-500">
                 Share your expertise with your subscribers
               </p>
             </div>

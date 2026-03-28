@@ -34,11 +34,11 @@ export function ChartCard({
         )}
       >
         <CardHeader className="space-y-1.5 pb-2">
-          <CardTitle className="text-base font-semibold font-sans tracking-tight text-foreground/90">
+          <CardTitle className="text-base font-semibold font-sans tracking-tight text-slate-900">
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className="text-[13px] font-sans leading-relaxed text-muted-foreground/80">
+            <CardDescription className="text-[13px] font-sans leading-relaxed text-slate-500">
               {description}
             </CardDescription>
           )}

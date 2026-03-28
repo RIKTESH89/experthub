@@ -84,7 +84,7 @@ export function Navbar({ navItems }: NavbarProps) {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.2, delay: 0.05 }}
             >
-              <Home className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+              <Home className="h-3.5 w-3.5 text-slate-500 shrink-0" />
             </motion.span>
 
             {breadcrumbs.map((crumb, index) => (
@@ -99,13 +99,13 @@ export function Navbar({ navItems }: NavbarProps) {
                 }}
                 className="flex items-center gap-1.5 min-w-0"
               >
-                <ChevronRight className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                <ChevronRight className="h-3 w-3 text-slate-400 shrink-0" />
                 <span
                   className={cn(
                     "text-sm truncate transition-colors duration-200",
                     crumb.isActive
                       ? "font-semibold text-foreground"
-                      : "font-medium text-muted-foreground hover:text-foreground/80 cursor-pointer"
+                      : "font-medium text-slate-500 hover:text-foreground cursor-pointer"
                   )}
                 >
                   {crumb.label}

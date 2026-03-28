@@ -64,12 +64,12 @@ function StatCardSkeleton({ index }: { index: number }) {
     <div
       className={cn(
         "relative overflow-hidden rounded-xl border border-border/50 p-6",
-        "bg-card/80",
+        "bg-white",
         meta.bgAccent
       )}
     >
       {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-muted-foreground/10" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-slate-200" />
 
       <div className="flex items-center justify-between mb-4">
         <ShimmerSkeleton className="h-4 w-28 rounded-md" />

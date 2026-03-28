@@ -36,7 +36,7 @@ interface SubscribedExpert {
 function ShimmerBlock({ className }: { className?: string }) {
   return (
     <div
-      className={`rounded-lg bg-muted/60 ${className ?? ""}`}
+      className={`rounded-lg bg-slate-100 ${className ?? ""}`}
       style={{
         backgroundImage:
           "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)",
@@ -203,7 +203,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
               href="/subscriber/hub"
               className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer"
             >
-              <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-border/70 bg-muted/30 transition-all duration-200 group-hover:border-[#1E40AF]/50 group-hover:bg-[#1E40AF]/5 group-hover:scale-105">
+              <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-slate-200 bg-slate-50 transition-all duration-200 group-hover:border-[#1E40AF]/50 group-hover:bg-[#1E40AF]/5 group-hover:scale-105">
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-[#1E40AF] transition-colors duration-200" />
               </div>
               <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
@@ -248,7 +248,7 @@ function EmptyFeedState() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.2 }}
-          className="mt-2 max-w-sm text-sm text-muted-foreground leading-relaxed"
+          className="mt-2 max-w-sm text-sm text-slate-500 leading-relaxed"
         >
           Subscribe to industry experts and thought leaders to see their latest insights, posts, and updates right here.
         </motion.p>
@@ -287,10 +287,10 @@ function AllCaughtUp() {
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <p className="text-sm font-medium text-muted-foreground">
+        <p className="text-sm font-medium text-slate-600">
           You&apos;re all caught up
         </p>
-        <p className="mt-0.5 text-xs text-muted-foreground/60">
+        <p className="mt-0.5 text-xs text-slate-500">
           Check back later for new content
         </p>
         <Button variant="ghost" size="sm" className="mt-3 gap-1.5 text-xs rounded-full cursor-pointer" asChild>
@@ -334,7 +334,7 @@ function Greeting({ name }: { name?: string | null }) {
               "Your Feed"
             )}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-slate-500">
             Latest from the experts you follow
           </p>
         </div>
@@ -447,7 +447,7 @@ export default function SubscriberFeedPage() {
       <FadeIn delay={0.2} direction="none">
         <div className="mb-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
+          <span className="text-[10px] font-medium uppercase tracking-widest text-slate-500">
             Feed
           </span>
           <div className="h-px flex-1 bg-border" />

@@ -111,7 +111,7 @@ export default function AdminApplicationsPage() {
       <div className="space-y-6 font-sans">
         <div>
           <h1 className="text-2xl font-bold font-sans">Expert Applications</h1>
-          <p className="text-sm text-muted-foreground font-sans">Review and approve expert requests</p>
+          <p className="text-sm text-slate-500 font-sans">Review and approve expert requests</p>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -132,7 +132,7 @@ export default function AdminApplicationsPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight font-sans">Expert Applications</h1>
-            <p className="text-sm text-muted-foreground font-sans">
+            <p className="text-sm text-slate-500 font-sans">
               Review and approve expert requests
             </p>
           </div>
@@ -161,7 +161,7 @@ export default function AdminApplicationsPage() {
           ].map((stat) => (
             <StaggerItem key={stat.label}>
               <div className={cn(
-                "flex items-center gap-3 rounded-xl border bg-card/50 p-3.5 transition-all duration-200 hover:shadow-sm",
+                "flex items-center gap-3 rounded-xl border bg-white p-3.5 transition-all duration-200 hover:shadow-sm",
                 stat.color === "blue" && "border-l-4 border-l-[#1E40AF]",
                 stat.color === "emerald" && "border-l-4 border-l-emerald-500",
                 stat.color === "amber" && "border-l-4 border-l-amber-500",
@@ -170,7 +170,7 @@ export default function AdminApplicationsPage() {
                   value={stat.value}
                   className="text-2xl font-bold tracking-tight"
                 />
-                <span className="text-xs font-medium text-muted-foreground font-sans">{stat.label}</span>
+                <span className="text-xs font-medium text-slate-500 font-sans">{stat.label}</span>
               </div>
             </StaggerItem>
           ))}
@@ -188,11 +188,11 @@ export default function AdminApplicationsPage() {
             <CardContent className="flex flex-col items-center justify-center py-20 text-center">
               <div className="relative mb-4">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/80 shadow-inner">
-                  <UserPlus className="h-7 w-7 text-muted-foreground/40" />
+                  <UserPlus className="h-7 w-7 text-slate-400" />
                 </div>
               </div>
-              <p className="text-base font-semibold text-muted-foreground font-sans">No applications yet</p>
-              <p className="mt-1.5 max-w-xs text-sm text-muted-foreground/60 font-sans">
+              <p className="text-base font-semibold text-slate-500 font-sans">No applications yet</p>
+              <p className="mt-1.5 max-w-xs text-sm text-slate-400 font-sans">
                 Expert applications will appear here when submitted. Check back later.
               </p>
             </CardContent>
@@ -238,7 +238,7 @@ export default function AdminApplicationsPage() {
                           </div>
                           <div>
                             <CardTitle className="text-base font-semibold font-sans">{app.name}</CardTitle>
-                            <p className="mt-0.5 text-sm text-muted-foreground font-sans">{app.email}</p>
+                            <p className="mt-0.5 text-sm text-slate-500 font-sans">{app.email}</p>
                           </div>
                         </div>
                         <Badge variant="outline" className={cn("gap-1.5 font-medium shadow-sm", status.color, status.glow)}>
@@ -250,21 +250,21 @@ export default function AdminApplicationsPage() {
                     <CardContent className="relative space-y-4">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="rounded-lg bg-muted/30 p-3 border border-muted-foreground/5">
-                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 font-sans">
+                          <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 font-sans">
                             Expertise
                           </p>
                           <p className="text-sm font-medium font-sans">{app.specialty}</p>
                         </div>
                         <div className="rounded-lg bg-muted/30 p-3 border border-muted-foreground/5">
-                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5 font-sans">
+                          <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 font-sans">
                             Why they want to join
                           </p>
-                          <p className="text-sm text-foreground/90 line-clamp-3 font-sans">{app.reason}</p>
+                          <p className="text-sm text-slate-700 line-clamp-3 font-sans">{app.reason}</p>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-3 border-t border-muted-foreground/8">
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-sans">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-sans">
                           <Clock className="h-3 w-3" />
                           Applied {formatRelativeDate(app.createdAt)}
                         </div>
