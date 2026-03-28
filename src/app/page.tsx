@@ -96,6 +96,7 @@ const pricingTiers = [
     description: "Monetize your expertise with AI",
     features: ["Create your AI Digital Twin", "Build & manage knowledge base", "Set your own pricing tiers", "Analytics & subscriber management"],
     cta: "Apply as Expert",
+    href: "#apply-expert",
     popular: false,
   },
 ];
@@ -440,7 +441,7 @@ export default async function LandingPage() {
                       </ul>
 
                       <Link
-                        href="/login"
+                        href={tier.href ?? "/login"}
                         className="mt-10 flex h-12 items-center justify-center rounded-xl bg-[#22C55E] text-sm font-semibold text-white shadow-xl shadow-[#22C55E]/25 transition-all duration-300 hover:shadow-2xl hover:brightness-110 hover:-translate-y-0.5"
                       >
                         {tier.cta}
@@ -467,7 +468,7 @@ export default async function LandingPage() {
                       </ul>
 
                       <Link
-                        href="/login"
+                        href={tier.href ?? "/login"}
                         className="mt-10 flex h-12 items-center justify-center rounded-xl border border-[#1E40AF]/20 bg-[#F8FAFC] text-sm font-medium text-[#1E40AF] transition-all duration-300 hover:bg-[#1E40AF] hover:text-white hover:-translate-y-0.5"
                       >
                         {tier.cta}
