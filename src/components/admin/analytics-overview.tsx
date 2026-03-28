@@ -55,7 +55,7 @@ export function AnalyticsOverview() {
   const revenueData = useMemo(() => generateRevenueData(), []);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-6 lg:grid-cols-2 font-sans">
       {/* User Growth */}
       <ChartCard
         title="User Growth"
@@ -90,9 +90,9 @@ export function AnalyticsOverview() {
               <Line
                 type="monotone"
                 dataKey="users"
-                stroke="hsl(var(--primary))"
+                stroke="#1E40AF"
                 strokeWidth={2}
-                dot={{ fill: "hsl(var(--primary))", r: 4 }}
+                dot={{ fill: "#1E40AF", r: 4 }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>
@@ -132,7 +132,7 @@ export function AnalyticsOverview() {
               />
               <Bar
                 dataKey="posts"
-                fill="hsl(var(--primary))"
+                fill="#1E40AF"
                 radius={[4, 4, 0, 0]}
                 opacity={0.8}
               />
@@ -153,12 +153,12 @@ export function AnalyticsOverview() {
                 <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="0%"
-                    stopColor="hsl(var(--primary))"
+                    stopColor="#1E40AF"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="100%"
-                    stopColor="hsl(var(--primary))"
+                    stopColor="#1E40AF"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -193,7 +193,7 @@ export function AnalyticsOverview() {
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="hsl(var(--primary))"
+                stroke="#1E40AF"
                 strokeWidth={2}
                 fill="url(#revenueGrad)"
               />

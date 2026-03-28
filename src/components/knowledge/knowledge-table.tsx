@@ -13,6 +13,7 @@ import {
   Globe,
   FileUp,
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { cn, formatDate } from "@/lib/utils";
 import {
   Table,
@@ -22,7 +23,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -41,12 +41,40 @@ interface KnowledgeTableProps {
   onAdd?: () => void;
 }
 
-const sourceTypeConfig: Record<string, { icon: typeof FileText; label: string; color: string }> = {
-  manual: { icon: FileText, label: "Manual", color: "text-blue-500" },
-  document: { icon: Upload, label: "Document", color: "text-purple-500" },
-  post: { icon: MessageSquare, label: "Post", color: "text-green-500" },
-  blog: { icon: Globe, label: "Blog", color: "text-orange-500" },
-  pdf: { icon: FileUp, label: "PDF", color: "text-red-500" },
+const sourceTypeConfig: Record<
+  string,
+  { icon: typeof FileText; label: string; color: string; bg: string }
+> = {
+  manual: {
+    icon: FileText,
+    label: "Manual",
+    color: "text-blue-700 dark:text-blue-400",
+    bg: "bg-blue-700/10",
+  },
+  document: {
+    icon: Upload,
+    label: "Document",
+    color: "text-purple-500",
+    bg: "bg-purple-500/10",
+  },
+  post: {
+    icon: MessageSquare,
+    label: "Post",
+    color: "text-green-500",
+    bg: "bg-green-500/10",
+  },
+  blog: {
+    icon: Globe,
+    label: "Blog",
+    color: "text-orange-500",
+    bg: "bg-orange-500/10",
+  },
+  pdf: {
+    icon: FileUp,
+    label: "PDF",
+    color: "text-red-500",
+    bg: "bg-red-500/10",
+  },
 };
 
 export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
@@ -86,14 +114,26 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
+      <div className="overflow-hidden rounded-xl border border-border/50 bg-background">
+        <div className="border-b border-border/30 bg-muted/20 px-4 py-3">
+          <div className="flex items-center gap-12">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-3 w-14" />
+            <Skeleton className="h-3 w-12" />
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="ml-auto h-3 w-14" />
+          </div>
+        </div>
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-4 p-4">
+          <div
+            key={i}
+            className="flex items-center gap-4 border-b border-border/20 px-4 py-3.5 last:border-0"
+          >
             <Skeleton className="h-4 w-48" />
-            <Skeleton className="h-5 w-20 rounded-full" />
-            <Skeleton className="h-5 w-16 rounded-full" />
+            <Skeleton className="h-6 w-24 rounded-lg" />
+            <Skeleton className="h-6 w-20 rounded-lg" />
             <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-8 w-16 ml-auto" />
+            <Skeleton className="ml-auto h-8 w-20" />
           </div>
         ))}
       </div>
@@ -112,78 +152,114 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
   }
 
   return (
-    <div className="rounded-lg border border-border">
+    <div className="overflow-hidden rounded-xl border border-border/50 bg-background">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Source</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+          <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground/70">
+              Title
+            </TableHead>
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground/70">
+              Source
+            </TableHead>
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground/70">
+              Status
+            </TableHead>
+            <TableHead className="text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground/70">
+              Created
+            </TableHead>
+            <TableHead className="text-right text-xs font-semibold font-sans uppercase tracking-wider text-muted-foreground/70">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item) => {
-            const source = sourceTypeConfig[item.sourceType] || sourceTypeConfig.manual;
-            const SourceIcon = source.icon;
+          <AnimatePresence mode="popLayout">
+            {items.map((item, index) => {
+              const source =
+                sourceTypeConfig[item.sourceType] || sourceTypeConfig.manual;
+              const SourceIcon = source.icon;
 
-            return (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.title}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1.5">
-                    <SourceIcon className={cn("h-3.5 w-3.5", source.color)} />
-                    <span className="text-sm">{source.label}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {item.isIndexed ? (
-                    <Badge
-                      variant="secondary"
-                      className="gap-1 bg-green-500/10 text-green-600 dark:text-green-400"
-                    >
-                      <Check className="h-3 w-3" />
-                      Indexed
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="gap-1">
-                      <Clock className="h-3 w-3" />
-                      Pending
-                    </Badge>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {formatDate(item.createdAt)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => onEdit?.(item)}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deletingId === item.id}
-                    >
-                      {deletingId === item.id ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-3.5 w-3.5" />
+              return (
+                <motion.tr
+                  key={item.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{
+                    duration: 0.2,
+                    delay: index * 0.03,
+                    ease: [0.25, 0.4, 0.25, 1],
+                  }}
+                  className="group border-b border-border/20 transition-colors duration-200 last:border-0 hover:bg-muted/30"
+                >
+                  <TableCell className="font-medium font-sans">
+                    <span className="transition-colors duration-200 group-hover:text-blue-700 dark:group-hover:text-blue-400">
+                      {item.title}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1",
+                        source.bg
                       )}
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                    >
+                      <SourceIcon className={cn("h-3.5 w-3.5", source.color)} />
+                      <span className={cn("text-xs font-medium font-sans", source.color)}>
+                        {source.label}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {item.isIndexed ? (
+                      <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-2.5 py-1">
+                        <Check className="h-3 w-3 text-emerald-500" />
+                        <span className="text-xs font-medium font-sans text-emerald-600 dark:text-emerald-400">
+                          Indexed
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-muted/30 px-2.5 py-1">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs font-medium font-sans text-muted-foreground">
+                          Pending
+                        </span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm font-sans text-muted-foreground">
+                    {formatDate(item.createdAt)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1 opacity-60 transition-opacity duration-200 group-hover:opacity-100">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                        onClick={() => onEdit?.(item)}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() => handleDelete(item.id)}
+                        disabled={deletingId === item.id}
+                      >
+                        {deletingId === item.id ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-3.5 w-3.5" />
+                        )}
+                      </Button>
+                    </div>
+                  </TableCell>
+                </motion.tr>
+              );
+            })}
+          </AnimatePresence>
         </TableBody>
       </Table>
     </div>

@@ -14,6 +14,7 @@ import {
   Trash2,
   Pencil,
   Archive,
+  Sparkles,
 } from "lucide-react";
 import { formatRelativeDate, truncate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +42,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { toast } from "sonner";
+import {
+  PageTransition,
+  StaggerContainer,
+  StaggerItem,
+  FadeIn,
+} from "@/components/ui/motion";
 
 interface ExpertPost {
   id: string;
@@ -56,6 +63,27 @@ interface ExpertPost {
     views: number;
   };
 }
+
+const statusConfig = {
+  PUBLISHED: {
+    label: "Published",
+    className:
+      "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/15",
+    dot: "bg-emerald-500",
+  },
+  DRAFT: {
+    label: "Draft",
+    className:
+      "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/15",
+    dot: "bg-amber-500",
+  },
+  ARCHIVED: {
+    label: "Archived",
+    className:
+      "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20 hover:bg-zinc-500/15",
+    dot: "bg-zinc-400",
+  },
+};
 
 export default function ExpertPostsPage() {
   const [posts, setPosts] = useState<ExpertPost[]>([]);
@@ -149,7 +177,7 @@ export default function ExpertPostsPage() {
         <Skeleton className="h-10 w-80" />
         <div className="grid gap-4 sm:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-48 rounded-lg" />
+            <Skeleton key={i} className="h-48 rounded-xl" />
           ))}
         </div>
       </div>
@@ -157,204 +185,238 @@ export default function ExpertPostsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
-            {/* Text card 1 (back) */}
-            <rect x="20" y="20" width="55" height="70" rx="4" fill="#ede9fe" stroke="#8b5cf6" strokeWidth="1.5"/>
-            <line x1="28" y1="34" x2="66" y2="34" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="28" y1="42" x2="58" y2="42" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="28" y1="50" x2="62" y2="50" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            {/* Text card 2 (front) */}
-            <rect x="40" y="10" width="55" height="70" rx="4" fill="#f5f3ff" stroke="#6366f1" strokeWidth="2"/>
-            <line x1="48" y1="24" x2="86" y2="24" stroke="#6366f1" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="48" y1="32" x2="78" y2="32" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="48" y1="40" x2="82" y2="40" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="48" y1="48" x2="74" y2="48" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="48" y1="56" x2="80" y2="56" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            {/* Pen */}
-            <rect x="108" y="18" width="8" height="50" rx="2" fill="#e0e7ff" stroke="#6366f1" strokeWidth="1.5" transform="rotate(15 112 43)"/>
-            <path d="M104 72l4.5-12 7 3z" fill="#8b5cf6"/>
-            <circle cx="112" cy="23" r="1" fill="#6366f1" transform="rotate(15 112 23)"/>
-            {/* Publish / send icon */}
-            <path d="M130 60l14-8-14-8v6h-10v4h10z" fill="#8b5cf6" opacity="0.7"/>
-            {/* Sparkle */}
-            <path d="M130 16l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#6366f1" opacity="0.5"/>
-          </svg>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">My Posts</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Manage your content
-            </p>
+      <FadeIn delay={0.05}>
+        <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-blue-500/5 via-background to-blue-500/5 p-6">
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight">My Posts</h2>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  Manage and track your published content
+                </p>
+              </div>
+            </div>
+            <Button
+              asChild
+              className="cursor-pointer bg-[#1E40AF] text-white shadow-lg shadow-blue-700/25 hover:bg-[#1e3a8a] transition-all duration-200"
+            >
+              <Link href="/expert/posts/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Post
+              </Link>
+            </Button>
           </div>
         </div>
-        <Button asChild>
-          <Link href="/expert/posts/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Create Post
-          </Link>
-        </Button>
-      </div>
+      </FadeIn>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Search your posts..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
-      </div>
+      <FadeIn delay={0.1}>
+        <div className="relative group">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200 group-focus-within:text-blue-700" />
+            <Input
+              placeholder="Search your posts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-11 rounded-xl border-border/60 bg-background pl-11 transition-all duration-200 focus-visible:border-blue-600/50 focus-visible:ring-blue-600/20"
+            />
+          </div>
+        </div>
+      </FadeIn>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
-          <TabsTrigger value="published">
-            Published ({counts.published})
-          </TabsTrigger>
-          <TabsTrigger value="draft">Draft ({counts.draft})</TabsTrigger>
-          <TabsTrigger value="archived">
-            Archived ({counts.archived})
-          </TabsTrigger>
-        </TabsList>
+      <FadeIn delay={0.15}>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="h-11 w-full justify-start gap-1 rounded-xl border bg-muted/40 p-1  sm:w-auto">
+            <TabsTrigger
+              value="all"
+              className="rounded-lg px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              All
+              <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium tabular-nums">
+                {counts.all}
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="published"
+              className="rounded-lg px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Published
+              <span className="ml-1.5 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
+                {counts.published}
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="draft"
+              className="rounded-lg px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Draft
+              <span className="ml-1.5 rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-amber-600 dark:text-amber-400">
+                {counts.draft}
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="archived"
+              className="rounded-lg px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Archived
+              <span className="ml-1.5 rounded-full bg-zinc-500/10 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-zinc-500">
+                {counts.archived}
+              </span>
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value={activeTab} className="mt-4">
-          {filteredPosts.length === 0 ? (
-            <EmptyState
-              icon={FileText}
-              title="No posts found"
-              description={
-                activeTab === "all"
-                  ? "Create your first post to share with subscribers."
-                  : `No ${activeTab} posts found.`
-              }
-              action={{
-                label: "Create Post",
-                onClick: () => (window.location.href = "/expert/posts/new"),
-              }}
-            />
-          ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {filteredPosts.map((post) => (
-                <Card
-                  key={post.id}
-                  className="group transition-all duration-200 hover:shadow-md"
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="min-w-0 flex-1">
-                        <Link
-                          href={`/expert/posts/${post.id}`}
-                          className="text-base font-semibold leading-tight hover:underline"
-                        >
-                          {post.title || "Untitled Post"}
-                        </Link>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {formatRelativeDate(post.createdAt)}
-                        </p>
-                      </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 shrink-0"
-                            disabled={actionLoading === post.id}
-                          >
-                            {actionLoading === post.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <MoreHorizontal className="h-4 w-4" />
+          <TabsContent value={activeTab} className="mt-5">
+            {filteredPosts.length === 0 ? (
+              <EmptyState
+                icon={FileText}
+                title="No posts found"
+                description={
+                  activeTab === "all"
+                    ? "Create your first post to share with subscribers."
+                    : `No ${activeTab} posts found.`
+                }
+                action={{
+                  label: "Create Post",
+                  onClick: () =>
+                    (window.location.href = "/expert/posts/new"),
+                }}
+              />
+            ) : (
+              <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {filteredPosts.map((post) => {
+                  const status = statusConfig[post.status];
+                  return (
+                    <StaggerItem key={post.id}>
+                      <Card className="group relative overflow-hidden rounded-xl border-border/60 bg-background transition-all duration-200 hover:border-blue-600/30 hover:shadow-lg hover:-translate-y-0.5">
+                        {/* Subtle top accent line */}
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                              <Link
+                                href={`/expert/posts/${post.id}`}
+                                className="cursor-pointer text-base font-semibold leading-tight transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-400"
+                              >
+                                {post.title || "Untitled Post"}
+                              </Link>
+                              <p className="mt-1.5 text-xs text-muted-foreground">
+                                {formatRelativeDate(post.createdAt)}
+                              </p>
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 shrink-0 rounded-lg opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-muted"
+                                  disabled={actionLoading === post.id}
+                                >
+                                  {actionLoading === post.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                align="end"
+                                className="rounded-xl"
+                              >
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    href={`/expert/posts/${post.id}/edit`}
+                                  >
+                                    <Pencil className="mr-2 h-3.5 w-3.5" />
+                                    Edit
+                                  </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleArchive(post.id)}
+                                >
+                                  <Archive className="mr-2 h-3.5 w-3.5" />
+                                  Archive
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  className="text-destructive focus:text-destructive"
+                                  onClick={() => handleDelete(post.id)}
+                                >
+                                  <Trash2 className="mr-2 h-3.5 w-3.5" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </CardHeader>
+
+                        <CardContent className="pb-3">
+                          <p className="text-sm leading-relaxed text-muted-foreground">
+                            {truncate(post.content, 120)}
+                          </p>
+                          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                            {/* Animated status badge */}
+                            <Badge
+                              variant="outline"
+                              className={`gap-1.5 rounded-full border text-[10px] font-medium ${status.className}`}
+                            >
+                              <span
+                                className={`inline-block h-1.5 w-1.5 rounded-full ${status.dot} animate-pulse`}
+                              />
+                              {status.label}
+                            </Badge>
+                            {post.isRagEnabled && (
+                              <Badge
+                                variant="outline"
+                                className="gap-1 rounded-full border-blue-500/20 bg-blue-500/10 text-[10px] font-medium text-blue-600 hover:bg-blue-500/15 dark:text-blue-400"
+                              >
+                                <Sparkles className="h-2.5 w-2.5" />
+                                RAG
+                              </Badge>
                             )}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/expert/posts/${post.id}/edit`}>
-                              <Pencil className="mr-2 h-3.5 w-3.5" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleArchive(post.id)}
-                          >
-                            <Archive className="mr-2 h-3.5 w-3.5" />
-                            Archive
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => handleDelete(post.id)}
-                          >
-                            <Trash2 className="mr-2 h-3.5 w-3.5" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pb-3">
-                    <p className="text-sm text-muted-foreground">
-                      {truncate(post.content, 120)}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      <Badge
-                        variant={
-                          post.status === "PUBLISHED"
-                            ? "default"
-                            : post.status === "DRAFT"
-                              ? "outline"
-                              : "secondary"
-                        }
-                        className="text-[10px]"
-                      >
-                        {post.status.toLowerCase()}
-                      </Badge>
-                      {post.isRagEnabled && (
-                        <Badge
-                          variant="secondary"
-                          className="text-[10px] bg-blue-500/10 text-blue-600"
-                        >
-                          RAG
-                        </Badge>
-                      )}
-                      {post.tags.slice(0, 2).map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className="text-[10px] font-normal"
-                        >
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="border-t pt-3">
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3.5 w-3.5" />
-                        {post._count.views}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3.5 w-3.5" />
-                        {post._count.likes}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MessageCircle className="h-3.5 w-3.5" />
-                        {post._count.comments}
-                      </span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
-    </div>
+                            {post.tags.slice(0, 2).map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="rounded-full text-[10px] font-normal"
+                              >
+                                #{tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CardContent>
+
+                        <CardFooter className="border-t border-border/50 pt-3">
+                          <div className="flex items-center gap-5 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1.5 transition-colors hover:text-foreground">
+                              <Eye className="h-3.5 w-3.5" />
+                              {post._count.views}
+                            </span>
+                            <span className="flex items-center gap-1.5 transition-colors hover:text-rose-500">
+                              <Heart className="h-3.5 w-3.5" />
+                              {post._count.likes}
+                            </span>
+                            <span className="flex items-center gap-1.5 transition-colors hover:text-blue-500">
+                              <MessageCircle className="h-3.5 w-3.5" />
+                              {post._count.comments}
+                            </span>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    </StaggerItem>
+                  );
+                })}
+              </StaggerContainer>
+            )}
+          </TabsContent>
+        </Tabs>
+      </FadeIn>
+    </PageTransition>
   );
 }

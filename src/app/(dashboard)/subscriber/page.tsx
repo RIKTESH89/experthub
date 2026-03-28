@@ -8,15 +8,23 @@ import {
   Bookmark,
   MessageSquare,
   ArrowRight,
-  Sparkles,
+  Crown,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
-import { StatCard } from "@/components/dashboard/stat-card";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
+import {
+  PageTransition,
+  StaggerContainer,
+  StaggerItem,
+  FadeIn,
+  AnimatedCounter,
+} from "@/components/ui/motion";
 
 interface SubscriberStats {
   activeSubscriptions: number;
@@ -29,6 +37,36 @@ interface SubscribedExpert {
   displayName: string;
   image?: string | null;
 }
+
+const statCardConfig = [
+  {
+    key: "activeSubscriptions" as const,
+    title: "Subscriptions",
+    description: "experts subscribed",
+    icon: CreditCard,
+    iconBg: "bg-[#1E40AF]/10 ring-[#1E40AF]/20 group-hover:bg-[#1E40AF]/15",
+    iconColor: "text-[#1E40AF] dark:text-blue-400",
+    borderHover: "hover:border-[#1E40AF]/30",
+  },
+  {
+    key: "bookmarkedPosts" as const,
+    title: "Bookmarks",
+    description: "posts saved",
+    icon: Bookmark,
+    iconBg: "bg-amber-500/10 ring-amber-500/20 group-hover:bg-amber-500/15",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    borderHover: "hover:border-amber-500/30",
+  },
+  {
+    key: "twinChats" as const,
+    title: "Twin Chats",
+    description: "conversations",
+    icon: MessageSquare,
+    iconBg: "bg-emerald-500/10 ring-emerald-500/20 group-hover:bg-emerald-500/15",
+    iconColor: "text-emerald-600 dark:text-emerald-400",
+    borderHover: "hover:border-emerald-500/30",
+  },
+];
 
 export default function SubscriberDashboardPage() {
   const { data: session } = useSession();
@@ -101,22 +139,26 @@ export default function SubscriberDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-5">
-          <div className="md:col-span-3 space-y-4">
-            <Skeleton className="h-28 w-full rounded-xl" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="space-y-8">
+        <div className="grid gap-5 md:grid-cols-5">
+          <div className="md:col-span-3 space-y-5">
+            <Skeleton className="h-28 w-full rounded-2xl" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 rounded-xl" />
+                <Skeleton key={i} className="h-[8.5rem] rounded-2xl" />
               ))}
             </div>
           </div>
           <div className="md:col-span-2">
-            <Skeleton className="h-[11rem] w-full rounded-xl" />
+            <Skeleton className="h-[13rem] w-full rounded-2xl" />
           </div>
         </div>
         <Skeleton className="h-10 w-64 rounded-lg" />
-        <Skeleton className="h-64 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-64 rounded-2xl" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -124,178 +166,220 @@ export default function SubscriberDashboardPage() {
   const displayedExperts = subscribedExperts.slice(0, 5);
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Row 1: Hero — 2 columns */}
-      <div className="grid gap-4 md:grid-cols-5">
-        {/* Left: Welcome + Stats */}
-        <div className="md:col-span-3 flex flex-col gap-4">
-          <WelcomeBanner
-            userName={session?.user?.name ?? "there"}
-            role="SUBSCRIBER"
-          />
+    <PageTransition className="space-y-8 font-sans">
+      {/* ========== Row 1: Hero Layout ========== */}
+      <div className="grid gap-5 md:grid-cols-5">
+        {/* Left Column: Welcome + Stat Cards */}
+        <div className="md:col-span-3 flex flex-col gap-5">
+          <FadeIn delay={0} duration={0.5} direction="up">
+            <WelcomeBanner
+              userName={session?.user?.name ?? "there"}
+              role="SUBSCRIBER"
+            />
+          </FadeIn>
 
           {stats && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <StatCard
-                title="Subscriptions"
-                value={stats.activeSubscriptions}
-                icon={CreditCard}
-                description="experts subscribed"
-              />
-              <StatCard
-                title="Bookmarks"
-                value={stats.bookmarkedPosts}
-                icon={Bookmark}
-                description="posts saved"
-              />
-              <StatCard
-                title="Twin Chats"
-                value={stats.twinChats}
-                icon={MessageSquare}
-                description="conversations"
-              />
-            </div>
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {statCardConfig.map((card) => {
+                const Icon = card.icon;
+                const value = stats[card.key];
+
+                return (
+                  <StaggerItem key={card.key}>
+                    <div
+                      className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-5 transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-0.5 ${card.borderHover}`}
+                    >
+                      <div className="relative">
+                        {/* Header */}
+                        <div className="flex items-center gap-2.5 mb-3">
+                          <div
+                            className={`flex h-9 w-9 items-center justify-center rounded-xl ring-1 transition-all duration-200 ${card.iconBg}`}
+                          >
+                            <Icon className={`h-4 w-4 ${card.iconColor} transition-colors duration-200`} />
+                          </div>
+                          <span className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-widest">
+                            {card.title}
+                          </span>
+                        </div>
+
+                        {/* Animated value */}
+                        <div className="flex items-baseline gap-1.5">
+                          <AnimatedCounter
+                            value={value}
+                            duration={1.4}
+                            className="text-3xl font-bold tracking-tight text-foreground font-sans"
+                          />
+                        </div>
+
+                        {/* Description */}
+                        <p className="mt-1 text-[11px] text-muted-foreground/60 leading-relaxed">
+                          {card.description}
+                        </p>
+                      </div>
+                    </div>
+                  </StaggerItem>
+                );
+              })}
+            </StaggerContainer>
           )}
         </div>
 
-        {/* Right: Your Experts widget */}
-        <div className="md:col-span-2 flex flex-col">
-          <div className="relative flex-1 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 p-5 flex flex-col justify-between overflow-hidden">
-            {/* Decorative network dots SVG */}
-            <svg
-              className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
-              aria-hidden="true"
-            >
-              <pattern id="network-dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="1.5" fill="currentColor" />
-              </pattern>
-              <rect width="100%" height="100%" fill="url(#network-dots)" />
-              <line x1="10%" y1="20%" x2="40%" y2="50%" stroke="currentColor" strokeWidth="0.5" />
-              <line x1="40%" y1="50%" x2="75%" y2="30%" stroke="currentColor" strokeWidth="0.5" />
-              <line x1="75%" y1="30%" x2="90%" y2="70%" stroke="currentColor" strokeWidth="0.5" />
-              <circle cx="10%" cy="20%" r="3" fill="currentColor" />
-              <circle cx="40%" cy="50%" r="3" fill="currentColor" />
-              <circle cx="75%" cy="30%" r="3" fill="currentColor" />
-              <circle cx="90%" cy="70%" r="3" fill="currentColor" />
-            </svg>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-primary/15 to-primary/5">
-                  <Sparkles className="h-4 w-4 text-primary" />
+        {/* Right Column: Your Experts Widget */}
+        <FadeIn delay={0.15} duration={0.5} direction="right" className="md:col-span-2 flex flex-col">
+          <div className="relative flex-1 rounded-2xl bg-card border border-border/40 p-6 flex flex-col justify-between overflow-hidden">
+            {/* Subtle top edge highlight */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent" />
+
+            <div className="relative">
+              {/* Section header */}
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/15">
+                  <Users className="h-4 w-4 text-[#1E40AF]" />
                 </div>
-                <h3 className="text-sm font-semibold tracking-tight">
-                  Your Experts
-                </h3>
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight font-sans">
+                    Your Experts
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                    Quick access to your network
+                  </p>
+                </div>
               </div>
 
-              {/* Avatar row — overlapping style */}
-              <div className="flex items-center -space-x-2">
+              {/* Avatar row */}
+              <div className="flex items-center -space-x-2.5">
                 {displayedExperts.length > 0 ? (
                   <>
-                    {displayedExperts.map((expert) => (
+                    {displayedExperts.map((expert, index) => (
                       <Link
                         key={expert.id}
                         href={`/subscriber/experts/${expert.id}/chat`}
-                        className="group relative z-[1] hover:z-10"
+                        className="group/avatar relative z-[1] hover:z-10 transition-all duration-200 cursor-pointer"
                         title={`Chat with ${expert.displayName}`}
+                        style={{ animationDelay: `${index * 60}ms` }}
                       >
-                        <Avatar className="h-12 w-12 ring-2 ring-background transition-transform duration-200 group-hover:scale-110">
-                          <AvatarImage
-                            src={expert.image ?? undefined}
-                            alt={expert.displayName}
-                          />
-                          <AvatarFallback className="text-xs font-medium">
-                            {getInitials(expert.displayName)}
-                          </AvatarFallback>
-                        </Avatar>
-                        {/* Chat icon overlay */}
-                        <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:scale-110">
-                          <MessageSquare className="h-2.5 w-2.5" />
+                        <div className="relative">
+                          <Avatar className="h-13 w-13 ring-[3px] ring-background transition-all duration-200 group-hover/avatar:scale-110 group-hover/avatar:ring-[#1E40AF]/30 shadow-sm group-hover/avatar:shadow-md">
+                            <AvatarImage
+                              src={expert.image ?? undefined}
+                              alt={expert.displayName}
+                            />
+                            <AvatarFallback className="text-xs font-semibold bg-[#1E40AF]/5">
+                              {getInitials(expert.displayName)}
+                            </AvatarFallback>
+                          </Avatar>
+                          {/* Chat icon overlay */}
+                          <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#1E40AF] text-white shadow-md transition-all duration-200 group-hover/avatar:scale-110">
+                            <MessageSquare className="h-2.5 w-2.5" />
+                          </span>
+                        </div>
+                        {/* Tooltip-like name on hover */}
+                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-medium text-muted-foreground opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 pointer-events-none">
+                          {expert.displayName.split(" ")[0]}
                         </span>
                       </Link>
                     ))}
-                    {(subscribedExperts.length > 5) && (
-                      <span className="z-[1] flex h-12 w-12 items-center justify-center rounded-full bg-muted ring-2 ring-background text-xs font-medium text-muted-foreground">
+                    {subscribedExperts.length > 5 && (
+                      <span className="z-[1] flex h-13 w-13 items-center justify-center rounded-full bg-muted/80 ring-[3px] ring-background text-xs font-bold text-muted-foreground shadow-sm">
                         +{subscribedExperts.length - 5}
                       </span>
                     )}
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No subscriptions yet. Discover experts below.
-                  </p>
+                  <div className="flex items-center gap-3 py-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted/50 ring-1 ring-border/50">
+                      <Users className="h-4 w-4 text-muted-foreground/50" />
+                    </div>
+                    <p className="text-sm text-muted-foreground/70">
+                      No subscriptions yet. Discover experts below.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-              <span>
-                {stats?.activeSubscriptions ?? 0} subscription
-                {(stats?.activeSubscriptions ?? 0) !== 1 ? "s" : ""}
-              </span>
-              <Button variant="ghost" size="sm" className="h-auto p-0 text-xs hover:text-primary" asChild>
+            {/* Footer with stats and CTA */}
+            <div className="relative mt-5 flex items-center justify-between pt-4 border-t border-border/30">
+              <div className="flex items-center gap-1.5">
+                <Crown className="h-3 w-3 text-[#1E40AF]/60" />
+                <span className="text-xs font-medium text-muted-foreground/80">
+                  <AnimatedCounter value={stats?.activeSubscriptions ?? 0} duration={1} className="font-bold text-foreground" />
+                  {" "}subscription{(stats?.activeSubscriptions ?? 0) !== 1 ? "s" : ""}
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-auto p-0 text-xs font-semibold hover:text-[#1E40AF] transition-colors duration-200 group/btn cursor-pointer"
+                asChild
+              >
                 <Link href="/subscriber/hub">
                   Browse more
-                  <ArrowRight className="ml-1 h-3 w-3" />
+                  <ArrowRight className="ml-1 h-3 w-3 transition-transform duration-200 group-hover/btn:translate-x-0.5" />
                 </Link>
               </Button>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
-      {/* Row 2: Discover Experts */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold tracking-tight">Discover Experts</h2>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/subscriber/hub">
-              See All
-              <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
-        </div>
-
-        {expertsLoading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-56 rounded-xl" />
-            ))}
-          </div>
-        ) : recommendedExperts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {recommendedExperts.map((expert) => (
-              <ExpertCard key={expert.id} expert={expert} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            {/* Empty search illustration */}
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 64 64"
-              fill="none"
-              className="mb-3 text-muted-foreground/30"
-              aria-hidden="true"
+      {/* ========== Row 2: Discover Experts ========== */}
+      <FadeIn delay={0.3} duration={0.5} direction="up">
+        <div>
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
+                <TrendingUp className="h-4 w-4 text-[#1E40AF]" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold tracking-tight font-sans">Discover Experts</h2>
+                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                  Handpicked recommendations for you
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="group/see font-semibold cursor-pointer"
+              asChild
             >
-              <circle cx="28" cy="28" r="18" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
-              <line x1="41" y1="41" x2="56" y2="56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="28" cy="22" r="3" fill="currentColor" opacity="0.3" />
-              <circle cx="22" cy="32" r="2" fill="currentColor" opacity="0.2" />
-              <circle cx="34" cy="30" r="2.5" fill="currentColor" opacity="0.25" />
-            </svg>
-            <Sparkles className="h-8 w-8 text-muted-foreground/50 mb-3" />
-            <p className="text-sm font-medium text-muted-foreground">
-              No recommendations yet
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground/70">
-              Check back soon for expert suggestions.
-            </p>
+              <Link href="/subscriber/hub">
+                See All
+                <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform duration-200 group-hover/see:translate-x-0.5" />
+              </Link>
+            </Button>
           </div>
-        )}
-      </div>
-    </div>
+
+          {expertsLoading ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-56 rounded-2xl" />
+              ))}
+            </div>
+          ) : recommendedExperts.length > 0 ? (
+            <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {recommendedExperts.map((expert) => (
+                <StaggerItem key={expert.id}>
+                  <ExpertCard expert={expert} />
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-dashed border-border/50 bg-card/30">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1E40AF]/5 mb-4">
+                <Users className="h-8 w-8 text-[#1E40AF]/40" />
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground">
+                No recommendations yet
+              </p>
+              <p className="mt-1.5 text-xs text-muted-foreground/60 max-w-[240px]">
+                Check back soon for expert suggestions tailored to your interests.
+              </p>
+            </div>
+          )}
+        </div>
+      </FadeIn>
+    </PageTransition>
   );
 }

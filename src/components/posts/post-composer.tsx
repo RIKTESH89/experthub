@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ImagePlus,
   Video,
@@ -15,8 +16,9 @@ import {
   Save,
   ChevronUp,
   ChevronDown,
+  Hash,
 } from "lucide-react";
-import { getInitials } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,6 +65,7 @@ export function PostComposer({
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -114,7 +117,6 @@ export function PostComposer({
 
       if (validFiles.length === 0) return;
 
-      // Enforce 5 media files limit
       const remaining = 5 - mediaFiles.length;
       if (remaining <= 0) {
         toast.error("Maximum 5 media files per post");
@@ -179,7 +181,6 @@ export function PostComposer({
 
     setIsSubmitting(true);
     try {
-      // Upload media files one at a time and collect URLs
       const mediaPayload: { type: string; url: string; order: number }[] = [];
       for (let i = 0; i < mediaFiles.length; i++) {
         const mf = mediaFiles[i];
@@ -217,6 +218,7 @@ export function PostComposer({
       reset();
       setMediaFiles([]);
       setTags([]);
+      setIsFocused(false);
       onPostCreated?.();
     } catch {
       toast.error("Something went wrong");
@@ -226,292 +228,402 @@ export function PostComposer({
   };
 
   return (
-    <Card className="overflow-hidden">
-      <form>
-        <CardContent className="space-y-4 p-4">
-          <div className="flex items-start gap-3">
-            <Avatar className="mt-1 h-10 w-10">
-              <AvatarImage src={authorImage ?? undefined} alt={authorName} />
-              <AvatarFallback>{getInitials(authorName)}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1 space-y-3">
-              <Input
-                placeholder="Title (optional)"
-                className="border-0 bg-transparent px-0 text-lg font-semibold placeholder:text-muted-foreground/50 focus-visible:ring-0"
-                {...register("title")}
-              />
-              <textarea
-                placeholder="What's on your mind?"
-                className="w-full resize-none border-0 bg-transparent text-sm leading-relaxed placeholder:text-muted-foreground/50 focus:outline-none"
-                style={{ minHeight: "120px" }}
-                {...register("content", {
-                  onChange: autoResize,
-                })}
-                ref={(e) => {
-                  register("content").ref(e);
-                  (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = e;
-                }}
-              />
-            </div>
-          </div>
-
-          {mediaFiles.length > 0 && (
-            <div className="space-y-2">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {mediaFiles.map((mf, index) => (
-                  <div key={mf.id} className="group relative overflow-hidden rounded-lg">
-                    {mf.type === "IMAGE" ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={mf.preview}
-                        alt=""
-                        className="aspect-video w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex aspect-video items-center justify-center bg-muted">
-                        {mf.type === "VIDEO" ? (
-                          <Video className="h-8 w-8 text-muted-foreground" />
-                        ) : (
-                          <Music className="h-8 w-8 text-muted-foreground" />
-                        )}
-                        <span className="ml-2 truncate text-xs text-muted-foreground">
-                          {mf.file.name}
-                        </span>
-                      </div>
-                    )}
-                    <div className="absolute left-1 top-1 flex items-center gap-0.5">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-[10px] font-bold text-white">
-                        {index + 1}
-                      </span>
-                    </div>
-                    <div className="absolute right-1 top-1 flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                      <button
-                        type="button"
-                        disabled={index === 0}
-                        onClick={() => moveMedia(index, index - 1)}
-                        className="rounded-full bg-black/60 p-1 text-white disabled:opacity-30"
-                      >
-                        <ChevronUp className="h-3 w-3" />
-                      </button>
-                      <button
-                        type="button"
-                        disabled={index === mediaFiles.length - 1}
-                        onClick={() => moveMedia(index, index + 1)}
-                        className="rounded-full bg-black/60 p-1 text-white disabled:opacity-30"
-                      >
-                        <ChevronDown className="h-3 w-3" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeMedia(mf.id)}
-                        className="rounded-full bg-black/60 p-1 text-white"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <Card className={cn(
+        "overflow-hidden border-border/50 bg-card transition-all duration-200",
+        isFocused && "border-blue-700/20 ring-1 ring-blue-700/10"
+      )}>
+        <form>
+          <CardContent className="space-y-4 p-5">
+            {/* Author row + Title */}
+            <div className="flex items-start gap-3">
+              <Avatar className="mt-1 h-10 w-10 ring-1 ring-border">
+                <AvatarImage src={authorImage ?? undefined} alt={authorName} />
+                <AvatarFallback className="bg-blue-50 text-sm font-semibold font-sans text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                  {getInitials(authorName)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1 space-y-2">
+                <Input
+                  placeholder="Title (optional)"
+                  className="h-auto border-0 bg-transparent px-0 py-1 text-lg font-semibold font-sans tracking-tight placeholder:text-muted-foreground/40 focus-visible:ring-0"
+                  {...register("title")}
+                  onFocus={() => setIsFocused(true)}
+                />
+                <textarea
+                  placeholder="Share your thoughts, insights, or expertise..."
+                  className="w-full resize-none border-0 bg-transparent text-sm font-sans leading-relaxed placeholder:text-muted-foreground/40 focus:outline-none"
+                  style={{ minHeight: "120px" }}
+                  {...register("content", {
+                    onChange: autoResize,
+                  })}
+                  ref={(e) => {
+                    register("content").ref(e);
+                    (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = e;
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                />
               </div>
-              <p className="text-xs text-muted-foreground">
-                {mediaFiles.length}/5 files
-              </p>
             </div>
-          )}
 
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="gap-1 pr-1 text-xs"
+            {/* Media preview grid */}
+            <AnimatePresence mode="popLayout">
+              {mediaFiles.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-2"
                 >
-                  #{tag}
-                  <button
-                    type="button"
-                    onClick={() => removeTag(tag)}
-                    className="ml-0.5 rounded-full p-0.5 hover:bg-muted-foreground/20"
-                  >
-                    <X className="h-2.5 w-2.5" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          <Input
-            placeholder="Add tags (press Enter)..."
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={addTag}
-            className="border-0 bg-transparent px-0 text-sm placeholder:text-muted-foreground/50 focus-visible:ring-0"
-          />
-
-          <Separator />
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="rag-toggle"
-                className="flex cursor-pointer items-center gap-2 text-sm"
-              >
-                <Brain className="h-4 w-4 text-primary" />
-                Include in Knowledge Base
-              </Label>
-              <Switch
-                id="rag-toggle"
-                checked={isRagEnabled}
-                onCheckedChange={(checked) => setValue("isRagEnabled", checked)}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="hidden-toggle"
-                className="flex cursor-pointer items-center gap-2 text-sm"
-              >
-                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                Hidden post
-              </Label>
-              <Switch
-                id="hidden-toggle"
-                checked={isHidden}
-                onCheckedChange={(checked) => setValue("isHidden", checked)}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor="premium-toggle"
-                className="flex cursor-pointer items-center gap-2 text-sm"
-              >
-                <Crown className="h-4 w-4 text-amber-500" />
-                Premium Only
-              </Label>
-              <Switch
-                id="premium-toggle"
-                checked={isPremiumOnly}
-                onCheckedChange={(checked) => setValue("isPremiumOnly", checked)}
-              />
-            </div>
-          </div>
-
-          {isHidden && (
-            <p className="text-xs text-muted-foreground">
-              This post will only be added to your knowledge base and won&apos;t appear in feeds.
-            </p>
-          )}
-
-          {isPremiumOnly && (
-            <p className="text-xs text-muted-foreground">
-              Only Premium subscribers can see this post.
-            </p>
-          )}
-        </CardContent>
-
-        <CardFooter className="flex items-center justify-between border-t bg-muted/30 px-4 py-3">
-          <TooltipProvider delayDuration={300}>
-            <div className="flex items-center gap-1">
-              <input
-                ref={imageInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => addMedia(e.target.files, "IMAGE")}
-              />
-              <input
-                ref={videoInputRef}
-                type="file"
-                accept="video/*"
-                className="hidden"
-                onChange={(e) => addMedia(e.target.files, "VIDEO")}
-              />
-              <input
-                ref={audioInputRef}
-                type="file"
-                accept="audio/*"
-                className="hidden"
-                onChange={(e) => addMedia(e.target.files, "AUDIO")}
-              />
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-muted-foreground hover:text-primary"
-                    disabled={mediaFiles.length >= 5}
-                    onClick={() => imageInputRef.current?.click()}
-                  >
-                    <ImagePlus className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add image</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-muted-foreground hover:text-primary"
-                    disabled={mediaFiles.length >= 5}
-                    onClick={() => videoInputRef.current?.click()}
-                  >
-                    <Video className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add video</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-muted-foreground hover:text-primary"
-                    disabled={mediaFiles.length >= 5}
-                    onClick={() => audioInputRef.current?.click()}
-                  >
-                    <Music className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add audio</TooltipContent>
-              </Tooltip>
-            </div>
-          </TooltipProvider>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={isSubmitting}
-              onClick={handleSubmit((data) => onSubmit(data, "DRAFT"))}
-            >
-              <Save className="mr-1.5 h-3.5 w-3.5" />
-              Draft
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              disabled={isSubmitting || (!content.trim() && mediaFiles.length === 0)}
-              onClick={handleSubmit((data) => onSubmit(data, "PUBLISHED"))}
-            >
-              {isSubmitting ? (
-                <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Send className="mr-1.5 h-3.5 w-3.5" />
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {mediaFiles.map((mf, index) => (
+                      <motion.div
+                        key={mf.id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="group relative overflow-hidden rounded-xl ring-1 ring-border/30"
+                      >
+                        {mf.type === "IMAGE" ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={mf.preview}
+                            alt=""
+                            className="aspect-video w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex aspect-video items-center justify-center bg-muted">
+                            {mf.type === "VIDEO" ? (
+                              <Video className="h-8 w-8 text-muted-foreground/50" />
+                            ) : (
+                              <Music className="h-8 w-8 text-muted-foreground/50" />
+                            )}
+                            <span className="ml-2 max-w-[100px] truncate text-xs font-sans text-muted-foreground/70">
+                              {mf.file.name}
+                            </span>
+                          </div>
+                        )}
+                        {/* Order badge */}
+                        <div className="absolute left-1.5 top-1.5">
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-[10px] font-bold font-sans text-white">
+                            {index + 1}
+                          </span>
+                        </div>
+                        {/* Controls overlay */}
+                        <div className="absolute right-1.5 top-1.5 flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                          <button
+                            type="button"
+                            disabled={index === 0}
+                            onClick={() => moveMedia(index, index - 1)}
+                            className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-colors duration-200 hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-30"
+                          >
+                            <ChevronUp className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === mediaFiles.length - 1}
+                            onClick={() => moveMedia(index, index + 1)}
+                            className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-colors duration-200 hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-30"
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeMedia(mf.id)}
+                            className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-red-500/80 text-white transition-colors duration-200 hover:bg-red-500"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1 flex-1 rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-blue-700 transition-all duration-300"
+                        style={{ width: `${(mediaFiles.length / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium font-sans text-muted-foreground/70">
+                      {mediaFiles.length}/5
+                    </span>
+                  </div>
+                </motion.div>
               )}
-              Publish
-            </Button>
-          </div>
-        </CardFooter>
-      </form>
-    </Card>
+            </AnimatePresence>
+
+            {/* Tags display */}
+            <AnimatePresence>
+              {tags.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="flex flex-wrap gap-1.5"
+                >
+                  {tags.map((tag) => (
+                    <motion.div
+                      key={tag}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      layout
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="gap-1 rounded-full border-transparent bg-blue-700/[0.06] pr-1.5 text-xs font-normal font-sans text-blue-700/80 transition-colors duration-200 hover:bg-blue-700/10 dark:bg-blue-500/10 dark:text-blue-400"
+                      >
+                        #{tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors duration-200 hover:bg-blue-700/20"
+                        >
+                          <X className="h-2.5 w-2.5" />
+                        </button>
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Tag input */}
+            <div className="relative">
+              <Hash className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/30" />
+              <Input
+                placeholder="Add tags (press Enter)..."
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={addTag}
+                onFocus={() => setIsFocused(true)}
+                className="border-0 bg-transparent pl-6 text-sm font-sans placeholder:text-muted-foreground/40 focus-visible:ring-0"
+              />
+            </div>
+
+            <Separator className="bg-border/40" />
+
+            {/* Toggle options */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors duration-200",
+                  isRagEnabled ? "bg-blue-700/[0.06]" : "hover:bg-muted/50"
+                )}
+              >
+                <Label
+                  htmlFor="rag-toggle"
+                  className="flex cursor-pointer items-center gap-2 text-sm font-sans"
+                >
+                  <div className={cn(
+                    "flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-200",
+                    isRagEnabled ? "bg-blue-700/15 text-blue-700 dark:text-blue-400" : "bg-muted text-muted-foreground"
+                  )}>
+                    <Brain className="h-3.5 w-3.5" />
+                  </div>
+                  <span className={cn(isRagEnabled && "font-medium text-blue-700 dark:text-blue-400")}>Knowledge Base</span>
+                </Label>
+                <Switch
+                  id="rag-toggle"
+                  checked={isRagEnabled}
+                  onCheckedChange={(checked) => setValue("isRagEnabled", checked)}
+                />
+              </div>
+
+              <div
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors duration-200",
+                  isHidden ? "bg-muted-foreground/[0.06]" : "hover:bg-muted/50"
+                )}
+              >
+                <Label
+                  htmlFor="hidden-toggle"
+                  className="flex cursor-pointer items-center gap-2 text-sm font-sans"
+                >
+                  <div className={cn(
+                    "flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-200",
+                    isHidden ? "bg-muted-foreground/15 text-muted-foreground" : "bg-muted text-muted-foreground"
+                  )}>
+                    <EyeOff className="h-3.5 w-3.5" />
+                  </div>
+                  <span className={cn(isHidden && "font-medium")}>Hidden</span>
+                </Label>
+                <Switch
+                  id="hidden-toggle"
+                  checked={isHidden}
+                  onCheckedChange={(checked) => setValue("isHidden", checked)}
+                />
+              </div>
+
+              <div
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors duration-200",
+                  isPremiumOnly ? "bg-amber-500/[0.06]" : "hover:bg-muted/50"
+                )}
+              >
+                <Label
+                  htmlFor="premium-toggle"
+                  className="flex cursor-pointer items-center gap-2 text-sm font-sans"
+                >
+                  <div className={cn(
+                    "flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-200",
+                    isPremiumOnly ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" : "bg-muted text-muted-foreground"
+                  )}>
+                    <Crown className="h-3.5 w-3.5" />
+                  </div>
+                  <span className={cn(isPremiumOnly && "font-medium text-amber-600 dark:text-amber-400")}>Premium</span>
+                </Label>
+                <Switch
+                  id="premium-toggle"
+                  checked={isPremiumOnly}
+                  onCheckedChange={(checked) => setValue("isPremiumOnly", checked)}
+                />
+              </div>
+            </div>
+
+            {/* Info messages */}
+            <AnimatePresence>
+              {isHidden && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-1.5 rounded-lg bg-muted/50 px-3 py-2 text-xs font-sans text-muted-foreground"
+                >
+                  <EyeOff className="h-3 w-3 shrink-0" />
+                  This post will only be added to your knowledge base and won&apos;t appear in feeds.
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {isPremiumOnly && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-1.5 rounded-lg bg-amber-500/[0.06] px-3 py-2 text-xs font-sans text-amber-600 dark:text-amber-400"
+                >
+                  <Crown className="h-3 w-3 shrink-0" />
+                  Only Premium subscribers can see this post.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </CardContent>
+
+          <CardFooter className="flex items-center justify-between border-t border-border/40 bg-muted/20 px-5 py-3">
+            <TooltipProvider delayDuration={300}>
+              <div className="flex items-center gap-0.5">
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => addMedia(e.target.files, "IMAGE")}
+                />
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => addMedia(e.target.files, "VIDEO")}
+                />
+                <input
+                  ref={audioInputRef}
+                  type="file"
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={(e) => addMedia(e.target.files, "AUDIO")}
+                />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      disabled={mediaFiles.length >= 5}
+                      onClick={() => imageInputRef.current?.click()}
+                    >
+                      <ImagePlus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">Add image (max 2MB)</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      disabled={mediaFiles.length >= 5}
+                      onClick={() => videoInputRef.current?.click()}
+                    >
+                      <Video className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">Add video (max 10MB)</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      disabled={mediaFiles.length >= 5}
+                      onClick={() => audioInputRef.current?.click()}
+                    >
+                      <Music className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">Add audio (max 3MB)</TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isSubmitting}
+                onClick={handleSubmit((data) => onSubmit(data, "DRAFT"))}
+                className="cursor-pointer rounded-lg border-border/50 transition-colors duration-200 hover:border-border hover:bg-muted/80"
+              >
+                <Save className="mr-1.5 h-3.5 w-3.5" />
+                Draft
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={isSubmitting || (!content.trim() && mediaFiles.length === 0)}
+                onClick={handleSubmit((data) => onSubmit(data, "PUBLISHED"))}
+                className="cursor-pointer rounded-lg bg-blue-700 text-white transition-colors duration-200 hover:bg-blue-800 disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Send className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                Publish
+              </Button>
+            </div>
+          </CardFooter>
+        </form>
+      </Card>
+    </motion.div>
   );
 }

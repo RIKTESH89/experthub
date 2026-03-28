@@ -2,8 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Send } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -14,9 +14,10 @@ interface ChatInputProps {
 export function ChatInput({
   onSend,
   isDisabled = false,
-  placeholder = "Type a message...",
+  placeholder = "Ask anything...",
 }: ChatInputProps) {
   const [value, setValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = useCallback(() => {
@@ -47,9 +48,18 @@ export function ChatInput({
     }
   }, []);
 
+  const hasContent = value.trim().length > 0;
+
   return (
-    <div className="border-t border-border bg-background p-3">
-      <div className="flex items-end gap-2">
+    <div className="border-t border-border/50 bg-background p-3 sm:p-4">
+      <div
+        className={cn(
+          "relative flex items-end gap-2 rounded-xl border bg-card transition-all duration-200",
+          isFocused
+            ? "border-blue-700/40 ring-1 ring-blue-700/20"
+            : "border-border/60 hover:border-border"
+        )}
+      >
         <div className="relative min-w-0 flex-1">
           <textarea
             ref={textareaRef}
@@ -59,33 +69,54 @@ export function ChatInput({
               handleInput();
             }}
             onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder={placeholder}
             disabled={isDisabled}
             rows={1}
             className={cn(
-              "w-full resize-none rounded-lg border border-border bg-card px-3 py-2.5 text-sm leading-relaxed",
-              "placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50",
+              "w-full resize-none bg-transparent px-4 py-3 text-sm font-sans leading-relaxed",
+              "placeholder:text-muted-foreground/50 focus:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "scrollbar-none"
             )}
             style={{ maxHeight: "120px", scrollbarWidth: "none" }}
           />
         </div>
-        <Button
-          size="icon"
-          className="h-10 w-10 shrink-0 rounded-lg"
-          onClick={handleSend}
-          disabled={isDisabled || !value.trim()}
-        >
-          <Send className="h-4 w-4" />
-        </Button>
+
+        <div className="flex items-center gap-1 p-2">
+          <AnimatePresence mode="wait">
+            <motion.button
+              key={hasContent ? "active" : "inactive"}
+              type="button"
+              onClick={handleSend}
+              disabled={isDisabled || !hasContent}
+              className={cn(
+                "relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-200",
+                hasContent && !isDisabled
+                  ? "cursor-pointer bg-blue-700 text-white hover:bg-blue-800"
+                  : "bg-muted/60 text-muted-foreground/40 cursor-not-allowed"
+              )}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              whileHover={hasContent && !isDisabled ? { scale: 1.05 } : {}}
+              whileTap={hasContent && !isDisabled ? { scale: 0.92 } : {}}
+              transition={{ duration: 0.2 }}
+            >
+              <Send className="h-4 w-4" />
+            </motion.button>
+          </AnimatePresence>
+        </div>
       </div>
-      <p className="mt-1.5 text-center text-[10px] text-muted-foreground">
-        AI responses are generated from the expert&apos;s knowledge base. Press{" "}
-        <kbd className="rounded border bg-muted px-1 py-0.5 font-mono text-[10px]">
+
+      <p className="mt-2 text-center text-[10px] font-sans text-muted-foreground/60">
+        AI responses are generated from the expert&apos;s knowledge base
+        <span className="mx-1.5 inline-block h-0.5 w-0.5 rounded-full bg-muted-foreground/30 align-middle" />
+        <kbd className="rounded-md border border-border/50 bg-muted/50 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground/50">
           Shift+Enter
         </kbd>{" "}
-        for a new line.
+        for new line
       </p>
     </div>
   );

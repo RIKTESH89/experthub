@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/card";
 import { KnowledgeTable } from "@/components/knowledge/knowledge-table";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  PageTransition,
+  StaggerContainer,
+  StaggerItem,
+  FadeIn,
+  AnimatedCounter,
+} from "@/components/ui/motion";
 
 interface KnowledgeStats {
   total: number;
@@ -40,103 +47,126 @@ export default function ExpertKnowledgePage() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
-            {/* Stacked documents */}
-            <rect x="30" y="30" width="50" height="60" rx="4" fill="#ede9fe" stroke="#8b5cf6" strokeWidth="2"/>
-            <rect x="38" y="22" width="50" height="60" rx="4" fill="#e0e7ff" stroke="#6366f1" strokeWidth="2"/>
-            <rect x="46" y="14" width="50" height="60" rx="4" fill="#f5f3ff" stroke="#6366f1" strokeWidth="2"/>
-            {/* Document lines */}
-            <line x1="54" y1="30" x2="86" y2="30" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="54" y1="38" x2="80" y2="38" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="54" y1="46" x2="84" y2="46" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="54" y1="54" x2="76" y2="54" stroke="#ddd6fe" strokeWidth="2" strokeLinecap="round"/>
-            {/* Database icon */}
-            <ellipse cx="120" cy="50" rx="22" ry="8" fill="#ede9fe" stroke="#6366f1" strokeWidth="2"/>
-            <path d="M98 50v18c0 4.4 9.8 8 22 8s22-3.6 22-8V50" stroke="#6366f1" strokeWidth="2" fill="none"/>
-            <path d="M98 60c0 4.4 9.8 8 22 8s22-3.6 22-8" stroke="#8b5cf6" strokeWidth="1.5" fill="none"/>
-            {/* Sparkle */}
-            <path d="M24 16l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#8b5cf6"/>
-            <path d="M110 18l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" fill="#6366f1" opacity="0.6"/>
-          </svg>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Knowledge Base</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Power your AI Twin with content
-            </p>
+    <PageTransition className="space-y-8">
+      {/* Page Header */}
+      <FadeIn direction="up" duration={0.5}>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-5">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
+              <Database className="h-7 w-7 text-white" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">
+                Knowledge Base
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Power your AI Twin with expert content and insights
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="cursor-pointer border-border/60 shadow-sm transition-all duration-200 hover:border-blue-600/30 hover:bg-blue-50/50 hover:shadow-md dark:hover:bg-blue-500/5"
+              asChild
+            >
+              <Link href="/expert/knowledge/import">
+                <Upload className="mr-2 h-4 w-4" />
+                Import
+              </Link>
+            </Button>
+            <Button
+              className="cursor-pointer bg-[#1E40AF] shadow-lg shadow-blue-700/25 transition-all duration-200 hover:bg-[#1e3a8a] hover:shadow-xl"
+              asChild
+            >
+              <Link href="/expert/knowledge/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Knowledge
+              </Link>
+            </Button>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/expert/knowledge/import">
-              <Upload className="mr-2 h-4 w-4" />
-              Import
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link href="/expert/knowledge/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Knowledge
-            </Link>
-          </Button>
-        </div>
-      </div>
+      </FadeIn>
 
-      {/* Stats */}
+      {/* Stats Cards */}
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
+            <Skeleton key={i} className="h-24 rounded-xl" />
           ))}
         </div>
       ) : (
         stats && (
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card>
-              <CardContent className="flex items-center gap-3 p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Database className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.total}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Total Items
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="flex items-center gap-3 p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                  <Check className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.indexed}</p>
-                  <p className="text-xs text-muted-foreground">Indexed</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="flex items-center gap-3 p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/10">
-                  <Clock className="h-5 w-5 text-yellow-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.pending}</p>
-                  <p className="text-xs text-muted-foreground">Pending</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <StaggerContainer className="grid gap-4 sm:grid-cols-3">
+            {/* Total Items */}
+            <StaggerItem>
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-200 hover:border-blue-600/30 hover:shadow-lg hover:-translate-y-0.5">
+                <CardContent className="relative flex items-center gap-4 p-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 ring-1 ring-blue-500/10 transition-all duration-200 group-hover:ring-blue-500/20">
+                    <Database className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold tracking-tight">
+                      <AnimatedCounter value={stats.total} />
+                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">
+                      Total Items
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+
+            {/* Indexed */}
+            <StaggerItem>
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/5 hover:-translate-y-0.5">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.03] to-green-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <CardContent className="relative flex items-center gap-4 p-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 ring-1 ring-emerald-500/10 transition-all duration-300 group-hover:ring-emerald-500/20 group-hover:shadow-md group-hover:shadow-emerald-500/10">
+                    <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold tracking-tight">
+                      <AnimatedCounter value={stats.indexed} />
+                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">
+                      Indexed
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+
+            {/* Pending */}
+            <StaggerItem>
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] to-yellow-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <CardContent className="relative flex items-center gap-4 p-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 ring-1 ring-amber-500/10 transition-all duration-300 group-hover:ring-amber-500/20 group-hover:shadow-md group-hover:shadow-amber-500/10">
+                    <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold tracking-tight">
+                      <AnimatedCounter value={stats.pending} />
+                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">
+                      Pending
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+          </StaggerContainer>
         )
       )}
 
       {/* Knowledge Table */}
-      <KnowledgeTable
-        onAdd={() => router.push("/expert/knowledge/new")}
-      />
-    </div>
+      <FadeIn delay={0.3} direction="up">
+        <KnowledgeTable
+          onAdd={() => router.push("/expert/knowledge/new")}
+        />
+      </FadeIn>
+    </PageTransition>
   );
 }

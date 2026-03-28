@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Loader2, Save, Globe, Shield, CreditCard, Bell } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  Globe,
+  Shield,
+  CreditCard,
+  Bell,
+  Check,
+  Settings2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { PageTransition, FadeIn } from "@/components/ui/motion";
 
 interface PlatformSettings {
   siteName: string;
@@ -38,8 +48,134 @@ interface PlatformSettings {
   contentModeration: string;
 }
 
+function SectionIcon({
+  icon: Icon,
+  color,
+}: {
+  icon: React.ElementType;
+  color: string;
+}) {
+  return (
+    <div
+      className={`flex h-10 w-10 items-center justify-center rounded-xl ${color} ring-1 ring-black/5 dark:ring-white/5 shadow-sm`}
+    >
+      <Icon className="h-5 w-5 text-white" />
+    </div>
+  );
+}
+
+function ToggleRow({
+  label,
+  description,
+  checked,
+  onCheckedChange,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  onCheckedChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="group flex items-center justify-between rounded-xl border border-border/50 bg-muted/20 p-4 transition-all duration-200 hover:bg-muted/40 hover:border-border/70">
+      <div className="space-y-0.5 pr-4">
+        <Label className="cursor-pointer text-sm font-medium font-sans">{label}</Label>
+        <p className="text-xs text-muted-foreground/80 leading-relaxed font-sans">
+          {description}
+        </p>
+      </div>
+      <Switch
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        className="shrink-0 cursor-pointer"
+      />
+    </div>
+  );
+}
+
+function SettingsCard({
+  icon,
+  iconColor,
+  title,
+  description,
+  children,
+  delay = 0,
+  footer,
+}: {
+  icon: React.ElementType;
+  iconColor: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  delay?: number;
+  footer?: React.ReactNode;
+}) {
+  return (
+    <FadeIn delay={delay}>
+      <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-border/60">
+        {/* Top accent line */}
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        <CardHeader className="relative pb-4">
+          <div className="relative flex items-center gap-3.5">
+            <SectionIcon icon={icon} color={iconColor} />
+            <div>
+              <CardTitle className="text-base font-semibold tracking-tight font-sans">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-[13px] text-muted-foreground/80 font-sans">
+                {description}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4 pt-0">{children}</CardContent>
+
+        {footer && (
+          <CardFooter className="border-t border-border/40 bg-muted/10 px-6 py-4">
+            {footer}
+          </CardFooter>
+        )}
+      </Card>
+    </FadeIn>
+  );
+}
+
+function PremiumInput({
+  id,
+  label,
+  type = "text",
+  register,
+  ...props
+}: {
+  id: string;
+  label: string;
+  type?: string;
+  register: ReturnType<typeof useForm<PlatformSettings>>["register"];
+  [key: string]: unknown;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label
+        htmlFor={id}
+        className="text-sm font-medium text-foreground/90 font-sans"
+      >
+        {label}
+      </Label>
+      <Input
+        id={id}
+        type={type}
+        className="border-border/50 bg-background/50 focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+        {...register(id as keyof PlatformSettings)}
+        {...props}
+      />
+    </div>
+  );
+}
+
 export default function AdminSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const { register, handleSubmit, watch, setValue, reset } =
     useForm<PlatformSettings>({
@@ -78,6 +214,7 @@ export default function AdminSettingsPage() {
 
   const onSubmit = async (data: PlatformSettings) => {
     setIsSubmitting(true);
+    setSaveSuccess(false);
     try {
       const res = await fetch("/api/admin/settings", {
         method: "PATCH",
@@ -86,6 +223,8 @@ export default function AdminSettingsPage() {
       });
       if (!res.ok) throw new Error("Failed to save");
       toast.success("Platform settings saved successfully");
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
     } catch {
       toast.error("Failed to save settings");
     } finally {
@@ -94,214 +233,200 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Platform Settings
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Configure global platform settings and preferences.
-        </p>
-      </div>
+    <PageTransition>
+      <div className="space-y-8 font-sans">
+        {/* Header */}
+        <FadeIn delay={0}>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
+              <Settings2 className="h-5 w-5 text-[#1E40AF]" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight font-sans">
+                Platform Settings
+              </h2>
+              <p className="text-sm text-muted-foreground font-sans">
+                Configure global platform settings and preferences.
+              </p>
+            </div>
+          </div>
+        </FadeIn>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* General */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <Globe className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <CardTitle>General Settings</CardTitle>
-                <CardDescription>
-                  Basic platform configuration
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* General */}
+          <SettingsCard
+            icon={Globe}
+            iconColor="bg-[#1E40AF]"
+            title="General Settings"
+            description="Basic platform configuration"
+            delay={0.05}
+          >
+            <PremiumInput id="siteName" label="Site Name" register={register} />
             <div className="space-y-2">
-              <Label htmlFor="siteName">Site Name</Label>
-              <Input id="siteName" {...register("siteName")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="siteDescription">Site Description</Label>
+              <Label
+                htmlFor="siteDescription"
+                className="text-sm font-medium text-foreground/90 font-sans"
+              >
+                Site Description
+              </Label>
               <Textarea
                 id="siteDescription"
-                className="resize-none"
+                className="resize-none border-border/50 bg-background/50 focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40 min-h-[80px]"
                 {...register("siteDescription")}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="supportEmail">Support Email</Label>
-              <Input
-                id="supportEmail"
-                type="email"
-                {...register("supportEmail")}
-              />
-            </div>
-          </CardContent>
-        </Card>
+            <PremiumInput
+              id="supportEmail"
+              label="Support Email"
+              type="email"
+              register={register}
+            />
+          </SettingsCard>
 
-        {/* Monetization */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                <CreditCard className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <CardTitle>Monetization</CardTitle>
-                <CardDescription>
-                  Pricing and fee configuration
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          {/* Monetization */}
+          <SettingsCard
+            icon={CreditCard}
+            iconColor="bg-emerald-600"
+            title="Monetization"
+            description="Pricing and fee configuration"
+            delay={0.1}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="defaultExpertRate">
-                  Default Expert Rate (₹/month)
+                <Label
+                  htmlFor="defaultExpertRate"
+                  className="text-sm font-medium text-foreground/90 font-sans"
+                >
+                  Default Expert Rate (per month)
                 </Label>
-                <Input
-                  id="defaultExpertRate"
-                  type="number"
-                  step="0.01"
-                  {...register("defaultExpertRate")}
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
+                    ₹
+                  </span>
+                  <Input
+                    id="defaultExpertRate"
+                    type="number"
+                    step="0.01"
+                    className="pl-7 border-border/50 bg-background/50 focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    {...register("defaultExpertRate")}
+                  />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="platformFeePercent">
-                  Platform Fee (%)
+                <Label
+                  htmlFor="platformFeePercent"
+                  className="text-sm font-medium text-foreground/90 font-sans"
+                >
+                  Platform Fee
                 </Label>
-                <Input
-                  id="platformFeePercent"
-                  type="number"
-                  {...register("platformFeePercent")}
-                />
+                <div className="relative">
+                  <Input
+                    id="platformFeePercent"
+                    type="number"
+                    className="pr-8 border-border/50 bg-background/50 focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    {...register("platformFeePercent")}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
+                    %
+                  </span>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </SettingsCard>
 
-        {/* Security */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                <Shield className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <CardTitle>Security &amp; Access</CardTitle>
-                <CardDescription>
-                  Control platform access and moderation
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label className="cursor-pointer">Maintenance Mode</Label>
-                <p className="text-xs text-muted-foreground">
-                  Temporarily disable the platform for maintenance
-                </p>
-              </div>
-              <Switch
+          {/* Security */}
+          <SettingsCard
+            icon={Shield}
+            iconColor="bg-[#1E40AF]"
+            title="Security & Access"
+            description="Control platform access and moderation"
+            delay={0.15}
+          >
+            <div className="space-y-3">
+              <ToggleRow
+                label="Maintenance Mode"
+                description="Temporarily disable the platform for maintenance"
                 checked={maintenanceMode}
                 onCheckedChange={(v) => setValue("maintenanceMode", v)}
               />
-            </div>
-
-            <div className="flex items-center justify-between rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label className="cursor-pointer">Registration Enabled</Label>
-                <p className="text-xs text-muted-foreground">
-                  Allow new users to register
-                </p>
-              </div>
-              <Switch
+              <ToggleRow
+                label="Registration Enabled"
+                description="Allow new users to register"
                 checked={registrationEnabled}
                 onCheckedChange={(v) => setValue("registrationEnabled", v)}
               />
-            </div>
-
-            <div className="flex items-center justify-between rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label className="cursor-pointer">Expert Auto-Approval</Label>
-                <p className="text-xs text-muted-foreground">
-                  Automatically verify new expert accounts
-                </p>
-              </div>
-              <Switch
+              <ToggleRow
+                label="Expert Auto-Approval"
+                description="Automatically verify new expert accounts"
                 checked={expertAutoApproval}
                 onCheckedChange={(v) => setValue("expertAutoApproval", v)}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Content Moderation Level</Label>
+            <div className="space-y-2 pt-2">
+              <Label className="text-sm font-medium text-foreground/90 font-sans">
+                Content Moderation Level
+              </Label>
               <Select
                 value={watch("contentModeration")}
                 onValueChange={(v) => setValue("contentModeration", v)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="cursor-pointer border-border/50 bg-background/50 focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="off">Off</SelectItem>
-                  <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="moderate">Moderate</SelectItem>
-                  <SelectItem value="strict">Strict</SelectItem>
+                  <SelectItem value="off" className="cursor-pointer">Off</SelectItem>
+                  <SelectItem value="light" className="cursor-pointer">Light</SelectItem>
+                  <SelectItem value="moderate" className="cursor-pointer">Moderate</SelectItem>
+                  <SelectItem value="strict" className="cursor-pointer">Strict</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
+          </SettingsCard>
 
-        {/* Notifications */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
-                <Bell className="h-5 w-5 text-purple-600" />
+          {/* Notifications */}
+          <SettingsCard
+            icon={Bell}
+            iconColor="bg-[#1E40AF]"
+            title="Notifications"
+            description="Email and notification settings"
+            delay={0.2}
+            footer={
+              <div className="flex w-full justify-end">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="cursor-pointer relative min-w-[160px] bg-[#1E40AF] hover:bg-[#1E40AF]/90 shadow-[0_2px_8px_rgba(30,64,175,0.2)] hover:shadow-[0_4px_12px_rgba(30,64,175,0.3)] transition-all duration-200"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </span>
+                  ) : saveSuccess ? (
+                    <span className="flex items-center">
+                      <Check className="mr-2 h-4 w-4" />
+                      Saved!
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Settings
+                    </span>
+                  )}
+                </Button>
               </div>
-              <div>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>
-                  Email and notification settings
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between rounded-lg border border-border p-4">
-              <div className="space-y-0.5">
-                <Label className="cursor-pointer">Email Notifications</Label>
-                <p className="text-xs text-muted-foreground">
-                  Send email notifications for important events
-                </p>
-              </div>
-              <Switch
-                checked={emailNotifications}
-                onCheckedChange={(v) => setValue("emailNotifications", v)}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end border-t pt-4">
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              Save Settings
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
-    </div>
+            }
+          >
+            <ToggleRow
+              label="Email Notifications"
+              description="Send email notifications for important events"
+              checked={emailNotifications}
+              onCheckedChange={(v) => setValue("emailNotifications", v)}
+            />
+          </SettingsCard>
+        </form>
+      </div>
+    </PageTransition>
   );
 }

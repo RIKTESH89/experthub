@@ -1,4 +1,7 @@
+"use client";
+
 import { format } from "date-fns";
+import { motion } from "motion/react";
 
 interface WelcomeBannerProps {
   userName: string;
@@ -16,32 +19,44 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
   const message = role ? roleMessages[role] : "Welcome back to your dashboard.";
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border/60 p-4 sm:p-5">
-      {/* Gradient mesh background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
-      <div className="absolute top-0 right-1/4 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
-      <div className="absolute bottom-0 left-1/3 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
+      className="relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-r from-[#1E40AF]/[0.06] via-transparent to-[#1E40AF]/[0.03] p-5 sm:p-6"
+    >
+      {/* Subtle top-edge accent */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent" />
 
-      {/* Decorative sparkles */}
-      <svg className="pointer-events-none absolute right-3 top-3 h-8 w-8 text-primary/10 sm:right-5 sm:top-3 sm:h-12 sm:w-12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z" />
-      </svg>
-      <svg className="pointer-events-none absolute right-14 bottom-2 h-5 w-5 text-primary/[0.07]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z" />
-      </svg>
-
-      {/* Content */}
       <div className="relative z-10">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h1 className="text-base font-bold tracking-tight sm:text-lg">
-            Welcome back, <span className="text-gradient">{userName}</span>
-          </h1>
-          <span className="hidden text-xs font-medium text-muted-foreground/70 tracking-wide sm:inline">
-            {today}
-          </span>
-        </div>
-        <p className="mt-0.5 text-sm text-muted-foreground">{message}</p>
+        <motion.p
+          className="text-xs font-medium tracking-wide text-muted-foreground/70 font-sans uppercase"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.4, 0.25, 1] }}
+        >
+          {today}
+        </motion.p>
+
+        <motion.h1
+          className="mt-1.5 text-lg font-bold tracking-tight font-sans sm:text-xl"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15, ease: [0.25, 0.4, 0.25, 1] }}
+        >
+          Welcome back,{" "}
+          <span className="text-[#1E40AF]">{userName}</span>
+        </motion.h1>
+
+        <motion.p
+          className="mt-1 text-sm text-muted-foreground font-sans"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
+        >
+          {message}
+        </motion.p>
       </div>
-    </div>
+    </motion.div>
   );
 }

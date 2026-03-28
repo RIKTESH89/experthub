@@ -11,6 +11,7 @@ import {
   Users,
   ShieldCheck,
   ShieldOff,
+  TrendingUp,
 } from "lucide-react";
 import { formatDate, getInitials, formatNumber } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -43,6 +44,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import {
+  PageTransition,
+  StaggerContainer,
+  StaggerItem,
+  AnimatedCounter,
+  motion,
+} from "@/components/ui/motion";
+import { cn } from "@/lib/utils";
 
 interface ExpertRow {
   id: string;
@@ -58,6 +67,33 @@ interface ExpertRow {
     posts: number;
   };
 }
+
+const statCards = [
+  {
+    key: "total",
+    label: "Total Experts",
+    icon: Users,
+    iconBg: "bg-[#1E40AF]/10",
+    iconColor: "text-[#1E40AF] dark:text-blue-400",
+    borderAccent: "border-l-[#1E40AF]",
+  },
+  {
+    key: "verified",
+    label: "Verified",
+    icon: BadgeCheck,
+    iconBg: "bg-emerald-500/10",
+    iconColor: "text-emerald-600 dark:text-emerald-400",
+    borderAccent: "border-l-emerald-500",
+  },
+  {
+    key: "pending",
+    label: "Pending Review",
+    icon: ShieldOff,
+    iconBg: "bg-amber-500/10",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    borderAccent: "border-l-amber-500",
+  },
+] as const;
 
 export default function AdminExpertsPage() {
   const [experts, setExperts] = useState<ExpertRow[]>([]);
@@ -130,9 +166,15 @@ export default function AdminExpertsPage() {
   const verifiedCount = experts.filter((e) => e.isVerified).length;
   const unverifiedCount = experts.filter((e) => !e.isVerified).length;
 
+  const statValues = {
+    total: experts.length,
+    verified: verifiedCount,
+    pending: unverifiedCount,
+  };
+
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 font-sans">
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-10 w-80" />
         <Skeleton className="h-96 rounded-lg" />
@@ -141,64 +183,90 @@ export default function AdminExpertsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6 font-sans">
+      {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Expert Verification
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Review and manage expert verification status.
-        </p>
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/20">
+            <ShieldCheck className="h-4.5 w-4.5 text-[#1E40AF] dark:text-blue-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight font-sans">
+              Expert Verification
+            </h2>
+            <p className="text-sm text-muted-foreground font-sans">
+              Review and manage expert verification status.
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Users className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{experts.length}</p>
-              <p className="text-xs text-muted-foreground">Total Experts</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-              <BadgeCheck className="h-5 w-5 text-green-500" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{verifiedCount}</p>
-              <p className="text-xs text-muted-foreground">Verified</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/10">
-              <ShieldOff className="h-5 w-5 text-yellow-500" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">{unverifiedCount}</p>
-              <p className="text-xs text-muted-foreground">Pending</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Stat Cards */}
+      <StaggerContainer className="grid gap-4 sm:grid-cols-3">
+        {statCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <StaggerItem key={card.key}>
+              <Card className={cn(
+                "relative overflow-hidden border-l-4 transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:-translate-y-0.5",
+                card.borderAccent
+              )}>
+                <CardContent className="relative flex items-center gap-4 p-5">
+                  <div className={cn(
+                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl",
+                    card.iconBg
+                  )}>
+                    <Icon className={cn("h-6 w-6", card.iconColor)} />
+                  </div>
+                  <div>
+                    <AnimatedCounter
+                      value={statValues[card.key]}
+                      className="text-3xl font-bold tracking-tight"
+                    />
+                    <p className="text-xs font-medium text-muted-foreground mt-0.5 font-sans">
+                      {card.label}
+                    </p>
+                  </div>
+                  {card.key === "verified" && verifiedCount > 0 && (
+                    <div className="ml-auto flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
+                      <TrendingUp className="h-3 w-3" />
+                      <span className="font-medium">
+                        {Math.round((verifiedCount / experts.length) * 100)}%
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </StaggerItem>
+          );
+        })}
+      </StaggerContainer>
 
       {/* Tabs and Search */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <TabsList>
-            <TabsTrigger value="all">All ({experts.length})</TabsTrigger>
-            <TabsTrigger value="verified">
-              Verified ({verifiedCount})
-            </TabsTrigger>
-            <TabsTrigger value="unverified">
-              Pending ({unverifiedCount})
-            </TabsTrigger>
+          <TabsList className="bg-muted/60 p-1 h-auto">
+            {[
+              { value: "all", label: "All", count: experts.length },
+              { value: "verified", label: "Verified", count: verifiedCount },
+              { value: "unverified", label: "Pending", count: unverifiedCount },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="cursor-pointer data-[state=active]:bg-background data-[state=active]:shadow-sm gap-1.5 px-4 py-2 text-sm transition-all duration-200"
+              >
+                {tab.label}
+                <span className={cn(
+                  "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold transition-colors duration-200",
+                  activeTab === tab.value
+                    ? "bg-[#1E40AF]/10 text-[#1E40AF]"
+                    : "bg-muted-foreground/10 text-muted-foreground"
+                )}>
+                  {tab.count}
+                </span>
+              </TabsTrigger>
+            ))}
           </TabsList>
           <div className="relative w-full sm:w-[300px]">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -206,24 +274,24 @@ export default function AdminExpertsPage() {
               placeholder="Search experts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 bg-muted/40 border-muted-foreground/10 focus:bg-background transition-colors duration-200"
             />
           </div>
         </div>
 
         <TabsContent value={activeTab} className="mt-4">
-          <Card>
+          <Card className="overflow-hidden border-muted-foreground/10 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
             <CardContent className="overflow-x-auto p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Expert</TableHead>
-                    <TableHead>Specialties</TableHead>
-                    <TableHead>Subscribers</TableHead>
-                    <TableHead>Posts</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Joined</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-muted-foreground/10">
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Expert</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Specialties</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Subscribers</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Posts</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Status</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Joined</TableHead>
+                    <TableHead className="text-right font-semibold text-xs uppercase tracking-wider text-muted-foreground font-sans">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -231,34 +299,53 @@ export default function AdminExpertsPage() {
                     <TableRow>
                       <TableCell
                         colSpan={7}
-                        className="py-12 text-center text-muted-foreground"
+                        className="py-16 text-center"
                       >
-                        No experts found
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+                            <Search className="h-5 w-5 text-muted-foreground/50" />
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground font-sans">No experts found</p>
+                          <p className="text-xs text-muted-foreground/70 font-sans">Try adjusting your search or filter</p>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredExperts.map((expert) => (
-                      <TableRow key={expert.id}>
+                    filteredExperts.map((expert, index) => (
+                      <motion.tr
+                        key={expert.id}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2, delay: index * 0.03 }}
+                        className="group border-b border-muted-foreground/5 transition-colors duration-200 hover:bg-muted/40"
+                      >
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <Avatar className="h-9 w-9">
-                              <AvatarImage
-                                src={expert.image ?? undefined}
-                              />
-                              <AvatarFallback className="text-xs">
-                                {getInitials(expert.displayName)}
-                              </AvatarFallback>
-                            </Avatar>
+                            <div className="relative">
+                              <Avatar className="h-9 w-9 ring-2 ring-background shadow-sm">
+                                <AvatarImage
+                                  src={expert.image ?? undefined}
+                                />
+                                <AvatarFallback className="text-xs bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-300 font-semibold">
+                                  {getInitials(expert.displayName)}
+                                </AvatarFallback>
+                              </Avatar>
+                              {expert.isVerified && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                                  className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-background shadow-sm"
+                                >
+                                  <BadgeCheck className="h-3.5 w-3.5 fill-emerald-500 text-white" />
+                                </motion.div>
+                              )}
+                            </div>
                             <div>
-                              <div className="flex items-center gap-1">
-                                <p className="text-sm font-medium">
-                                  {expert.displayName}
-                                </p>
-                                {expert.isVerified && (
-                                  <BadgeCheck className="h-3.5 w-3.5 fill-primary text-primary-foreground" />
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-sm font-semibold group-hover:text-[#1E40AF] transition-colors duration-200 font-sans">
+                                {expert.displayName}
+                              </p>
+                              <p className="text-xs text-muted-foreground font-sans">
                                 {expert.email}
                               </p>
                             </div>
@@ -270,7 +357,7 @@ export default function AdminExpertsPage() {
                               <Badge
                                 key={s}
                                 variant="secondary"
-                                className="text-[10px]"
+                                className="text-[10px] font-medium bg-[#1E40AF]/5 text-[#1E40AF]/80 border border-[#1E40AF]/10 hover:bg-[#1E40AF]/10 transition-colors duration-200"
                               >
                                 {s}
                               </Badge>
@@ -278,24 +365,28 @@ export default function AdminExpertsPage() {
                             {(expert.specialty ?? []).length > 2 && (
                               <Badge
                                 variant="outline"
-                                className="text-[10px]"
+                                className="text-[10px] font-medium"
                               >
                                 +{(expert.specialty ?? []).length - 2}
                               </Badge>
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-sm">
-                          {formatNumber(expert._count.subscribers)}
+                        <TableCell>
+                          <span className="text-sm font-medium tabular-nums font-sans">
+                            {formatNumber(expert._count.subscribers)}
+                          </span>
                         </TableCell>
-                        <TableCell className="text-sm">
-                          {expert._count.posts}
+                        <TableCell>
+                          <span className="text-sm font-medium tabular-nums font-sans">
+                            {expert._count.posts}
+                          </span>
                         </TableCell>
                         <TableCell>
                           {expert.isVerified ? (
                             <Badge
                               variant="secondary"
-                              className="gap-1 bg-green-500/10 text-green-600 dark:text-green-400"
+                              className="gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium shadow-sm"
                             >
                               <CheckCircle className="h-3 w-3" />
                               Verified
@@ -303,14 +394,14 @@ export default function AdminExpertsPage() {
                           ) : (
                             <Badge
                               variant="outline"
-                              className="gap-1 text-yellow-600 dark:text-yellow-400"
+                              className="gap-1.5 text-amber-600 dark:text-amber-400 border-amber-500/20 bg-amber-500/5 font-medium"
                             >
                               <XCircle className="h-3 w-3" />
                               Pending
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="text-sm text-muted-foreground font-sans">
                           {formatDate(expert.createdAt)}
                         </TableCell>
                         <TableCell className="text-right">
@@ -319,7 +410,7 @@ export default function AdminExpertsPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200 data-[state=open]:opacity-100"
                                 disabled={actionLoading === expert.id}
                               >
                                 {actionLoading === expert.id ? (
@@ -329,7 +420,7 @@ export default function AdminExpertsPage() {
                                 )}
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="end" className="w-40">
                               <DropdownMenuItem
                                 onClick={() =>
                                   handleVerifyToggle(
@@ -337,23 +428,24 @@ export default function AdminExpertsPage() {
                                     expert.isVerified
                                   )
                                 }
+                                className="cursor-pointer gap-2"
                               >
                                 {expert.isVerified ? (
                                   <>
-                                    <ShieldOff className="mr-2 h-3.5 w-3.5" />
-                                    Unverify
+                                    <ShieldOff className="h-3.5 w-3.5 text-amber-500" />
+                                    <span>Unverify</span>
                                   </>
                                 ) : (
                                   <>
-                                    <ShieldCheck className="mr-2 h-3.5 w-3.5" />
-                                    Verify
+                                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                                    <span>Verify</span>
                                   </>
                                 )}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
-                      </TableRow>
+                      </motion.tr>
                     ))
                   )}
                 </TableBody>
@@ -362,6 +454,6 @@ export default function AdminExpertsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageTransition>
   );
 }

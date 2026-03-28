@@ -1,12 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { TrendingUp } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { TrendingUp, ChevronLeft, ChevronRight, Flame } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { SearchBar } from "@/components/hub/search-bar";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
 import { PostFeed } from "@/components/posts/post-feed";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  PageTransition,
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/ui/motion";
 
 interface TrendingPost {
   id: string;
@@ -28,6 +34,9 @@ export default function SubscriberHubPage() {
   const [featuredExperts, setFeaturedExperts] = useState<Expert[]>([]);
   const [trendingPosts, setTrendingPosts] = useState<TrendingPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     async function fetchExperts() {
@@ -89,157 +98,267 @@ export default function SubscriberHubPage() {
     fetchTrending();
   }, []);
 
+  function updateScrollButtons() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }
+
+  function scrollCarousel(direction: "left" | "right") {
+    const el = scrollRef.current;
+    if (!el) return;
+    const amount = direction === "left" ? -280 : 280;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+    setTimeout(updateScrollButtons, 350);
+  }
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollButtons();
+    el.addEventListener("scroll", updateScrollButtons, { passive: true });
+    return () => el.removeEventListener("scroll", updateScrollButtons);
+  }, [isLoading, featuredExperts]);
+
   return (
-    <div className="space-y-8">
-      {/* Hero Search Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/[0.06] via-transparent to-violet-500/[0.04] p-5 sm:p-7">
-        {/* Decorative background elements */}
-        <svg className="pointer-events-none absolute -right-8 -top-8 h-48 w-48 text-primary/[0.04] sm:h-64 sm:w-64" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-          <circle cx="100" cy="100" r="80" stroke="currentColor" strokeWidth="1" />
-          <circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 6" />
-          <circle cx="100" cy="100" r="40" stroke="currentColor" strokeWidth="1" />
-          <circle cx="100" cy="60" r="4" fill="currentColor" />
-          <circle cx="140" cy="100" r="4" fill="currentColor" />
-          <circle cx="100" cy="140" r="4" fill="currentColor" />
-          <circle cx="60" cy="100" r="4" fill="currentColor" />
-          <line x1="100" y1="64" x2="100" y2="96" stroke="currentColor" strokeWidth="0.5" />
-          <line x1="104" y1="100" x2="136" y2="100" stroke="currentColor" strokeWidth="0.5" />
-          <line x1="100" y1="104" x2="100" y2="136" stroke="currentColor" strokeWidth="0.5" />
-          <line x1="96" y1="100" x2="64" y2="100" stroke="currentColor" strokeWidth="0.5" />
-        </svg>
-        <svg className="pointer-events-none absolute -left-4 bottom-0 h-24 w-24 text-violet-500/[0.05] sm:h-32 sm:w-32" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <path d="M50 5 L55 20 L70 22 L58 32 L62 48 L50 40 L38 48 L42 32 L30 22 L45 20 Z" fill="currentColor" />
-          <circle cx="50" cy="70" r="15" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" />
-        </svg>
-
-        <div className="relative z-10">
-          <h1 className="text-lg font-bold tracking-tight sm:text-xl">
-            Discover & Explore
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground max-w-md">
-            Find experts, trending topics, and content that matters to you.
-          </p>
-          <div className="relative mt-4 w-full max-w-2xl">
-            <SearchBar className="w-full" />
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Experts */}
-      <div className="space-y-3">
-        <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-          Featured Experts
-        </h2>
-        {isLoading ? (
-          <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2" style={{ scrollbarWidth: "none" }}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-48 sm:w-52 shrink-0 space-y-3 rounded-lg border border-border p-4"
-              >
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-3 w-32" />
-                <Skeleton className="h-5 w-16 rounded-full" />
-                <Skeleton className="h-7 w-full rounded" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="-mx-4 px-4 flex gap-3 overflow-x-auto scroll-smooth pb-2 items-stretch" style={{ scrollbarWidth: "none" }}>
-            {featuredExperts.map((expert) => (
-              <div key={expert.id} className="w-48 sm:w-52 shrink-0">
-                <ExpertCard expert={expert} />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Trending This Week */}
-      {trendingPosts.length > 0 && (
-        <div className="relative overflow-hidden rounded-xl border border-border bg-card/50 p-4 sm:p-5">
-          {/* Decorative background */}
-          <svg className="pointer-events-none absolute right-3 top-3 h-16 w-16 text-orange-500/[0.06] sm:h-20 sm:w-20" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-            <path d="M40 8 L44 24 L60 20 L52 34 L68 38 L52 42 L60 56 L44 52 L40 68 L36 52 L20 56 L28 42 L12 38 L28 34 L20 20 L36 24 Z" stroke="currentColor" strokeWidth="1" fill="none" />
-            <circle cx="40" cy="38" r="8" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 3" />
-          </svg>
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/10">
-                <TrendingUp className="h-4 w-4 text-orange-500" />
-              </div>
-              <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-                Trending This Week
-              </h2>
+    <PageTransition>
+      <div className="space-y-10 font-sans">
+        {/* ─── Hero Search Banner ─── */}
+        <FadeIn delay={0.05} direction="up">
+          <div className="relative isolate overflow-hidden rounded-2xl border border-border/40 bg-card p-6 sm:p-8 lg:p-10">
+            {/* Subtle grid pattern */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+              <svg className="absolute inset-0 h-full w-full opacity-[0.03]" aria-hidden="true">
+                <defs>
+                  <pattern id="hub-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#hub-grid)" />
+              </svg>
             </div>
 
-            <ol className="space-y-0 divide-y divide-border/50">
-              {trendingPosts.map((post, index) => {
-                const authorName =
-                  post.author?.expertProfile?.displayName ??
-                  post.author?.name ??
-                  "Expert";
-                const engagement =
-                  (post._count?.likes ?? 0) + (post._count?.comments ?? 0);
-                const displayTitle =
-                  post.title ||
-                  (post.content ? post.content.slice(0, 60) + "..." : "Untitled post");
+            <div className="relative z-10 max-w-2xl">
+              <FadeIn delay={0.15} direction="up">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#1E40AF]/20 bg-[#1E40AF]/5 px-3 py-1 text-xs font-medium text-[#1E40AF] mb-3">
+                  Your Knowledge Hub
+                </div>
+              </FadeIn>
+              <FadeIn delay={0.2} direction="up">
+                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl font-sans">
+                  Discover &amp; Explore
+                </h1>
+              </FadeIn>
+              <FadeIn delay={0.25} direction="up">
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  Find experts, trending topics, and content that matters to you.
+                </p>
+              </FadeIn>
+              <FadeIn delay={0.3} direction="up">
+                <div className="relative mt-5 w-full">
+                  <SearchBar className="w-full" />
+                </div>
+              </FadeIn>
+            </div>
+          </div>
+        </FadeIn>
 
-                return (
-                  <a
-                    key={post.id}
-                    href="#latest-posts"
-                    className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 group transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
+        {/* ─── Featured Experts ─── */}
+        <FadeIn delay={0.15} direction="up">
+          <div className="space-y-4">
+            {/* Section header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#1E40AF]">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
+                    Featured Experts
+                  </h2>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
+                    Top minds curated for you
+                  </p>
+                </div>
+              </div>
+              {/* Carousel navigation */}
+              {!isLoading && featuredExperts.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => scrollCarousel("left")}
+                    disabled={!canScrollLeft}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border/60 bg-background text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    aria-label="Scroll left"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-500/15 to-amber-500/10 text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5">
-                      {index + 1}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                        {displayTitle}
-                      </p>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                        <span>{authorName}</span>
-                        {engagement > 0 && (
-                          <>
-                            <span className="text-border">·</span>
-                            <span>{formatNumber(engagement)} interactions</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
-            </ol>
-          </div>
-        </div>
-      )}
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => scrollCarousel("right")}
+                    disabled={!canScrollRight}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border/60 bg-background text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
 
-      {/* Latest Posts */}
-      <section id="latest-posts" className="space-y-3 scroll-mt-6">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
-            {/* Document/feed SVG */}
-            <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="text-primary" aria-hidden="true">
-              <rect x="2" y="1" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-              <line x1="5" y1="5.5" x2="13" y2="5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-              <line x1="5" y1="8.5" x2="11" y2="8.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-              <line x1="5" y1="11.5" x2="9" y2="11.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
+            {/* Expert cards carousel */}
+            {isLoading ? (
+              <div
+                className="-mx-4 px-4 flex gap-3.5 overflow-x-auto scroll-smooth pb-3"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-52 sm:w-56 shrink-0 space-y-3 rounded-xl border border-border/60 bg-card p-5"
+                  >
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-7 w-full rounded" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <StaggerContainer
+                ref={scrollRef}
+                className="-mx-4 px-4 flex gap-3.5 overflow-x-auto scroll-smooth pb-3 items-stretch snap-x snap-mandatory"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {featuredExperts.map((expert) => (
+                  <StaggerItem
+                    key={expert.id}
+                    className="w-52 sm:w-56 shrink-0 snap-start transition-transform duration-200 hover:scale-[1.02] hover:-translate-y-0.5"
+                  >
+                    <ExpertCard expert={expert} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            )}
           </div>
-          <h2 className="text-base font-semibold tracking-tight sm:text-lg">
-            Latest Posts
-          </h2>
-        </div>
-        <PostFeed
-          endpoint="/api/posts?limit=10"
-          emptyTitle="No posts yet"
-          emptyDescription="Check back soon for new content."
-        />
-      </section>
-    </div>
+        </FadeIn>
+
+        {/* ─── Trending This Week ─── */}
+        {trendingPosts.length > 0 && (
+          <FadeIn delay={0.2} direction="up">
+            <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-5 sm:p-6">
+              <div className="relative z-10">
+                {/* Section header */}
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10">
+                    <Flame className="h-4.5 w-4.5 text-orange-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
+                      Trending This Week
+                    </h2>
+                    <p className="text-xs text-muted-foreground hidden sm:block">
+                      Most engaged content right now
+                    </p>
+                  </div>
+                  <div className="ml-auto flex h-6 items-center rounded-full border border-orange-500/20 bg-orange-500/5 px-2.5">
+                    <TrendingUp className="mr-1 h-3 w-3 text-orange-500" />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                      Hot
+                    </span>
+                  </div>
+                </div>
+
+                {/* Trending list */}
+                <StaggerContainer className="space-y-0 divide-y divide-border/40">
+                  {trendingPosts.map((post, index) => {
+                    const authorName =
+                      post.author?.expertProfile?.displayName ??
+                      post.author?.name ??
+                      "Expert";
+                    const engagement =
+                      (post._count?.likes ?? 0) + (post._count?.comments ?? 0);
+                    const displayTitle =
+                      post.title ||
+                      (post.content ? post.content.slice(0, 60) + "..." : "Untitled post");
+
+                    return (
+                      <StaggerItem key={post.id}>
+                        <a
+                          href="#latest-posts"
+                          className="flex items-start gap-3.5 py-3.5 first:pt-0 last:pb-0 group transition-all duration-200 hover:bg-muted/30 -mx-2 px-2 rounded-lg cursor-pointer"
+                        >
+                          <span
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5 transition-transform duration-200 group-hover:scale-110 ${
+                              index === 0
+                                ? "bg-orange-500 text-white"
+                                : index === 1
+                                ? "bg-orange-400/20 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/15"
+                                : index === 2
+                                ? "bg-orange-300/15 text-orange-500 dark:text-orange-400 ring-1 ring-orange-500/10"
+                                : "bg-orange-500/10 text-orange-600/70 dark:text-orange-400/70"
+                            }`}
+                          >
+                            {index + 1}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-[#1E40AF] transition-colors duration-200">
+                              {displayTitle}
+                            </p>
+                            <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="font-medium">{authorName}</span>
+                              {engagement > 0 && (
+                                <>
+                                  <span className="h-1 w-1 rounded-full bg-border" />
+                                  <span>{formatNumber(engagement)} interactions</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </a>
+                      </StaggerItem>
+                    );
+                  })}
+                </StaggerContainer>
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
+        {/* ─── Latest Posts ─── */}
+        <FadeIn delay={0.25} direction="up">
+          <section id="latest-posts" className="space-y-4 scroll-mt-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="text-[#1E40AF]" aria-hidden="true">
+                  <rect x="2" y="1" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="5" y1="5.5" x2="13" y2="5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  <line x1="5" y1="8.5" x2="11" y2="8.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  <line x1="5" y1="11.5" x2="9" y2="11.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-base font-semibold tracking-tight sm:text-lg font-sans">
+                  Latest Posts
+                </h2>
+                <p className="text-xs text-muted-foreground hidden sm:block">
+                  Fresh content from your network
+                </p>
+              </div>
+            </div>
+            <PostFeed
+              endpoint="/api/posts?limit=10"
+              emptyTitle="No posts yet"
+              emptyDescription="Check back soon for new content."
+            />
+          </section>
+        </FadeIn>
+      </div>
+    </PageTransition>
   );
 }

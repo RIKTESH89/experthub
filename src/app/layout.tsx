@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, DM_Serif_Display } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "@/components/auth/session-provider";
 import { Toaster } from "sonner";
@@ -8,15 +8,10 @@ import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import * as Sentry from "@sentry/nextjs";
 import "./globals.css";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
-});
-
-const dmSerif = DM_Serif_Display({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-display",
 });
 
 export function generateMetadata(): Metadata {
@@ -62,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${dmSerif.variable} font-sans`}
+        className={`${dmSans.variable} font-sans`}
       >
         <SessionProvider>
           <ThemeProvider

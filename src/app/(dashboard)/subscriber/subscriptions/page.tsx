@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { SubscriptionList } from "@/components/subscriptions/subscription-list";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTransition, FadeIn, AnimatedCounter } from "@/components/ui/motion";
 
 interface SubSummary {
   activeCount: number;
@@ -32,27 +33,68 @@ export default function SubscriberSubscriptionsPage() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">Subscriptions</h2>
-        <p className="text-sm text-muted-foreground">Your active plans</p>
-      </div>
-      {summary === null ? (
-        <Skeleton className="h-10 w-64 rounded-lg" />
-      ) : summary.activeCount > 0 ? (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg bg-muted/30 px-4 py-2.5 text-sm overflow-x-auto">
-          <span>
-            <span className="font-medium text-green-600">●</span> {summary.activeCount} active
-          </span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-muted-foreground">
-            {summary.totalMonthly > 0
-              ? `₹${summary.totalMonthly.toFixed(2)}/mo total`
-              : "Free plans"}
-          </span>
+    <PageTransition className="space-y-6 font-sans">
+      {/* Page header */}
+      <FadeIn delay={0.05}>
+        <div className="relative overflow-hidden rounded-xl border bg-card px-6 py-5">
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF]" />
+          <h2 className="text-2xl font-bold tracking-tight font-sans">Subscriptions</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage and track your active plans
+          </p>
         </div>
-      ) : null}
-      <SubscriptionList />
-    </div>
+      </FadeIn>
+
+      {/* Summary stats */}
+      <FadeIn delay={0.15}>
+        {summary === null ? (
+          <Skeleton className="h-20 w-full rounded-xl" />
+        ) : summary.activeCount > 0 ? (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="group relative overflow-hidden rounded-xl border bg-card p-4 transition-colors duration-200 hover:bg-muted/30">
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Active Plans
+              </p>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <AnimatedCounter
+                  value={summary.activeCount}
+                  className="text-2xl font-bold text-foreground font-sans"
+                />
+                <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+            </div>
+
+            <div className="group relative overflow-hidden rounded-xl border bg-card p-4 transition-colors duration-200 hover:bg-muted/30">
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Monthly Total
+              </p>
+              <p className="mt-1.5 text-2xl font-bold text-foreground font-sans">
+                {summary.totalMonthly > 0 ? (
+                  <>
+                    <AnimatedCounter
+                      value={summary.totalMonthly}
+                      prefix="$"
+                      className="text-2xl font-bold font-sans"
+                    />
+                    <span className="ml-0.5 text-sm font-normal text-muted-foreground">/mo</span>
+                  </>
+                ) : (
+                  <span className="text-base font-medium text-muted-foreground">Free plans</span>
+                )}
+              </p>
+            </div>
+          </div>
+        ) : null}
+      </FadeIn>
+
+      {/* Subscription list */}
+      <FadeIn delay={0.25}>
+        <div className="rounded-xl border bg-card">
+          <SubscriptionList />
+        </div>
+      </FadeIn>
+    </PageTransition>
   );
 }

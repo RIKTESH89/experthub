@@ -3,7 +3,20 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { Camera, Loader2, Save, X } from "lucide-react";
+import {
+  Camera,
+  Loader2,
+  Save,
+  X,
+  User,
+  Sparkles,
+  DollarSign,
+  Link2,
+  Twitter,
+  Linkedin,
+  Globe,
+  Mail,
+} from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +34,12 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import {
+  PageTransition,
+  FadeIn,
+  motion,
+  AnimatePresence,
+} from "@/components/ui/motion";
 
 interface ExpertProfileValues {
   name: string;
@@ -157,241 +176,365 @@ export default function ExpertProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-violet-50 to-indigo-50 px-6 py-5">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-indigo-900">Expert Profile</h2>
-          <p className="mt-1 text-sm text-indigo-600/70">
-            Your public presence
-          </p>
-        </div>
-        <svg className="hidden sm:block" width="140" height="100" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Profile card */}
-          <rect x="10" y="10" width="75" height="80" rx="10" fill="#ede9fe" stroke="#8b5cf6" strokeWidth="1.5" />
-          {/* Avatar */}
-          <circle cx="47" cy="38" r="16" fill="#ddd6fe" stroke="#6366f1" strokeWidth="1.5" />
-          <circle cx="47" cy="33" r="6" fill="#6366f1" opacity="0.6" />
-          <path d="M35 50C35 43 40 39 47 39C54 39 59 43 59 50" fill="#6366f1" opacity="0.4" />
-          {/* Name and headline lines */}
-          <rect x="27" y="62" width="40" height="4" rx="2" fill="#ddd6fe" />
-          <rect x="32" y="72" width="30" height="3" rx="1.5" fill="#e0e7ff" />
-          {/* Verification badge */}
-          <circle cx="68" cy="24" r="10" fill="#6366f1" />
-          <path d="M63 24L66.5 27.5L73 21" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          {/* Stars */}
-          <path d="M105 18L107.5 24L114 24L109 28L110.5 34L105 30.5L99.5 34L101 28L96 24L102.5 24Z" fill="#8b5cf6" opacity="0.6" />
-          <path d="M120 45L121.5 49L125 49L122 51.5L123 55L120 52.5L117 55L118 51.5L115 49L118.5 49Z" fill="#6366f1" opacity="0.35" />
-          <path d="M100 60L101.5 64L105 64L102 66.5L103 70L100 67.5L97 70L98 66.5L95 64L98.5 64Z" fill="#8b5cf6" opacity="0.25" />
-          {/* Sparkle accent */}
-          <circle cx="125" cy="30" r="3" fill="#8b5cf6" opacity="0.3" />
-          <circle cx="112" cy="72" r="2" fill="#6366f1" opacity="0.2" />
-        </svg>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Profile Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>
-              Your public profile visible to subscribers
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Avatar */}
-            <div className="flex items-center gap-4">
-              <div className="group relative">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage
-                    src={avatarPreview ?? undefined}
-                    alt={profile?.name ?? ""}
-                  />
-                  <AvatarFallback className="text-xl">
-                    {getInitials(profile?.name ?? "E")}
-                  </AvatarFallback>
-                </Avatar>
-                <label
-                  htmlFor="avatar-upload"
-                  className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <Camera className="h-5 w-5 text-white" />
-                </label>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      if (file.size > 2 * 1024 * 1024) {
-                        toast.error("Profile photo must be under 2MB");
-                        return;
-                      }
-                      setAvatarPreview(URL.createObjectURL(file));
-                      setAvatarFile(file);
-                    }
-                  }}
-                />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Profile Photo</p>
-                <p className="text-xs text-muted-foreground">
-                  Click the avatar to upload a new photo
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" {...register("name", { required: true })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="displayName">Display Name</Label>
-                <Input
-                  id="displayName"
-                  {...register("displayName", { required: true })}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="headline">Headline</Label>
-              <Input
-                id="headline"
-                placeholder="e.g., AI Researcher & Machine Learning Expert"
-                {...register("headline")}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                placeholder="Tell subscribers about your expertise..."
-                className="min-h-[120px] resize-y"
-                {...register("bio")}
-              />
-            </div>
-
-            {/* Email (read-only) */}
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input value={profile?.email ?? ""} disabled className="bg-muted" />
-              <p className="text-xs text-muted-foreground">
-                Email cannot be changed
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Specialty Tags */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Specialties</CardTitle>
-            <CardDescription>
-              Tags that describe your areas of expertise
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap gap-1.5">
-              {specialties.map((spec) => (
-                <Badge key={spec} variant="secondary" className="gap-1 pr-1">
-                  {spec}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSpecialties((prev) => prev.filter((s) => s !== spec))
-                    }
-                    className="ml-0.5 rounded-full p-0.5 hover:bg-muted-foreground/20"
+    <PageTransition>
+      <div className="mx-auto max-w-2xl space-y-8">
+        {/* Premium Profile Header */}
+        <FadeIn delay={0.05}>
+          <div className="relative overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-blue-50/80 to-blue-50/60">
+            <div className="px-6 py-6 sm:px-8 sm:py-8">
+              <div className="flex items-center gap-5">
+                {/* Avatar with upload overlay */}
+                <div className="group relative shrink-0">
+                  <div className="rounded-full bg-[#1E40AF] p-[3px] shadow-lg shadow-blue-700/25">
+                    <Avatar className="h-20 w-20 border-[3px] border-white">
+                      <AvatarImage
+                        src={avatarPreview ?? undefined}
+                        alt={profile?.name ?? ""}
+                      />
+                      <AvatarFallback className="bg-blue-100 text-xl font-semibold text-blue-800">
+                        {getInitials(profile?.name ?? "E")}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <label
+                    htmlFor="avatar-upload"
+                    className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/0 transition-all duration-300 group-hover:bg-black/40"
                   >
-                    <X className="h-2.5 w-2.5" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-            <Input
-              placeholder="Type a specialty and press Enter..."
-              value={specInput}
-              onChange={(e) => setSpecInput(e.target.value)}
-              onKeyDown={addSpecialty}
-            />
-          </CardContent>
-        </Card>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      whileHover={{ opacity: 1, scale: 1 }}
+                      className="flex flex-col items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Camera className="h-5 w-5 text-white drop-shadow-md" />
+                      <span className="text-[10px] font-medium text-white drop-shadow-md">
+                        Edit
+                      </span>
+                    </motion.div>
+                  </label>
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                          toast.error("Profile photo must be under 2MB");
+                          return;
+                        }
+                        setAvatarPreview(URL.createObjectURL(file));
+                        setAvatarFile(file);
+                      }
+                    }}
+                  />
+                  {/* Online indicator */}
+                  <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-[3px] border-white bg-emerald-400 shadow-sm" />
+                </div>
 
-        {/* Pricing */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Pricing</CardTitle>
-            <CardDescription>
-              Set your monthly subscription price
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="monthlyPrice">Monthly Price ($)</Label>
-              <Input
-                id="monthlyPrice"
-                type="number"
-                step="0.01"
-                min="0"
-                {...register("monthlyPrice", { required: true })}
-              />
-              <p className="text-xs text-muted-foreground">
-                This is the amount subscribers will pay per month for access to
-                your Digital Twin and exclusive content.
-              </p>
+                <div className="min-w-0">
+                  <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                    Expert Profile
+                  </h2>
+                  <p className="mt-0.5 text-sm text-blue-700/70">
+                    Your public presence -- how subscribers see you
+                  </p>
+                  {profile?.email && (
+                    <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-500">
+                      <Mail className="h-3 w-3" />
+                      {profile.email}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </FadeIn>
 
-        {/* Social Links */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Social Links</CardTitle>
-            <CardDescription>
-              Connect your social profiles
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="twitterUrl">Twitter / X</Label>
-              <Input
-                id="twitterUrl"
-                placeholder="https://twitter.com/username"
-                {...register("twitterUrl")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="linkedinUrl">LinkedIn</Label>
-              <Input
-                id="linkedinUrl"
-                placeholder="https://linkedin.com/in/username"
-                {...register("linkedinUrl")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="websiteUrl">Website</Label>
-              <Input
-                id="websiteUrl"
-                placeholder="https://yourwebsite.com"
-                {...register("websiteUrl")}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end border-t pt-4">
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              Save Profile
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
-    </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Profile Info */}
+          <FadeIn delay={0.1}>
+            <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
+                    <User className="h-4 w-4 text-blue-700" />
+                  </div>
+                  <div>
+                    <CardTitle>Profile Information</CardTitle>
+                    <CardDescription className="text-xs">
+                      Your public profile visible to subscribers
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium">
+                      Full Name
+                    </Label>
+                    <Input
+                      id="name"
+                      {...register("name", { required: true })}
+                      className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName" className="text-sm font-medium">
+                      Display Name
+                    </Label>
+                    <Input
+                      id="displayName"
+                      {...register("displayName", { required: true })}
+                      className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="headline" className="text-sm font-medium">
+                    Headline
+                  </Label>
+                  <Input
+                    id="headline"
+                    placeholder="e.g., AI Researcher & Machine Learning Expert"
+                    {...register("headline")}
+                    className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio" className="text-sm font-medium">
+                    Bio
+                  </Label>
+                  <Textarea
+                    id="bio"
+                    placeholder="Tell subscribers about your expertise..."
+                    className="min-h-[120px] resize-y transition-all focus:ring-2 focus:ring-blue-600/20"
+                    {...register("bio")}
+                  />
+                </div>
+
+                {/* Email (read-only) */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Email</Label>
+                  <Input
+                    value={profile?.email ?? ""}
+                    disabled
+                    className="bg-gray-50/80 text-gray-500"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Email cannot be changed
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Specialty Tags */}
+          <FadeIn delay={0.15}>
+            <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+                    <Sparkles className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <CardTitle>Specialties</CardTitle>
+                    <CardDescription className="text-xs">
+                      Tags that describe your areas of expertise (max 8)
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <AnimatePresence>
+                  {specialties.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex flex-wrap gap-2"
+                    >
+                      {specialties.map((spec) => (
+                        <motion.div
+                          key={spec}
+                          initial={{ opacity: 0, scale: 0.8, y: 4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Badge
+                            variant="secondary"
+                            className="group/tag gap-1.5 rounded-full border border-blue-200/60 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition-all hover:bg-blue-100 hover:shadow-sm"
+                          >
+                            <Sparkles className="h-3 w-3 text-blue-400" />
+                            {spec}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSpecialties((prev) =>
+                                  prev.filter((s) => s !== spec)
+                                )
+                              }
+                              className="ml-0.5 rounded-full p-0.5 text-blue-400 transition-colors hover:bg-blue-200 hover:text-blue-800"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <div className="relative">
+                  <Input
+                    placeholder="Type a specialty and press Enter..."
+                    value={specInput}
+                    onChange={(e) => setSpecInput(e.target.value)}
+                    onKeyDown={addSpecialty}
+                    className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                  />
+                  {specialties.length > 0 && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                      {specialties.length}/8
+                    </span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Pricing */}
+          <FadeIn delay={0.2}>
+            <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
+                    <DollarSign className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <CardTitle>Pricing</CardTitle>
+                    <CardDescription className="text-xs">
+                      Set your monthly subscription price
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Label htmlFor="monthlyPrice" className="text-sm font-medium">
+                    Monthly Price
+                  </Label>
+                  <div className="relative max-w-xs">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400">
+                      $
+                    </span>
+                    <Input
+                      id="monthlyPrice"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="pl-7 font-medium transition-all focus:ring-2 focus:ring-blue-600/20"
+                      {...register("monthlyPrice", { required: true })}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                      /month
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    This is the amount subscribers will pay per month for access to
+                    your Digital Twin and exclusive content.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Social Links */}
+          <FadeIn delay={0.25}>
+            <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
+                    <Link2 className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <CardTitle>Social Links</CardTitle>
+                    <CardDescription className="text-xs">
+                      Connect your social profiles so subscribers can find you
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="twitterUrl" className="text-sm font-medium">
+                    Twitter / X
+                  </Label>
+                  <div className="relative">
+                    <Twitter className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="twitterUrl"
+                      placeholder="https://twitter.com/username"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      {...register("twitterUrl")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="linkedinUrl" className="text-sm font-medium">
+                    LinkedIn
+                  </Label>
+                  <div className="relative">
+                    <Linkedin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="linkedinUrl"
+                      placeholder="https://linkedin.com/in/username"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      {...register("linkedinUrl")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="websiteUrl" className="text-sm font-medium">
+                    Website
+                  </Label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="websiteUrl"
+                      placeholder="https://yourwebsite.com"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      {...register("websiteUrl")}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-end border-t border-gray-100 bg-gray-50/30 px-6 py-4">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="cursor-pointer gap-2 bg-[#1E40AF] px-6 shadow-lg shadow-blue-700/25 transition-all duration-200 hover:bg-[#1e3a8a] hover:shadow-xl"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                    Save Profile
+                  </Button>
+                </motion.div>
+              </CardFooter>
+            </Card>
+          </FadeIn>
+        </form>
+      </div>
+    </PageTransition>
   );
 }

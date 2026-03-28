@@ -11,6 +11,10 @@ import {
   Shield,
   ShieldCheck,
   User,
+  Filter,
+  Users,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { cn, getInitials, formatDate } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -39,8 +43,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { FadeIn, motion } from "@/components/ui/motion";
 
 interface UserRow {
   id: string;
@@ -53,10 +57,84 @@ interface UserRow {
 }
 
 const roleConfig = {
-  USER: { label: "User", icon: User, className: "bg-secondary text-secondary-foreground" },
-  EXPERT: { label: "Expert", icon: Shield, className: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
-  ADMIN: { label: "Admin", icon: ShieldCheck, className: "bg-purple-500/10 text-purple-600 dark:text-purple-400" },
+  USER: {
+    label: "User",
+    icon: User,
+    className: "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20",
+  },
+  EXPERT: {
+    label: "Expert",
+    icon: Shield,
+    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-400 border-[#1E40AF]/20",
+  },
+  ADMIN: {
+    label: "Admin",
+    icon: ShieldCheck,
+    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-300 border-[#1E40AF]/20",
+  },
 };
+
+function ShimmerBlock({ className }: { className?: string }) {
+  return (
+    <div className={cn("relative overflow-hidden rounded-md bg-muted", className)}>
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent" />
+    </div>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <FadeIn direction="up" duration={0.3}>
+      <div className="space-y-5 font-sans">
+        {/* Search and filter skeleton */}
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <ShimmerBlock className="h-11 w-full rounded-xl" />
+          </div>
+          <ShimmerBlock className="h-11 w-[160px] rounded-xl" />
+        </div>
+
+        {/* Table skeleton */}
+        <div className="overflow-hidden rounded-xl border border-border/50 bg-card/50">
+          {/* Header */}
+          <div className="border-b border-border/50 bg-muted/30 px-6 py-3.5">
+            <div className="flex items-center gap-4">
+              <ShimmerBlock className="h-3.5 w-20" />
+              <ShimmerBlock className="h-3.5 w-14 ml-auto" />
+              <ShimmerBlock className="h-3.5 w-16" />
+              <ShimmerBlock className="h-3.5 w-20" />
+              <ShimmerBlock className="h-3.5 w-16" />
+            </div>
+          </div>
+          {/* Rows */}
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 border-b border-border/30 last:border-0 px-6 py-4"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              {/* Avatar */}
+              <ShimmerBlock className="h-10 w-10 shrink-0 rounded-full" />
+              {/* Name and email */}
+              <div className="flex-1 space-y-2">
+                <ShimmerBlock className="h-4 w-36" />
+                <ShimmerBlock className="h-3 w-48" />
+              </div>
+              {/* Role */}
+              <ShimmerBlock className="h-6 w-20 rounded-full" />
+              {/* Status */}
+              <ShimmerBlock className="h-6 w-18 rounded-full" />
+              {/* Date */}
+              <ShimmerBlock className="h-4 w-24" />
+              {/* Action */}
+              <ShimmerBlock className="h-8 w-8 rounded-lg" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
 
 export function UserTable() {
   const [users, setUsers] = useState<UserRow[]>([]);
@@ -136,177 +214,291 @@ export function UserTable() {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <div className="flex gap-3">
-          <Skeleton className="h-10 flex-1" />
-          <Skeleton className="h-10 w-[140px]" />
-        </div>
-        <div className="rounded-lg border border-border">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 border-b p-4 last:border-0">
-              <Skeleton className="h-10 w-10 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-3 w-48" />
-              </div>
-              <Skeleton className="h-5 w-16 rounded-full" />
-              <Skeleton className="h-5 w-14 rounded-full" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-8 w-8" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   return (
-    <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search by name or email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
+    <FadeIn direction="up" duration={0.3}>
+      <div className="space-y-5 font-sans">
+        {/* Filters Bar */}
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60 transition-colors duration-200" />
+            <Input
+              placeholder="Search by name or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={cn(
+                "pl-10 h-11 rounded-xl border-border/50",
+                "bg-card/80",
+                "placeholder:text-muted-foreground/40",
+                "focus-visible:ring-[#1E40AF]/20 focus-visible:border-[#1E40AF]/30",
+                "transition-all duration-200"
+              )}
+            />
+          </div>
+          <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <SelectTrigger
+              className={cn(
+                "w-full sm:w-[160px] h-11 rounded-xl border-border/50 cursor-pointer",
+                "bg-card/80",
+                "focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/30",
+                "transition-all duration-200"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <Filter className="h-3.5 w-3.5 text-muted-foreground/60" />
+                <SelectValue placeholder="Filter by role" />
+              </div>
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-border/50 bg-card/95 shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
+              <SelectItem value="all" className="cursor-pointer rounded-lg">
+                <span className="flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5" />
+                  All Roles
+                </span>
+              </SelectItem>
+              <SelectItem value="USER" className="cursor-pointer rounded-lg">
+                <span className="flex items-center gap-2">
+                  <User className="h-3.5 w-3.5" />
+                  Users
+                </span>
+              </SelectItem>
+              <SelectItem value="EXPERT" className="cursor-pointer rounded-lg">
+                <span className="flex items-center gap-2">
+                  <Shield className="h-3.5 w-3.5" />
+                  Experts
+                </span>
+              </SelectItem>
+              <SelectItem value="ADMIN" className="cursor-pointer rounded-lg">
+                <span className="flex items-center gap-2">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Admins
+                </span>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-full sm:w-[140px]">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="USER">Users</SelectItem>
-            <SelectItem value="EXPERT">Experts</SelectItem>
-            <SelectItem value="ADMIN">Admins</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Joined</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
-                  No users found
-                </TableCell>
+        {/* Table */}
+        <div
+          className={cn(
+            "overflow-x-auto rounded-xl border border-border/50",
+            "bg-card/50",
+            "shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+          )}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border/50 bg-muted/30 hover:bg-muted/30">
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                  User
+                </TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                  Role
+                </TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                  Status
+                </TableHead>
+                <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                  Joined
+                </TableHead>
+                <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 font-sans">
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : (
-              filteredUsers.map((user) => {
-                const role = roleConfig[user.role];
-                const RoleIcon = role.icon;
+            </TableHeader>
+            <TableBody>
+              {filteredUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+                        <Users className="h-5 w-5 text-muted-foreground/50" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground font-sans">
+                          No users found
+                        </p>
+                        <p className="text-xs text-muted-foreground/60 mt-1 font-sans">
+                          Try adjusting your search or filter criteria
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredUsers.map((user, index) => {
+                  const role = roleConfig[user.role];
+                  const RoleIcon = role.icon;
 
-                return (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9">
-                          <AvatarImage src={user.image ?? undefined} />
-                          <AvatarFallback className="text-xs">
-                            {getInitials(user.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{user.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {user.email}
-                          </p>
+                  return (
+                    <motion.tr
+                      key={user.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.2,
+                        delay: Math.min(index * 0.03, 0.3),
+                        ease: [0.25, 0.4, 0.25, 1],
+                      }}
+                      className={cn(
+                        "group border-b border-border/30 last:border-0",
+                        "transition-colors duration-200",
+                        "hover:bg-muted/40 dark:hover:bg-muted/20",
+                        actionLoading === user.id && "opacity-60"
+                      )}
+                    >
+                      <TableCell className="py-3.5">
+                        <div className="flex items-center gap-3.5">
+                          <div className="relative">
+                            <Avatar className="h-10 w-10 ring-2 ring-border/50 group-hover:ring-[#1E40AF]/20 transition-all duration-200">
+                              <AvatarImage src={user.image ?? undefined} />
+                              <AvatarFallback
+                                className={cn(
+                                  "text-xs font-semibold",
+                                  "bg-[#1E40AF]/10",
+                                  "text-[#1E40AF]/80"
+                                )}
+                              >
+                                {getInitials(user.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            {/* Status indicator dot */}
+                            <div
+                              className={cn(
+                                "absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card",
+                                user.status === "active"
+                                  ? "bg-emerald-500"
+                                  : "bg-red-400"
+                              )}
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold truncate group-hover:text-[#1E40AF]/90 transition-colors duration-200 font-sans">
+                              {user.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground/60 truncate font-sans">
+                              {user.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="secondary"
-                        className={cn("gap-1 text-[10px]", role.className)}
-                      >
-                        <RoleIcon className="h-3 w-3" />
-                        {role.label}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        <div
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="secondary"
                           className={cn(
-                            "h-2 w-2 rounded-full",
-                            user.status === "active"
-                              ? "bg-green-500"
-                              : "bg-red-500"
+                            "gap-1.5 text-[10px] font-semibold border px-2.5 py-1",
+                            "transition-all duration-200",
+                            "group-hover:shadow-sm",
+                            role.className
                           )}
-                        />
-                        <span className="text-sm capitalize">
-                          {user.status}
+                        >
+                          <RoleIcon className="h-3 w-3" />
+                          {role.label}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {user.status === "active" ? (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 font-sans">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              Active
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-500 dark:text-red-400 font-sans">
+                              <XCircle className="h-3.5 w-3.5" />
+                              Banned
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground/70 tabular-nums font-sans">
+                          {formatDate(user.createdAt)}
                         </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(user.createdAt)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            disabled={actionLoading === user.id}
-                          >
-                            {actionLoading === user.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <MoreHorizontal className="h-4 w-4" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "h-8 w-8 rounded-lg cursor-pointer",
+                                "opacity-60 group-hover:opacity-100",
+                                "hover:bg-muted/80",
+                                "transition-all duration-200"
+                              )}
+                              disabled={actionLoading === user.id}
+                            >
+                              {actionLoading === user.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin text-[#1E40AF]" />
+                              ) : (
+                                <MoreHorizontal className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className={cn(
+                              "w-48 rounded-xl border-border/50",
+                              "bg-card/95",
+                              "shadow-[0_4px_16px_rgba(0,0,0,0.12)]",
+                              "p-1.5"
                             )}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Eye className="mr-2 h-3.5 w-3.5" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleBanToggle(user.id, user.status)
-                            }
                           >
-                            <Ban className="mr-2 h-3.5 w-3.5" />
-                            {user.status === "active" ? "Ban User" : "Unban User"}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => handleDelete(user.id)}
-                          >
-                            <Trash2 className="mr-2 h-3.5 w-3.5" />
-                            Delete User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                            <DropdownMenuItem className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-muted/60">
+                              <Eye className="h-4 w-4 text-muted-foreground" />
+                              <span>View Details</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="my-1.5 bg-border/50" />
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleBanToggle(user.id, user.status)
+                              }
+                              className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-muted/60"
+                            >
+                              <Ban className="h-4 w-4 text-amber-500" />
+                              <span>
+                                {user.status === "active"
+                                  ? "Ban User"
+                                  : "Unban User"}
+                              </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm text-destructive focus:text-destructive focus:bg-destructive/10"
+                              onClick={() => handleDelete(user.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span>Delete User</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </motion.tr>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
-      <p className="text-xs text-muted-foreground">
-        Showing {filteredUsers.length} of {users.length} users
-      </p>
-    </div>
+        {/* Footer count */}
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground/60 font-sans">
+            Showing{" "}
+            <span className="font-semibold text-muted-foreground">
+              {filteredUsers.length}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-muted-foreground">
+              {users.length}
+            </span>{" "}
+            users
+          </p>
+        </div>
+      </div>
+    </FadeIn>
   );
 }

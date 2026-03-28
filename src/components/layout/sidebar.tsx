@@ -18,18 +18,21 @@ import {
   Compass,
   CreditCard,
   Bookmark,
-  ChevronLeft,
-  ChevronRight,
   DollarSign,
   Code,
   Newspaper,
   UserPlus,
   type LucideIcon,
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { NavItem } from "@/config/nav";
 
@@ -59,34 +62,108 @@ function groupNavItems(items: NavItem[]): { label: string; items: NavItem[] }[] 
   const contentItems: NavItem[] = [];
   const settingsItems: NavItem[] = [];
 
-  const contentIcons = new Set(["FileText", "BookOpen", "Bot", "Flag", "Compass", "Bookmark", "CreditCard", "DollarSign", "Code"]);
+  const contentIcons = new Set([
+    "FileText",
+    "BookOpen",
+    "Bot",
+    "Flag",
+    "Compass",
+    "Bookmark",
+    "CreditCard",
+    "DollarSign",
+    "Code",
+  ]);
   const settingsIcons = new Set(["Settings", "User"]);
 
   for (const item of items) {
-    if (item.title === "Feed" || item.title === "Dashboard" || item.title === "Hub") {
+    if (
+      item.title === "Feed" ||
+      item.title === "Dashboard" ||
+      item.title === "Hub"
+    ) {
       mainItems.push(item);
     } else if (settingsIcons.has(item.icon) || item.title === "Profile") {
       settingsItems.push(item);
-    } else if (contentIcons.has(item.icon) || ["Posts", "Knowledge Base", "Digital Twin", "Subscriptions", "Bookmarks", "Content", "Reports", "Embed Widget", "Pricing", "Applications"].includes(item.title)) {
+    } else if (
+      contentIcons.has(item.icon) ||
+      [
+        "Posts",
+        "Knowledge Base",
+        "Digital Twin",
+        "Subscriptions",
+        "Bookmarks",
+        "Content",
+        "Reports",
+        "Embed Widget",
+        "Pricing",
+        "Applications",
+      ].includes(item.title)
+    ) {
       contentItems.push(item);
     } else {
-      // Users, Analytics, Experts, Subscribers go to main
       mainItems.push(item);
     }
   }
 
   const groups: { label: string; items: NavItem[] }[] = [];
   if (mainItems.length > 0) groups.push({ label: "Main", items: mainItems });
-  if (contentItems.length > 0) groups.push({ label: "Content", items: contentItems });
-  if (settingsItems.length > 0) groups.push({ label: "Settings", items: settingsItems });
+  if (contentItems.length > 0)
+    groups.push({ label: "Content", items: contentItems });
+  if (settingsItems.length > 0)
+    groups.push({ label: "Settings", items: settingsItems });
   return groups;
 }
 
 const roleBadgeMap: Record<string, { label: string; color: string }> = {
-  ADMIN: { label: "Admin", color: "bg-red-500/10 text-red-600 dark:text-red-400" },
+  ADMIN: {
+    label: "Admin",
+    color: "bg-red-500/10 text-red-600 dark:text-red-400",
+  },
   EXPERT: { label: "Expert", color: "bg-primary/10 text-primary" },
-  SUBSCRIBER: { label: "Subscriber", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+  SUBSCRIBER: {
+    label: "Subscriber",
+    color:
+      "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  },
 };
+
+/* ------------------------------------------------------------------ */
+/*  Motion variants (21st.dev hover-sidebar pattern)                  */
+/* ------------------------------------------------------------------ */
+
+const sidebarVariants = {
+  open: { width: "15rem" },
+  closed: { width: "3.05rem" },
+};
+
+const itemVariants = {
+  open: {
+    x: 0,
+    opacity: 1,
+    transition: { x: { stiffness: 1000, velocity: -100 } },
+  },
+  closed: {
+    x: -20,
+    opacity: 0,
+    transition: { x: { stiffness: 100 } },
+  },
+};
+
+const staggerVariants = {
+  open: {
+    transition: { staggerChildren: 0.03, delayChildren: 0.02 },
+  },
+};
+
+const transitionProps = {
+  type: "tween" as const,
+  ease: "easeOut" as const,
+  duration: 0.2,
+};
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                         */
+/* ------------------------------------------------------------------ */
 
 interface SidebarProps {
   navItems: NavItem[];
@@ -95,7 +172,7 @@ interface SidebarProps {
 
 export function Sidebar({ navItems, className }: SidebarProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const { data: session } = useSession();
   const groups = groupNavItems(navItems);
 
@@ -108,58 +185,99 @@ export function Sidebar({ navItems, className }: SidebarProps) {
     .join("")
     .slice(0, 2);
 
+  const isOpen = expanded;
+
   return (
-    <aside
+    <motion.aside
+      variants={sidebarVariants}
+      animate={isOpen ? "open" : "closed"}
+      initial="closed"
+      transition={transitionProps}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
       className={cn(
-        "hidden md:flex flex-col border-r border-border shadow-warm-md bg-sidebar-dots",
-        "backdrop-blur-xl bg-background/95 dark:bg-background/80",
-        "transition-all duration-300 ease-in-out",
-        collapsed ? "w-16" : "w-64",
+        "hidden md:flex flex-col border-r border-border/40 relative overflow-hidden",
+        "bg-background/95 dark:bg-background/80",
+        "backdrop-blur-xl",
+        "font-['DM_Sans',sans-serif]",
         className
       )}
     >
-      {/* Logo */}
+      {/* Logo area */}
       <div
         className={cn(
-          "flex items-center border-b border-border/60 h-16 px-4",
-          collapsed ? "justify-center" : "gap-2.5"
+          "relative flex items-center border-b border-border/40 h-16 shrink-0",
+          isOpen ? "px-4 gap-3" : "justify-center px-2"
         )}
       >
-        <svg viewBox="0 0 512 512" className="h-8 w-8 shrink-0 rounded-lg shadow-warm-sm" aria-hidden="true">
-          <rect width="512" height="512" rx="112" fill="#312E81"/>
-          <rect x="140" y="128" width="36" height="256" rx="4" fill="white"/>
-          <rect x="176" y="128" width="180" height="30" rx="4" fill="white"/>
-          <rect x="176" y="225" width="120" height="30" rx="4" fill="white"/>
-          <rect x="316" y="225" width="40" height="30" rx="4" fill="white" opacity="0.5"/>
-          <rect x="176" y="354" width="180" height="30" rx="4" fill="white"/>
-          <circle cx="378" cy="240" r="8" fill="white" opacity="0.3"/>
-          <circle cx="400" cy="240" r="5" fill="white" opacity="0.15"/>
+        <svg
+          viewBox="0 0 512 512"
+          className="h-7 w-7 shrink-0 rounded-lg"
+          aria-hidden="true"
+        >
+          <rect width="512" height="512" rx="112" fill="#1E40AF" />
+          <rect x="140" y="128" width="36" height="256" rx="4" fill="white" />
+          <rect x="176" y="128" width="180" height="30" rx="4" fill="white" />
+          <rect x="176" y="225" width="120" height="30" rx="4" fill="white" />
+          <rect
+            x="316"
+            y="225"
+            width="40"
+            height="30"
+            rx="4"
+            fill="white"
+            opacity="0.5"
+          />
+          <rect x="176" y="354" width="180" height="30" rx="4" fill="white" />
         </svg>
-        {!collapsed && (
-          <span className="text-lg font-bold tracking-tight text-gradient">ExpertHub</span>
-        )}
+
+        <AnimatePresence mode="wait">
+          {isOpen && (
+            <motion.span
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="text-base font-bold tracking-tight whitespace-nowrap text-foreground"
+            >
+              ExpertHub
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Nav Items */}
+      {/* Navigation */}
       <ScrollArea className="flex-1 py-3">
         <TooltipProvider delayDuration={0}>
-          <nav className="flex flex-col gap-0.5 px-2">
+          <motion.nav
+            variants={staggerVariants}
+            animate={isOpen ? "open" : "closed"}
+            className="flex flex-col gap-0.5 px-1.5"
+          >
             {groups.map((group, gi) => (
               <div key={group.label}>
                 {/* Section label */}
-                {!collapsed && (
-                  <div
-                    className={cn(
-                      "px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60",
-                      gi === 0 ? "pb-2 pt-1" : "pb-2 pt-4"
-                    )}
-                  >
-                    {group.label}
-                  </div>
+                <AnimatePresence mode="wait">
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className={cn(
+                        "px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/50",
+                        gi === 0 ? "pb-2 pt-1" : "pb-2 pt-4"
+                      )}
+                    >
+                      {group.label}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {!isOpen && gi > 0 && (
+                  <div className="mx-2 my-3 h-px bg-border/30" />
                 )}
-                {collapsed && gi > 0 && (
-                  <div className="mx-2 my-3 border-t border-border/40" />
-                )}
+
                 {group.items.map((item) => {
                   const Icon = iconMap[item.icon] ?? LayoutDashboard;
                   const isActive =
@@ -172,28 +290,53 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                         <Link
                           href={item.href}
                           className={cn(
-                            "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium",
-                            "transition-all duration-150",
-                            "hover:bg-accent/80 hover:text-accent-foreground",
+                            "group relative flex items-center rounded-md text-sm font-medium cursor-pointer",
+                            "min-h-[44px] min-w-[44px]",
+                            "transition-colors duration-150",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                            isOpen ? "gap-3 px-3" : "justify-center px-0",
                             isActive
-                              ? "bg-primary/10 text-primary border-l-[3px] border-primary pl-[9px]"
-                              : "text-muted-foreground border-l-[3px] border-transparent pl-[9px]",
-                            collapsed && "justify-center px-2 pl-2 border-l-0"
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                           )}
                         >
+                          {/* Active left border accent */}
+                          {isActive && (
+                            <motion.div
+                              layoutId="sidebar-active-indicator"
+                              className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-primary"
+                              transition={transitionProps}
+                            />
+                          )}
+
+                          {/* Icon */}
                           <Icon
                             className={cn(
-                              "h-[18px] w-[18px] shrink-0 transition-colors duration-150",
+                              "h-[18px] w-[18px] shrink-0",
                               isActive
                                 ? "text-primary"
                                 : "text-muted-foreground group-hover:text-foreground"
                             )}
                           />
-                          {!collapsed && <span>{item.title}</span>}
+
+                          {/* Label with stagger animation */}
+                          <AnimatePresence mode="wait">
+                            {isOpen && (
+                              <motion.span
+                                variants={itemVariants}
+                                initial="closed"
+                                animate="open"
+                                exit="closed"
+                                className="whitespace-nowrap"
+                              >
+                                {item.title}
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
                         </Link>
                       </TooltipTrigger>
-                      {collapsed && (
-                        <TooltipContent side="right">
+                      {!isOpen && (
+                        <TooltipContent side="right" className="font-medium">
                           {item.title}
                         </TooltipContent>
                       )}
@@ -202,41 +345,34 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                 })}
               </div>
             ))}
-          </nav>
+          </motion.nav>
         </TooltipProvider>
       </ScrollArea>
 
-      {/* User info section */}
+      {/* User section at bottom */}
       {session?.user && (
         <div
           className={cn(
-            "border-t border-border/60 p-3",
-            collapsed ? "flex justify-center" : ""
+            "border-t border-border/40 shrink-0",
+            isOpen ? "p-3" : "p-2 flex justify-center"
           )}
         >
-          {collapsed ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Avatar className="h-8 w-8 cursor-default">
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-                    {userInitials}
-                  </AvatarFallback>
-                </Avatar>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p className="font-medium">{userName}</p>
-                {badge && <p className="text-xs text-muted-foreground">{badge.label}</p>}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-2.5">
-              <Avatar className="h-8 w-8">
+          {isOpen ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-3 rounded-md bg-muted/40 p-2.5"
+            >
+              <Avatar className="h-8 w-8 shrink-0">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                   {userInitials}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium leading-none">{userName}</p>
+                <p className="truncate text-sm font-medium leading-none">
+                  {userName}
+                </p>
                 {badge && (
                   <span
                     className={cn(
@@ -248,27 +384,30 @@ export function Sidebar({ navItems, className }: SidebarProps) {
                   </span>
                 )}
               </div>
-            </div>
+            </motion.div>
+          ) : (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Avatar className="h-8 w-8 cursor-pointer">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                      {userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p className="font-medium">{userName}</p>
+                  {badge && (
+                    <p className="text-xs text-muted-foreground">
+                      {badge.label}
+                    </p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       )}
-
-      {/* Collapse Toggle */}
-      <div className="border-t border-border/60 p-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-full hover:bg-accent/80 transition-all duration-150"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
-    </aside>
+    </motion.aside>
   );
 }

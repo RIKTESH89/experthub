@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Bot, Brain, Plus, History, MessageSquare, X } from "lucide-react";
+import { Bot, Brain, Plus, History, MessageSquare, X, ChevronDown, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { getInitials, formatRelativeDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -55,6 +56,7 @@ export function ChatInterface({
     lastMessage?: string;
   }[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevMessageCount = useRef(0);
@@ -503,83 +505,136 @@ export function ChatInterface({
     [sessionId]
   );
 
+  const handleForceScrollToBottom = useCallback(() => {
+    userScrolledUp.current = false;
+    setShowScrollButton(false);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   return (
-    <div className="flex h-full min-h-0 overflow-hidden rounded-lg border border-border bg-card">
-      {/* Session History Panel — desktop: side panel, mobile: overlay */}
-      {showHistory && (
-        <>
-          {/* Mobile overlay backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-black/50 sm:hidden"
-            onClick={() => setShowHistory(false)}
-          />
-          <div className={cn(
-            "z-50 flex h-full w-64 shrink-0 flex-col border-r border-border bg-card",
-            "fixed left-0 top-0 bottom-0 sm:relative sm:left-auto sm:top-auto sm:bottom-auto"
-          )}>
-            <div className="flex items-center justify-between border-b border-border px-3 py-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Chat History</h3>
-              <Button variant="ghost" size="icon" className="h-7 w-7 sm:hidden" onClick={() => setShowHistory(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2 space-y-1">
-                {sessionHistory.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => handleSwitchSession(s.id)}
-                    className={cn(
-                      "w-full rounded-md px-3 py-2.5 text-left transition-colors hover:bg-muted/80",
-                      s.id === sessionId && "bg-primary/10 border border-primary/20"
-                    )}
-                  >
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-3 w-3 shrink-0 text-muted-foreground" />
-                      <p className="truncate text-xs font-medium">{s.title || "Chat"}</p>
-                    </div>
-                    {s.lastMessage && (
-                      <p className="mt-0.5 truncate pl-5 text-[10px] text-muted-foreground">
-                        {s.lastMessage}
-                      </p>
-                    )}
-                    <p className="mt-0.5 pl-5 text-[10px] text-muted-foreground/60">
-                      {formatRelativeDate(s.updatedAt)}
-                    </p>
-                  </button>
-                ))}
-                {sessionHistory.length === 0 && (
-                  <p className="px-3 py-4 text-center text-xs text-muted-foreground">
-                    No previous chats
-                  </p>
-                )}
+    <div className="flex h-full min-h-0 overflow-hidden rounded-xl border border-border/50 bg-card shadow-lg shadow-black/5">
+      {/* Session History Panel -- desktop: side panel, mobile: overlay */}
+      <AnimatePresence>
+        {showHistory && (
+          <>
+            {/* Mobile overlay backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm sm:hidden"
+              onClick={() => setShowHistory(false)}
+            />
+            <motion.div
+              initial={{ x: -264, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -264, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className={cn(
+                "z-50 flex h-full w-64 shrink-0 flex-col border-r border-border/50 bg-gradient-to-b from-card via-card to-muted/20",
+                "fixed left-0 top-0 bottom-0 sm:relative sm:left-auto sm:top-auto sm:bottom-auto"
+              )}
+            >
+              <div className="flex items-center justify-between border-b border-border/50 px-4 py-3.5">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <History className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">History</h3>
+                </div>
+                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg sm:hidden" onClick={() => setShowHistory(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-            </ScrollArea>
-          </div>
-        </>
-      )}
+              <ScrollArea className="flex-1">
+                <div className="p-2 space-y-0.5">
+                  {sessionHistory.map((s, index) => (
+                    <motion.button
+                      key={s.id}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.04, duration: 0.2 }}
+                      onClick={() => handleSwitchSession(s.id)}
+                      className={cn(
+                        "group w-full rounded-lg px-3 py-2.5 text-left transition-all duration-200",
+                        s.id === sessionId
+                          ? "bg-primary/8 border border-primary/20 shadow-sm shadow-primary/5"
+                          : "hover:bg-muted/60 border border-transparent"
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className={cn(
+                          "h-3.5 w-3.5 shrink-0 transition-colors",
+                          s.id === sessionId ? "text-primary" : "text-muted-foreground/50 group-hover:text-muted-foreground"
+                        )} />
+                        <p className={cn(
+                          "truncate text-xs font-medium",
+                          s.id === sessionId && "text-primary"
+                        )}>
+                          {s.title || "Chat"}
+                        </p>
+                      </div>
+                      {s.lastMessage && (
+                        <p className="mt-1 truncate pl-[22px] text-[10px] text-muted-foreground/60">
+                          {s.lastMessage}
+                        </p>
+                      )}
+                      <p className="mt-0.5 pl-[22px] text-[10px] text-muted-foreground/40">
+                        {formatRelativeDate(s.updatedAt)}
+                      </p>
+                    </motion.button>
+                  ))}
+                  {sessionHistory.length === 0 && (
+                    <div className="px-3 py-8 text-center">
+                      <MessageSquare className="mx-auto h-8 w-8 text-muted-foreground/20" />
+                      <p className="mt-2 text-xs text-muted-foreground/50">
+                        No previous chats
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Main chat area */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
-        <div className="flex items-center gap-2 border-b border-border px-3 py-3 sm:gap-3 sm:px-4">
+        <div className="relative flex items-center gap-2 border-b border-border/50 bg-gradient-to-r from-card via-card to-muted/10 px-3 py-3 sm:gap-3 sm:px-4">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 shrink-0"
+            className={cn(
+              "h-8 w-8 shrink-0 rounded-lg transition-colors",
+              showHistory && "bg-primary/10 text-primary"
+            )}
             onClick={() => setShowHistory(!showHistory)}
             title="Chat history"
           >
             <History className="h-4 w-4" />
           </Button>
-          <Avatar className="h-8 w-8 sm:h-9 sm:w-9 shrink-0">
-            <AvatarImage src={expertImage ?? undefined} alt={expertName} />
-            <AvatarFallback className="text-xs">{getInitials(expertName)}</AvatarFallback>
-          </Avatar>
+
+          {/* Expert avatar with gradient ring */}
+          <div className="relative shrink-0 rounded-full bg-gradient-to-br from-primary/40 via-primary/20 to-primary/40 p-[2px]">
+            <Avatar className="h-8 w-8 border-2 border-card sm:h-9 sm:w-9">
+              <AvatarImage src={expertImage ?? undefined} alt={expertName} />
+              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                {getInitials(expertName)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-emerald-500" />
+          </div>
+
           <div className="min-w-0">
             <h3 className="truncate text-sm font-semibold">{expertName}</h3>
-            <p className="text-[10px] text-muted-foreground sm:text-xs">AI Digital Twin</p>
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="h-2.5 w-2.5 text-primary/60" />
+              <p className="text-[10px] text-muted-foreground/70 sm:text-xs">AI Digital Twin</p>
+            </div>
           </div>
+
           <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
             {trialStatus &&
               !trialStatus.isUnlimited &&
@@ -592,60 +647,74 @@ export function ChatInterface({
               )}
             <ShareButton sessionId={sessionId} />
             {memoryCount > 0 && (
-              <div className="hidden items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground sm:flex">
-                <Brain className="h-3 w-3" />
-                {memoryCount}
+              <div className="hidden items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-2.5 py-1 text-[10px] text-muted-foreground/70 sm:flex">
+                <Brain className="h-3 w-3 text-primary/50" />
+                <span className="font-medium">{memoryCount}</span>
               </div>
             )}
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 gap-1.5 text-xs"
+              className="h-8 gap-1.5 rounded-lg border border-border/40 bg-background/50 text-xs hover:bg-muted/80 hover:border-border"
               onClick={handleNewChat}
               disabled={isStreaming || isLoading}
             >
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">New Chat</span>
             </Button>
-            <div className="flex h-2 w-2 rounded-full bg-green-500" />
           </div>
         </div>
 
         {/* Messages */}
         <div
-          className="flex-1 overflow-y-auto p-4"
+          className="relative flex-1 overflow-y-auto bg-gradient-to-b from-muted/5 via-transparent to-muted/10 p-4"
           ref={scrollRef}
           onScroll={(e) => {
             const el = e.currentTarget;
             const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
             userScrolledUp.current = !isNearBottom;
+            setShowScrollButton(!isNearBottom && messages.length > 3);
           }}
         >
+          {/* Empty state */}
           {messages.length === 0 && !isTyping && !isLoading && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Bot className="h-8 w-8 text-primary" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
+              className="flex flex-col items-center justify-center py-16 text-center"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 animate-pulse rounded-full bg-primary/10 blur-xl" />
+                <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 via-primary/10 to-primary/5 border border-primary/10 shadow-lg shadow-primary/5">
+                  <Bot className="h-10 w-10 text-primary/70" />
+                </div>
               </div>
-              <h3 className="mt-4 text-base font-semibold">
+              <h3 className="mt-6 text-lg font-semibold">
                 Chat with {expertName}&apos;s AI Twin
               </h3>
-              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground/70">
                 Ask questions and get answers based on {expertName}&apos;s
                 knowledge base and expertise.
               </p>
-            </div>
+            </motion.div>
           )}
 
+          {/* Loading state */}
           {isLoading && messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              <p className="mt-4 text-sm text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="relative">
+                <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+                <div className="absolute inset-0 animate-ping rounded-full border border-primary/10" />
+              </div>
+              <p className="mt-5 text-sm text-muted-foreground/60">
                 Loading conversation...
               </p>
             </div>
           )}
 
-          <div className="space-y-4">
+          {/* Messages list */}
+          <div className="space-y-5">
             {messages.map((message) => (
               <ChatMessage
                 key={message.id}
@@ -659,26 +728,63 @@ export function ChatInterface({
             ))}
           </div>
 
+          {/* Thinking steps */}
           {thinkingSteps.length > 0 && isStreaming && (
-            <div className="mt-4">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4"
+            >
               <ThinkingSteps steps={thinkingSteps} isComplete={isThinkingComplete} />
-            </div>
+            </motion.div>
           )}
 
-          {isTyping && (
-            <div className="mt-4 flex items-start gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={expertImage ?? undefined} />
-                <AvatarFallback className="text-xs">
-                  {getInitials(expertName)}
-                </AvatarFallback>
-              </Avatar>
-              <TypingIndicator />
-            </div>
-          )}
+          {/* Typing indicator */}
+          <AnimatePresence>
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="mt-5 flex items-start gap-3"
+              >
+                <div className="relative shrink-0 rounded-full bg-gradient-to-br from-primary/30 via-primary/10 to-primary/30 p-[2px]">
+                  <Avatar className="h-8 w-8 border-2 border-background">
+                    <AvatarImage src={expertImage ?? undefined} />
+                    <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                      {getInitials(expertName)}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <TypingIndicator />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div ref={bottomRef} />
         </div>
+
+        {/* Scroll to bottom button */}
+        <AnimatePresence>
+          {showScrollButton && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="absolute bottom-24 left-1/2 z-30 -translate-x-1/2"
+            >
+              <button
+                onClick={handleForceScrollToBottom}
+                className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/90 px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-lg shadow-black/10 backdrop-blur-sm transition-all hover:bg-card hover:text-foreground hover:shadow-xl"
+              >
+                <ChevronDown className="h-3.5 w-3.5" />
+                New messages
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Input */}
         <ChatInput onSend={handleSend} isDisabled={isStreaming || isLoading} />

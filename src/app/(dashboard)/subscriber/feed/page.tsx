@@ -5,14 +5,23 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
   FileText,
-  Sparkles,
   ArrowRight,
+  Compass,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { type Post, PostCard } from "@/components/posts/post-card";
+import {
+  PageTransition,
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+  motion,
+  AnimatePresence,
+} from "@/components/ui/motion";
 
 interface SubscribedExpert {
   id: string;
@@ -21,90 +30,316 @@ interface SubscribedExpert {
 }
 
 /* ================================================================
-   STORIES-STYLE EXPERT ROW — horizontal scrollable avatars
+   SHIMMER SKELETON
    ================================================================ */
 
-function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  if (experts.length === 0) return null;
-
+function ShimmerBlock({ className }: { className?: string }) {
   return (
-    <div className="relative">
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {experts.map((expert) => (
-          <Link
-            key={expert.id}
-            href={`/subscriber/experts/${expert.id}/chat`}
-            className="group flex flex-col items-center gap-1.5 shrink-0"
-          >
-            <div className="relative">
-              <div className="rounded-full bg-gradient-to-br from-primary via-primary/80 to-violet-500 p-[2px]">
-                <Avatar className="h-14 w-14 ring-2 ring-background transition-transform duration-200 group-hover:scale-105">
-                  <AvatarImage
-                    src={expert.image ?? undefined}
-                    alt={expert.displayName}
-                  />
-                  <AvatarFallback className="text-xs font-medium">
-                    {getInitials(expert.displayName)}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-            </div>
-            <span className="max-w-[72px] truncate text-[11px] text-muted-foreground group-hover:text-foreground transition-colors">
-              {expert.displayName.split(" ")[0]}
-            </span>
-          </Link>
-        ))}
+    <div
+      className={`rounded-lg bg-muted/60 ${className ?? ""}`}
+      style={{
+        backgroundImage:
+          "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)",
+        backgroundSize: "400% 100%",
+        animation: "shimmer 2s infinite linear",
+      }}
+    />
+  );
+}
 
-        {/* Browse more bubble */}
-        <Link
-          href="/subscriber/hub"
-          className="group flex flex-col items-center gap-1.5 shrink-0"
-        >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-dashed border-border transition-colors group-hover:border-primary/50 group-hover:bg-primary/5">
-            <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-          </div>
-          <span className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors">
-            Discover
-          </span>
-        </Link>
+function FeedPostSkeleton() {
+  return (
+    <div className="space-y-4 rounded-2xl border border-border/40 bg-card p-5 sm:p-6">
+      <div className="flex items-center gap-3">
+        <ShimmerBlock className="h-11 w-11 !rounded-full" />
+        <div className="space-y-2 flex-1">
+          <ShimmerBlock className="h-4 w-36" />
+          <ShimmerBlock className="h-3 w-24" />
+        </div>
+      </div>
+      <div className="space-y-2.5">
+        <ShimmerBlock className="h-4 w-full" />
+        <ShimmerBlock className="h-4 w-4/5" />
+        <ShimmerBlock className="h-4 w-3/5" />
+      </div>
+      <ShimmerBlock className="h-52 w-full !rounded-xl" />
+      <div className="flex gap-3 pt-1">
+        <ShimmerBlock className="h-8 w-18" />
+        <ShimmerBlock className="h-8 w-18" />
+        <ShimmerBlock className="h-8 w-18" />
       </div>
     </div>
   );
 }
 
 /* ================================================================
-   FEED SKELETON
+   STORIES-STYLE EXPERT ROW
    ================================================================ */
 
-function FeedPostSkeleton() {
+function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll, experts]);
+
+  const scroll = (dir: "left" | "right") => {
+    scrollRef.current?.scrollBy({
+      left: dir === "left" ? -200 : 200,
+      behavior: "smooth",
+    });
+  };
+
+  if (experts.length === 0) return null;
+
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-card p-4 sm:p-6">
-      <div className="flex items-center gap-3">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-3 w-20" />
+    <FadeIn delay={0.15} direction="up">
+      <div className="relative group/stories">
+        {/* Left fade + arrow */}
+        <AnimatePresence>
+          {canScrollLeft && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute left-0 top-0 bottom-0 z-10 flex items-center"
+            >
+              <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+              <button
+                onClick={() => scroll("left")}
+                className="relative -ml-2 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border/60 shadow-md hover:bg-accent transition-colors duration-200 cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Right fade + arrow */}
+        <AnimatePresence>
+          {canScrollRight && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute right-0 top-0 bottom-0 z-10 flex items-center"
+            >
+              <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+              <button
+                onClick={() => scroll("right")}
+                className="relative -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border/60 shadow-md hover:bg-accent transition-colors duration-200 cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto pb-3 pt-1 px-1 scrollbar-hide scroll-smooth"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {experts.map((expert, i) => (
+            <motion.div
+              key={expert.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.05 * i, duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+            >
+              <Link
+                href={`/subscriber/experts/${expert.id}/chat`}
+                className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer"
+              >
+                <div className="relative">
+                  {/* Ring */}
+                  <div className="rounded-full p-[2.5px] bg-gradient-to-br from-[#1E40AF] to-blue-400 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                    <div className="rounded-full bg-background p-[2px]">
+                      <Avatar className="h-[56px] w-[56px] transition-transform duration-200 group-hover:scale-105">
+                        <AvatarImage
+                          src={expert.image ?? undefined}
+                          alt={expert.displayName}
+                        />
+                        <AvatarFallback className="text-xs font-semibold bg-muted">
+                          {getInitials(expert.displayName)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                  </div>
+                  {/* Online dot */}
+                  <span className="absolute -bottom-0.5 right-0 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500" />
+                </div>
+                <span className="max-w-[76px] truncate text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                  {expert.displayName.split(" ")[0]}
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+
+          {/* Discover more bubble */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.05 * experts.length, duration: 0.25 }}
+          >
+            <Link
+              href="/subscriber/hub"
+              className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer"
+            >
+              <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-border/70 bg-muted/30 transition-all duration-200 group-hover:border-[#1E40AF]/50 group-hover:bg-[#1E40AF]/5 group-hover:scale-105">
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-[#1E40AF] transition-colors duration-200" />
+              </div>
+              <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                Discover
+              </span>
+            </Link>
+          </motion.div>
         </div>
       </div>
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
+    </FadeIn>
+  );
+}
+
+/* ================================================================
+   EMPTY STATE
+   ================================================================ */
+
+function EmptyFeedState() {
+  return (
+    <FadeIn delay={0.2} direction="up">
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.3 }}
+          className="relative mb-6"
+        >
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#1E40AF]/10 border border-[#1E40AF]/10">
+            <FileText className="h-9 w-9 text-[#1E40AF]/70" />
+          </div>
+        </motion.div>
+
+        <motion.h3
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.2 }}
+          className="text-lg font-semibold tracking-tight font-sans"
+        >
+          Your feed is waiting
+        </motion.h3>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.2 }}
+          className="mt-2 max-w-sm text-sm text-muted-foreground leading-relaxed"
+        >
+          Subscribe to industry experts and thought leaders to see their latest insights, posts, and updates right here.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.2 }}
+          className="mt-6"
+        >
+          <Button
+            className="gap-2 rounded-full px-6 bg-[#1E40AF] hover:bg-[#1E40AF]/90 text-white cursor-pointer"
+            asChild
+          >
+            <Link href="/subscriber/hub">
+              <Compass className="h-4 w-4" />
+              Explore Experts
+            </Link>
+          </Button>
+        </motion.div>
       </div>
-      <Skeleton className="h-48 w-full rounded-lg" />
-      <div className="flex gap-4">
-        <Skeleton className="h-8 w-16" />
-        <Skeleton className="h-8 w-16" />
-        <Skeleton className="h-8 w-16" />
-        <Skeleton className="h-8 w-16" />
+    </FadeIn>
+  );
+}
+
+/* ================================================================
+   ALL CAUGHT UP STATE
+   ================================================================ */
+
+function AllCaughtUp() {
+  return (
+    <FadeIn delay={0.1} direction="up">
+      <div className="flex flex-col items-center py-12 text-center">
+        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <p className="text-sm font-medium text-muted-foreground">
+          You&apos;re all caught up
+        </p>
+        <p className="mt-0.5 text-xs text-muted-foreground/60">
+          Check back later for new content
+        </p>
+        <Button variant="ghost" size="sm" className="mt-3 gap-1.5 text-xs rounded-full cursor-pointer" asChild>
+          <Link href="/subscriber/hub">
+            Discover new experts
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </Button>
       </div>
-    </div>
+    </FadeIn>
+  );
+}
+
+/* ================================================================
+   ANIMATED GREETING
+   ================================================================ */
+
+function Greeting({ name }: { name?: string | null }) {
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const firstName = name?.split(" ")[0];
+
+  return (
+    <FadeIn delay={0.05} direction="up" className="mb-6">
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-[1.7rem] font-sans">
+            {firstName ? (
+              <>
+                {getGreeting()},{" "}
+                <span className="text-foreground">
+                  {firstName}
+                </span>
+              </>
+            ) : (
+              "Your Feed"
+            )}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Latest from the experts you follow
+          </p>
+        </div>
+      </div>
+    </FadeIn>
   );
 }
 
@@ -199,77 +434,61 @@ export default function SubscriberFeedPage() {
   }, [hasMore, isLoadingMore, page, fetchPosts]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl animate-fade-in">
-      {/* Greeting - compact */}
-      <div className="mb-4">
-        <h1 className="text-lg font-semibold tracking-tight">
-          {session?.user?.name ? `Hey, ${session.user.name.split(" ")[0]}` : "Your Feed"}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Latest from your experts
-        </p>
-      </div>
+    <PageTransition className="mx-auto w-full max-w-2xl px-1 font-sans">
+      {/* Greeting */}
+      <Greeting name={session?.user?.name} />
 
       {/* Expert story row */}
-      <div className="mb-5">
+      <div className="mb-6">
         <ExpertStoryRow experts={subscribedExperts} />
       </div>
 
       {/* Divider */}
-      <div className="mb-5 border-t border-border/50" />
+      <FadeIn delay={0.2} direction="none">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
+            Feed
+          </span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+      </FadeIn>
 
-      {/* Feed */}
+      {/* Feed content */}
       {isLoading ? (
-        <div className="space-y-4">
+        <StaggerContainer className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <FeedPostSkeleton key={i} />
+            <StaggerItem key={i}>
+              <FeedPostSkeleton />
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       ) : posts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-            <FileText className="h-7 w-7 text-muted-foreground" />
-          </div>
-          <h3 className="text-base font-semibold">Your feed is empty</h3>
-          <p className="mt-1 max-w-xs text-sm text-muted-foreground">
-            Subscribe to experts to see their latest posts here.
-          </p>
-          <Button variant="outline" size="sm" className="mt-4" asChild>
-            <Link href="/subscriber/hub">
-              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-              Discover Experts
-            </Link>
-          </Button>
-        </div>
+        <EmptyFeedState />
       ) : (
-        <div className="space-y-4">
+        <StaggerContainer className="space-y-5">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <StaggerItem key={post.id}>
+              <motion.div
+                whileHover={{ y: -1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <PostCard post={post} />
+              </motion.div>
+            </StaggerItem>
           ))}
 
           {isLoadingMore && (
-            <div className="space-y-4">
+            <StaggerItem>
               <FeedPostSkeleton />
-            </div>
+            </StaggerItem>
           )}
 
           {hasMore && <div ref={loadMoreRef} className="h-4" />}
 
-          {!hasMore && posts.length > 0 && (
-            <div className="flex flex-col items-center py-10 text-center">
-              <p className="text-sm text-muted-foreground">
-                You&apos;re all caught up
-              </p>
-              <Button variant="ghost" size="sm" className="mt-2" asChild>
-                <Link href="/subscriber/hub">
-                  Discover new experts
-                  <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </div>
-          )}
-        </div>
+          {!hasMore && posts.length > 0 && <AllCaughtUp />}
+        </StaggerContainer>
       )}
-    </div>
+    </PageTransition>
   );
 }

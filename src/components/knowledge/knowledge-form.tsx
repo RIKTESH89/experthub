@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, FileText, Upload, MessageSquare } from "lucide-react";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 
 interface KnowledgeFormValues {
@@ -33,6 +41,12 @@ interface KnowledgeFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
 }
+
+const sourceTypeOptions = [
+  { value: "manual", label: "Manual Entry", icon: FileText, color: "text-blue-700 dark:text-blue-400" },
+  { value: "document", label: "Document Upload", icon: Upload, color: "text-purple-500" },
+  { value: "post", label: "From Post", icon: MessageSquare, color: "text-green-500" },
+];
 
 export function KnowledgeForm({
   initialData,
@@ -57,6 +71,7 @@ export function KnowledgeForm({
   });
 
   const sourceType = watch("sourceType");
+  const currentSource = sourceTypeOptions.find((s) => s.value === sourceType);
 
   const onSubmit = async (data: KnowledgeFormValues) => {
     setIsSubmitting(true);
@@ -86,82 +101,184 @@ export function KnowledgeForm({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {isEditing ? "Edit Knowledge Item" : "Add Knowledge Item"}
-        </CardTitle>
-      </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              placeholder="Enter a descriptive title..."
-              {...register("title", { required: "Title is required" })}
-            />
-            {errors.title && (
-              <p className="text-xs text-destructive">{errors.title.message}</p>
-            )}
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+    >
+      <Card className="overflow-hidden border-border/50">
+        {/* Header accent line */}
+        <div className="h-1 bg-blue-700" />
 
-          <div className="space-y-2">
-            <Label htmlFor="sourceType">Source Type</Label>
-            <Select
-              value={sourceType}
-              onValueChange={(value: "manual" | "document" | "post") =>
-                setValue("sourceType", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select source type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="manual">Manual Entry</SelectItem>
-                <SelectItem value="document">Document Upload</SelectItem>
-                <SelectItem value="post">From Post</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="content">Content</Label>
-            <Textarea
-              id="content"
-              placeholder="Enter the knowledge content..."
-              className="min-h-[200px] resize-y"
-              {...register("content", { required: "Content is required" })}
-            />
-            {errors.content && (
-              <p className="text-xs text-destructive">
-                {errors.content.message}
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-700/10">
+              <FileText className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold font-sans tracking-tight">
+                {isEditing ? "Edit Knowledge Item" : "Add Knowledge Item"}
+              </CardTitle>
+              <p className="mt-0.5 text-xs font-sans text-muted-foreground">
+                {isEditing
+                  ? "Update the details of your knowledge entry"
+                  : "Add new content to power your AI twin"}
               </p>
-            )}
+            </div>
           </div>
-        </CardContent>
+        </CardHeader>
 
-        <CardFooter className="flex justify-end gap-2 border-t pt-4">
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isSubmitting}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="space-y-5">
+            {/* Title field */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+              className="space-y-2"
             >
-              Cancel
-            </Button>
-          )}
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <Label
+                htmlFor="title"
+                className="text-sm font-medium font-sans text-foreground"
+              >
+                Title
+              </Label>
+              <Input
+                id="title"
+                placeholder="Enter a descriptive title..."
+                className={cn(
+                  "h-11 rounded-lg border-border/50 bg-muted/30 px-4 font-sans transition-all duration-200",
+                  "placeholder:text-muted-foreground/50",
+                  "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
+                  errors.title && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
+                )}
+                {...register("title", { required: "Title is required" })}
+              />
+              {errors.title && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-xs font-medium font-sans text-destructive"
+                >
+                  {errors.title.message}
+                </motion.p>
+              )}
+            </motion.div>
+
+            {/* Source Type field */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+              className="space-y-2"
+            >
+              <Label
+                htmlFor="sourceType"
+                className="text-sm font-medium font-sans text-foreground"
+              >
+                Source Type
+              </Label>
+              <Select
+                value={sourceType}
+                onValueChange={(value: "manual" | "document" | "post") =>
+                  setValue("sourceType", value)
+                }
+              >
+                <SelectTrigger
+                  className={cn(
+                    "h-11 cursor-pointer rounded-lg border-border/50 bg-muted/30 font-sans transition-all duration-200",
+                    "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10"
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    {currentSource && (
+                      <currentSource.icon
+                        className={cn("h-4 w-4", currentSource.color)}
+                      />
+                    )}
+                    <SelectValue placeholder="Select source type" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="rounded-lg border-border/50">
+                  {sourceTypeOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="cursor-pointer rounded-md font-sans"
+                    >
+                      <div className="flex items-center gap-2">
+                        <option.icon className={cn("h-4 w-4", option.color)} />
+                        <span>{option.label}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </motion.div>
+
+            {/* Content field */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: 0.15 }}
+              className="space-y-2"
+            >
+              <Label
+                htmlFor="content"
+                className="text-sm font-medium font-sans text-foreground"
+              >
+                Content
+              </Label>
+              <Textarea
+                id="content"
+                placeholder="Enter the knowledge content..."
+                className={cn(
+                  "min-h-[200px] resize-y rounded-lg border-border/50 bg-muted/30 px-4 py-3 font-sans transition-all duration-200",
+                  "placeholder:text-muted-foreground/50",
+                  "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
+                  errors.content && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
+                )}
+                {...register("content", { required: "Content is required" })}
+              />
+              {errors.content && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-xs font-medium font-sans text-destructive"
+                >
+                  {errors.content.message}
+                </motion.p>
+              )}
+            </motion.div>
+          </CardContent>
+
+          <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-muted/10 px-6 py-4">
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isSubmitting}
+                className="cursor-pointer rounded-lg border-border/50 px-5 font-sans transition-colors duration-200 hover:bg-muted/50"
+              >
+                Cancel
+              </Button>
             )}
-            {isEditing ? "Update" : "Create"}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="cursor-pointer rounded-lg bg-blue-700 px-6 font-sans text-white transition-colors duration-200 hover:bg-blue-800"
+            >
+              {isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="mr-2 h-4 w-4" />
+              )}
+              {isEditing ? "Update" : "Create"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </motion.div>
   );
 }
