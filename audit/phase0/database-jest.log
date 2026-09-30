@@ -1,0 +1,16 @@
+PASS scripts/phase0-integration/database.integration.ts
+  ✓ real PostgreSQL/pgvector migrations and transactional rollback (567 ms)
+  ✓ index/replay/edit/delete persist manifests and clean orphan vectors (50 ms)
+  ✓ real delayed indexing CAS cannot publish stale source revision (42 ms)
+  ✓ real deletion while embeddings run never resurrects manifest or orphan vectors (35 ms)
+  ✓ real competing workers claim once and expired lease recovers after restart (36 ms)
+  ✓ provider failure persists backoff and scheduler restart drains recovered work (34 ms)
+  ✓ actual SQL filters tenant/audience before topK and keyword ranking (40 ms)
+  ✓ post mutation and durable event roll back together on transaction error (37 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        1.137 s
+Ran all test suites.
+Test results written to: audit/phase0/database-jest.json

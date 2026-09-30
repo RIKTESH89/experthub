@@ -16,3 +16,10 @@ test("same facts are isolated by both visitor and expert",async()=>{
  prisma.subscriberMemory.findMany.mockResolvedValue([]);await getMemories("b","ben");expect(prisma.subscriberMemory.findMany).toHaveBeenCalledWith(expect.objectContaining({where:{subscriberId:"b",expertProfileId:"ben",memoryKey:{not:null}}}));
 });
 test("extractor cannot ingest generated assistant claims as visitor memories",async()=>{call.mockResolvedValue('{"memories":[]}');await extractMemories("I like concise answers","ASSISTANT_INVENTED_MEMORY");expect(JSON.stringify(call.mock.calls[0])).not.toContain("ASSISTANT_INVENTED_MEMORY");});
+
+test("concurrent unique-key loser acknowledges only exact existing memory identity",async()=>{
+ const {Prisma}=jest.requireActual("@prisma/client");const error=new Prisma.PrismaClientKnownRequestError("synthetic race",{code:"P2002",clientVersion:"6.19.2"});
+ prisma.subscriberMemory.upsert.mockRejectedValue(error);prisma.subscriberMemory.findUnique.mockResolvedValue({subscriberId:"a",expertProfileId:"ada"});
+ await expect(saveMemories("a","ada",[{fact:"Synthetic preference",category:"preference"}])).resolves.toBeUndefined();
+ prisma.subscriberMemory.findUnique.mockResolvedValue({subscriberId:"b",expertProfileId:"ada"});await expect(saveMemories("a","ada",[{fact:"Synthetic preference",category:"preference"}])).rejects.toThrow("synthetic race");
+});

@@ -107,6 +107,26 @@ FAIL __tests__/api/e2e-workflows.test.ts
       at __tests__/api/e2e-workflows.test.ts:542:24
       at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
 
+FAIL __tests__/api/feature-edge-cases.test.ts
+  ● Cross-Feature Interactions › pricing endpoint accessible by subscriber viewing expert
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"features": ["Posts"], "price": 0, "tier": "FREE"}, {"features": ["All"], "price": 29.99, "tier": "PREMIUM"}]
+
+      464 |
+      465 |     expect(res.status).toBe(200);
+    > 466 |     expect(data.tiers).toHaveLength(3);
+          |                        ^
+      467 |   });
+      468 |
+      469 |   it("admin cannot access expert pricing management", async () => {
+
+      at __tests__/api/feature-edge-cases.test.ts:466:24
+      at fulfilled (__tests__/api/feature-edge-cases.test.ts:42:58)
+
 FAIL __tests__/api/posts.test.ts
   ● Console
 
@@ -144,26 +164,6 @@ FAIL __tests__/api/posts.test.ts
 
       at __tests__/api/posts.test.ts:656:24
       at fulfilled (__tests__/api/posts.test.ts:38:58)
-
-FAIL __tests__/api/feature-edge-cases.test.ts
-  ● Cross-Feature Interactions › pricing endpoint accessible by subscriber viewing expert
-
-    expect(received).toHaveLength(expected)
-
-    Expected length: 3
-    Received length: 2
-    Received array:  [{"features": ["Posts"], "price": 0, "tier": "FREE"}, {"features": ["All"], "price": 29.99, "tier": "PREMIUM"}]
-
-      464 |
-      465 |     expect(res.status).toBe(200);
-    > 466 |     expect(data.tiers).toHaveLength(3);
-          |                        ^
-      467 |   });
-      468 |
-      469 |   it("admin cannot access expert pricing management", async () => {
-
-      at __tests__/api/feature-edge-cases.test.ts:466:24
-      at fulfilled (__tests__/api/feature-edge-cases.test.ts:42:58)
 
 FAIL __tests__/api/tiered-pricing.test.ts
   ● Expert Pricing Management (GET) › returns existing tiers
@@ -293,7 +293,7 @@ FAIL __tests__/api/experts.test.ts
       at __tests__/api/experts.test.ts:322:50
       at fulfilled (__tests__/api/experts.test.ts:5:58)
 
-PASS __tests__/phase0/local-scheduler.test.ts
+PASS __tests__/phase0/outbox.test.ts
 PASS __tests__/api/error-handling.test.ts
   ● Console
 
@@ -302,7 +302,6 @@ PASS __tests__/api/error-handling.test.ts
 
       at src/lib/email/resend.ts:24:13
 
-PASS __tests__/phase0/conversation.test.ts
 PASS __tests__/api/pages-and-existing-routes.test.ts
   ● Console
 
@@ -324,36 +323,37 @@ PASS __tests__/api/auth.test.ts
 
       at src/lib/email/resend.ts:24:13
 
-PASS __tests__/api/expert-routes.test.ts
-PASS __tests__/api/search-notifications.test.ts
+PASS __tests__/api/personality-memory.test.ts
 PASS __tests__/api/graph-accuracy.test.ts
-PASS __tests__/api/remaining-flows.test.ts
+PASS __tests__/api/search-notifications.test.ts
+PASS __tests__/phase0/conversation.test.ts
 PASS __tests__/api/new-endpoints.test.ts
+PASS __tests__/api/expert-routes.test.ts
 PASS __tests__/api/chat.test.ts
+PASS __tests__/api/remaining-flows.test.ts
+PASS __tests__/api/knowledge-import.test.ts
+PASS __tests__/api/knowledge.test.ts
 PASS __tests__/api/admin.test.ts
 PASS __tests__/api/admin-content.test.ts
-PASS __tests__/phase0/embeddings.test.ts
-PASS __tests__/api/trial-access.test.ts
-PASS __tests__/api/personality-memory.test.ts
-PASS __tests__/api/knowledge.test.ts
-PASS __tests__/api/knowledge-import.test.ts
-PASS __tests__/phase0/post-access.test.ts
-PASS __tests__/phase0/outbox.test.ts
-PASS __tests__/phase0/baseline-reproductions.test.ts
-PASS __tests__/phase0/retrieval.test.ts
-PASS __tests__/api/conversation-sharing.test.ts
-PASS __tests__/phase0/access.test.ts
-PASS __tests__/api/widget.test.ts
-PASS __tests__/phase0/vector-store.test.ts
-PASS __tests__/phase0/recovery-route.test.ts
-PASS __tests__/phase0/lifecycle.test.ts
-PASS __tests__/phase0/groq-local.test.ts
-PASS __tests__/phase0/chat-engine.test.ts
-PASS __tests__/api/analytics.test.ts
-PASS __tests__/phase0/shared-access.test.ts
 PASS __tests__/phase0/memory.test.ts
+PASS __tests__/phase0/groq-local.test.ts
+PASS __tests__/phase0/lifecycle.test.ts
+PASS __tests__/api/trial-access.test.ts
+PASS __tests__/phase0/embeddings.test.ts
+PASS __tests__/phase0/baseline-reproductions.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/api/conversation-sharing.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/phase0/vector-store.test.ts
+PASS __tests__/api/widget.test.ts
+PASS __tests__/api/analytics.test.ts
+PASS __tests__/phase0/recovery-route.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/local-scheduler.test.ts
+PASS __tests__/phase0/access.test.ts
 PASS __tests__/phase0/indexer.test.ts
 PASS __tests__/api/trial-and-utils.test.ts
+PASS __tests__/phase0/shared-access.test.ts
 
 Summary of all failing tests
 FAIL __tests__/api/thinking-chat-enhanced.test.ts
@@ -453,25 +453,6 @@ FAIL __tests__/api/e2e-workflows.test.ts
       at __tests__/api/e2e-workflows.test.ts:542:24
       at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
 
-FAIL __tests__/api/posts.test.ts
-  ● Trending › GET /posts/trending - returns trending posts sorted by engagement
-
-    expect(received).toBe(expected) // Object.is equality
-
-    Expected: 200
-    Received: 500
-
-      654 |     const json = await res.json();
-      655 |
-    > 656 |     expect(res.status).toBe(200);
-          |                        ^
-      657 |     expect(json).toHaveLength(2);
-      658 |
-      659 |     // First post should have higher engagement score
-
-      at __tests__/api/posts.test.ts:656:24
-      at fulfilled (__tests__/api/posts.test.ts:38:58)
-
 FAIL __tests__/api/feature-edge-cases.test.ts
   ● Cross-Feature Interactions › pricing endpoint accessible by subscriber viewing expert
 
@@ -491,6 +472,25 @@ FAIL __tests__/api/feature-edge-cases.test.ts
 
       at __tests__/api/feature-edge-cases.test.ts:466:24
       at fulfilled (__tests__/api/feature-edge-cases.test.ts:42:58)
+
+FAIL __tests__/api/posts.test.ts
+  ● Trending › GET /posts/trending - returns trending posts sorted by engagement
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      654 |     const json = await res.json();
+      655 |
+    > 656 |     expect(res.status).toBe(200);
+          |                        ^
+      657 |     expect(json).toHaveLength(2);
+      658 |
+      659 |     // First post should have higher engagement score
+
+      at __tests__/api/posts.test.ts:656:24
+      at fulfilled (__tests__/api/posts.test.ts:38:58)
 
 FAIL __tests__/api/tiered-pricing.test.ts
   ● Expert Pricing Management (GET) › returns existing tiers
@@ -622,8 +622,8 @@ FAIL __tests__/api/experts.test.ts
 
 
 Test Suites: 6 failed, 35 passed, 41 total
-Tests:       12 failed, 708 passed, 720 total
+Tests:       12 failed, 709 passed, 721 total
 Snapshots:   0 total
-Time:        5.073 s, estimated 6 s
+Time:        4.919 s, estimated 5 s
 Ran all test suites.
 Test results written to: audit/phase0/current-jest.json

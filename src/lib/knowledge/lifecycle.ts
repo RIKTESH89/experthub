@@ -101,7 +101,7 @@ export async function syncPostSource(postId: string) {
   const item = await prisma.knowledgeItem.upsert({
     where: { expertProfileId_sourceType_sourceId: key },
     create: { ...key, title, content, metadata },
-    update: changed ? { title, content, metadata, sourceVersion: { increment: 1 }, isIndexed: false, indexingError: null } : {},
+    update: changed ? { title, content, metadata, sourceVersion: { increment: 1 }, isIndexed: false, indexingError: null } : {sourceId:postId},
   });
   await syncKnowledgeItem(expert.id, item.id);
 }

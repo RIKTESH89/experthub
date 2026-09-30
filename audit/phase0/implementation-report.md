@@ -9,13 +9,13 @@ Static audit and bounded implementation retain existing inputs and stack. No pro
 
 | Check | Original baseline | Current |
 |---|---:|---:|
-| Full Jest | 608 passed / 620; 12 failed | 708 passed / 720; 12 failed |
-| Dedicated Phase0 Jest | absent | 102/102 passed, 16 suites |
+| Full Jest | 608 passed / 620; 12 failed | 709 passed / 721; 12 failed |
+| Dedicated Phase0 Jest | absent | 103/103 passed, 16 suites |
 | TypeScript | 41 diagnostics | same 41 diagnostics (line shifts only) |
 | Next lint | clean | clean |
 | git diff whitespace | n/a | clean |
 
-The twelve failing test names match the baseline exactly. They concern pricing defaults/subscriptions, trending expectation and the pre-existing source-display assertion. Full-suite success is **not** claimed. Existing route tests were adapted to the shared lifecycle boundary; separate service tests exercise the actual lifecycle implementation. Two old prefix-memory tests were replaced by exact keyed-memory coverage, giving a net increase of 100 full-suite tests. No new source diagnostics appeared; baseline types fail in existing test code/helpers/mocks.
+The twelve failing test names match the baseline exactly. They concern pricing defaults/subscriptions, trending expectation and the pre-existing source-display assertion. Full-suite success is **not** claimed. Existing route tests were adapted to the shared lifecycle boundary; separate service tests exercise the actual lifecycle implementation. Two old prefix-memory tests were replaced by exact keyed-memory coverage, giving a net increase of 101 full-suite tests. No new source diagnostics appeared; baseline types fail in existing test code/helpers/mocks.
 
 ## Per-issue implementation and evidence
 
@@ -108,3 +108,8 @@ Verification after this slice: dedicated 102/102 across 16 suites; full 708/720 
 ## Authorized Groq smoke follow-up
 
 After the user confirmed saved key and Free plan, the existing bounded harness was run once. Two synthetic responses succeeded, passed schema/model/evidence checks, and accurately restated Ada/Ben evidence; exit 0. No private data, tools, retries/fallback, production configuration changes or further requests. See `groq-smoke.md` for responses and the explicit latency-instrumentation limitation. Earlier statements that smoke was deferred describe the prior checkpoint; it has now passed this narrow access/schema check. DB/browser setup is still pending approval.
+
+
+## EXP19 approved integration follow-up
+
+The user approved Homebrew PostgreSQL/pgvector, pinned Playwright and a disposable localhost cluster. Completed **26/26** real DB/fresh-Chrome checks plus **1/1** actual cluster-restart cleanup proof. Concurrent memory upsert and initial outbox timestamp eligibility defects exposed by real DB testing were fixed. Offline Phase0 now **103/103**; full offline **709/721** with the same 12 baseline failures, unchanged 41 types, clean lint. Earlier statements that isolated tools/integration were unavailable describe prior checkpoints; those setup gates are now cleared. See `integration-report.md` for exact scope, artifacts, installations, fixes, shutdown confirmation and remaining limits. The existing Chrome/widget and actual route handlers were exercised through a test HTTP bridge with real Prisma/retrieval and mocked auth/model; full Next UI/OAuth and production deployment were not tested. All ephemeral processes stopped; database artifacts preserved and ignored. No additional Groq requests occurred.

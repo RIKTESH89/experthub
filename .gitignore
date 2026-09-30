@@ -44,3 +44,5 @@ next-env.d.ts
 
 # User-entered local hosted-model test credential; never production configuration.
 /.env.local-test-groq
+
+/.phase0-runtime/

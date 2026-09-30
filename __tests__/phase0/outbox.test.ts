@@ -12,7 +12,7 @@ const work={kind:"CLEANUP",expertProfileId:"ada",itemId:"source",sourceVersion:1
 beforeEach(()=>{
  resetAllMocks();remove.mockReset().mockResolvedValue(undefined);index.mockReset().mockResolvedValue(["planned"]);jobs=new Map();source=null;
  prisma.knowledgeLifecycleJob.upsert.mockImplementation(async({where,create}:{where:{id:string};create:KnowledgeLifecycleJob})=>{
-  if(!jobs.has(where.id))jobs.set(where.id,Object.assign({state:"PENDING",attempts:0,availableAt:now,leaseUntil:null,leaseToken:null,lastError:null,createdAt:now,updatedAt:now},create));return {...jobs.get(where.id)};
+  if(!jobs.has(where.id))jobs.set(where.id,Object.assign({state:"PENDING",attempts:0,availableAt:now,leaseUntil:null,leaseToken:null,lastError:null,createdAt:now,updatedAt:now},create,{availableAt:now}));return {...jobs.get(where.id)};
  });
  prisma.knowledgeLifecycleJob.findUnique.mockImplementation(async({where}:{where:{id:string}})=>jobs.get(where.id)?{...jobs.get(where.id)}:null);
  prisma.knowledgeLifecycleJob.updateMany.mockImplementation(async({where,data}:{where:Record<string,unknown>;data:Record<string,unknown>})=>{

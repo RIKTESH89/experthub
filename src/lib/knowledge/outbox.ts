@@ -8,7 +8,7 @@ type Work = Pick<KnowledgeLifecycleJob,"kind"|"expertProfileId"|"itemId"|"source
 export async function enqueueLifecycleJob(work: Work, store: Store = prisma) {
   const vectorIds = Array.from(new Set(work.vectorIds)).sort();
   const id = createHash("sha256").update(JSON.stringify([work.kind,work.expertProfileId,work.itemId,work.sourceVersion,work.namespace,vectorIds])).digest("hex");
-  const job = await store.knowledgeLifecycleJob.upsert({where:{id},create:{id,kind:work.kind,expertProfileId:work.expertProfileId,itemId:work.itemId,sourceVersion:work.sourceVersion,namespace:work.namespace,vectorIds},update:{}});
+  const job = await store.knowledgeLifecycleJob.upsert({where:{id},create:{id,kind:work.kind,expertProfileId:work.expertProfileId,itemId:work.itemId,sourceVersion:work.sourceVersion,namespace:work.namespace,vectorIds,availableAt:new Date()},update:{id}});
   // A later expired index worker can recreate previously cleaned orphan IDs.
   if (work.kind === "CLEANUP") await store.knowledgeLifecycleJob.updateMany({where:{id,state:"DONE"},data:{state:"PENDING",availableAt:new Date(),lastError:null}});
   if (work.kind === "POST_SYNC") await store.knowledgeLifecycleJob.updateMany({where:{id},data:{state:"PENDING",availableAt:new Date(),leaseToken:null,leaseUntil:null,lastError:null}});
