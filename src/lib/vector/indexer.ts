@@ -34,6 +34,10 @@ export async function removeDocument(namespace: string, vectorIds: string[]) {
   await vectorStore.deleteByIds(namespace, vectorIds);
 }
 
+export function plannedVectorIds(expertProfileId: string, id: string, sourceVersion: number, content: string) {
+  return chunkText(content, 1000, 200).map((_, i) => `${expertProfileId}:${id}:v${sourceVersion}:chunk_${i}`);
+}
+
 function chunkText(text: string, chunkSize: number, overlap: number): string[] {
   const chunks: string[] = [];
   let start = 0;

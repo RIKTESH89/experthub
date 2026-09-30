@@ -198,6 +198,7 @@ const mockPrismaClient = {
     count: jest.fn(),
     upsert: jest.fn(),
   },
+  knowledgeLifecycleJob: { upsert: jest.fn(), findUnique: jest.fn(), findMany: jest.fn(), updateMany: jest.fn() },
   knowledgeNode: {
     findUnique: jest.fn(),
     findMany: jest.fn(),

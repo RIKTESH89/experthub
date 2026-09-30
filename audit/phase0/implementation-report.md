@@ -9,13 +9,13 @@ Static audit and bounded implementation retain existing inputs and stack. No pro
 
 | Check | Original baseline | Current |
 |---|---:|---:|
-| Full Jest | 608 passed / 620; 12 failed | 676 passed / 688; 12 failed |
-| Dedicated Phase0 Jest | absent | 70/70 passed, 12 suites |
+| Full Jest | 608 passed / 620; 12 failed | 702 passed / 714; 12 failed |
+| Dedicated Phase0 Jest | absent | 96/96 passed, 15 suites |
 | TypeScript | 41 diagnostics | same 41 diagnostics (line shifts only) |
 | Next lint | clean | clean |
 | git diff whitespace | n/a | clean |
 
-The twelve failing test names match the baseline exactly. They concern pricing defaults/subscriptions, trending expectation and the pre-existing source-display assertion. Full-suite success is **not** claimed. Existing route tests were adapted to the shared lifecycle boundary; separate service tests exercise the actual lifecycle implementation. Two old prefix-memory tests were replaced by exact keyed-memory coverage, giving a net increase of 68 full-suite tests. No new source diagnostics appeared; baseline types fail in existing test code/helpers/mocks.
+The twelve failing test names match the baseline exactly. They concern pricing defaults/subscriptions, trending expectation and the pre-existing source-display assertion. Full-suite success is **not** claimed. Existing route tests were adapted to the shared lifecycle boundary; separate service tests exercise the actual lifecycle implementation. Two old prefix-memory tests were replaced by exact keyed-memory coverage, giving a net increase of 94 full-suite tests. No new source diagnostics appeared; baseline types fail in existing test code/helpers/mocks.
 
 ## Per-issue implementation and evidence
 
@@ -41,7 +41,9 @@ Evidence: `access.test.ts`, `chat-engine.test.ts`, `shared-access.test.ts`, `pos
 
 Schema/migration adds `sourceVersion`, `indexedVersion`, `indexingError`, unique source identity, memory key and widget source citations. Migration is additive and **not applied**. Existing duplicate post copies must be reconciled first; it intentionally fails instead of choosing/deleting a record. Legacy index revisions stay inaccessible until controlled reindexing.
 
-Evidence: ten lifecycle regressions plus three indexer regressions cover create/replay/edit/reordered index completion/delete/unpublish/error/retry/tenant isolation/staging. Important unchecked items: real overlapping DB transactions and post upsert races; durable job/outbox retry; orphan-vector cleanup retry after a row has already been deleted. A cleanup failure is safe for serving (manifest revoked) but no durable cleanup queue exists. An existing source can be retried through the update path; this is not a background recovery system. These acceptance items remain open, rather than being silently treated as complete.
+Evidence: ten lifecycle regressions plus three indexer regressions cover create/replay/edit/reordered index completion/delete/unpublish/error/retry/tenant isolation/staging. Follow-up closes the mock-verifiable durable outbox and deleted-source cleanup gaps. `outbox.ts` persists deterministic jobs, CAS claims with lease tokens, expired-lease recovery, exponential backoff capped at one hour, and independent cleanup. Deletion locks the source row, rereads its final manifest and commits cleanup work together with row deletion. Cleanup survives source removal, excludes current manifest IDs, and can be rearmed if a late worker recreates orphan IDs. Index jobs record planned IDs before embedding; replay of a deleted/stale source queues those IDs for cleanup. Publication and old-vector cleanup enqueue share one transaction.
+
+Post creation, edit and RAG toggle now commit `POST_SYNC` events with the mutation (`withPostOutbox`); newer events invalidate an old lease and force replay from the current post. The bounded `POST /api/knowledge/retry` endpoint authenticates the owner, derives their expert identity server-side, reconciles unindexed rows and drains up to 20 due jobs. No unauthenticated endpoint or production scheduler is enabled. Scheduled invocation of the service and actual DB transaction/row-lock behavior remain unverified. Crash recovery, backoff, foreign claims, lease replacement, source-delete cleanup, persistence failures, duplicate events, current-vector protection and route authorization are tested in `outbox.test.ts` and `recovery-route.test.ts`. Real overlapping transactions/post upsert races and a persistent automatic scheduler still require isolated integration testing before rollout.
 
 ### EXP10 — recent conversation and isolated memory
 
@@ -57,7 +59,7 @@ Evidence: conversation and memory regressions cover latest history, ordering, bo
 
 `retriever.ts` runs keyword retrieval independently of query embedding success and includes keyword-only evidence in the rerank candidate budget; authorized IDs are deduplicated. Embedding failure uses keyword fallback. `embeddings.ts` rejects missing key, HTTP failures, model mismatch, wrong dimensions, nonfinite and zero vectors; fabricated hash embeddings are removed. `indexer.ts` requires tenant/source/version identity and embeds all chunks before writing. Semantic query and upsert check the fixed embedding contract (`text-embedding-3-small`, 1536).
 
-Optional diagnostics expose vector availability, candidate counts and retrieval time. `synthetic-latency.json` compares 100 mocked in-process runs: baseline median 0.015958 ms / p95 0.033125 ms, Phase0 median 0.019125 ms / p95 0.029500 ms. This measures the mock harness only; it cannot establish database/provider latency or production performance. Model/dimension mismatch, outage fallback, keyword-only survival, dedup and missing scope regressions pass.
+Optional diagnostics expose vector availability, candidate counts and retrieval time. `synthetic-latency.json` records a baseline/Phase0 comparison of 100 mocked in-process runs per variant. Timings are harness snapshots and vary on rerun; inspect the saved JSON for the final run. They cannot establish database/provider latency or production performance. Model/dimension mismatch, outage fallback, keyword-only survival, dedup and missing scope regressions pass.
 
 ## Exact verification commands
 
@@ -75,12 +77,21 @@ git diff --check
 
 Baseline/current JSON and logs are adjacent to this report. Output redirection was used to save logs. Installation downloaded only locked repository dependencies; Prisma fetched its locked engine once. No new provider or test dependency was added.
 
-## Local hosted-model test proposal (not implemented)
+## Local hosted-model test harness (implemented; network run deferred)
 
 Production provider remains unchanged. Existing production code hardcodes OpenAI chat/helper/reranker/embedding endpoints; environment names are `OPENAI_API_KEY` and optional `OPENAI_MODEL`. A free chat provider is not compatible merely by substituting that key.
 
-For a later explicitly configured local harness, accept separate `LOCAL_TEST_CHAT_BASE_URL`, `LOCAL_TEST_CHAT_MODEL`, and `LOCAL_TEST_CHAT_API_KEY` from the user's local secret configuration; never print the secret or persist it in fixtures. Explicit opt-in, an allowlisted endpoint/model, synthetic source snapshots only, maximum requests/tokens, bounded timeouts, and no fallback provider/paid model are required. Record endpoint/model/version/budget and source split with the run. Groq chat can be evaluated independently; retain mocked embeddings initially because no Groq embedding path is implemented. Strict structured-output testing should be non-streaming and without tools. Do not alter production environment variables, migrate embeddings, or interpret a free-tier label as a guarantee against all future billing. Parent handles provider setup confirmation; no credentials or external calls occurred here.
+`scripts/local-test/groq-synthetic.cjs` is separate from production code and only accepts two fixed synthetic fixtures. Allowlist: `https://api.groq.com/openai/v1`, `openai/gpt-oss-120b`. Cap: two requests, each at most 256 output tokens, 15-second timeout, zero retries/fallback. It validates nonstreaming strict JSON schema and evidence IDs; no tools, application data, private source or embeddings are used. Nine mocked adapter cases pass. This validates transport/schema behavior, not model fidelity or free account status.
+
+Credential-free template: `scripts/local-test/groq.env.example`. At the user's later explicit request, the actual repository-root `.env.local-test-groq` was created exclusively with a blank key and mode 0600. `git check-ignore` confirms ignored and `git ls-files` confirms untracked; existing files would not be read/overwritten. Names: `LOCAL_TEST_GROQ_API_KEY`, `LOCAL_TEST_GROQ_BASE_URL`, `LOCAL_TEST_GROQ_MODEL`. User enters their own key locally and confirms only configuration completion, never the key. After parent authorizes the bounded synthetic run: `node scripts/local-test/groq-synthetic.cjs --allow-synthetic-network`. Without that flag it makes no network request and does not load the secret file. No smoke run occurred. User must confirm free-tier/no-billing status in Console; an endpoint/model allowlist cannot establish account billing state.
 
 ## Remaining handoff
 
-The local implementation and mock verification are ready for review. Do not deploy before isolated migration/duplicate preflight, controlled reindexing, real DB concurrency/recovery tests, browser token integration and resolution of the stated open acceptance items. Baseline pricing/type/test defects remain separate work. Phase0 improves source/retrieval integrity; it does not yet implement assertion provenance, temporal person memory, decision cases, a grounded generation verifier, or demonstrate human-like person fidelity. Those later phases remain separate decisions.
+The local implementation and mock verification are ready for review. Do not deploy before isolated migration/duplicate preflight, controlled reindexing, real DB concurrency/recovery tests, browser token integration and verification of the stated integration acceptance items. Baseline pricing/type/test defects remain separate work. Phase0 improves source/retrieval integrity; it does not yet implement assertion provenance, temporal person memory, decision cases, a grounded generation verifier, or demonstrate human-like person fidelity. Those later phases remain separate decisions.
+
+
+## Local integration availability and exact blockers
+
+Read-only inspection found no `psql`, `postgres`, `initdb` or `docker` on PATH, no PostgreSQL/Docker application at the inspected standard locations, and no Playwright/Puppeteer package in locked dependencies. Process inventory was unavailable (`pgrep: Cannot get process list`); this is not proof no server exists elsewhere. No connection was attempted and no environment values were inspected.
+
+To run the outstanding integration checks: provision/authorize a **new disposable** PostgreSQL instance with pgvector and a dedicated synthetic-only database; provide its isolated URL using a separate test secret, and authorize applying repository migrations solely there. Never reuse an existing application database. Install/provide explicitly approved browser test tooling/runtime if required, then start the app with synthetic auth/storage/provider stubs and a test-only signing secret. Verify duplicate-source preflight, transactional rollback and deletion-vs-publication row locking, two-worker lease/retry races, pgvector pre-ranking tenant filters, source updates/deletion/unpublish, signed widget browser persistence and permission downgrade. A scheduler invoking the bounded worker must also be tested; none is deployed by this patch. These remain blocked on unavailable isolated tooling/services, rather than waived acceptance.

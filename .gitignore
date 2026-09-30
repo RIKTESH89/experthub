@@ -41,3 +41,6 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# User-entered local hosted-model test credential; never production configuration.
+/.env.local-test-groq

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { syncPostSource } from "@/lib/knowledge/lifecycle";
+import { withPostOutbox, syncPostSource } from "@/lib/knowledge/lifecycle";
 
 export async function POST(
   request: NextRequest,
@@ -47,9 +47,9 @@ export async function POST(
 
     const newRagState = !post.isRagEnabled;
 
-    const updatedPost = await prisma.post.update({
+    const updatedPost = await withPostOutbox(post.authorId, async (tx) => tx.post.update({
       where: { id: postId }, data: { isRagEnabled: newRagState },
-    });
+    }));
     await syncPostSource(postId);
 
     return NextResponse.json({

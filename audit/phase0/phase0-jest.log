@@ -1,19 +1,22 @@
 PASS __tests__/phase0/conversation.test.ts
-PASS __tests__/phase0/post-access.test.ts
-PASS __tests__/phase0/baseline-reproductions.test.ts
-PASS __tests__/phase0/vector-store.test.ts
-PASS __tests__/phase0/access.test.ts
-PASS __tests__/phase0/lifecycle.test.ts
 PASS __tests__/phase0/embeddings.test.ts
-PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/phase0/baseline-reproductions.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/groq-local.test.ts
+PASS __tests__/phase0/outbox.test.ts
 PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/phase0/access.test.ts
+PASS __tests__/phase0/vector-store.test.ts
+PASS __tests__/phase0/lifecycle.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+PASS __tests__/phase0/recovery-route.test.ts
 PASS __tests__/phase0/memory.test.ts
 PASS __tests__/phase0/indexer.test.ts
-PASS __tests__/phase0/shared-access.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
 
-Test Suites: 12 passed, 12 total
-Tests:       70 passed, 70 total
+Test Suites: 15 passed, 15 total
+Tests:       96 passed, 96 total
 Snapshots:   0 total
-Time:        0.455 s, estimated 1 s
+Time:        0.529 s, estimated 1 s
 Ran all test suites matching /__tests__\/phase0/i.
 Test results written to: audit/phase0/phase0-jest.json

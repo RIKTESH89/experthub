@@ -628,3 +628,23 @@ model VectorChunk {
 
   @@index([namespace])
 }
+
+// No source foreign key: deletion must not cascade away cleanup work.
+model KnowledgeLifecycleJob {
+  id              String @id
+  kind            String
+  expertProfileId String
+  itemId          String
+  sourceVersion   Int?
+  namespace       String
+  vectorIds       String[]
+  state           String @default("PENDING")
+  attempts        Int @default(0)
+  availableAt     DateTime @default(now())
+  leaseUntil      DateTime?
+  leaseToken      String?
+  lastError       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@index([expertProfileId, state, availableAt])
+}

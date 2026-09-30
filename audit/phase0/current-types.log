@@ -60,4 +60,4 @@ __tests__/helpers/request.ts(25,65): error TS2345: Argument of type 'RequestInit
     Type 'AbortSignal | null | undefined' is not assignable to type 'AbortSignal | undefined'.
       Type 'null' is not assignable to type 'AbortSignal | undefined'.
 __tests__/mocks/prisma.ts(2,7): error TS7022: 'mockPrismaClient' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
-__tests__/mocks/prisma.ts(229,25): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+__tests__/mocks/prisma.ts(230,25): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.

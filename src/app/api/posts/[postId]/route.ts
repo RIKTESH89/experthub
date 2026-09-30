@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { syncPostSource, removePostSource } from "@/lib/knowledge/lifecycle";
+import { withPostOutbox, syncPostSource, removePostSource } from "@/lib/knowledge/lifecycle";
 import { createPostSchema } from "@/lib/validations/post";
 import { canReadPost } from "@/lib/knowledge/post-access";
 import crypto from "crypto";
@@ -174,7 +174,7 @@ export async function PATCH(
 
     const { tags, media, ...updateData } = validation.data;
 
-    const post = await prisma.post.update({
+    const post = await withPostOutbox(existingPost.authorId, async (tx) => tx.post.update({
       where: { id: postId },
       data: {
         ...updateData,
@@ -211,7 +211,7 @@ export async function PATCH(
           select: { likes: true, comments: true, bookmarks: true },
         },
       },
-    });
+    }));
 
     await syncPostSource(postId);
 

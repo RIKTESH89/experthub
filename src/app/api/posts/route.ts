@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { createPostSchema } from "@/lib/validations/post";
-import { syncPostSource } from "@/lib/knowledge/lifecycle";
+import { withPostOutbox, syncPostSource } from "@/lib/knowledge/lifecycle";
 
 export async function GET(request: NextRequest) {
   try {
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    const post = await prisma.post.create({
+    const post = await withPostOutbox(session.user.id, async (tx) => tx.post.create({
       data: {
         ...postData,
         authorId: session.user.id,
@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-    });
+    }));
 
     if (postData.isRagEnabled) await syncPostSource(post.id);
 
