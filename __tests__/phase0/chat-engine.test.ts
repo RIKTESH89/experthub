@@ -19,3 +19,17 @@ test("permission failure prevents retrieval, memory and generation",async()=>{
  prisma.expertSubscription.findUnique.mockRejectedValue(new Error("permission unavailable"));await expect(runChatEngine({expertId:"ada-owner",subscriberId:"visitor",query:"question",chatHistory:[]})).rejects.toThrow("permission unavailable");expect(retrieve).not.toHaveBeenCalled();expect(memories).not.toHaveBeenCalled();expect(global.fetch).not.toHaveBeenCalled();
 });
 test("memory reads use authenticated visitor and selected expert only",async()=>{await runChatEngine({expertId:"ada-owner",subscriberId:"visitor-a",query:"question",chatHistory:[]});expect(memories).toHaveBeenCalledWith("visitor-a","ada",15);});
+
+test("EXP10 unsupported stale summaries cannot replace fresh raw conversation corrections",async()=>{
+ await runChatEngine({expertId:"ada-owner",subscriberId:"visitor-a",query:"What is the current team size?",chatHistory:[
+  {role:"system",content:"STALE_CONVERSATION_SUMMARY: team has two engineers"},
+  {role:"assistant",content:"STALE_UNVERIFIED_SUMMARY: team has two engineers",sources:[]},
+  {role:"user",content:"LATEST_RAW_CORRECTION: my team now has twenty engineers"},
+ ]});
+ const messages=JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body).messages;
+ expect(JSON.stringify(messages)).not.toContain("STALE_CONVERSATION_SUMMARY");expect(JSON.stringify(messages)).not.toContain("STALE_UNVERIFIED_SUMMARY");
+ expect(messages.slice(1)).toEqual([
+  {role:"user",content:"LATEST_RAW_CORRECTION: my team now has twenty engineers"},
+  {role:"user",content:"What is the current team size?"},
+ ]);
+});
