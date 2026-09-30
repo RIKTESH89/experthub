@@ -1,0 +1,201 @@
+{
+  "status": "preflight blocked; zero pilot provider attempts",
+  "originalCommit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+  "candidateCommit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+  "sourceFiles": [
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/ai/chat-engine.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/ai/chat-engine.ts.source",
+      "sha256": "4b2182252e2b6e3bddae153ef5b979652d230e485c9ada1ccdbb58f2a3efaa43",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/ai/prompts.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/ai/prompts.ts.source",
+      "sha256": "02127f3998e8f9be1e2e3e12fe4c2d52a4c0cd05f1c4fcd9cbf5348ba3d77243",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/ai/memory-manager.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/ai/memory-manager.ts.source",
+      "sha256": "22511e9d2acdcf1454f19ed18e70bd6db4b2b084ba802bf4607cae2d4034cf9a",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/ai/web-search.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/ai/web-search.ts.source",
+      "sha256": "b9c8f6225ec74b379c184295dbe74fafa3ce9325e423a6eb098313ed00f32030",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/ai/openai.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/ai/openai.ts.source",
+      "sha256": "236b1aef4b908ab98fbf1ad46a156ecba00a75260f8d063b049a31e774b2338d",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/graph/graph-retriever.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/graph/graph-retriever.ts.source",
+      "sha256": "5bd44bf8636f57bb17b48531e2ed3ebd5cc5ff8fa8d32c4ac106b1d2fbe862f1",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/vector/retriever.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/vector/retriever.ts.source",
+      "sha256": "e1194da76d435c68f5cbea3aba1cdd73027630d76cf72af33ddc8f6b00a06456",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/vector/client.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/vector/client.ts.source",
+      "sha256": "7300d3dd7033506572b99d1426d4282dc2840c42c7129d99e9cc2ff7151596b7",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/lib/vector/embeddings.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/lib/vector/embeddings.ts.source",
+      "sha256": "40845b061dd6945e8ff52d518cec00aa0badc4a441db88b5ef9bd8322cec0705",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/app/api/chat/sessions/[sessionId]/messages/route.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/app/api/chat/sessions/[sessionId]/messages/route.ts.source",
+      "sha256": "515fbd0826a1054fbda549c06a3d2e736354142c0f1a7962313ac656a2648589",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "original",
+      "commit": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+      "source": "src/app/api/widget/chat/route.ts",
+      "snapshot": "audit/phase0/exp7-preflight/original/src/app/api/widget/chat/route.ts.source",
+      "sha256": "615ff39cd5c398010b733629d7434d18627ef6d4ea69890999dd40b92e900137",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/ai/chat-engine.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/ai/chat-engine.ts.source",
+      "sha256": "0fb500d280873c117a8113fed6c20c14c96159400b37a9b91507c06cf2aad8ad",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/ai/prompts.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/ai/prompts.ts.source",
+      "sha256": "db8319f4821043199c805622ec9fbba565e1283d0008aa8f9fe8294ce9f7d856",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/ai/memory-manager.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/ai/memory-manager.ts.source",
+      "sha256": "fc438c0e4aca862d9098ed060a595ef589b91f024b585a9ff1fac8ad7082283d",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/ai/web-search.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/ai/web-search.ts.source",
+      "sha256": "b9c8f6225ec74b379c184295dbe74fafa3ce9325e423a6eb098313ed00f32030",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/ai/openai.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/ai/openai.ts.source",
+      "sha256": "236b1aef4b908ab98fbf1ad46a156ecba00a75260f8d063b049a31e774b2338d",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/graph/graph-retriever.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/graph/graph-retriever.ts.source",
+      "sha256": "5bd44bf8636f57bb17b48531e2ed3ebd5cc5ff8fa8d32c4ac106b1d2fbe862f1",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/vector/retriever.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/vector/retriever.ts.source",
+      "sha256": "5e55d4ad44da1dc3bf7f8b0a8608de9b811a4b42ccee23fce5f92acecd53f8bd",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/vector/client.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/vector/client.ts.source",
+      "sha256": "b3fc330c9ab367d42e5e0433470bc8d94d21906de97a5f2880f3e18666e60b22",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/lib/vector/embeddings.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/lib/vector/embeddings.ts.source",
+      "sha256": "ff3076df8b4cd9db79785b25b33e64e33eae9d65bf2cd85f626a756758ccd9bd",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/app/api/chat/sessions/[sessionId]/messages/route.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/app/api/chat/sessions/[sessionId]/messages/route.ts.source",
+      "sha256": "7545e1b82e0771d3a14555f36b69a24ae712afce80b01bbf1d97de9344daa80f",
+      "transforms": "none; not executed"
+    },
+    {
+      "variant": "candidate",
+      "commit": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+      "source": "src/app/api/widget/chat/route.ts",
+      "snapshot": "audit/phase0/exp7-preflight/candidate/src/app/api/widget/chat/route.ts.source",
+      "sha256": "e762b903492f4d4dbc86cd4bbe6c332ce0260067d60f1805ed6818d0631e217d",
+      "transforms": "none; not executed"
+    },
+    {
+      "artifact": "fixtures.json",
+      "sha256": "eb69248ec3b050f3d9f5d4b11472209d4f880a7e3dfe9d2d2e79142d939db6a5"
+    },
+    {
+      "artifact": "order.json",
+      "sha256": "64328002b84c158fc0b1f4691570cd062f5e7d8054ca133e8f97bae7e2a9b163"
+    }
+  ],
+  "counts": {
+    "sources": 10,
+    "trainSources": 4,
+    "heldoutSources": 6,
+    "heldoutConversations": 1,
+    "messages": 128,
+    "cases": 6,
+    "pairedRuns": 24,
+    "distractors": 15
+  }
+}

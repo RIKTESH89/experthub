@@ -1,0 +1,128 @@
+{
+  "seed": 2717,
+  "generationRuns": [
+    {
+      "caseId": "H4-keyword-only",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "repeat": 1,
+      "variant": "original"
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "repeat": 1,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "repeat": 2,
+      "variant": "original"
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "repeat": 2,
+      "variant": "original"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "repeat": 2,
+      "variant": "original"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "repeat": 2,
+      "variant": "original"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "repeat": 2,
+      "variant": "original"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "repeat": 2,
+      "variant": "candidate"
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "repeat": 2,
+      "variant": "original"
+    }
+  ],
+  "maxRerankAttempts": 24,
+  "maxGenerationAttempts": 24,
+  "maxAllAttempts": 48
+}
