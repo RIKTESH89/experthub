@@ -6,8 +6,9 @@
   if (!apiKey) return;
 
   var API_BASE = script.src.replace('/embed/widget.js', '');
-  var visitorId = localStorage.getItem('_tw_vid') || generateId();
-  localStorage.setItem('_tw_vid', visitorId);
+  var visitorId = localStorage.getItem('_tw_vid_' + apiKey) || generateId();
+  localStorage.setItem('_tw_vid_' + apiKey, visitorId);
+  var visitorToken = localStorage.getItem('_tw_token_' + apiKey) || '';
 
   function generateId() {
     return 'v_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
@@ -126,8 +127,16 @@
       fetch(API_BASE + '/api/widget/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKey: apiKey, visitorId: visitorId, message: text })
+        body: JSON.stringify({ apiKey: apiKey, visitorId: visitorId, visitorToken: visitorToken, message: text })
       }).then(function(res) {
+        var issuedId = res.headers.get('X-Widget-Visitor-Id');
+        var issuedToken = res.headers.get('X-Widget-Token');
+        if (issuedId && issuedToken) {
+          visitorId = issuedId; visitorToken = issuedToken;
+          localStorage.setItem('_tw_vid_' + apiKey, visitorId);
+          localStorage.setItem('_tw_token_' + apiKey, visitorToken);
+        }
+
         if (res.status === 403) {
           return res.json().then(function(data) {
             typing.remove();

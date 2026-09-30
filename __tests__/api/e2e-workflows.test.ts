@@ -1,3 +1,5 @@
+jest.mock("@/lib/knowledge/shared-access", () => ({ canPublishConversation: jest.fn().mockResolvedValue(true) }));
+jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import {
@@ -104,7 +106,7 @@ import { GET as importHistory } from "@/app/api/knowledge/import/history/route";
 import { GET as knowledgeStats } from "@/app/api/knowledge/stats/route";
 import { DELETE as deleteKnowledge } from "@/app/api/knowledge/[itemId]/route";
 
-import { indexDocument, removeDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem as indexDocument, removeKnowledgeItem as removeDocument, syncPostSource } from "@/lib/knowledge/lifecycle";
 import { checkTrialAccess } from "@/lib/trial";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -129,6 +131,7 @@ function itemParams(itemId: string) {
 
 beforeEach(() => {
   resetAllMocks();
+  jest.clearAllMocks();
   mockAuth.mockReset();
   (indexDocument as jest.Mock).mockClear();
   (removeDocument as jest.Mock).mockClear();
@@ -1148,7 +1151,7 @@ describe("E2E: Content Lifecycle Flow", () => {
     expect(res.status).toBe(200);
     expect(json.isRagEnabled).toBe(true);
     expect(json.message).toBe("Post added to knowledge base");
-    expect(indexDocument).toHaveBeenCalled();
+    expect(syncPostSource).toHaveBeenCalledWith("post-id-1");
   });
 
   it("Step 5 - Subscriber views feed", async () => {
@@ -1379,10 +1382,7 @@ describe("E2E: Knowledge Management Flow", () => {
 
     expect(res.status).toBe(200);
     expect(json.message).toBe("Knowledge item deleted successfully");
-    expect(removeDocument).toHaveBeenCalledWith(
-      "expert_expert_user",
-      ["vec-1", "vec-2"]
-    );
+    expect(removeDocument).toHaveBeenCalledWith("profile-id-1", "knowledge-id-1");
   });
 });
 

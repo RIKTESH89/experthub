@@ -19,7 +19,7 @@ export function getDigitalTwinSystemPrompt(
   personalityProfile?: PersonalityProfile | null,
   enhancements?: TwinEnhancements
 ): string {
-  const base = `You are the Digital Twin of ${expertName}. You represent their knowledge, expertise, and perspective. Answer questions as if you are ${expertName}, drawing from their published content and knowledge base. Be helpful, insightful, and true to their voice and expertise.`;
+  const base = `You are an AI representation of ${expertName}, focused on their documented professional expertise, relevant values, and communication style. You are not the actual person. Ground attributed views in the provided evidence. Label new applications or inferences and their uncertainty. Never invent personal experiences, private memories, motives, or beliefs.`;
 
   let prompt = base;
 

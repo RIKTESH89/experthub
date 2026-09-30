@@ -1,3 +1,5 @@
+import { removeKnowledgeItem as removeDocument } from "@/lib/knowledge/lifecycle";
+jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import {
@@ -103,6 +105,7 @@ let consoleErrorSpy: jest.SpyInstance;
 
 beforeEach(() => {
   resetAllMocks();
+  jest.clearAllMocks();
   mockAuth.mockReset();
   consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 });
@@ -313,9 +316,7 @@ describe("SECTION 1: Existing API Routes Still Work", () => {
 
       expect(res.status).toBe(200);
       expect(data.message).toBe("Knowledge item deleted successfully");
-      expect(mockPrisma.knowledgeItem.delete).toHaveBeenCalledWith({
-        where: { id: "knowledge-id-1" },
-      });
+      expect(removeDocument).toHaveBeenCalledWith(mockExpertProfile.id, "knowledge-id-1");
     });
   });
 
@@ -602,6 +603,7 @@ describe("SECTION 2: Cross-Feature Integration Tests", () => {
 
     // Reset for next call
     resetAllMocks();
+  jest.clearAllMocks();
     mockAuth.mockResolvedValue(mockSession.expert);
     mockPrisma.expertProfile.findUnique.mockResolvedValue(mockExpertProfile);
     mockPrisma.expertProfile.update.mockResolvedValue({
@@ -664,7 +666,7 @@ describe("SECTION 2: Cross-Feature Integration Tests", () => {
   // 19. Knowledge creation triggers vector indexing (graph building via mock)
   // -----------------------------------------------------------------------
   it("knowledge creation triggers indexing", async () => {
-    const { indexDocument } = require("@/lib/vector/indexer");
+    const { syncKnowledgeItem: indexDocument } = require("@/lib/knowledge/lifecycle");
     (indexDocument as jest.Mock).mockClear();
 
     mockAuth.mockResolvedValue(mockSession.expert);
@@ -693,12 +695,7 @@ describe("SECTION 2: Cross-Feature Integration Tests", () => {
     const res = await createKnowledge(req);
 
     expect(res.status).toBe(201);
-    expect(indexDocument).toHaveBeenCalledWith(
-      "expert_expert_user",
-      "k-new",
-      "Graph Test\n\nContent for graph",
-      expect.objectContaining({ sourceType: "manual" })
-    );
+    expect(indexDocument).toHaveBeenCalledWith(mockExpertProfile.id, "k-new");
   });
 
   // -----------------------------------------------------------------------

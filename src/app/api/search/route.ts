@@ -70,6 +70,7 @@ export async function GET(request: NextRequest) {
         where: {
           status: "PUBLISHED",
           isHidden: false,
+          isPremiumOnly: false,
           OR: [
             { title: { contains: query, mode: "insensitive" } },
             { content: { contains: query, mode: "insensitive" } },

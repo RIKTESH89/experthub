@@ -598,78 +598,15 @@ describe("Personality Replication & Long-term Memory Integration Tests", () => {
   // Memory Manager Unit Tests (memory-manager)
   // =====================================================================
   describe("saveMemories (memory-manager)", () => {
-    it("creates new memories", async () => {
-      mockPrisma.subscriberMemory.findFirst.mockResolvedValue(null);
-      mockPrisma.subscriberMemory.create.mockResolvedValue({});
-
-      const memories = [
+    it("upserts exact scoped identities without prefix merging", async () => {
+      await saveMemories("subscriber-id-1", "profile-id-1", [
         { fact: "User likes hiking on weekends", category: "preference" },
-        { fact: "User is based in San Francisco", category: "background" },
-      ];
-
-      await saveMemories("subscriber-id-1", "profile-id-1", memories);
-
-      expect(mockPrisma.subscriberMemory.findFirst).toHaveBeenCalledTimes(2);
-      expect(mockPrisma.subscriberMemory.create).toHaveBeenCalledTimes(2);
-      expect(mockPrisma.subscriberMemory.create).toHaveBeenCalledWith({
-        data: {
-          subscriberId: "subscriber-id-1",
-          expertProfileId: "profile-id-1",
-          fact: "User likes hiking on weekends",
-          category: "preference",
-        },
-      });
-      expect(mockPrisma.subscriberMemory.create).toHaveBeenCalledWith({
-        data: {
-          subscriberId: "subscriber-id-1",
-          expertProfileId: "profile-id-1",
-          fact: "User is based in San Francisco",
-          category: "background",
-        },
-      });
-    });
-
-    it("updates existing similar memories instead of creating duplicates", async () => {
-      const existingMemory = {
-        id: "existing-mem-1",
-        subscriberId: "subscriber-id-1",
-        expertProfileId: "profile-id-1",
-        fact: "User likes hiking on weekends and trails",
-        category: "preference",
-        createdAt: new Date("2024-01-01"),
-        updatedAt: new Date("2024-01-01"),
-      };
-
-      mockPrisma.subscriberMemory.findFirst.mockResolvedValue(existingMemory);
-      mockPrisma.subscriberMemory.update.mockResolvedValue({});
-
-      const memories = [
-        { fact: "User likes hiking on weekends with friends", category: "preference" },
-      ];
-
-      await saveMemories("subscriber-id-1", "profile-id-1", memories);
-
-      expect(mockPrisma.subscriberMemory.findFirst).toHaveBeenCalledWith({
-        where: {
-          subscriberId: "subscriber-id-1",
-          expertProfileId: "profile-id-1",
-          category: "preference",
-          fact: { startsWith: "User likes hiking on" },
-        },
-      });
-      expect(mockPrisma.subscriberMemory.update).toHaveBeenCalledWith({
-        where: { id: "existing-mem-1" },
-        data: { updatedAt: expect.any(Date) },
-      });
-      expect(mockPrisma.subscriberMemory.create).not.toHaveBeenCalled();
-    });
-
-    it("handles empty array", async () => {
-      await saveMemories("subscriber-id-1", "profile-id-1", []);
-
+        { fact: "User likes hiking on weekdays", category: "preference" },
+      ]);
+      expect(mockPrisma.subscriberMemory.upsert).toHaveBeenCalledTimes(2);
+      const calls = mockPrisma.subscriberMemory.upsert.mock.calls;
+      expect(calls[0][0].where.memoryKey).not.toBe(calls[1][0].where.memoryKey);
       expect(mockPrisma.subscriberMemory.findFirst).not.toHaveBeenCalled();
-      expect(mockPrisma.subscriberMemory.create).not.toHaveBeenCalled();
-      expect(mockPrisma.subscriberMemory.update).not.toHaveBeenCalled();
     });
   });
 
@@ -686,8 +623,8 @@ describe("Personality Replication & Long-term Memory Integration Tests", () => {
 
       expect(result).toEqual(memories);
       expect(mockPrisma.subscriberMemory.findMany).toHaveBeenCalledWith({
-        where: { subscriberId: "subscriber-id-1", expertProfileId: "profile-id-1" },
-        orderBy: { updatedAt: "desc" },
+        where: { subscriberId: "subscriber-id-1", expertProfileId: "profile-id-1", memoryKey: { not: null } },
+        orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
         take: 20,
         select: { fact: true, category: true },
       });
@@ -701,8 +638,8 @@ describe("Personality Replication & Long-term Memory Integration Tests", () => {
       await getMemoriesLib("subscriber-id-1", "profile-id-1", 5);
 
       expect(mockPrisma.subscriberMemory.findMany).toHaveBeenCalledWith({
-        where: { subscriberId: "subscriber-id-1", expertProfileId: "profile-id-1" },
-        orderBy: { updatedAt: "desc" },
+        where: { subscriberId: "subscriber-id-1", expertProfileId: "profile-id-1", memoryKey: { not: null } },
+        orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
         take: 5,
         select: { fact: true, category: true },
       });

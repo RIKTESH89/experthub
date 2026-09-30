@@ -1,3 +1,4 @@
+import { readablePostsWhere } from "@/lib/knowledge/post-access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -38,7 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     const posts = await prisma.post.findMany({
-      where: { id: { in: postIds } },
+      where: { id: { in: postIds }, AND: [readablePostsWhere(session.user.id)] },
       include: {
         author: {
           select: {

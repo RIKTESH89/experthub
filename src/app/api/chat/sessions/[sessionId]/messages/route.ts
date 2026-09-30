@@ -5,6 +5,7 @@ import { z } from "zod";
 import { runChatEngine } from "@/lib/ai/chat-engine";
 import { checkTrialAccess, incrementTrialUsage } from "@/lib/trial";
 import { extractMemories } from "@/lib/ai/memory-extractor";
+import { chronologicalHistory } from "@/lib/ai/history";
 import { saveMemories } from "@/lib/ai/memory-manager";
 
 const sendMessageSchema = z.object({
@@ -34,8 +35,8 @@ export async function POST(
           },
         },
         messages: {
-          orderBy: { createdAt: "asc" },
-          take: 50,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take: 20,
         },
       },
     });
@@ -174,9 +175,10 @@ export async function POST(
     }
 
     // Build chat history for context
-    const chatHistory = chatSession.messages.map((msg: { role: string; content: string }) => ({
+    const chatHistory = chronologicalHistory(chatSession.messages).map((msg: { role: string; content: string; sources?: unknown }) => ({
       role: msg.role as "user" | "assistant" | "system",
       content: msg.content,
+      sources: msg.sources,
     }));
 
     // Run chat engine with streaming (now includes subscriberId for memory)

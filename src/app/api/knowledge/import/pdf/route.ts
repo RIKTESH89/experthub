@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { parsePdfContent } from "@/lib/import/pdf-parser";
-import { indexDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem } from "@/lib/knowledge/lifecycle";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -86,19 +86,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Index chunks via indexDocument
-      const vectorIds = await indexDocument(
-        expertProfile.vectorNamespace,
-        knowledgeItem.id,
-        `${title}\n\n${content}`,
-        { sourceType: "pdf", knowledgeItemId: knowledgeItem.id, fileName, numPages }
-      );
-
-      // Update KnowledgeItem with isIndexed and vectorIds
-      await prisma.knowledgeItem.update({
-        where: { id: knowledgeItem.id },
-        data: { isIndexed: true, vectorIds },
-      });
+      await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 
       // Update ImportJob status to COMPLETED
       await prisma.importJob.update({

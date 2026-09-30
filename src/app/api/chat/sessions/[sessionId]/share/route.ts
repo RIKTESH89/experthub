@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { canPublishConversation } from "@/lib/knowledge/shared-access";
 import prisma from "@/lib/prisma";
 
 export async function GET(
@@ -56,7 +57,7 @@ export async function POST(
 
     const chatSession = await prisma.chatSession.findUnique({
       where: { id: sessionId },
-      include: { sharedConversation: true },
+      include: { sharedConversation: true, expertProfile: true, messages: true },
     });
 
     if (!chatSession) {
@@ -67,6 +68,9 @@ export async function POST(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    if (!(await canPublishConversation(chatSession))) {
+      return NextResponse.json({ error: "Conversation contains restricted or unverifiable sources" }, { status: 403 });
+    }
     let sharedConversation;
 
     if (chatSession.sharedConversation) {

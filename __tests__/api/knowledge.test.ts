@@ -1,3 +1,4 @@
+jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import {
@@ -22,7 +23,7 @@ import {
 import { GET as getKnowledgeStats } from "@/app/api/knowledge/stats/route";
 import { GET as getTwinConfig, PATCH as updateTwinConfig } from "@/app/api/expert/twin-config/route";
 import { GET as getTwinStats } from "@/app/api/expert/twin-stats/route";
-import { indexDocument, removeDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem as indexDocument, removeKnowledgeItem as removeDocument, syncPostSource } from "@/lib/knowledge/lifecycle";
 
 function itemParams(itemId: string) {
   return { params: Promise.resolve({ itemId }) };
@@ -30,6 +31,7 @@ function itemParams(itemId: string) {
 
 beforeEach(() => {
   resetAllMocks();
+  jest.clearAllMocks();
   mockAuth.mockReset();
   (indexDocument as jest.Mock).mockClear();
   (removeDocument as jest.Mock).mockClear();
@@ -101,12 +103,7 @@ describe("Knowledge API", () => {
     expect(res.status).toBe(201);
     expect(json.isIndexed).toBe(true);
     expect(json.vectorIds).toEqual(["vec-new-1"]);
-    expect(indexDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      createdItem.id,
-      expect.stringContaining("New Topic"),
-      expect.objectContaining({ sourceType: "manual", knowledgeItemId: createdItem.id })
-    );
+    expect(indexDocument).toHaveBeenCalledWith(mockExpertProfile.id, createdItem.id);
   });
 
   // 4. POST /knowledge - validates input with Zod
@@ -166,16 +163,7 @@ describe("Knowledge API", () => {
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(removeDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      mockKnowledgeItem.vectorIds
-    );
-    expect(indexDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      "knowledge-id-1",
-      expect.stringContaining("Updated content"),
-      expect.objectContaining({ knowledgeItemId: "knowledge-id-1" })
-    );
+    expect(indexDocument).toHaveBeenCalledWith(mockExpertProfile.id, "knowledge-id-1");
   });
 
   // 8. DELETE /knowledge/:id - removes from vector store and deletes
@@ -190,13 +178,8 @@ describe("Knowledge API", () => {
 
     expect(res.status).toBe(200);
     expect(json.message).toMatch(/deleted/i);
-    expect(removeDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      mockKnowledgeItem.vectorIds
-    );
-    expect(mockPrisma.knowledgeItem.delete).toHaveBeenCalledWith({
-      where: { id: "knowledge-id-1" },
-    });
+    expect(removeDocument).toHaveBeenCalledWith(mockExpertProfile.id, "knowledge-id-1");
+    expect(removeDocument).toHaveBeenCalledWith(mockExpertProfile.id, "knowledge-id-1");
   });
 });
 

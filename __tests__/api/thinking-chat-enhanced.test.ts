@@ -507,8 +507,8 @@ describe("Enhanced Message Route - Chat Engine Integration", () => {
   it("passes chat history from existing messages", async () => {
     setupAuthenticatedSession({
       messages: [
-        { role: "user", content: "Hi there", createdAt: new Date() },
         { role: "assistant", content: "Hello!", createdAt: new Date() },
+        { role: "user", content: "Hi there", createdAt: new Date() },
       ],
     });
     setupDefaultChatEngine("follow-up response", [], []);
@@ -524,8 +524,8 @@ describe("Enhanced Message Route - Chat Engine Integration", () => {
     expect(mockRunChatEngine).toHaveBeenCalledWith(
       expect.objectContaining({
         chatHistory: [
-          { role: "user", content: "Hi there" },
-          { role: "assistant", content: "Hello!" },
+          { role: "user", content: "Hi there", sources: undefined },
+          { role: "assistant", content: "Hello!", sources: undefined },
         ],
       })
     );

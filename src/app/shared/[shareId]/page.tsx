@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { canPublishConversation } from "@/lib/knowledge/shared-access";
 import prisma from "@/lib/prisma";
 import { SharedConversationView } from "@/components/shared/shared-conversation-view";
 
@@ -8,7 +9,7 @@ interface PageProps {
 }
 
 async function getSharedConversation(shareId: string) {
-  return prisma.sharedConversation.findUnique({
+  const shared = await prisma.sharedConversation.findUnique({
     where: { shareId, isActive: true },
     include: {
       chatSession: {
@@ -23,6 +24,7 @@ async function getSharedConversation(shareId: string) {
       },
     },
   });
+  return shared && await canPublishConversation(shared.chatSession) ? shared : null;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

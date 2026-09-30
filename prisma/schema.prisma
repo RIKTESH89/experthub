@@ -248,6 +248,9 @@ model KnowledgeItem {
   sourceType      String
   sourceId        String?
   isIndexed       Boolean  @default(false)
+  sourceVersion   Int      @default(1)
+  indexedVersion  Int?
+  indexingError   String?
   vectorIds       String[]
   metadata        Json?
   createdAt       DateTime @default(now())
@@ -256,6 +259,7 @@ model KnowledgeItem {
   expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
 
   @@index([expertProfileId])
+  @@unique([expertProfileId, sourceType, sourceId])
 }
 
 model ExpertSubscription {
@@ -456,6 +460,7 @@ model WidgetMessage {
   id              String   @id @default(cuid())
   widgetSessionId String
   role            String
+  sources         Json?
   content         String
   createdAt       DateTime @default(now())
 
@@ -533,6 +538,7 @@ model SubscriberMemory {
   expertProfileId String
   fact            String
   category        String
+  memoryKey       String?  @unique
   confidence      Float    @default(1.0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

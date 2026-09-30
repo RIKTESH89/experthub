@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { canPublishConversation } from "@/lib/knowledge/shared-access";
 import prisma from "@/lib/prisma";
 
 const corsHeaders = {
@@ -34,14 +35,17 @@ export async function GET(
       },
     });
 
-    if (!shared) {
+    if (!shared || !(await canPublishConversation(shared.chatSession))) {
       return NextResponse.json(
         { error: "Shared conversation not found" },
         { status: 404, headers: corsHeaders }
       );
     }
 
-    return NextResponse.json(shared, { headers: corsHeaders });
+    const expert = shared.chatSession.expertProfile;
+    return NextResponse.json({ ...shared, chatSession: { ...shared.chatSession,
+      expertProfile: { id: expert.id, userId: expert.userId, displayName: expert.displayName, user: expert.user },
+    } }, { headers: corsHeaders });
   } catch (error) {
     console.error("Get shared conversation error:", error);
     return NextResponse.json(

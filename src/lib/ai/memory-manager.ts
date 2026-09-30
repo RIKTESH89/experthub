@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import prisma from "@/lib/prisma";
 
 interface MemoryItem {
@@ -11,32 +12,15 @@ export async function saveMemories(
   memories: MemoryItem[]
 ): Promise<void> {
   for (const memory of memories) {
-    const prefix = memory.fact.substring(0, 20);
-
-    const existing = await prisma.subscriberMemory.findFirst({
-      where: {
-        subscriberId,
-        expertProfileId,
-        category: memory.category,
-        fact: { startsWith: prefix },
-      },
+    const fact = memory.fact.trim().replace(/\s+/g, " ");
+    const category = memory.category.trim();
+    if (!fact || !category) continue;
+    const memoryKey = createHash("sha256").update(JSON.stringify([subscriberId, expertProfileId, category, fact.toLowerCase()])).digest("hex");
+    await prisma.subscriberMemory.upsert({
+      where: { memoryKey },
+      create: { subscriberId, expertProfileId, fact, category, memoryKey },
+      update: {}, // Duplicate extraction/retry does not manufacture recency.
     });
-
-    if (existing) {
-      await prisma.subscriberMemory.update({
-        where: { id: existing.id },
-        data: { updatedAt: new Date() },
-      });
-    } else {
-      await prisma.subscriberMemory.create({
-        data: {
-          subscriberId,
-          expertProfileId,
-          fact: memory.fact,
-          category: memory.category,
-        },
-      });
-    }
   }
 }
 
@@ -46,8 +30,8 @@ export async function getMemories(
   limit: number = 20
 ): Promise<MemoryItem[]> {
   const memories = await prisma.subscriberMemory.findMany({
-    where: { subscriberId, expertProfileId },
-    orderBy: { updatedAt: "desc" },
+    where: { subscriberId, expertProfileId, memoryKey: { not: null } },
+    orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
     take: limit,
     select: { fact: true, category: true },
   });

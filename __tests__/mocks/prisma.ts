@@ -84,6 +84,9 @@ const mockPrismaClient = {
     groupBy: jest.fn(),
   },
   knowledgeItem: {
+    upsert: jest.fn(),
+    updateMany: jest.fn(),
+    deleteMany: jest.fn(),
     findUnique: jest.fn(),
     findFirst: jest.fn(),
     findMany: jest.fn(),
@@ -160,6 +163,7 @@ const mockPrismaClient = {
     upsert: jest.fn(),
   },
   widgetMessage: {
+    createMany: jest.fn(),
     findMany: jest.fn(),
     create: jest.fn(),
   },

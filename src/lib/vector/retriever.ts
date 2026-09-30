@@ -1,4 +1,5 @@
 import { vectorStore } from "./client";
+import type { RetrievalScope } from "@/lib/knowledge/access";
 import { generateEmbedding } from "./embeddings";
 
 export interface RetrievalResult {
@@ -9,53 +10,39 @@ export interface RetrievalResult {
 
 /**
  * Three-stage retrieval pipeline:
- * 1. Hybrid search (vector + BM25 keyword) — broad retrieval
+ * 1. Hybrid search (vector + PostgreSQL full-text/substring keyword) — broad retrieval
  * 2. LLM re-ranking — accurate relevance scoring
  * 3. Top-K selection — best results to generation
  */
 export async function retrieveContext(
   namespace: string,
   query: string,
-  topK: number = 5
+  topK: number = 5,
+  scope?: RetrievalScope,
+  diagnostics?: (value: { vectorAvailable: boolean; vectorCandidates: number; keywordCandidates: number; eligibleCandidates: number; retrievalMs: number }) => void
 ): Promise<RetrievalResult[]> {
-  // Stage 1: Hybrid search — vector + keyword, retrieve broadly
-  const queryEmbedding = await generateEmbedding(query);
-
+  const started = Date.now();
+  if (!scope || scope.namespace !== namespace) throw new Error("Retrieval requires an authorized scope");
+  const allowed = new Set(scope.allowedVectorIds);
+  let vectorAvailable = true;
+  const vectorPromise = generateEmbedding(query)
+    .then((embedding) => vectorStore.query(namespace, embedding, 15, scope))
+    .catch(() => { vectorAvailable = false; return []; });
   const [vectorResults, keywordResults] = await Promise.all([
-    vectorStore.query(namespace, queryEmbedding, 15),
-    vectorStore.keywordSearch(namespace, query, 15),
+    vectorPromise, vectorStore.keywordSearch(namespace, query, 15, scope),
   ]);
-
-  // Merge and deduplicate by chunk ID
-  const seen = new Set<string>();
+  // Interleave channels before the reranking budget. IDs break ties deterministically.
   const candidates: RetrievalResult[] = [];
-
-  // Add vector results first (generally higher quality)
-  for (const r of vectorResults) {
-    if (!seen.has(r.id)) {
-      seen.add(r.id);
-      candidates.push({
-        content: r.content,
-        score: r.score,
-        metadata: { ...r.metadata, source: "vector" },
-      });
+  const seen = new Set<string>();
+  for (let i = 0; i < Math.max(vectorResults.length, keywordResults.length); i++) {
+    for (const [channel, result] of [["vector", vectorResults[i]], ["keyword", keywordResults[i]]] as const) {
+      if (!result || seen.has(result.id) || !allowed.has(result.id) || result.metadata.expertProfileId !== scope.expertProfileId) continue;
+      seen.add(result.id);
+      candidates.push({ content: result.content, score: result.score, metadata: { ...result.metadata, vectorId: result.id, source: channel } });
     }
   }
-
-  // Add keyword results that weren't in vector results
-  for (const r of keywordResults) {
-    if (!seen.has(r.id)) {
-      seen.add(r.id);
-      candidates.push({
-        content: r.content,
-        score: r.score * 0.8,
-        metadata: { ...r.metadata, source: "keyword" },
-      });
-    }
-  }
-
-  // Filter out very low quality results
   const filtered = candidates.filter((r) => r.score > 0.05);
+  diagnostics?.({ vectorAvailable, vectorCandidates: vectorResults.length, keywordCandidates: keywordResults.length, eligibleCandidates: filtered.length, retrievalMs: Date.now() - started });
 
   // If few candidates, skip re-ranking
   if (filtered.length <= topK) {

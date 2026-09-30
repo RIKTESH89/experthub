@@ -2,6 +2,8 @@
 // Replaces the old in-memory implementation
 
 import prisma from "@/lib/prisma";
+import type { RetrievalScope } from "@/lib/knowledge/access";
+import { EMBEDDING_MODEL, validateEmbedding } from "./embeddings";
 
 interface VectorEntry {
   id: string;
@@ -20,30 +22,31 @@ interface QueryResult {
 class PgVectorStore {
   async upsert(namespace: string, entries: VectorEntry[]) {
     for (const entry of entries) {
-      const embeddingStr = `[${entry.values.join(",")}]`;
-
-      // Use raw SQL for the vector column since Prisma doesn't natively support it
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO "VectorChunk" ("id", "vectorId", "namespace", "content", "metadata", "embedding", "createdAt")
-         VALUES (gen_random_uuid(), $1, $2, $3, $4::jsonb, $5::vector, NOW())
-         ON CONFLICT ("vectorId") DO UPDATE SET
-           "content" = EXCLUDED."content",
-           "metadata" = EXCLUDED."metadata",
-           "embedding" = EXCLUDED."embedding"`,
-        entry.id,
-        namespace,
-        entry.content,
-        JSON.stringify(entry.metadata),
-        embeddingStr
-      );
+      validateEmbedding(entry.values);
+      if (entry.metadata.embeddingModel !== EMBEDDING_MODEL) throw new Error("Embedding model mismatch");
     }
+    await prisma.$transaction(async (tx) => {
+      for (const entry of entries) {
+        const embeddingStr = `[${entry.values.join(",")}]`;
+        await tx.$executeRawUnsafe(
+          `INSERT INTO "VectorChunk" ("id", "vectorId", "namespace", "content", "metadata", "embedding", "createdAt")
+           VALUES (gen_random_uuid(), $1, $2, $3, $4::jsonb, $5::vector, NOW())
+           ON CONFLICT ("vectorId") DO UPDATE SET
+             "content" = EXCLUDED."content", "metadata" = EXCLUDED."metadata", "embedding" = EXCLUDED."embedding"
+           WHERE "VectorChunk"."namespace" = EXCLUDED."namespace"`,
+          entry.id, namespace, entry.content, JSON.stringify(entry.metadata), embeddingStr);
+      }
+    });
   }
 
   async query(
     namespace: string,
     queryVector: number[],
-    topK: number = 5
+    topK: number = 5,
+    scope?: RetrievalScope
   ): Promise<QueryResult[]> {
+    if (!scope || scope.namespace !== namespace || !scope.allowedVectorIds.length) return [];
+    validateEmbedding(queryVector);
     const embeddingStr = `[${queryVector.join(",")}]`;
 
     // Use cosine distance operator (<=>). Score = 1 - distance (higher is better).
@@ -54,11 +57,17 @@ class PgVectorStore {
               1 - ("embedding" <=> $1::vector) AS score
        FROM "VectorChunk"
        WHERE "namespace" = $2 AND "embedding" IS NOT NULL
-       ORDER BY "embedding" <=> $1::vector
+         AND "vectorId" = ANY($4::text[])
+         AND "metadata"->>'expertProfileId' = $5
+         AND "metadata"->>'embeddingModel' = $6
+       ORDER BY "embedding" <=> $1::vector, "vectorId"
        LIMIT $3`,
       embeddingStr,
       namespace,
-      topK
+      topK,
+      scope.allowedVectorIds,
+      scope.expertProfileId,
+      EMBEDDING_MODEL
     );
 
     return results.map((r) => ({
@@ -72,8 +81,10 @@ class PgVectorStore {
   async keywordSearch(
     namespace: string,
     query: string,
-    topK: number = 15
+    topK: number = 15,
+    scope?: RetrievalScope
   ): Promise<QueryResult[]> {
+    if (!scope || scope.namespace !== namespace || !scope.allowedVectorIds.length) return [];
     const words = query
       .replace(/[^\w\s]/g, " ")
       .split(/\s+/)
@@ -94,12 +105,15 @@ class PgVectorStore {
                 ts_rank_cd(to_tsvector('simple', "content"), plainto_tsquery('simple', $1)) AS rank
          FROM "VectorChunk"
          WHERE "namespace" = $2
+           AND "vectorId" = ANY($4::text[]) AND "metadata"->>'expertProfileId' = $5
            AND to_tsvector('simple', "content") @@ plainto_tsquery('simple', $1)
-         ORDER BY rank DESC
+         ORDER BY rank DESC, "vectorId"
          LIMIT $3`,
         plainQuery,
         namespace,
-        topK
+        topK,
+        scope.allowedVectorIds,
+        scope.expertProfileId
       );
 
       for (const r of tsResults) {
@@ -127,10 +141,14 @@ class PgVectorStore {
           `SELECT "vectorId", "content", "metadata"
            FROM "VectorChunk"
            WHERE "namespace" = $1 AND "content" ILIKE $2
+             AND "vectorId" = ANY($4::text[]) AND "metadata"->>'expertProfileId' = $5
+           ORDER BY "vectorId"
            LIMIT $3`,
           namespace,
           `%${word}%`,
-          5
+          5,
+          scope.allowedVectorIds,
+          scope.expertProfileId
         );
 
         for (const r of likeResults) {

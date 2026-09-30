@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { scrapeBlogContent } from "@/lib/import/blog-scraper";
 
-import { indexDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem } from "@/lib/knowledge/lifecycle";
 
 const blogImportSchema = z.object({
   urls: z
@@ -90,19 +90,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // Index each chunk via indexDocument
-        const vectorIds = await indexDocument(
-          expertProfile.vectorNamespace,
-          knowledgeItem.id,
-          `${title}\n\n${content}`,
-          { sourceType: "blog", knowledgeItemId: knowledgeItem.id, sourceUrl: url }
-        );
-
-        // Update KnowledgeItem with isIndexed and vectorIds
-        await prisma.knowledgeItem.update({
-          where: { id: knowledgeItem.id },
-          data: { isIndexed: true, vectorIds },
-        });
+        await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 
         // Update ImportJob status to COMPLETED
         await prisma.importJob.update({

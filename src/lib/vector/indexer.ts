@@ -1,6 +1,5 @@
 import { vectorStore } from "./client";
-import { generateEmbedding } from "./embeddings";
-import { addToGraph } from "@/lib/graph/graph-builder";
+import { EMBEDDING_MODEL, generateEmbedding } from "./embeddings";
 
 export async function indexDocument(
   namespace: string,
@@ -8,28 +7,26 @@ export async function indexDocument(
   content: string,
   metadata: Record<string, unknown> = {}
 ): Promise<string[]> {
+  const { expertProfileId, knowledgeItemId, sourceVersion } = metadata;
+  if (typeof expertProfileId !== "string" || knowledgeItemId !== id || !Number.isInteger(sourceVersion) || Number(sourceVersion) < 1) {
+    throw new Error("Indexing requires expert, source and revision identity");
+  }
   const chunks = chunkText(content, 1000, 200);
   const vectorIds: string[] = [];
 
+  const entries = [];
   for (let i = 0; i < chunks.length; i++) {
-    const vectorId = `${id}_chunk_${i}`;
+    const vectorId = `${expertProfileId}:${id}:v${sourceVersion}:chunk_${i}`;
     const embedding = await generateEmbedding(chunks[i]);
-
-    await vectorStore.upsert(namespace, [{
-      id: vectorId,
-      values: embedding,
-      metadata: { ...metadata, chunkIndex: i },
-      content: chunks[i],
-    }]);
-
+    entries.push({ id: vectorId, values: embedding,
+      metadata: { ...metadata, embeddingModel: EMBEDDING_MODEL, chunkIndex: i }, content: chunks[i] });
     vectorIds.push(vectorId);
   }
+  // Provider failure cannot leave a partially embedded document in persistent storage.
+  await vectorStore.upsert(namespace, entries);
 
-  // Fire-and-forget: add to knowledge graph
-  if (metadata.expertProfileId) {
-    addToGraph(metadata.expertProfileId as string, content).catch(() => {});
-  }
-
+  // Legacy graph projections are not audience-safe. Their manual rebuild remains
+  // available to owners, but they cannot contribute to chat until provenance exists.
   return vectorIds;
 }
 

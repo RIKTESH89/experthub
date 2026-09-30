@@ -1,43 +1,26 @@
-// Embedding dimension must match the vector(1536) column in VectorChunk
 export const EMBEDDING_DIMENSIONS = 1536;
+export const EMBEDDING_MODEL = "text-embedding-3-small";
 
-export async function generateEmbedding(text: string): Promise<number[]> {
-  if (process.env.OPENAI_API_KEY) {
-    try {
-      const response = await fetch("https://api.openai.com/v1/embeddings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          input: text,
-          model: "text-embedding-3-small",
-        }),
-      });
-      const data = await response.json();
-      return data.data[0].embedding;
-    } catch (error) {
-      console.error("OpenAI embedding failed, using fallback:", error);
-    }
+export function validateEmbedding(values: unknown): asserts values is number[] {
+  if (!Array.isArray(values) || values.length !== EMBEDDING_DIMENSIONS ||
+      values.some((value) => typeof value !== "number" || !Number.isFinite(value)) ||
+      !values.some((value) => value !== 0)) {
+    throw new Error("Embedding dimension/value mismatch");
   }
-
-  // Simple fallback for development (produces 1536-dim vector to match pgvector column)
-  return simpleEmbedding(text);
 }
 
-function simpleEmbedding(text: string): number[] {
-  const embedding = new Array(EMBEDDING_DIMENSIONS).fill(0);
-  const words = text.toLowerCase().split(/\s+/);
-
-  for (const word of words) {
-    for (let i = 0; i < word.length; i++) {
-      const idx = (word.charCodeAt(i) * (i + 1)) % EMBEDDING_DIMENSIONS;
-      embedding[idx] += 1;
-    }
-  }
-
-  // Normalize
-  const magnitude = Math.sqrt(embedding.reduce((sum: number, val: number) => sum + val * val, 0));
-  return embedding.map((val: number) => magnitude > 0 ? val / magnitude : 0);
+export async function generateEmbedding(text: string): Promise<number[]> {
+  if (!process.env.OPENAI_API_KEY) throw new Error("Embedding provider is not configured");
+  const response = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+    body: JSON.stringify({ input: text, model: EMBEDDING_MODEL, dimensions: EMBEDDING_DIMENSIONS }),
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!response.ok) throw new Error(`Embedding provider failed: ${response.status}`);
+  const data = await response.json();
+  if (data.model !== EMBEDDING_MODEL) throw new Error("Embedding model mismatch");
+  const values: unknown = data.data?.[0]?.embedding;
+  validateEmbedding(values);
+  return values;
 }

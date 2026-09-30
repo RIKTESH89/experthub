@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { removeDocument } from "@/lib/vector/indexer";
+import { syncPostSource, removePostSource } from "@/lib/knowledge/lifecycle";
 import { createPostSchema } from "@/lib/validations/post";
+import { canReadPost } from "@/lib/knowledge/post-access";
 import crypto from "crypto";
 import { S3Client, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
@@ -62,6 +63,9 @@ export async function GET(
 
     // Check if current user liked/bookmarked
     const session = await auth();
+    if (!await canReadPost(post, session?.user?.id)) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
     let isLiked = false;
     let isBookmarked = false;
 
@@ -209,6 +213,8 @@ export async function PATCH(
       },
     });
 
+    await syncPostSource(postId);
+
     return NextResponse.json({
       ...post,
       tags: post.tags.map((pt) => pt.tag.name),
@@ -252,29 +258,7 @@ export async function DELETE(
       );
     }
 
-    // Remove from vector store if indexed
-    if (post.isRagEnabled) {
-      const knowledgeItem = await prisma.knowledgeItem.findFirst({
-        where: { sourceId: postId, sourceType: "post" },
-      });
-
-      if (knowledgeItem && knowledgeItem.vectorIds.length > 0) {
-        const expertProfile = await prisma.expertProfile.findUnique({
-          where: { userId: post.authorId },
-        });
-
-        if (expertProfile) {
-          await removeDocument(
-            expertProfile.vectorNamespace,
-            knowledgeItem.vectorIds
-          );
-        }
-
-        await prisma.knowledgeItem.delete({
-          where: { id: knowledgeItem.id },
-        });
-      }
-    }
+    await removePostSource(postId, post.authorId);
 
     // Delete media files from S3 (fire-and-forget)
     const mediaItems = await prisma.postMedia.findMany({

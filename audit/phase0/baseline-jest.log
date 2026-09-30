@@ -1,0 +1,613 @@
+FAIL __tests__/api/e2e-workflows.test.ts
+  ● Console
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to expert@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to subscriber@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+  ● E2E: Expert Onboarding Flow › Step 4 - Set up pricing tiers (creates defaults)
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"expertProfileId": "profile-id-1", "id": "tier-1", "price": 0, "tier": "FREE"}, {"expertProfileId": "profile-id-1", "id": "tier-3", "price": 29.99, "tier": "PREMIUM"}]
+
+      259 |
+      260 |     expect(res.status).toBe(200);
+    > 261 |     expect(json.tiers).toHaveLength(3);
+          |                        ^
+      262 |     // Should have created 3 default tiers
+      263 |     expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
+      264 |   });
+
+      at __tests__/api/e2e-workflows.test.ts:261:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+  ● E2E: Subscriber Journey Flow › Step 6 - View pricing tiers
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"id": "t-1", "isActive": true, "price": 0, "tier": "FREE"}, {"id": "t-3", "isActive": true, "price": 29.99, "tier": "PREMIUM"}]
+
+      510 |
+      511 |     expect(res.status).toBe(200);
+    > 512 |     expect(json.tiers).toHaveLength(3);
+          |                        ^
+      513 |   });
+      514 |
+      515 |   it("Step 7 - Subscribe with STANDARD tier", async () => {
+
+      at __tests__/api/e2e-workflows.test.ts:512:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+  ● E2E: Subscriber Journey Flow › Step 7 - Subscribe with STANDARD tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 402
+
+      537 |     const json = await res.json();
+      538 |
+    > 539 |     expect(res.status).toBe(200);
+          |                        ^
+      540 |     expect(json.isSubscribed).toBe(true);
+      541 |     expect(json.totalSubscribers).toBe(11);
+      542 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+
+      at __tests__/api/e2e-workflows.test.ts:539:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+PASS __tests__/api/error-handling.test.ts
+  ● Console
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to obrien@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+PASS __tests__/api/pages-and-existing-routes.test.ts
+  ● Console
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to new@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+PASS __tests__/api/graph-accuracy.test.ts
+PASS __tests__/api/personality-memory.test.ts
+FAIL __tests__/api/posts.test.ts
+  ● Console
+
+    console.error
+      Trending posts error: TypeError: Cannot read properties of undefined (reading 'nextUrl')
+          at /Users/rikteshs20/Documents/Codex/2026-09-30/task-3/experthub/src/app/api/posts/trending/route.ts:8:61
+          at Generator.next (<anonymous>)
+          at fulfilled (/Users/rikteshs20/Documents/Codex/2026-09-30/task-3/experthub/src/app/api/posts/trending/route.ts:5:58)
+
+      74 |     return NextResponse.json(scoredPosts);
+      75 |   } catch (error) {
+    > 76 |     console.error("Trending posts error:", error);
+         |             ^
+      77 |     return NextResponse.json(
+      78 |       { error: "Internal server error" },
+      79 |       { status: 500 }
+
+      at src/app/api/posts/trending/route.ts:76:13
+      at fulfilled (src/app/api/posts/trending/route.ts:5:58)
+
+  ● Trending › GET /posts/trending - returns trending posts sorted by engagement
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      679 |     const json = await res.json();
+      680 |
+    > 681 |     expect(res.status).toBe(200);
+          |                        ^
+      682 |     expect(json).toHaveLength(2);
+      683 |
+      684 |     // First post should have higher engagement score
+
+      at __tests__/api/posts.test.ts:681:24
+      at fulfilled (__tests__/api/posts.test.ts:38:58)
+
+FAIL __tests__/api/thinking-chat-enhanced.test.ts
+  ● Enhanced Message Route - Chat Engine Integration › streams sources in the done event
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 4
+
+      Array [
+        Object {
+    -     "content": "doc about AI",
+    -     "metadata": Object {
+    +     "score": 0.95,
+    +     "snippet": "doc about AI",
+          "title": "AI Intro",
+    -     },
+    -     "score": 0.95,
+        },
+        Object {
+    -     "content": "ML basics",
+    -     "metadata": Object {
+    -       "title": "ML Guide",
+    -     },
+          "score": 0.88,
+    +     "snippet": "ML basics",
+    +     "title": "ML Guide",
+        },
+      ]
+
+      604 |     const doneEvent = events.find((e) => e.done === true);
+      605 |     expect(doneEvent).toBeDefined();
+    > 606 |     expect(doneEvent!.sources).toEqual(mockSources);
+          |                                ^
+      607 |   });
+      608 |
+      609 |   it("updates session timestamp after stream completes", async () => {
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:606:32
+      at fulfilled (__tests__/api/thinking-chat-enhanced.test.ts:38:58)
+
+PASS __tests__/api/new-endpoints.test.ts
+FAIL __tests__/api/experts.test.ts
+  ● POST /api/experts/:id/subscribe › 10. subscriber successfully subscribes (new subscription)
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+    -   "data": ObjectContaining {
+    +   "data": Object {
+          "expertProfileId": "profile-id-1",
+    -     "price": 9.99,
+    +     "price": 0,
+          "status": "ACTIVE",
+          "subscriberId": "subscriber-id-1",
+    +     "tier": "FREE",
+        },
+      },
+
+    Number of calls: 1
+
+      320 |
+      321 |     // Verify subscription was created with correct data
+    > 322 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith({
+          |                                                  ^
+      323 |       data: expect.objectContaining({
+      324 |         subscriberId: "subscriber-id-1",
+      325 |         expertProfileId: "profile-id-1",
+
+      at __tests__/api/experts.test.ts:322:50
+      at fulfilled (__tests__/api/experts.test.ts:5:58)
+
+FAIL __tests__/api/feature-edge-cases.test.ts
+  ● Cross-Feature Interactions › pricing endpoint accessible by subscriber viewing expert
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"features": ["Posts"], "price": 0, "tier": "FREE"}, {"features": ["All"], "price": 29.99, "tier": "PREMIUM"}]
+
+      464 |
+      465 |     expect(res.status).toBe(200);
+    > 466 |     expect(data.tiers).toHaveLength(3);
+          |                        ^
+      467 |   });
+      468 |
+      469 |   it("admin cannot access expert pricing management", async () => {
+
+      at __tests__/api/feature-edge-cases.test.ts:466:24
+      at fulfilled (__tests__/api/feature-edge-cases.test.ts:42:58)
+
+PASS __tests__/api/expert-routes.test.ts
+PASS __tests__/api/auth.test.ts
+  ● Console
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to newsub@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+    console.log
+      [Email] No RESEND_API_KEY — would have sent: Welcome to ExpertHub! to newexpert@test.com
+
+      at src/lib/email/resend.ts:24:13
+
+PASS __tests__/api/admin.test.ts
+PASS __tests__/api/knowledge.test.ts
+PASS __tests__/api/admin-content.test.ts
+PASS __tests__/api/chat.test.ts
+PASS __tests__/api/remaining-flows.test.ts
+FAIL __tests__/api/tiered-pricing.test.ts
+  ● Expert Pricing Management (GET) › returns existing tiers
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"description": "Free", "expertProfileId": "profile-id-1", "features": ["Public posts"], "id": "t1", "isActive": true, "monthlyQuestions": null, "price": 0, "tier": "FREE"}, {"description": "Premium", "expertProfileId": "profile-id-1", "features": ["Unlimited"], "id": "t3", "isActive": true, "monthlyQuestions": null, "price": 29.99, "tier": "PREMIUM"}]
+
+      42 |
+      43 |     expect(res.status).toBe(200);
+    > 44 |     expect(data.tiers).toHaveLength(3);
+         |                        ^
+      45 |     expect(data.tiers[0].tier).toBe("FREE");
+      46 |   });
+      47 |
+
+      at __tests__/api/tiered-pricing.test.ts:44:24
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Expert Pricing Management (GET) › creates default tiers when none exist
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 3
+    Received number of calls: 2
+
+      57 |     const data = await res.json();
+      58 |
+    > 59 |     expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
+         |                                                 ^
+      60 |     expect(data.tiers).toHaveLength(3);
+      61 |   });
+      62 |
+
+      at __tests__/api/tiered-pricing.test.ts:59:49
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Public Pricing Endpoint › returns expert tiers for any authenticated user
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"description": "Free", "expertProfileId": "profile-id-1", "features": ["Public posts"], "id": "t1", "isActive": true, "monthlyQuestions": null, "price": 0, "tier": "FREE"}, {"description": "Premium", "expertProfileId": "profile-id-1", "features": ["Unlimited"], "id": "t3", "isActive": true, "monthlyQuestions": null, "price": 29.99, "tier": "PREMIUM"}]
+
+      129 |
+      130 |     expect(res.status).toBe(200);
+    > 131 |     expect(data.tiers).toHaveLength(3);
+          |                        ^
+      132 |   });
+      133 | });
+      134 |
+
+      at __tests__/api/tiered-pricing.test.ts:131:24
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Subscribe with Tier › creates subscription with specified tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+      157 |     const data = await res.json();
+      158 |
+    > 159 |     expect(data.isSubscribed).toBe(true);
+          |                               ^
+      160 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+      161 |       expect.objectContaining({
+      162 |         data: expect.objectContaining({ tier: "STANDARD" }),
+
+      at __tests__/api/tiered-pricing.test.ts:159:31
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Subscribe with Tier › defaults to PREMIUM when no tier specified
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"data": ObjectContaining {"tier": "PREMIUM"}}
+    Received: {"data": {"expertProfileId": "profile-id-1", "price": 0, "status": "ACTIVE", "subscriberId": "subscriber-id-1", "tier": "FREE"}}
+
+    Number of calls: 1
+
+      184 |
+      185 |     expect(data.isSubscribed).toBe(true);
+    > 186 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+          |                                                  ^
+      187 |       expect.objectContaining({
+      188 |         data: expect.objectContaining({ tier: "PREMIUM" }),
+      189 |       })
+
+      at __tests__/api/tiered-pricing.test.ts:186:50
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+PASS __tests__/api/knowledge-import.test.ts
+PASS __tests__/api/conversation-sharing.test.ts
+PASS __tests__/api/search-notifications.test.ts
+PASS __tests__/api/trial-access.test.ts
+PASS __tests__/api/analytics.test.ts
+PASS __tests__/api/widget.test.ts
+PASS __tests__/api/trial-and-utils.test.ts
+
+Summary of all failing tests
+FAIL __tests__/api/e2e-workflows.test.ts
+  ● E2E: Expert Onboarding Flow › Step 4 - Set up pricing tiers (creates defaults)
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"expertProfileId": "profile-id-1", "id": "tier-1", "price": 0, "tier": "FREE"}, {"expertProfileId": "profile-id-1", "id": "tier-3", "price": 29.99, "tier": "PREMIUM"}]
+
+      259 |
+      260 |     expect(res.status).toBe(200);
+    > 261 |     expect(json.tiers).toHaveLength(3);
+          |                        ^
+      262 |     // Should have created 3 default tiers
+      263 |     expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
+      264 |   });
+
+      at __tests__/api/e2e-workflows.test.ts:261:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+  ● E2E: Subscriber Journey Flow › Step 6 - View pricing tiers
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"id": "t-1", "isActive": true, "price": 0, "tier": "FREE"}, {"id": "t-3", "isActive": true, "price": 29.99, "tier": "PREMIUM"}]
+
+      510 |
+      511 |     expect(res.status).toBe(200);
+    > 512 |     expect(json.tiers).toHaveLength(3);
+          |                        ^
+      513 |   });
+      514 |
+      515 |   it("Step 7 - Subscribe with STANDARD tier", async () => {
+
+      at __tests__/api/e2e-workflows.test.ts:512:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+  ● E2E: Subscriber Journey Flow › Step 7 - Subscribe with STANDARD tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 402
+
+      537 |     const json = await res.json();
+      538 |
+    > 539 |     expect(res.status).toBe(200);
+          |                        ^
+      540 |     expect(json.isSubscribed).toBe(true);
+      541 |     expect(json.totalSubscribers).toBe(11);
+      542 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+
+      at __tests__/api/e2e-workflows.test.ts:539:24
+      at fulfilled (__tests__/api/e2e-workflows.test.ts:38:58)
+
+FAIL __tests__/api/posts.test.ts
+  ● Trending › GET /posts/trending - returns trending posts sorted by engagement
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      679 |     const json = await res.json();
+      680 |
+    > 681 |     expect(res.status).toBe(200);
+          |                        ^
+      682 |     expect(json).toHaveLength(2);
+      683 |
+      684 |     // First post should have higher engagement score
+
+      at __tests__/api/posts.test.ts:681:24
+      at fulfilled (__tests__/api/posts.test.ts:38:58)
+
+FAIL __tests__/api/thinking-chat-enhanced.test.ts
+  ● Enhanced Message Route - Chat Engine Integration › streams sources in the done event
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 4
+
+      Array [
+        Object {
+    -     "content": "doc about AI",
+    -     "metadata": Object {
+    +     "score": 0.95,
+    +     "snippet": "doc about AI",
+          "title": "AI Intro",
+    -     },
+    -     "score": 0.95,
+        },
+        Object {
+    -     "content": "ML basics",
+    -     "metadata": Object {
+    -       "title": "ML Guide",
+    -     },
+          "score": 0.88,
+    +     "snippet": "ML basics",
+    +     "title": "ML Guide",
+        },
+      ]
+
+      604 |     const doneEvent = events.find((e) => e.done === true);
+      605 |     expect(doneEvent).toBeDefined();
+    > 606 |     expect(doneEvent!.sources).toEqual(mockSources);
+          |                                ^
+      607 |   });
+      608 |
+      609 |   it("updates session timestamp after stream completes", async () => {
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:606:32
+      at fulfilled (__tests__/api/thinking-chat-enhanced.test.ts:38:58)
+
+FAIL __tests__/api/experts.test.ts
+  ● POST /api/experts/:id/subscribe › 10. subscriber successfully subscribes (new subscription)
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+    -   "data": ObjectContaining {
+    +   "data": Object {
+          "expertProfileId": "profile-id-1",
+    -     "price": 9.99,
+    +     "price": 0,
+          "status": "ACTIVE",
+          "subscriberId": "subscriber-id-1",
+    +     "tier": "FREE",
+        },
+      },
+
+    Number of calls: 1
+
+      320 |
+      321 |     // Verify subscription was created with correct data
+    > 322 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith({
+          |                                                  ^
+      323 |       data: expect.objectContaining({
+      324 |         subscriberId: "subscriber-id-1",
+      325 |         expertProfileId: "profile-id-1",
+
+      at __tests__/api/experts.test.ts:322:50
+      at fulfilled (__tests__/api/experts.test.ts:5:58)
+
+FAIL __tests__/api/feature-edge-cases.test.ts
+  ● Cross-Feature Interactions › pricing endpoint accessible by subscriber viewing expert
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"features": ["Posts"], "price": 0, "tier": "FREE"}, {"features": ["All"], "price": 29.99, "tier": "PREMIUM"}]
+
+      464 |
+      465 |     expect(res.status).toBe(200);
+    > 466 |     expect(data.tiers).toHaveLength(3);
+          |                        ^
+      467 |   });
+      468 |
+      469 |   it("admin cannot access expert pricing management", async () => {
+
+      at __tests__/api/feature-edge-cases.test.ts:466:24
+      at fulfilled (__tests__/api/feature-edge-cases.test.ts:42:58)
+
+FAIL __tests__/api/tiered-pricing.test.ts
+  ● Expert Pricing Management (GET) › returns existing tiers
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"description": "Free", "expertProfileId": "profile-id-1", "features": ["Public posts"], "id": "t1", "isActive": true, "monthlyQuestions": null, "price": 0, "tier": "FREE"}, {"description": "Premium", "expertProfileId": "profile-id-1", "features": ["Unlimited"], "id": "t3", "isActive": true, "monthlyQuestions": null, "price": 29.99, "tier": "PREMIUM"}]
+
+      42 |
+      43 |     expect(res.status).toBe(200);
+    > 44 |     expect(data.tiers).toHaveLength(3);
+         |                        ^
+      45 |     expect(data.tiers[0].tier).toBe("FREE");
+      46 |   });
+      47 |
+
+      at __tests__/api/tiered-pricing.test.ts:44:24
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Expert Pricing Management (GET) › creates default tiers when none exist
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 3
+    Received number of calls: 2
+
+      57 |     const data = await res.json();
+      58 |
+    > 59 |     expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
+         |                                                 ^
+      60 |     expect(data.tiers).toHaveLength(3);
+      61 |   });
+      62 |
+
+      at __tests__/api/tiered-pricing.test.ts:59:49
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Public Pricing Endpoint › returns expert tiers for any authenticated user
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 2
+    Received array:  [{"description": "Free", "expertProfileId": "profile-id-1", "features": ["Public posts"], "id": "t1", "isActive": true, "monthlyQuestions": null, "price": 0, "tier": "FREE"}, {"description": "Premium", "expertProfileId": "profile-id-1", "features": ["Unlimited"], "id": "t3", "isActive": true, "monthlyQuestions": null, "price": 29.99, "tier": "PREMIUM"}]
+
+      129 |
+      130 |     expect(res.status).toBe(200);
+    > 131 |     expect(data.tiers).toHaveLength(3);
+          |                        ^
+      132 |   });
+      133 | });
+      134 |
+
+      at __tests__/api/tiered-pricing.test.ts:131:24
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Subscribe with Tier › creates subscription with specified tier
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+      157 |     const data = await res.json();
+      158 |
+    > 159 |     expect(data.isSubscribed).toBe(true);
+          |                               ^
+      160 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+      161 |       expect.objectContaining({
+      162 |         data: expect.objectContaining({ tier: "STANDARD" }),
+
+      at __tests__/api/tiered-pricing.test.ts:159:31
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+  ● Subscribe with Tier › defaults to PREMIUM when no tier specified
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"data": ObjectContaining {"tier": "PREMIUM"}}
+    Received: {"data": {"expertProfileId": "profile-id-1", "price": 0, "status": "ACTIVE", "subscriberId": "subscriber-id-1", "tier": "FREE"}}
+
+    Number of calls: 1
+
+      184 |
+      185 |     expect(data.isSubscribed).toBe(true);
+    > 186 |     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
+          |                                                  ^
+      187 |       expect.objectContaining({
+      188 |         data: expect.objectContaining({ tier: "PREMIUM" }),
+      189 |       })
+
+      at __tests__/api/tiered-pricing.test.ts:186:50
+      at fulfilled (__tests__/api/tiered-pricing.test.ts:41:58)
+
+
+Test Suites: 6 failed, 19 passed, 25 total
+Tests:       12 failed, 608 passed, 620 total
+Snapshots:   0 total
+Time:        5.602 s
+Ran all test suites.
+Test results written to: audit/phase0/baseline-jest.json

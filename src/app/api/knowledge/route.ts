@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { createKnowledgeSchema } from "@/lib/validations/knowledge";
-import { indexDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem } from "@/lib/knowledge/lifecycle";
 
 export async function GET() {
   try {
@@ -91,18 +91,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Index in vector store
-    const vectorIds = await indexDocument(
-      expertProfile.vectorNamespace,
-      knowledgeItem.id,
-      `${title}\n\n${content}`,
-      { sourceType, knowledgeItemId: knowledgeItem.id }
-    );
-
-    const updatedItem = await prisma.knowledgeItem.update({
-      where: { id: knowledgeItem.id },
-      data: { isIndexed: true, vectorIds },
-    });
+    const updatedItem = await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 
     return NextResponse.json(updatedItem, { status: 201 });
   } catch (error) {

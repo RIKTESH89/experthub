@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { runChatEngine } from "@/lib/ai/chat-engine";
+import { chronologicalHistory } from "@/lib/ai/history";
+import { widgetIdentity } from "@/lib/ai/widget-identity";
 import { rateLimit } from "@/lib/rate-limit";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Expose-Headers": "X-Widget-Visitor-Id, X-Widget-Token",
 };
 
 export async function OPTIONS() {
@@ -16,21 +19,12 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { apiKey, visitorId, message } = body;
+    const { apiKey, visitorId: requestedVisitorId, visitorToken, message } = body;
 
-    if (!apiKey || !visitorId || !message) {
+    if (!apiKey || !requestedVisitorId || !message) {
       return NextResponse.json(
         { error: "Missing required fields: apiKey, visitorId, message" },
         { status: 400, headers: corsHeaders }
-      );
-    }
-
-    // Rate limit by visitorId
-    const { allowed } = rateLimit(visitorId, 10, 60000);
-    if (!allowed) {
-      return NextResponse.json(
-        { error: "Too many requests. Please slow down." },
-        { status: 429, headers: corsHeaders }
       );
     }
 
@@ -53,6 +47,16 @@ export async function POST(request: NextRequest) {
         { status: 404, headers: corsHeaders }
       );
     }
+
+    let identity;
+    try { identity = widgetIdentity(widgetConfig.id, requestedVisitorId, visitorToken); }
+    catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid widget identity" }, { status: process.env.AUTH_SECRET ? 403 : 503, headers: corsHeaders });
+    }
+    const { visitorId } = identity;
+    const identityHeaders = { ...corsHeaders, "X-Widget-Visitor-Id": visitorId, "X-Widget-Token": identity.token };
+    const { allowed } = rateLimit(`${widgetConfig.id}:${visitorId}`, 10, 60000);
+    if (!allowed) return NextResponse.json({ error: "Too many requests. Please slow down." }, { status: 429, headers: identityHeaders });
 
     // Upsert widget session
     const widgetSession = await prisma.widgetSession.upsert({
@@ -83,17 +87,18 @@ export async function POST(request: NextRequest) {
     // Load previous messages for context (last 20)
     const previousMessages = await prisma.widgetMessage.findMany({
       where: { widgetSessionId: widgetSession.id },
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 20,
     });
 
-    const chatHistory = previousMessages.map((msg) => ({
+    const chatHistory = chronologicalHistory(previousMessages).map((msg) => ({
       role: msg.role as "user" | "assistant" | "system",
       content: msg.content,
+      sources: msg.sources,
     }));
 
     // Run chat engine
-    const { stream } = await runChatEngine({
+    const { stream, sources } = await runChatEngine({
       expertId: widgetConfig.expertProfile.userId,
       query: message,
       chatHistory,
@@ -149,6 +154,7 @@ export async function POST(request: NextRequest) {
                 widgetSessionId: sessionId,
                 role: "assistant",
                 content: fullResponse,
+                sources: JSON.parse(JSON.stringify(sources)),
               },
             ],
           });
@@ -174,7 +180,7 @@ export async function POST(request: NextRequest) {
 
     return new NextResponse(responseStream, {
       headers: {
-        ...corsHeaders,
+        ...identityHeaders,
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",

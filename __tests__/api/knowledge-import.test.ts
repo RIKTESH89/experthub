@@ -1,3 +1,4 @@
+jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 /**
  * Feature: Blog/PDF Import — Integration Tests
  */
@@ -36,6 +37,7 @@ const mockScrapeBlogContent = scrapeBlogContent as jest.Mock;
 
 beforeEach(() => {
   resetAllMocks();
+  jest.clearAllMocks();
   mockScrapeBlogContent.mockReset();
 });
 

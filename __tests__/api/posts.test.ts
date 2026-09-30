@@ -1,3 +1,4 @@
+jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import { mockPost, mockExpertProfile, mockKnowledgeItem } from "../mocks/data";
@@ -24,7 +25,7 @@ import {
 } from "@/app/api/posts/[postId]/comments/route";
 import { POST as ragToggle } from "@/app/api/posts/[postId]/rag-toggle/route";
 import { GET as getTrending } from "@/app/api/posts/trending/route";
-import { indexDocument, removeDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem as indexDocument, removeKnowledgeItem as removeDocument, syncPostSource } from "@/lib/knowledge/lifecycle";
 
 // Helper to create params object matching Next.js app router pattern (Promise<{ postId: string }>)
 function postParams(postId: string) {
@@ -33,6 +34,7 @@ function postParams(postId: string) {
 
 beforeEach(() => {
   resetAllMocks();
+  jest.clearAllMocks();
   mockAuth.mockReset();
   (indexDocument as jest.Mock).mockClear();
   (removeDocument as jest.Mock).mockClear();
@@ -179,23 +181,7 @@ describe("Post CRUD", () => {
     const res = await createPost(req);
 
     expect(res.status).toBe(201);
-    expect(indexDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      "rag-post-id",
-      expect.stringContaining("RAG"),
-      expect.objectContaining({ sourceType: "post", postId: "rag-post-id" })
-    );
-    expect(mockPrisma.knowledgeItem.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          expertProfileId: mockExpertProfile.id,
-          sourceType: "post",
-          sourceId: "rag-post-id",
-          isIndexed: true,
-          vectorIds: ["vec-1"],
-        }),
-      })
-    );
+    expect(syncPostSource).toHaveBeenCalledWith("rag-post-id");
   });
 
   // 7. GET /posts/:id - returns post detail with deduplicated view tracking
@@ -567,13 +553,7 @@ describe("RAG Toggle", () => {
     expect(json.isRagEnabled).toBe(true);
     expect(json.message).toMatch(/added to knowledge base/i);
 
-    expect(indexDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      "post-id-1",
-      expect.stringContaining(mockPost.content),
-      expect.objectContaining({ sourceType: "post", postId: "post-id-1" })
-    );
-    expect(mockPrisma.knowledgeItem.create).toHaveBeenCalled();
+    expect(syncPostSource).toHaveBeenCalledWith("post-id-1");
   });
 
   // 21. POST /posts/:id/rag-toggle - expert disables RAG
@@ -609,13 +589,8 @@ describe("RAG Toggle", () => {
     expect(json.isRagEnabled).toBe(false);
     expect(json.message).toMatch(/removed from knowledge base/i);
 
-    expect(removeDocument).toHaveBeenCalledWith(
-      mockExpertProfile.vectorNamespace,
-      ["vec-1", "vec-2"]
-    );
-    expect(mockPrisma.knowledgeItem.delete).toHaveBeenCalledWith({
-      where: { id: knowledgeItemForPost.id },
-    });
+    expect(syncPostSource).toHaveBeenCalledWith("post-id-1");
+
   });
 
   // 22. POST /posts/:id/rag-toggle - non-author returns 403

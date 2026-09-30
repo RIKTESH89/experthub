@@ -1,3 +1,4 @@
+jest.mock("@/lib/knowledge/shared-access", () => ({ canPublishConversation: jest.fn().mockResolvedValue(true) }));
 /**
  * Feature: Conversation Sharing — Integration Tests
  */

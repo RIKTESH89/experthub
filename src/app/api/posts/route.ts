@@ -1,8 +1,9 @@
+import { readablePostsWhere } from "@/lib/knowledge/post-access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { createPostSchema } from "@/lib/validations/post";
-import { indexDocument } from "@/lib/vector/indexer";
+import { syncPostSource } from "@/lib/knowledge/lifecycle";
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,9 +18,9 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const isOwnPosts = session?.user?.id === authorId;
-    const isAdmin = session?.user?.role === "ADMIN";
+    const isAdmin = false; // Restricted sources remain owner-only.
 
-    const where: Record<string, unknown> = {};
+    const where: Record<string, unknown> = { AND: [readablePostsWhere(session?.user?.id)] };
 
     if (authorId) {
       where.authorId = authorId;
@@ -187,34 +188,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // If RAG enabled, create knowledge item and index
-    if (postData.isRagEnabled) {
-      const expertProfile = await prisma.expertProfile.findUnique({
-        where: { userId: session.user.id },
-      });
-
-      if (expertProfile) {
-        const content = `${post.title || ""}\n\n${post.content || ""}`;
-        const vectorIds = await indexDocument(
-          expertProfile.vectorNamespace,
-          post.id,
-          content,
-          { sourceType: "post", postId: post.id }
-        );
-
-        await prisma.knowledgeItem.create({
-          data: {
-            expertProfileId: expertProfile.id,
-            title: post.title || "Untitled Post",
-            content: content,
-            sourceType: "post",
-            sourceId: post.id,
-            isIndexed: true,
-            vectorIds,
-          },
-        });
-      }
-    }
+    if (postData.isRagEnabled) await syncPostSource(post.id);
 
     const formattedPost = {
       ...post,

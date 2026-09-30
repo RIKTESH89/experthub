@@ -1,0 +1,14 @@
+{
+  "kind": "mocked in-process harness only",
+  "baseline": {
+    "medianMs": 0.01595800000006875,
+    "p95Ms": 0.03312500000004093,
+    "iterations": 100
+  },
+  "phase0": {
+    "medianMs": 0.019124999999917236,
+    "p95Ms": 0.02949999999998454,
+    "iterations": 100
+  },
+  "warning": "Not provider, DB or production latency; not model faithfulness/naturalness"
+}

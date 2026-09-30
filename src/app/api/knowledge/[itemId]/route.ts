@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { indexDocument, removeDocument } from "@/lib/vector/indexer";
+import { syncKnowledgeItem, removeKnowledgeItem } from "@/lib/knowledge/lifecycle";
 import { z } from "zod";
 
 const updateKnowledgeItemSchema = z.object({
@@ -93,39 +93,19 @@ export async function PATCH(
     if (content !== undefined) updateData.content = content;
     if (metadata !== undefined) updateData.metadata = metadata;
 
-    const updatedItem = await prisma.knowledgeItem.update({
-      where: { id: itemId },
-      data: updateData,
-    });
-
-    // Re-index if content changed
-    if (content !== undefined && content !== knowledgeItem.content) {
-      // Remove old vectors
-      if (knowledgeItem.vectorIds.length > 0) {
-        await removeDocument(
-          knowledgeItem.expertProfile.vectorNamespace,
-          knowledgeItem.vectorIds
-        );
-      }
-
-      // Index new content
-      const vectorIds = await indexDocument(
-        knowledgeItem.expertProfile.vectorNamespace,
-        itemId,
-        `${updatedItem.title}\n\n${content}`,
-        {
-          sourceType: updatedItem.sourceType,
-          knowledgeItemId: itemId,
-        }
-      );
-
-      await prisma.knowledgeItem.update({
-        where: { id: itemId },
-        data: { isIndexed: true, vectorIds },
-      });
+    // Linked posts have their own authoritative lifecycle; do not fork their copied source.
+    if (knowledgeItem.sourceType === "post") {
+      return NextResponse.json({ error: "Edit the original post" }, { status: 409 });
     }
+    const changed = (title !== undefined && title !== knowledgeItem.title) ||
+      (content !== undefined && content !== knowledgeItem.content) || metadata !== undefined;
+    const updatedItem = changed ? await prisma.knowledgeItem.update({
+      where: { id: itemId },
+      data: { ...updateData, sourceVersion: { increment: 1 }, isIndexed: false, indexingError: null },
+    }) : knowledgeItem;
+    const indexedItem = await syncKnowledgeItem(knowledgeItem.expertProfileId, itemId);
 
-    return NextResponse.json(updatedItem);
+    return NextResponse.json(indexedItem || updatedItem);
   } catch (error) {
     console.error("Update knowledge item error:", error);
     return NextResponse.json(
@@ -163,15 +143,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Remove from vector store
-    if (knowledgeItem.vectorIds.length > 0) {
-      await removeDocument(
-        knowledgeItem.expertProfile.vectorNamespace,
-        knowledgeItem.vectorIds
-      );
-    }
-
-    await prisma.knowledgeItem.delete({ where: { id: itemId } });
+    await removeKnowledgeItem(knowledgeItem.expertProfileId, itemId);
 
     return NextResponse.json({ message: "Knowledge item deleted successfully" });
   } catch (error) {
