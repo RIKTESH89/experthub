@@ -293,7 +293,7 @@ FAIL __tests__/api/experts.test.ts
       at __tests__/api/experts.test.ts:322:50
       at fulfilled (__tests__/api/experts.test.ts:5:58)
 
-PASS __tests__/phase0/conversation.test.ts
+PASS __tests__/phase0/local-scheduler.test.ts
 PASS __tests__/api/error-handling.test.ts
   ● Console
 
@@ -302,6 +302,7 @@ PASS __tests__/api/error-handling.test.ts
 
       at src/lib/email/resend.ts:24:13
 
+PASS __tests__/phase0/conversation.test.ts
 PASS __tests__/api/pages-and-existing-routes.test.ts
   ● Console
 
@@ -323,36 +324,36 @@ PASS __tests__/api/auth.test.ts
 
       at src/lib/email/resend.ts:24:13
 
-PASS __tests__/api/remaining-flows.test.ts
 PASS __tests__/api/expert-routes.test.ts
-PASS __tests__/phase0/outbox.test.ts
-PASS __tests__/phase0/embeddings.test.ts
 PASS __tests__/api/search-notifications.test.ts
 PASS __tests__/api/graph-accuracy.test.ts
-PASS __tests__/phase0/groq-local.test.ts
-PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/api/remaining-flows.test.ts
 PASS __tests__/api/new-endpoints.test.ts
-PASS __tests__/phase0/post-access.test.ts
-PASS __tests__/phase0/baseline-reproductions.test.ts
 PASS __tests__/api/chat.test.ts
 PASS __tests__/api/admin.test.ts
-PASS __tests__/api/personality-memory.test.ts
-PASS __tests__/api/knowledge-import.test.ts
 PASS __tests__/api/admin-content.test.ts
+PASS __tests__/phase0/embeddings.test.ts
+PASS __tests__/api/trial-access.test.ts
+PASS __tests__/api/personality-memory.test.ts
+PASS __tests__/api/knowledge.test.ts
+PASS __tests__/api/knowledge-import.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/outbox.test.ts
+PASS __tests__/phase0/baseline-reproductions.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/api/conversation-sharing.test.ts
+PASS __tests__/phase0/access.test.ts
+PASS __tests__/api/widget.test.ts
 PASS __tests__/phase0/vector-store.test.ts
 PASS __tests__/phase0/recovery-route.test.ts
-PASS __tests__/phase0/access.test.ts
-PASS __tests__/api/knowledge.test.ts
-PASS __tests__/phase0/shared-access.test.ts
 PASS __tests__/phase0/lifecycle.test.ts
-PASS __tests__/phase0/retrieval.test.ts
-PASS __tests__/phase0/indexer.test.ts
-PASS __tests__/api/trial-access.test.ts
-PASS __tests__/api/conversation-sharing.test.ts
-PASS __tests__/phase0/memory.test.ts
-PASS __tests__/api/trial-and-utils.test.ts
-PASS __tests__/api/widget.test.ts
+PASS __tests__/phase0/groq-local.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
 PASS __tests__/api/analytics.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+PASS __tests__/phase0/memory.test.ts
+PASS __tests__/phase0/indexer.test.ts
+PASS __tests__/api/trial-and-utils.test.ts
 
 Summary of all failing tests
 FAIL __tests__/api/thinking-chat-enhanced.test.ts
@@ -620,9 +621,9 @@ FAIL __tests__/api/experts.test.ts
       at fulfilled (__tests__/api/experts.test.ts:5:58)
 
 
-Test Suites: 6 failed, 34 passed, 40 total
-Tests:       12 failed, 702 passed, 714 total
+Test Suites: 6 failed, 35 passed, 41 total
+Tests:       12 failed, 708 passed, 720 total
 Snapshots:   0 total
-Time:        4.984 s, estimated 6 s
+Time:        5.073 s, estimated 6 s
 Ran all test suites.
 Test results written to: audit/phase0/current-jest.json
