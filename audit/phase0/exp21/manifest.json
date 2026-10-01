@@ -1,0 +1,22 @@
+{
+  "protocol": "EXP21 approved 2026-10-01 06:03 UTC",
+  "original": "5a723b6bf7c7e0d8d02cab6279d786b63a73307e",
+  "candidate": "6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc",
+  "fixturesHash": "eb69248ec3b050f3d9f5d4b11472209d4f880a7e3dfe9d2d2e79142d939db6a5",
+  "runnerHash": "3060e9b2525b0f61848c21d3c69a5fd2c12837d3dd3dae76ad8e6fc59181b819",
+  "tokenCounterHash": "f6e36038ebc6e2852850910ddac0b78d3e7e10b949589a55c473b214c7bb3169",
+  "historyHash": "c35fae371964a86bfd7c687811dd52ad5321625f216126045bfe3344c4c49f99",
+  "tracesHash": "903536d3cefd6d8fcd869acea47d7727e5ce9560a355cee3a4098df5c81d3901",
+  "attemptCap": 24,
+  "answerCap": 12,
+  "rerankCap": 12,
+  "inputCap": 73728,
+  "outputCap": 4272,
+  "totalCap": 78000,
+  "pacingAfterCompletionMs": 65000,
+  "timeoutMs": 15000,
+  "hostFraming": "512 answer / 256 rerank estimated tokens; not a proven hosted bound",
+  "freePlan": "accepted existing user confirmation; no live account/quota proof",
+  "adapters": "synthetic vectors and declared channels; mocked audience scope, profile, empty graph/memories; route history query reproduced; actual pinned retriever/prompts/chat engine executed unchanged",
+  "preflightCalls": 14
+}
