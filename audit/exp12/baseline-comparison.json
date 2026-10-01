@@ -1,0 +1,21 @@
+{
+  "priorPassed": 710,
+  "priorFailed": 12,
+  "currentPassed": 721,
+  "currentFailed": 12,
+  "identicalFailureNames": true,
+  "failedNames": [
+    "Cross-Feature Interactions pricing endpoint accessible by subscriber viewing expert",
+    "E2E: Expert Onboarding Flow Step 4 - Set up pricing tiers (creates defaults)",
+    "E2E: Subscriber Journey Flow Step 6 - View pricing tiers",
+    "E2E: Subscriber Journey Flow Step 7 - Subscribe with STANDARD tier",
+    "Enhanced Message Route - Chat Engine Integration streams sources in the done event",
+    "Expert Pricing Management (GET) creates default tiers when none exist",
+    "Expert Pricing Management (GET) returns existing tiers",
+    "POST /api/experts/:id/subscribe 10. subscriber successfully subscribes (new subscription)",
+    "Public Pricing Endpoint returns expert tiers for any authenticated user",
+    "Subscribe with Tier creates subscription with specified tier",
+    "Subscribe with Tier defaults to PREMIUM when no tier specified",
+    "Trending GET /posts/trending - returns trending posts sorted by engagement"
+  ]
+}

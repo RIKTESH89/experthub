@@ -1,3 +1,4 @@
+jest.mock("@/lib/graph/evidence-store",()=>({publishEvidence:jest.fn(),retireEvidence:jest.fn()}));
 import prisma, { resetAllMocks } from "../mocks/prisma";
 const index=jest.fn();const remove=jest.fn();
 jest.mock("@/lib/prisma",()=>({__esModule:true,default:prisma}));

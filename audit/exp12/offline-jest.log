@@ -1,0 +1,25 @@
+PASS __tests__/exp12/backfill-route.test.ts
+PASS __tests__/phase0/conversation.test.ts
+PASS __tests__/phase0/memory.test.ts
+PASS __tests__/phase0/access.test.ts
+PASS __tests__/phase0/vector-store.test.ts
+PASS __tests__/phase0/outbox.test.ts
+PASS __tests__/phase0/baseline-reproductions.test.ts
+PASS __tests__/phase0/recovery-route.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/groq-local.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/phase0/local-scheduler.test.ts
+PASS __tests__/phase0/lifecycle.test.ts
+PASS __tests__/phase0/embeddings.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/exp12/evidence-extractor.test.ts
+PASS __tests__/phase0/indexer.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+
+Test Suites: 18 passed, 18 total
+Tests:       114 passed, 114 total
+Snapshots:   0 total
+Time:        0.403 s, estimated 1 s
+Ran all test suites matching /(__tests__\/exp12|__tests__\/phase0)/i.
+Test results written to: audit/exp12/offline-jest.json

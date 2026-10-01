@@ -97,6 +97,8 @@ model UserSettings {
 }
 
 model ExpertProfile {
+  evidenceRevisions EvidenceRevision[]
+  evidenceAssertions EvidenceAssertion[]
   id               String   @id @default(cuid())
   userId           String   @unique
   displayName      String
@@ -647,4 +649,63 @@ model KnowledgeLifecycleJob {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   @@index([expertProfileId, state, availableAt])
+}
+
+// EXP12: additive immutable snapshots; source identity intentionally has no source-row FK.
+// SQL migration also installs constraints, append-only triggers and derived EvidenceEdge view.
+model EvidenceRevision {
+  id String @id
+  expertProfileId String
+  itemId String
+  sourceType String
+  sourceId String?
+  sourceVersion Int
+  contentHash String
+  snapshotHash String
+  content String
+  publishedAt DateTime?
+  publicationTimeBasis String
+  sourceUpdatedAt DateTime
+  ingestedAt DateTime @default(now())
+  authorId String?
+  uploaderId String
+  audience String
+  extractorVersion String
+  retiredAt DateTime?
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  spans EvidenceSpan[]
+  @@unique([expertProfileId, itemId, snapshotHash, extractorVersion])
+  @@index([expertProfileId, itemId], map: "EvidenceRevision_source_idx")
+}
+model EvidenceSpan {
+  id String @id
+  revisionId String
+  start Int
+  end Int
+  text String
+  chunkIds String[]
+  speakerId String?
+  speakerRole String
+  revision EvidenceRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  supports EvidenceSupport[]
+  @@unique([revisionId, start, end])
+}
+model EvidenceAssertion {
+  id String @id
+  expertProfileId String
+  subject String
+  predicate String
+  object String
+  kind String
+  endorsedByOwner Boolean @default(false)
+  extractorVersion String
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  supports EvidenceSupport[]
+}
+model EvidenceSupport {
+  assertionId String
+  spanId String
+  assertion EvidenceAssertion @relation(fields: [assertionId], references: [id], onDelete: Cascade)
+  span EvidenceSpan @relation(fields: [spanId], references: [id], onDelete: Cascade)
+  @@id([assertionId, spanId])
 }

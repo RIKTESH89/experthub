@@ -11,6 +11,7 @@ import { authorizedHistory } from "@/lib/ai/history";
 import { getMemories } from "@/lib/ai/memory-manager";
 import { resolveRetrievalScope } from "@/lib/knowledge/access";
 import prisma from "@/lib/prisma";
+import { retrieveEvidenceTrace, evidencePrompt, type EvidenceTrace } from "@/lib/graph/evidence-store";
 
 interface ChatMessage {
   role: "user" | "assistant" | "system";
@@ -30,6 +31,7 @@ interface ChatEngineResult {
   stream: ReadableStream;
   sources: RetrievalResult[];
   thinkingSteps: string[];
+  evidenceTrace: EvidenceTrace[];
 }
 
 export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
@@ -84,9 +86,11 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     thinkingSteps.push("No direct matches found in knowledge base");
   }
 
-  // Legacy graph descriptions have no source/audience provenance. Quarantine them
-  // until a later provenance phase can authorize every contributing source.
-  const graphContext: string[] = [];
+  // Only revision-supported assertions can augment chat; legacy graph stays quarantined.
+  const evidenceTrace = await retrieveEvidenceTrace(scope,retrievalResults);
+  retrievalResults = retrievalResults.map(r=>({...r,metadata:{...r.metadata,
+    evidenceTrace:evidenceTrace.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string))}}));
+  const graphContext = evidencePrompt(evidenceTrace);
 
   // Step 3: Retrieve subscriber memories
   let memories: { fact: string; category: string }[] = [];
@@ -146,5 +150,6 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     stream: response.body,
     sources: retrievalResults,
     thinkingSteps,
+    evidenceTrace,
   };
 }

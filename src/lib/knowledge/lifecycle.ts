@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { publishEvidence, retireEvidence } from "@/lib/graph/evidence-store";
 import { indexDocument, plannedVectorIds } from "@/lib/vector/indexer";
 
 import { enqueueLifecycleJob, runLifecycleJob } from "./outbox";
@@ -48,10 +49,12 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
     // Persist cleanup and publication in one transaction: crashes cannot lose old IDs.
     const published = await prisma.$transaction(async (tx) => {
       await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:item.vectorIds},tx);
-      return tx.knowledgeItem.updateMany({
+      const published = await tx.knowledgeItem.updateMany({
       where: { id: item.id, expertProfileId, sourceVersion: version },
       data: { vectorIds, isIndexed: true, indexedVersion: version, indexingError: null },
     });
+      if (published.count) await publishEvidence(tx, item, item.expertProfile.userId);
+      return published;
     });
     if (!published.count) {
       await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds});
@@ -77,6 +80,7 @@ export async function removeKnowledgeItem(expertProfileId: string, itemId: strin
     const current = await tx.knowledgeItem.findUnique({where:{id:itemId},include:{expertProfile:true}});
     if (!current || current.expertProfileId !== expertProfileId) return;
     await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:current.sourceVersion,namespace:current.expertProfile.vectorNamespace,vectorIds:current.vectorIds},tx);
+    await retireEvidence(tx,expertProfileId,itemId);
     await tx.knowledgeItem.deleteMany({ where: { id: itemId, expertProfileId } });
   });
 }

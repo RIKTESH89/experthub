@@ -226,6 +226,7 @@ const mockPrismaClient = {
   },
   $queryRaw: jest.fn().mockResolvedValue([]),
   $queryRawUnsafe: jest.fn().mockResolvedValue([]),
+  $executeRaw: jest.fn().mockResolvedValue(0),
   $executeRawUnsafe: jest.fn().mockResolvedValue(0),
   $transaction: jest.fn((input) =>
     Array.isArray(input) ? Promise.all(input) : input(mockPrismaClient)
