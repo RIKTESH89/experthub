@@ -40,6 +40,9 @@ test('tolerant rerank output uses pinned parser rather than an invented strict s
 test('production/provider execution is disabled pending a new approved run',async()=>{
  await assert.rejects(execute(),/not authorized/);
 });
+test('approved live initialization accepts absent mock configuration and starts at zero attempts',()=>{
+ const {createLedger}=require('./exp7-pilot.cjs');const l=createLedger();assert.equal(l.attempts,0);assert.equal(l.reranks,0);assert.equal(l.priorSpent.total,632);assert.deepEqual(l.records,[]);
+});
 test('third unexpected rerank is rejected before mock dispatch or counter increment',async()=>{
  const {assertAttemptBudget}=require('./exp7-pilot.cjs');const ledger={attempts:0,answers:0,reranks:0};let dispatched=0;
  const dispatch=async()=>{assertAttemptBudget(ledger,'rerank');ledger.attempts++;ledger.reranks++;dispatched++;};

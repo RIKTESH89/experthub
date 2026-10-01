@@ -7,6 +7,11 @@ const fixtures=JSON.parse(fs.readFileSync(path.join(frozen,'fixtures.json'),'utf
 const MODEL='openai/gpt-oss-120b',ENDPOINT='https://api.groq.com/openai/v1/chat/completions';
 const LIMITS=Object.freeze({attempts:14,answers:12,reranks:2,input:53248,output:26624,total:79872});
 const PRIOR_SPENT=Object.freeze({attempts:1,input:376,output:256,total:632});
+function createLedger(test){
+ const ledger={status:'running',priorSpent:PRIOR_SPENT,attempts:0,answers:0,reranks:0,promptTokens:0,completionTokens:0,totalTokens:0,records:[],outputs:[],dollarCost:null,naturalness:'unvalidated without human ratings'};
+ if(test?.initialCounters)Object.assign(ledger,test.initialCounters);
+ return ledger;
+}
 function assertAttemptBudget(ledger,stage){
  if(!['answer','rerank'].includes(stage))throw Error('Unknown request stage');
  if(ledger.attempts>=LIMITS.attempts||ledger[stage==='answer'?'answers':'reranks']>=LIMITS[stage==='answer'?'answers':'reranks'])throw Error('Attempt cap exceeded');
@@ -121,8 +126,7 @@ async function execute(test,approved=false){
  const ledgerFile=test?test.ledgerFile:path.join(out,'ledger.json');if(fs.existsSync(ledgerFile))throw Error('Existing ledger: no resume/retry allowed');
  const secret=test?test.secret:require('dotenv').parse(fs.readFileSync(path.join(root,'.env.local-test-groq')));
  if(!secret.LOCAL_TEST_GROQ_API_KEY||secret.LOCAL_TEST_GROQ_BASE_URL!=='https://api.groq.com/openai/v1'||secret.LOCAL_TEST_GROQ_MODEL!==MODEL)throw Error('Opaque configuration invalid');
- const ledger={status:'running',priorSpent:PRIOR_SPENT,attempts:0,answers:0,reranks:0,promptTokens:0,completionTokens:0,totalTokens:0,records:[],outputs:[],dollarCost:null,naturalness:'unvalidated without human ratings'};
- if(test.initialCounters)Object.assign(ledger,test.initialCounters);
+ const ledger=createLedger(test);
  const save=()=>fs.writeFileSync(ledgerFile,JSON.stringify(ledger,null,2)+'\n');save();let lastCompletion=0,fatal;
  try{
   for(const item of sequence()){
@@ -166,5 +170,5 @@ async function execute(test,approved=false){
  }catch{ledger.status='stopped';ledger.blocker=fatal||'Local pipeline/preflight failure';}
  save();process.stdout.write(JSON.stringify({event:'final',status:ledger.status,attempts:ledger.attempts,answers:ledger.answers,reranks:ledger.reranks,totalTokens:ledger.totalTokens})+'\n');if(!test&&ledger.status!=='complete')process.exitCode=1;return ledger;
 }
-module.exports={count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure,assertAttemptBudget,assertUsageBudget,LIMITS,PRIOR_SPENT};
+module.exports={count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure,assertAttemptBudget,assertUsageBudget,LIMITS,PRIOR_SPENT,createLedger};
 if(require.main===module){(process.argv.includes('--execute-approved-exp22')?execute(undefined,true):process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m&&!process.argv.includes('--execute-approved-exp22'))console.log(JSON.stringify(m));}).catch(()=>{console.error('Local preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}

@@ -1,0 +1,1 @@
+{"stage":"local ledger initialization before dispatch","providerAttempts":0,"ledgerCreated":false,"executionLogBytes":0,"finding":"test.initialCounters was accessed when test configuration was absent; corrected with optional initialization and dedicated regression","providerRetry":false}
