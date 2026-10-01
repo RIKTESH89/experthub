@@ -403,5 +403,13 @@
     "claimSupport": "requires separately documented semantic clause annotation; retrieval is not entailment",
     "cost": "Dollar billing unmeasured",
     "reasoning": "Counts only where provider reports numeric details; excluded text does not imply no internal reasoning"
+  },
+  "protocolDeviation": {
+    "terminalStop": "exp7-continuation attempt5 Empty final content",
+    "renewedAuthorizationAfterStop": false,
+    "subsequentProviderAttempts": 5,
+    "withinNumericalCap": true,
+    "compliantResume": false,
+    "interpretation": "Post-stop five-call continuation violated stop-first-error/no-further-calls; preserve all evidence as exploratory."
   }
 }
