@@ -19,7 +19,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 312,
         "estimatedHostFraming": 512,
@@ -47,7 +49,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 305,
         "estimatedHostFraming": 512,
@@ -75,7 +79,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 287,
         "estimatedHostFraming": 512,
@@ -103,7 +109,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 317,
         "estimatedHostFraming": 512,
@@ -261,7 +269,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 371,
         "estimatedHostFraming": 512,
@@ -329,7 +339,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 316,
         "estimatedHostFraming": 512,
@@ -357,7 +369,9 @@
           ],
           "temperature": 0,
           "stream": false,
-          "max_tokens": 100
+          "max_completion_tokens": 1024,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 237,
         "estimatedHostFraming": 256,
@@ -379,7 +393,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 282,
         "estimatedHostFraming": 512,
@@ -408,7 +424,9 @@
           ],
           "temperature": 0,
           "stream": false,
-          "max_tokens": 100
+          "max_completion_tokens": 1024,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 229,
         "estimatedHostFraming": 256,
@@ -430,7 +448,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 262,
         "estimatedHostFraming": 512,
@@ -459,7 +479,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 310,
         "estimatedHostFraming": 512,
@@ -487,7 +509,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 303,
         "estimatedHostFraming": 512,
@@ -515,7 +539,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 285,
         "estimatedHostFraming": 512,
@@ -543,7 +569,9 @@
           ],
           "temperature": 0.5,
           "stream": false,
-          "max_tokens": 256
+          "max_completion_tokens": 2048,
+          "reasoning_effort": "low",
+          "include_reasoning": false
         },
         "localTokens": 315,
         "estimatedHostFraming": 512,

@@ -5,6 +5,15 @@ const root=path.resolve(__dirname,'../..'),out=path.join(root,'audit/phase0/exp7
 const frozen=path.join(root,'audit/phase0/exp7-preflight');
 const fixtures=JSON.parse(fs.readFileSync(path.join(frozen,'fixtures.json'),'utf8'));
 const MODEL='openai/gpt-oss-120b',ENDPOINT='https://api.groq.com/openai/v1/chat/completions';
+const LIMITS=Object.freeze({attempts:14,answers:12,reranks:2,input:53248,output:26624,total:79872});
+const PRIOR_SPENT=Object.freeze({attempts:1,input:376,output:256,total:632});
+function assertAttemptBudget(ledger,stage){
+ if(!['answer','rerank'].includes(stage))throw Error('Unknown request stage');
+ if(ledger.attempts>=LIMITS.attempts||ledger[stage==='answer'?'answers':'reranks']>=LIMITS[stage==='answer'?'answers':'reranks'])throw Error('Attempt cap exceeded');
+}
+function assertUsageBudget(usage,payload,inputCap,ledger){
+ if(usage.prompt_tokens>inputCap||usage.completion_tokens>payload.max_completion_tokens||ledger.promptTokens>LIMITS.input||ledger.completionTokens>LIMITS.output||ledger.totalTokens>LIMITS.total)throw Error('Observed accounting cap exceeded');
+}
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function responseDiagnostics(data,secret){
@@ -68,7 +77,7 @@ function setup(variant,c,fetchImpl){
  return {run:()=>engine.runChatEngine({expertId:c.expert,subscriberId:c.viewer==='ordinary-subscriber'?'synthetic-ordinary':undefined,query:c.question,chatHistory,enableWebSearch:false}),scope,channels};
 }
 function sequence(){return fixtures.cases.flatMap((c,i)=>(i%2?['candidate','original']:['original','candidate']).map(variant=>({caseId:c.id,variant})));}
-function envelope(body){return {model:MODEL,messages:body.messages,temperature:body.temperature,stream:false,max_tokens:body.stream?256:100};}
+function envelope(body){return {model:MODEL,messages:body.messages,temperature:body.temperature,stream:false,max_completion_tokens:body.stream?2048:1024,reasoning_effort:'low',include_reasoning:false};}
 async function preflight(){
  const traces=[];
  for(const item of sequence()){
@@ -98,7 +107,7 @@ async function preflight(){
  }
  const sourceManifest=JSON.parse(fs.readFileSync(path.join(frozen,'manifest.json')));
  for(const s of sourceManifest.sourceFiles){const p=path.join(root,s.snapshot||'audit/phase0/exp7-preflight/'+s.artifact);if(sha(fs.readFileSync(p))!==s.sha256)throw Error('Frozen artifact changed');}
- const manifest={protocol:'EXP7 diagnostics preparation only; no new network authorization',original:sourceManifest.originalCommit,candidate:sourceManifest.candidateCommit,fixturesHash:sha(fs.readFileSync(path.join(frozen,'fixtures.json'))),runnerHash:sha(fs.readFileSync(__filename)),tokenCounterHash:sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py'))),historyHash:sha(fs.readFileSync(path.join(frozen,'candidate/src/lib/ai/history.ts.source'))),tracesHash:sha(JSON.stringify(traces)),attemptCap:24,answerCap:12,rerankCap:12,inputCap:73728,outputCap:4272,totalCap:78000,pacingAfterCompletionMs:65000,timeoutMs:15000,hostFraming:'512 answer / 256 rerank estimated tokens; not a proven hosted bound',freePlan:'accepted existing user confirmation; no live account/quota proof',adapters:'synthetic vectors and declared channels; mocked audience scope, profile, empty graph/memories; route history query reproduced; actual pinned retriever/prompts/chat engine executed unchanged',preflightCalls:traces.flatMap(t=>t.requests).length};
+ const manifest={protocol:'EXP7 diagnostics preparation only; no new network authorization',original:sourceManifest.originalCommit,candidate:sourceManifest.candidateCommit,fixturesHash:sha(fs.readFileSync(path.join(frozen,'fixtures.json'))),runnerHash:sha(fs.readFileSync(__filename)),tokenCounterHash:sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py'))),historyHash:sha(fs.readFileSync(path.join(frozen,'candidate/src/lib/ai/history.ts.source'))),tracesHash:sha(JSON.stringify(traces)),attemptCap:LIMITS.attempts,answerCap:LIMITS.answers,rerankCap:LIMITS.reranks,inputCap:LIMITS.input,outputCap:LIMITS.output,totalCap:LIMITS.total,priorSpent:PRIOR_SPENT,combinedAttemptCap:15,combinedTotalCap:80504,pacingAfterCompletionMs:65000,timeoutMs:15000,hostFraming:'512 answer / 256 rerank estimated tokens; not a proven hosted bound',freePlan:'accepted existing user confirmation; no live account/quota proof',adapters:'synthetic vectors and declared channels; mocked audience scope, profile, empty graph/memories; route history query reproduced; actual pinned retriever/prompts/chat engine executed unchanged',preflightCalls:traces.flatMap(t=>t.requests).length};
  fs.writeFileSync(path.join(out,'prompt-traces.json'),JSON.stringify(traces,null,2)+'\n');fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
  return manifest;
 }
@@ -112,7 +121,8 @@ async function execute(test){
  const ledgerFile=test?test.ledgerFile:path.join(out,'ledger.json');if(fs.existsSync(ledgerFile))throw Error('Existing ledger: no resume/retry allowed');
  const secret=test?test.secret:require('dotenv').parse(fs.readFileSync(path.join(root,'.env.local-test-groq')));
  if(!secret.LOCAL_TEST_GROQ_API_KEY||secret.LOCAL_TEST_GROQ_BASE_URL!=='https://api.groq.com/openai/v1'||secret.LOCAL_TEST_GROQ_MODEL!==MODEL)throw Error('Opaque configuration invalid');
- const ledger={status:'running',attempts:0,answers:0,reranks:0,promptTokens:0,completionTokens:0,totalTokens:0,records:[],outputs:[],dollarCost:null,naturalness:'unvalidated without human ratings'};
+ const ledger={status:'running',priorSpent:PRIOR_SPENT,attempts:0,answers:0,reranks:0,promptTokens:0,completionTokens:0,totalTokens:0,records:[],outputs:[],dollarCost:null,naturalness:'unvalidated without human ratings'};
+ if(test.initialCounters)Object.assign(ledger,test.initialCounters);
  const save=()=>fs.writeFileSync(ledgerFile,JSON.stringify(ledger,null,2)+'\n');save();let lastCompletion=0,fatal;
  try{
   for(const item of sequence()){
@@ -121,8 +131,10 @@ async function execute(test){
     if(fatal)throw Error('Stopped');
     if(url!=='https://api.openai.com/v1/chat/completions')throw Error('Unexpected pipeline endpoint');
     const body=JSON.parse(init.body),stage=body.stream?'answer':'rerank',payload=envelope(body),localTokens=count(payload.messages),inputCap=stage==='answer'?4096:2048;
-    if(localTokens+(stage==='answer'?512:256)>inputCap)throw Error('Local input reservation exceeded');
-    if(ledger.attempts>=24||ledger[stage==='answer'?'answers':'reranks']>=12)throw Error('Attempt cap exceeded');
+    try{
+     if(localTokens+(stage==='answer'?512:256)>inputCap)throw Error('Local input reservation exceeded');
+     assertAttemptBudget(ledger,stage);
+    }catch(error){fatal=error.message;ledger.blocker=fatal;save();throw Error(fatal);}
     if(lastCompletion)await (test?test.sleep:sleep)(Math.max(0,65000-(Date.now()-lastCompletion)));
     const record={...item,stage,attempt:++ledger.attempts,localTokens,estimatedHostFraming:stage==='answer'?512:256,payload,startUtc:new Date().toISOString()};ledger[stage==='answer'?'answers':'reranks']++;ledger.records.push(record);save();
     process.stdout.write(JSON.stringify({event:'attempt',attempt:ledger.attempts,caseId:c.id,variant:item.variant,stage})+'\n');
@@ -136,7 +148,7 @@ async function execute(test){
      const u=data.usage;
      if(data.model!==MODEL||!u||!['prompt_tokens','completion_tokens','total_tokens'].every(k=>Number.isInteger(u[k])&&u[k]>=0)||u.total_tokens!==u.prompt_tokens+u.completion_tokens)throw Error('Missing/invalid model or usage');
      record.usage={prompt_tokens:u.prompt_tokens,completion_tokens:u.completion_tokens,total_tokens:u.total_tokens};ledger.promptTokens+=u.prompt_tokens;ledger.completionTokens+=u.completion_tokens;ledger.totalTokens+=u.total_tokens;
-     if(u.prompt_tokens>inputCap||u.completion_tokens>payload.max_tokens||ledger.promptTokens>73728||ledger.completionTokens>4272||ledger.totalTokens>78000)throw Error('Observed accounting cap exceeded');
+     assertUsageBudget(u,payload,inputCap,ledger);
      const failure=responseFailure(data);if(failure)throw Error(failure);
      record.content=data.choices[0].message.content.split(secret.LOCAL_TEST_GROQ_API_KEY).join('[REDACTED]');record.finishReason=data.choices[0].finish_reason;
      // Preserve the actual pinned parser's tolerant numeric extraction and score fill.
@@ -154,5 +166,5 @@ async function execute(test){
  }catch{ledger.status='stopped';ledger.blocker=fatal||'Local pipeline/preflight failure';}
  save();process.stdout.write(JSON.stringify({event:'final',status:ledger.status,attempts:ledger.attempts,answers:ledger.answers,reranks:ledger.reranks,totalTokens:ledger.totalTokens})+'\n');if(!test&&ledger.status!=='complete')process.exitCode=1;return ledger;
 }
-module.exports={count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure};
+module.exports={count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure,assertAttemptBudget,assertUsageBudget,LIMITS,PRIOR_SPENT};
 if(require.main===module){(process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m)console.log(JSON.stringify(m));}).catch(()=>{console.error('Local diagnostic preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}
