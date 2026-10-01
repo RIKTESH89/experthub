@@ -1,0 +1,14 @@
+{
+  "kind": "real local PostgreSQL SQL comparison, one synthetic vector",
+  "baseline": {
+    "medianMs": 0.1413750000001528,
+    "p95Ms": 0.30183299999953306,
+    "iterations": 20
+  },
+  "phase0": {
+    "medianMs": 0.298041000000012,
+    "p95Ms": 0.47599999999965803,
+    "iterations": 20
+  },
+  "warning": "Includes different selected columns/client validation; not end-to-end latency or production performance/provider/model quality"
+}

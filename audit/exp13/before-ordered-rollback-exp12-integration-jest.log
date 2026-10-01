@@ -1,0 +1,53 @@
+FAIL scripts/exp12/evidence.integration.ts
+  ✓ same revision rebuilt twice has identical revision/assertion/span/edge identities and weight (75 ms)
+  ✓ two supports retract independently; last delete makes assertion unavailable while preserving audit (63 ms)
+  ✓ multiple spans in one revision do not inflate edge/support weights (43 ms)
+  ✓ post author/uploader and quoted speaker are distinct; quote is not owner endorsement (40 ms)
+  ✓ manual third-party/unknown attribution remains separate with declared publication basis (52 ms)
+  ✓ edit excludes superseded assertions immediately and keeps historical snapshots (51 ms)
+  ✓ premium derivatives never affect public trace or weights; stale entitlement fails closed (51 ms)
+  ✓ unpublish/hide/RAG disable/delete revoke trace even with previously allowed chunk IDs (53 ms)
+  ✓ snapshot immutability, transactional rollback and nullable unknown publication time (70 ms)
+  ✓ actual chat engine receives allowed assertion/span context and returns citation trace without provider calls (52 ms)
+  ✓ foreign tenant or forged owner flag cannot retrieve restricted assertions (41 ms)
+  ✕ additive evidence-only rollback SQL executes transactionally and restores evidence on rollback (48 ms)
+  ✓ concurrent owner rebuilds serialize and do not duplicate revision supports (46 ms)
+  ✓ unresolved identical quoted names remain source-local, not merged person identities (47 ms)
+
+  ● additive evidence-only rollback SQL executes transactionally and restores evidence on rollback
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "rollback proof"
+    Received message:   "
+    Invalid `prisma.$executeRawUnsafe()` invocation:··
+    Raw query failed. Code: `2BP01`. Message: `ERROR: cannot drop desired object(s) because other objects depend on them
+    DETAIL: constraint TemporalStance_revisionId_fkey on table \"TemporalStance\" depends on table \"EvidenceRevision\"
+    constraint TemporalStance_spanId_fkey on table \"TemporalStance\" depends on table \"EvidenceSpan\"
+    constraint EvidenceDecisionCase_spanId_fkey on table \"EvidenceDecisionCase\" depends on table \"EvidenceSpan\"
+    HINT: Use DROP ... CASCADE to drop the dependent objects too.`"
+
+          77 |  const {readFileSync}=await import("fs");const rollback=readFileSync("audit/exp12/rollback.sql","utf8");
+          78 |  await expect(prisma.$transaction(async tx=>{
+        > 79 |   for(const sql of rollback.replace(/--[^\n]*/g,"").split(";").map(s=>s.trim()).filter(Boolean))await tx.$executeRawUnsafe(sql);
+             |                                                                                                 ^
+          80 |   const absent=await tx.$queryRaw<{relation:string|null}[]>`SELECT to_regclass('"EvidenceRevision"')::text AS relation`;expect(absent[0].relation).toBeNull();
+          81 |   expect(await tx.knowledgeItem.count()).toBe(1);expect(await tx.post.count()).toBe(1);throw Error("rollback proof");
+          82 |  })).rejects.toThrow("rollback proof");expect(await trace()).toEqual(original);
+
+      at ei.handleRequestError (node_modules/@prisma/client/src/runtime/RequestHandler.ts:228:13)
+      at ei.handleAndLogRequestError (node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
+      at ei.request (node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
+      at a (node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
+      at scripts/exp12/evidence.integration.ts:79:97
+      at Proxy._transactionWithCallback (node_modules/@prisma/client/src/runtime/getPrismaClient.ts:722:18)
+      at Object.<anonymous> (scripts/exp12/evidence.integration.ts:78:2)
+      at Object.toThrow (node_modules/@jest/expect/node_modules/expect/build/index.js:218:22)
+      at Object.<anonymous> (scripts/exp12/evidence.integration.ts:82:14)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 13 passed, 14 total
+Snapshots:   0 total
+Time:        0.996 s, estimated 1 s
+Ran all test suites.
+Test results written to: audit/exp13/exp12-integration-jest.json

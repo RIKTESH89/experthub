@@ -97,6 +97,7 @@ model UserSettings {
 }
 
 model ExpertProfile {
+  temporalStances TemporalStance[]
   evidenceRevisions EvidenceRevision[]
   evidenceAssertions EvidenceAssertion[]
   id               String   @id @default(cuid())
@@ -654,6 +655,7 @@ model KnowledgeLifecycleJob {
 // EXP12: additive immutable snapshots; source identity intentionally has no source-row FK.
 // SQL migration also installs constraints, append-only triggers and derived EvidenceEdge view.
 model EvidenceRevision {
+  temporalStances TemporalStance[]
   id String @id
   expertProfileId String
   itemId String
@@ -678,6 +680,8 @@ model EvidenceRevision {
   @@index([expertProfileId, itemId], map: "EvidenceRevision_source_idx")
 }
 model EvidenceSpan {
+  temporalStances TemporalStance[]
+  decisionCases EvidenceDecisionCase[]
   id String @id
   revisionId String
   start Int
@@ -708,4 +712,47 @@ model EvidenceSupport {
   assertion EvidenceAssertion @relation(fields: [assertionId], references: [id], onDelete: Cascade)
   span EvidenceSpan @relation(fields: [spanId], references: [id], onDelete: Cascade)
   @@id([assertionId, spanId])
+}
+
+model TemporalStance {
+  id String @id
+  revisionId String
+  spanId String
+  expertProfileId String
+  speaker String
+  origin String
+  domain String?
+  context String?
+  category String
+  polarity String
+  action String
+  validFrom DateTime?
+  validUntil DateTime?
+  certainty String
+  kind String
+  endorsedByOwner Boolean
+  supersedes String?
+  extractorVersion String
+  revision EvidenceRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  span EvidenceSpan @relation(fields: [spanId], references: [id], onDelete: Cascade)
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade)
+  decisionCase EvidenceDecisionCase?
+  @@unique([revisionId, spanId, extractorVersion])
+  @@index([expertProfileId], map: "TemporalStance_expert_idx")
+}
+model EvidenceDecisionCase {
+  id String @id
+  stanceId String @unique
+  spanId String
+  situation String?
+  constraints String?
+  chosenAction String
+  documentedReasons String?
+  alternatives String?
+  tradeoffs String?
+  exceptions String?
+  decisionType String
+  extractorVersion String
+  stance TemporalStance @relation(fields: [stanceId], references: [id], onDelete: Cascade)
+  span EvidenceSpan @relation(fields: [spanId], references: [id], onDelete: Cascade)
 }

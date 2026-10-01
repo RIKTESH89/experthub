@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import {publishTemporal} from "./temporal/publisher";
 import type { KnowledgeItem, Prisma } from "@prisma/client";
 import type { RetrievalScope } from "@/lib/knowledge/access";
 import type { RetrievalResult } from "@/lib/vector/retriever";
@@ -44,6 +45,7 @@ export async function publishEvidence(tx: Store, item: KnowledgeItem, ownerId: s
     await tx.$executeRaw`INSERT INTO "EvidenceAssertion" ("id","expertProfileId","subject","predicate","object","kind","endorsedByOwner","extractorVersion") VALUES (${assertionId},${item.expertProfileId},${subject},${assertion.predicate},${assertion.object},${assertion.kind},${assertion.endorsedByOwner},${EXTRACTOR_VERSION}) ON CONFLICT ("id") DO NOTHING`;
     await tx.$executeRaw`INSERT INTO "EvidenceSupport" ("assertionId","spanId") VALUES (${assertionId},${spanId}) ON CONFLICT DO NOTHING`;
   }
+  await publishTemporal(tx,revisionId,item,ownerId,value.content,value.authorId);
   return revisionId;
 }
 
@@ -76,16 +78,31 @@ export async function retrieveEvidenceTrace(scope: RetrievalScope, results: Retr
   const allowed = new Set(scope.allowedVectorIds);
   const selected = results.filter(r=>r.metadata.expertProfileId===scope.expertProfileId && typeof r.metadata.vectorId === "string" && allowed.has(r.metadata.vectorId)).map(r=>r.metadata.vectorId as string);
   if (!selected.length) return [];
-  return prisma.$queryRaw<EvidenceTrace[]>`WITH eligible AS (
-    SELECT a."id" AS "assertionId", r."id" AS "revisionId", p."id" AS "spanId",r."itemId",r."contentHash",r."sourceVersion",
-    a."subject",a."predicate",a."object",a."kind",a."endorsedByOwner",r."authorId",r."uploaderId",p."speakerId",p."speakerRole",r."audience",r."publishedAt",r."publicationTimeBasis",r."sourceUpdatedAt",r."ingestedAt",
-    p."start",p."end",p."text",p."chunkIds",a."extractorVersion"
-    FROM "EvidenceAssertion" a JOIN "EvidenceSupport" s ON s."assertionId"=a."id"
-    JOIN "EvidenceSpan" p ON p."id"=s."spanId" JOIN "EvidenceRevision" r ON r."id"=p."revisionId"
+  const spans=await authorizedEvidenceSpans(scope,results);
+  if(!spans.length)return [];
+  const assertions=await prisma.$queryRaw<(Pick<EvidenceTrace,"assertionId"|"spanId"|"subject"|"predicate"|"object"|"kind"|"endorsedByOwner"|"extractorVersion">)[]>`SELECT a."id" AS "assertionId",s."spanId",a."subject",a."predicate",a."object",a."kind",a."endorsedByOwner",a."extractorVersion" FROM "EvidenceAssertion" a JOIN "EvidenceSupport" s ON s."assertionId"=a."id" WHERE a."expertProfileId"=${scope.expertProfileId} AND s."spanId"=ANY(${spans.map(s=>s.spanId)}::text[])`;
+  const bySpan=new Map(spans.map(s=>[s.spanId,s]));
+  const merged=assertions.flatMap(a=>{const span=bySpan.get(a.spanId);return span?[{...span,...a}]:[];});
+  const weights=new Map<string,Set<string>>();for(const t of merged){const ids=weights.get(t.assertionId)||new Set<string>();ids.add(t.revisionId);weights.set(t.assertionId,ids);}
+  return merged.map(t=>({...t,weight:weights.get(t.assertionId)!.size})).sort((a,b)=>a.assertionId.localeCompare(b.assertionId)||a.revisionId.localeCompare(b.revisionId)||a.spanId.localeCompare(b.spanId)).slice(0,30);
+}
+
+export type AuthorizedSpan = Pick<EvidenceTrace,"revisionId"|"spanId"|"itemId"|"contentHash"|"sourceVersion"|"authorId"|"uploaderId"|"speakerId"|"speakerRole"|"audience"|"publishedAt"|"publicationTimeBasis"|"sourceUpdatedAt"|"ingestedAt"|"start"|"end"|"text"|"chunkIds">;
+
+/** Shared live-source permission gate. As-of never resurrects retired/deleted evidence. */
+export async function authorizedEvidenceSpans(scope:RetrievalScope,results:RetrievalResult[]):Promise<AuthorizedSpan[]> {
+ const allowed=new Set(scope.allowedVectorIds);
+ const selected=results.filter(r=>r.metadata.expertProfileId===scope.expertProfileId&&typeof r.metadata.vectorId==="string"&&allowed.has(r.metadata.vectorId)).map(r=>r.metadata.vectorId as string);
+ if(!selected.length)return [];
+ return prisma.$queryRaw<AuthorizedSpan[]>`WITH eligible AS (
+    SELECT r."id" AS "revisionId", p."id" AS "spanId",r."itemId",r."contentHash",r."sourceVersion",
+    r."authorId",r."uploaderId",p."speakerId",p."speakerRole",r."audience",r."publishedAt",r."publicationTimeBasis",r."sourceUpdatedAt",r."ingestedAt",
+    p."start",p."end",p."text",p."chunkIds"
+    FROM "EvidenceSpan" p JOIN "EvidenceRevision" r ON r."id"=p."revisionId"
     JOIN "KnowledgeItem" i ON i."id"=r."itemId" AND i."expertProfileId"=r."expertProfileId"
     JOIN "ExpertProfile" e ON e."id"=r."expertProfileId"
     LEFT JOIN "Post" post ON i."sourceType"='post' AND post."id"=i."sourceId" AND post."authorId"=e."userId"
-    WHERE a."expertProfileId"=${scope.expertProfileId} AND r."expertProfileId"=${scope.expertProfileId}
+    WHERE r."expertProfileId"=${scope.expertProfileId}
     AND r."retiredAt" IS NULL AND i."sourceVersion"=r."sourceVersion" AND i."indexedVersion"=r."sourceVersion" AND i."isIndexed"=true
     AND (i."title" || E'\n\n' || i."content")=r."content"
     AND (i."sourceType"='manual' OR (post."id" IS NOT NULL AND post."isRagEnabled"=true AND i."title"=COALESCE(post."title",'Untitled Post') AND i."content"=COALESCE(post."content",'')))
@@ -97,10 +114,9 @@ export async function retrieveEvidenceTrace(scope: RetrievalScope, results: Retr
        AND sub."status"='ACTIVE' AND sub."tier"='PREMIUM' AND (sub."endDate" IS NULL OR sub."endDate">CURRENT_TIMESTAMP)
        AND (sub."currentPeriodEnd" IS NULL OR sub."currentPeriodEnd">CURRENT_TIMESTAMP))))
     AND p."chunkIds" && ${selected}::text[] AND p."chunkIds" && ${scope.allowedVectorIds}::text[]
-  ), weights AS (SELECT "assertionId",count(DISTINCT "revisionId")::integer AS weight FROM eligible GROUP BY "assertionId")
-  SELECT eligible.*,weights.weight FROM eligible JOIN weights USING ("assertionId") ORDER BY "assertionId","revisionId","spanId" LIMIT 30`;
-
+  ) SELECT * FROM eligible ORDER BY "revisionId","spanId" LIMIT 100`;
 }
+
 
 export function evidencePrompt(trace: EvidenceTrace[]): string[] {
   if (!trace.length) return [];

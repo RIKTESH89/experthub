@@ -76,6 +76,9 @@ test("additive evidence-only rollback SQL executes transactionally and restores 
  await post();const original=await trace();
  const {readFileSync}=await import("fs");const rollback=readFileSync("audit/exp12/rollback.sql","utf8");
  await expect(prisma.$transaction(async tx=>{
+  // Later additive migrations must be rolled back before their parent evidence tables.
+  const temporal=await tx.$queryRaw<{relation:string|null}[]>`SELECT to_regclass('"TemporalStance"')::text AS relation`;
+  if(temporal[0].relation){const dependencyRollback=readFileSync("audit/exp13/rollback.sql","utf8").replace(/--[^\n]*/g,"");for(const sql of dependencyRollback.split(";").map(s=>s.trim()).filter(Boolean))await tx.$executeRawUnsafe(sql);}
   for(const sql of rollback.replace(/--[^\n]*/g,"").split(";").map(s=>s.trim()).filter(Boolean))await tx.$executeRawUnsafe(sql);
   const absent=await tx.$queryRaw<{relation:string|null}[]>`SELECT to_regclass('"EvidenceRevision"')::text AS relation`;expect(absent[0].relation).toBeNull();
   expect(await tx.knowledgeItem.count()).toBe(1);expect(await tx.post.count()).toBe(1);throw Error("rollback proof");

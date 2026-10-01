@@ -7,6 +7,8 @@ import {
   type PersonalityProfile,
   type TwinEnhancements,
 } from "@/lib/ai/prompts";
+import {retrieveTemporalEvidence,temporalPrompt,type TemporalRetrievalResult} from "@/lib/graph/temporal/retriever";
+import {temporalQueryFromQuestion,type TemporalQuery} from "@/lib/graph/temporal/timeline";
 import { authorizedHistory } from "@/lib/ai/history";
 import { getMemories } from "@/lib/ai/memory-manager";
 import { resolveRetrievalScope } from "@/lib/knowledge/access";
@@ -25,6 +27,7 @@ interface ChatEngineOptions {
   query: string;
   chatHistory: ChatMessage[];
   enableWebSearch?: boolean;
+  temporalQuery?: TemporalQuery;
 }
 
 interface ChatEngineResult {
@@ -32,12 +35,14 @@ interface ChatEngineResult {
   sources: RetrievalResult[];
   thinkingSteps: string[];
   evidenceTrace: EvidenceTrace[];
+  temporalTrace: TemporalRetrievalResult;
 }
 
 export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
   const { expertId, subscriberId, query, chatHistory, enableWebSearch = false } = options;
 
   const thinkingSteps: string[] = [];
+  const temporalQuery = options.temporalQuery || temporalQueryFromQuestion(query);
 
   // Fetch expert profile with personality data
   const expert = await prisma.expertProfile.findUnique({
@@ -90,7 +95,13 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   const evidenceTrace = await retrieveEvidenceTrace(scope,retrievalResults);
   retrievalResults = retrievalResults.map(r=>({...r,metadata:{...r.metadata,
     evidenceTrace:evidenceTrace.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string))}}));
-  const graphContext = evidencePrompt(evidenceTrace);
+  const temporalTrace = await retrieveTemporalEvidence(scope,retrievalResults,temporalQuery);
+  retrievalResults = retrievalResults.map(r=>({...r,metadata:{...r.metadata,temporalTrace:{
+    mode:temporalTrace.mode,validAt:temporalTrace.validAt,coverage:temporalTrace.coverage,
+    supersededStances:temporalTrace.supersededStances.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string)),
+    stances:temporalTrace.stances.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string)),
+    relations:temporalTrace.relations.filter(relation=>[...temporalTrace.stances,...temporalTrace.supersededStances].some(t=>t.chunkIds.includes(r.metadata.vectorId as string)&&relation.evidenceSpanIds.includes(t.spanId)))}}}));
+  const graphContext = [...evidencePrompt(evidenceTrace),...temporalPrompt(temporalTrace)];
 
   // Step 3: Retrieve subscriber memories
   let memories: { fact: string; category: string }[] = [];
@@ -151,5 +162,6 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     sources: retrievalResults,
     thinkingSteps,
     evidenceTrace,
+    temporalTrace,
   };
 }
