@@ -1,0 +1,40 @@
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"complete","attempt":1,"stage":"answer","latencyMs":0.16145899999992253,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"attempt","attempt":2,"caseId":"H5-unknown-experience","variant":"original","stage":"answer"}
+{"event":"complete","attempt":2,"stage":"answer","latencyMs":0.05750000000000455,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"attempt","attempt":3,"caseId":"H5-unknown-experience","variant":"candidate","stage":"answer"}
+{"event":"complete","attempt":3,"stage":"answer","latencyMs":0.05491600000004837,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"attempt","attempt":4,"caseId":"H6-premium-denial","variant":"candidate","stage":"answer"}
+{"event":"complete","attempt":4,"stage":"answer","latencyMs":0.057084000000031665,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"attempt","attempt":5,"caseId":"H6-premium-denial","variant":"original","stage":"answer"}
+{"event":"complete","attempt":5,"stage":"answer","latencyMs":0.07245900000020811,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"final","status":"complete","attempts":5,"answers":5,"reranks":0,"totalTokens":550}
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":0}
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":0}
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":110}
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":110}
+{"event":"attempt","attempt":1,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":4107}
+✔ empty/null stopped rank is accepted only for native rank parsing; empty final answers still stop (0.365208ms)
+✔ exact saved original rank request and response are validated before local replay (0.885542ms)
+✔ saved empty response runs unchanged original parser and reconstructs five sources, not a new model rank (35.412083ms)
+✔ five pending generation calls and one local replay fit original approved ten-call scope (1741.337833ms)
+✔ real next failure remains terminal without further dispatch: http (578.965417ms)
+✔ real next failure remains terminal without further dispatch: missing (579.359375ms)
+✔ real next failure remains terminal without further dispatch: empty (574.840125ms)
+✔ real next failure remains terminal without further dispatch: length (573.9705ms)
+✔ real next failure remains terminal without further dispatch: overrun (574.7775ms)
+✔ combined scope ceilings reject excess calls/stages before dispatch (0.157375ms)
+✔ default invocation remains unauthorized and initializes no requests (0.075083ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4759.150125
