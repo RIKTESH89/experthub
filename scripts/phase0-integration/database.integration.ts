@@ -73,7 +73,7 @@ describe.each(["synthetic-ada","synthetic-ben"])("real access matrix %s",(target
   if(role==="owner")viewer=targetOwner;
   else if(role!=="anonymous"){
    viewer="synthetic-visitor";await prisma.user.create({data:{id:viewer,email:"visitor@example.invalid"}});
-   await prisma.expertSubscription.create({data:{subscriberId:viewer,expertProfileId:target,status:"ACTIVE",tier:role==="entitled"?"PREMIUM":"STANDARD",price:0}});
+   await prisma.expertSubscription.create({data:{subscriberId:viewer,expertProfileId:target,status:"ACTIVE",...syntheticPaidPeriod,tier:role==="entitled"?"PREMIUM":"STANDARD",price:0}});
   }
   const scope=await resolveRetrievalScope(target,actualNs,targetOwner,viewer);
   const expected=role==="owner"?7:role==="entitled"?4:2;expect(scope.allowedVectorIds).toHaveLength(expected);
@@ -82,11 +82,11 @@ describe.each(["synthetic-ada","synthetic-ben"])("real access matrix %s",(target
 });
 test("actual warm permission downgrade, unpublish and source deletion revoke retrieval",async()=>{
  await prisma.user.create({data:{id:"synthetic-visitor",email:"visitor@example.invalid"}});
- const sub=await prisma.expertSubscription.create({data:{subscriberId:"synthetic-visitor",expertProfileId:expert,status:"ACTIVE",tier:"PREMIUM",price:0}});
+ const sub=await prisma.expertSubscription.create({data:{subscriberId:"synthetic-visitor",expertProfileId:expert,status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod,price:0}});
  await prisma.post.create({data:{id:"paid",authorId:owner,title:"Paid",content:"architecture synthetic paid",status:"PUBLISHED",isPremiumOnly:true,isRagEnabled:true}});await syncPostSource("paid");
  const resolve=()=>resolveRetrievalScope(expert,ns,owner,"synthetic-visitor");expect((await resolve()).allowedVectorIds).toHaveLength(1);
  await prisma.expertSubscription.update({where:{id:sub.id},data:{tier:"STANDARD"}});expect((await resolve()).allowedVectorIds).toHaveLength(0);
- await prisma.expertSubscription.update({where:{id:sub.id},data:{tier:"PREMIUM"}});await prisma.post.update({where:{id:"paid"},data:{status:"DRAFT"}});expect((await resolve()).allowedVectorIds).toHaveLength(0);
+ await prisma.expertSubscription.update({where:{id:sub.id},data:{tier:"PREMIUM",...syntheticPaidPeriod}});await prisma.post.update({where:{id:"paid"},data:{status:"DRAFT"}});expect((await resolve()).allowedVectorIds).toHaveLength(0);
  await prisma.post.delete({where:{id:"paid"}});expect((await resolve()).allowedVectorIds).toHaveLength(0);
 });
 test("real deletion cleanup failure persists and retry removes orphan after source is gone",async()=>{
@@ -124,7 +124,7 @@ test("local SQL latency comparison records actual DB time with synthetic embeddi
   start=performance.now();await vectorStore.query(ns,v,5,scope);phase0.push(performance.now()-start);
  }
  const stats=(values:number[])=>{const sorted=[...values].sort((a,b)=>a-b);return {medianMs:sorted[10],p95Ms:sorted[19],iterations:20};};
- writeFileSync("audit/phase0/localdb-latency.json",JSON.stringify({kind:"real local PostgreSQL SQL comparison, one synthetic vector",baseline:stats(baseline),phase0:stats(phase0),warning:"Includes different selected columns/client validation; not end-to-end latency or production performance/provider/model quality"},null,2));
+ writeFileSync(process.env.EXPERTHUB_AUDIT_DIR ? `${process.env.EXPERTHUB_AUDIT_DIR}/regression-phase0-localdb-latency.json` : "audit/phase0/localdb-latency.json",JSON.stringify({kind:"real local PostgreSQL SQL comparison, one synthetic vector",baseline:stats(baseline),phase0:stats(phase0),warning:"Includes different selected columns/client validation; not end-to-end latency or production performance/provider/model quality"},null,2));
 });
 
 test("ten concurrent enqueue replays persist exactly one durable job",async()=>{
@@ -142,3 +142,5 @@ test("migration duplicate preflight fails without choosing/deleting legacy copie
  })).rejects.toThrow("23505");
  const schema=await prisma.$queryRaw<{count:bigint}[]>`SELECT count(*) AS count FROM pg_namespace WHERE nspname='synthetic_duplicate_preflight'`;expect(schema[0].count).toBe(BigInt(0));
 });
+
+import { syntheticPaidPeriod } from "../../__tests__/helpers/paid-period";

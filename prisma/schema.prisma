@@ -276,6 +276,10 @@ model ExpertSubscription {
   tier                    SubscriptionTier   @default(PREMIUM)
   razorpaySubscriptionId  String?
   razorpayPaymentId       String?
+  paidPeriodStart         DateTime?
+  renewalCancelledAt      DateTime?
+  lastPaymentEventAt      DateTime?
+  lastPaymentEventRank    Int                @default(0)
   currentPeriodEnd        DateTime?
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
@@ -755,4 +759,19 @@ model EvidenceDecisionCase {
   extractorVersion String
   stance TemporalStance @relation(fields: [stanceId], references: [id], onDelete: Cascade)
   span EvidenceSpan @relation(fields: [spanId], references: [id], onDelete: Cascade)
+}
+
+// Minimal durable receipt: never store raw provider/customer payloads.
+model PaymentEvent {
+  id String @id
+  providerSubscriptionId String
+  paymentId String?
+  periodStart DateTime?
+  periodEnd DateTime?
+  payloadHash String
+  eventType String
+  occurredAt DateTime
+  outcome String
+  createdAt DateTime @default(now())
+  @@index([providerSubscriptionId])
 }

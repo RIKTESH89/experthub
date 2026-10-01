@@ -120,7 +120,11 @@ export const mockKnowledgeItem = {
   expertProfile: mockExpertProfile,
 };
 
+import { syntheticPaidPeriod } from "../helpers/paid-period";
+
 export const mockSubscription = {
+  ...syntheticPaidPeriod,
+  tier: "PREMIUM",
   id: "sub-id-1",
   subscriberId: "subscriber-id-1",
   expertProfileId: "profile-id-1",

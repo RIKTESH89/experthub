@@ -1,3 +1,4 @@
+import { subscriptionAccessWhere } from "@/lib/payments/access";
 import { readablePostsWhere } from "@/lib/knowledge/post-access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
     const subscriptions = await prisma.expertSubscription.findMany({
       where: {
         subscriberId: session.user.id,
-        status: "ACTIVE",
+        ...subscriptionAccessWhere(),
       },
       select: { expertProfile: { select: { userId: true } } },
     });

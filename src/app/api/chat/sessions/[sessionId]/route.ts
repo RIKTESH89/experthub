@@ -1,3 +1,6 @@
+import { toMessageSources } from "@/lib/ai/citations";
+import { resolveRetrievalScope } from "@/lib/knowledge/access";
+import { sourcesAllowed } from "@/lib/ai/history";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -20,6 +23,8 @@ export async function GET(
         expertProfile: {
           select: {
             displayName: true,
+            userId: true,
+            vectorNamespace: true,
             twinGreeting: true,
             user: { select: { id: true, name: true, image: true } },
           },
@@ -46,6 +51,15 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    // Re-authorize citations when reloading; revoked source metadata must not survive in the UI.
+    if (chatSession.messages.some(message => Array.isArray(message.sources) && message.sources.length)) {
+      const profile = chatSession.expertProfile;
+      const scope = await resolveRetrievalScope(chatSession.expertProfileId, profile.vectorNamespace, profile.userId, session.user.id);
+      return NextResponse.json({ ...chatSession, messages: chatSession.messages.map(message => ({
+        ...message,
+        sources: toMessageSources(Array.isArray(message.sources) ? message.sources.filter(source => scope.isOwner || sourcesAllowed([source], scope)) : []),
+      })) });
+    }
     return NextResponse.json(chatSession);
   } catch (error) {
     console.error("Get chat session error:", error);

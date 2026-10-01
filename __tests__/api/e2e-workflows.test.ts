@@ -147,9 +147,9 @@ beforeEach(() => {
 // 1. Expert Onboarding Flow
 // =============================================================================
 describe("E2E: Expert Onboarding Flow", () => {
-  it("Step 1 - Register as expert", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null); // no existing user
-    const createdUser = {
+  it("retired password registration: Step 1 - Register as expert", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(null);
+const createdUser = {
       ...mockUsers.expert,
       expertProfile: {
         id: "profile-id-1",
@@ -158,28 +158,23 @@ describe("E2E: Expert Onboarding Flow", () => {
         vectorNamespace: "expert_temp",
       },
     };
-    mockPrisma.user.create.mockResolvedValue(createdUser);
-    mockPrisma.expertProfile.update.mockResolvedValue({
+mockPrisma.user.create.mockResolvedValue(createdUser);
+mockPrisma.expertProfile.update.mockResolvedValue({
       ...createdUser.expertProfile,
       vectorNamespace: "expert_expert_user_expert-i",
     });
-
-    const req = createPOST("/api/auth/register", {
+const req = createPOST("/api/auth/register", {
       name: "Expert User",
       email: "expert@test.com",
       password: "password123",
       role: "EXPERT",
     });
-    const res = await registerUser(req);
-    const json = await res.json();
-
-    expect(res.status).toBe(201);
-    expect(json.user).toBeDefined();
-    expect(json.user.email).toBe("expert@test.com");
-    expect(json.user.expertProfile).toBeDefined();
-    // Password should be stripped
-    expect(json.user.hashedPassword).toBeUndefined();
-  });
+const res = await registerUser(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   it("Step 2 - Get expert profile", async () => {
     mockAuth.mockResolvedValue(mockSession.expert);
@@ -261,9 +256,9 @@ describe("E2E: Expert Onboarding Flow", () => {
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json.tiers).toHaveLength(3);
-    // Should have created 3 default tiers
-    expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
+    expect(json.tiers).toHaveLength(2);
+    // Only FREE and PREMIUM are offered; STANDARD is legacy.
+    expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(2);
   });
 
   it("Step 5 - Create first post", async () => {
@@ -348,29 +343,28 @@ describe("E2E: Expert Onboarding Flow", () => {
 // 2. Subscriber Journey Flow
 // =============================================================================
 describe("E2E: Subscriber Journey Flow", () => {
-  it("Step 1 - Register as subscriber", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
-    const createdUser = {
+  it("retired password registration: Step 1 - Register as subscriber", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(null);
+const createdUser = {
       ...mockUsers.subscriber,
       expertProfile: null,
     };
-    mockPrisma.user.create.mockResolvedValue(createdUser);
-
-    const req = createPOST("/api/auth/register", {
+mockPrisma.user.create.mockResolvedValue(createdUser);
+const req = createPOST("/api/auth/register", {
       name: "Subscriber User",
       email: "subscriber@test.com",
       password: "password123",
       role: "SUBSCRIBER",
     });
-    const res = await registerUser(req);
-    const json = await res.json();
-
-    expect(res.status).toBe(201);
-    expect(json.user.role).toBe("SUBSCRIBER");
-    expect(json.user.expertProfile).toBeNull();
-  });
+const res = await registerUser(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   it("Step 2 - Browse experts", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([
       {
         id: "expert-id-1",
@@ -512,10 +506,10 @@ describe("E2E: Subscriber Journey Flow", () => {
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json.tiers).toHaveLength(3);
+    expect(json.tiers).toHaveLength(2);
   });
 
-  it("Step 7 - Subscribe with STANDARD tier", async () => {
+  it("Step 7 - Paid tier requires payment before access", async () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.expertProfile.findUnique
       .mockResolvedValueOnce({
@@ -539,14 +533,9 @@ describe("E2E: Subscriber Journey Flow", () => {
     const res = await toggleSubscribe(req, expertParams("expert-id-1"));
     const json = await res.json();
 
-    expect(res.status).toBe(200);
-    expect(json.isSubscribed).toBe(true);
-    expect(json.totalSubscribers).toBe(11);
-    expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({ tier: "STANDARD", price: 9.99 }),
-      })
-    );
+    expect(res.status).toBe(402);
+    expect(json.requiresPayment).toBe(true);
+    expect(mockPrisma.expertSubscription.create).not.toHaveBeenCalled();
   });
 
   it("Step 8 - Create full (non-trial) chat session after subscribing", async () => {
@@ -1679,33 +1668,34 @@ describe("E2E: Access Control Tests", () => {
 // Error scenarios within workflows
 // =============================================================================
 describe("E2E: Error Scenarios", () => {
-  it("Registration fails when email already exists", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(mockUsers.subscriber);
-
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: Registration fails when email already exists", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(mockUsers.subscriber);
+const req = createPOST("/api/auth/register", {
       name: "Test",
       email: "subscriber@test.com",
       password: "password123",
       role: "SUBSCRIBER",
     });
-    const res = await registerUser(req);
-    const json = await res.json();
+const res = await registerUser(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
-    expect(res.status).toBe(409);
-    expect(json.message).toContain("already exists");
-  });
-
-  it("Registration fails with invalid data", async () => {
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: Registration fails with invalid data", async () => {
+const req = createPOST("/api/auth/register", {
       name: "T", // too short
       email: "not-an-email",
       password: "short",
       role: "SUBSCRIBER",
     });
-    const res = await registerUser(req);
-
-    expect(res.status).toBe(400);
-  });
+const res = await registerUser(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   it("Expert profile not found returns 404", async () => {
     mockAuth.mockResolvedValue(mockSession.expert);

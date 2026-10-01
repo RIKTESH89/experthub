@@ -41,7 +41,7 @@ describe("Expert Pricing Management (GET)", () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.tiers).toHaveLength(3);
+    expect(data.tiers).toHaveLength(2);
     expect(data.tiers[0].tier).toBe("FREE");
   });
 
@@ -56,8 +56,8 @@ describe("Expert Pricing Management (GET)", () => {
     const res = await getExpertPricing();
     const data = await res.json();
 
-    expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(3);
-    expect(data.tiers).toHaveLength(3);
+    expect(mockPrisma.expertPricingTier.create).toHaveBeenCalledTimes(2);
+    expect(data.tiers).toHaveLength(2);
   });
 
   it("returns 403 for non-expert", async () => {
@@ -128,14 +128,14 @@ describe("Public Pricing Endpoint", () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.tiers).toHaveLength(3);
+    expect(data.tiers).toHaveLength(2);
   });
 });
 
 describe("Subscribe with Tier", () => {
   const params = Promise.resolve({ expertId: "expert-id-1" });
 
-  it("creates subscription with specified tier", async () => {
+  it("requires payment for a specified paid tier", async () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.expertProfile.findUnique
       .mockResolvedValueOnce({ ...mockExpertProfile, user: { name: "Expert" } })
@@ -156,15 +156,12 @@ describe("Subscribe with Tier", () => {
     const res = await subscribe(req, { params });
     const data = await res.json();
 
-    expect(data.isSubscribed).toBe(true);
-    expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({ tier: "STANDARD" }),
-      })
-    );
+    expect(res.status).toBe(402);
+    expect(data.requiresPayment).toBe(true);
+    expect(mockPrisma.expertSubscription.create).not.toHaveBeenCalled();
   });
 
-  it("defaults to PREMIUM when no tier specified", async () => {
+  it("defaults to FREE without paid entitlement when no tier specified", async () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.expertProfile.findUnique
       .mockResolvedValueOnce({ ...mockExpertProfile, user: { name: "Expert" } })
@@ -185,7 +182,7 @@ describe("Subscribe with Tier", () => {
     expect(data.isSubscribed).toBe(true);
     expect(mockPrisma.expertSubscription.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ tier: "PREMIUM" }),
+        data: expect.objectContaining({ tier: "FREE", price: 0 }),
       })
     );
   });
@@ -196,6 +193,7 @@ describe("Subscribe with Tier", () => {
       .mockResolvedValueOnce({ ...mockExpertProfile, user: { name: "Expert" } })
       .mockResolvedValueOnce({ totalSubscribers: 9 });
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ tier: "FREE",
       id: "sub-1",
       status: "ACTIVE",
     });

@@ -1,3 +1,4 @@
+import { paidAccessWhere } from "@/lib/payments/access";
 import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { isEntitled } from "./access";
@@ -9,9 +10,7 @@ export function readablePostsWhere(viewerId?: string, now = new Date()): Prisma.
   return { OR: [publicPost, { authorId: viewerId }, {
     status: "PUBLISHED", isHidden: false,
     author: { expertProfile: { subscriptions: { some: {
-      subscriberId: viewerId, status: "ACTIVE", tier: "PREMIUM",
-      AND: [ { OR: [{ endDate: null }, { endDate: { gt: now } }] },
-        { OR: [{ currentPeriodEnd: null }, { currentPeriodEnd: { gt: now } }] } ],
+      subscriberId: viewerId, tier: "PREMIUM", ...paidAccessWhere(now),
     } } } },
   }] };
 }

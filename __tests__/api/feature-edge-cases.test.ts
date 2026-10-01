@@ -1,3 +1,4 @@
+import { syntheticPaidPeriod } from "../helpers/paid-period";
 /**
  * Edge case & integration tests for all 4 new features
  * Tests cover: boundary conditions, error handling, cross-feature interactions
@@ -113,6 +114,7 @@ describe("Trial Edge Cases", () => {
       user: { name: "Expert" },
     });
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ ...syntheticPaidPeriod,
       status: "ACTIVE",
       tier: "PREMIUM",
     });
@@ -138,6 +140,7 @@ describe("Trial Edge Cases", () => {
       freeTrialQuestions: 3,
     });
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ ...syntheticPaidPeriod, tier: "PREMIUM",
       status: "ACTIVE",
     });
     // Trial usage maxed out but doesn't matter since subscribed
@@ -436,6 +439,7 @@ describe("Cross-Feature Interactions", () => {
     });
     // Has FREE subscription (no twin access)
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ ...syntheticPaidPeriod,
       status: "ACTIVE",
       tier: "FREE",
     });
@@ -463,7 +467,7 @@ describe("Cross-Feature Interactions", () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    expect(data.tiers).toHaveLength(3);
+    expect(data.tiers).toHaveLength(2);
   });
 
   it("admin cannot access expert pricing management", async () => {

@@ -18,7 +18,7 @@ beforeEach(async()=>{
  await prisma.user.create({data:{id:owner,email:"exp13@example.invalid",role:"EXPERT",expertProfile:{create:{id:expert,displayName:"Synthetic Ada",specialty:[],vectorNamespace:ns}}}});
  embed.mockReset().mockResolvedValue(Array.from({length:1536},(_,i)=>i===0?1:0));global.fetch=async()=>{throw Error("External calls forbidden");};
 });
-afterAll(async()=>{const {writeFileSync}=await import("fs");writeFileSync("audit/exp13/review-cases.json",JSON.stringify({synthetic:true,status:"PENDING human review; automated tests are not human review",reviewCases},null,2)+"\n");await prisma.$disconnect();});
+afterAll(async()=>{const {writeFileSync}=await import("fs");writeFileSync(process.env.EXPERTHUB_AUDIT_DIR ? `${process.env.EXPERTHUB_AUDIT_DIR}/regression-exp13-review-cases.json` : "audit/exp13/review-cases.json",JSON.stringify({synthetic:true,status:"PENDING human review; automated tests are not human review",reviewCases},null,2)+"\n");await prisma.$disconnect();});
 test("dated contradictory stance periods distinguish current/as-of; ingestion never becomes validity",async()=>{
  await post("old","From 2024-01-01 until 2025-01-01, "+prefix+"I prefer monolith.");await post("new","From 2025-01-01, "+prefix+"I do not prefer monolith.");
  const past=await read({mode:"as-of",validAt:new Date("2024-06-01")}),current=await read();expect(past.stances).toHaveLength(1);expect(past.stances[0].polarity).toBe("positive");expect(current.stances).toHaveLength(1);expect(current.stances[0].polarity).toBe("negative");expect(current.stances[0].recordedAt).toEqual(current.stances[0].ingestedAt);expect(current.stances[0].validFrom).toEqual(new Date("2025-01-01"));
@@ -53,7 +53,7 @@ test("dated supersession is effective only at declared date and retains both aud
 test("restricted supersession cannot suppress public stance or leak its relation; downgrade rechecks live entitlement",async()=>{
  await post("old","From 2024-01-01, "+prefix+"I prefer monolith.");await post("new","From 2025-01-01, "+prefix+"I prefer services instead of monolith.",true);
  expect((await read()).stances.map(s=>s.action)).toEqual(["monolith"]);expect((await read()).relations).toEqual([]);
- await prisma.user.create({data:{id:"visitor",email:"visitor@example.invalid"}});await prisma.expertSubscription.create({data:{subscriberId:"visitor",expertProfileId:expert,tier:"PREMIUM",status:"ACTIVE",price:0}});
+ await prisma.user.create({data:{id:"visitor",email:"visitor@example.invalid"}});await prisma.expertSubscription.create({data:{subscriberId:"visitor",expertProfileId:expert,tier:"PREMIUM",...syntheticPaidPeriod,status:"ACTIVE",price:0}});
  const entitled=await scope("visitor");expect((await read(undefined,entitled)).stances.map(s=>s.action)).toEqual(["services"]);await prisma.expertSubscription.update({where:{subscriberId_expertProfileId:{subscriberId:"visitor",expertProfileId:expert}},data:{tier:"STANDARD"}});expect((await read(undefined,entitled)).stances.map(s=>s.action)).toEqual(["monolith"]);expect((await read(undefined,entitled)).relations).toEqual([]);
 });
 test("same revision replay/concurrent backfill is idempotent; deletion retracts independent support and audit persists",async()=>{
@@ -67,7 +67,7 @@ test("edit/unpublish retracts current and as-of serving, preserves historical de
 test("actual chat engine supports explicit as-of query and carries allowed decision trace without model network",async()=>{
  await post("post","From 2024-01-01 until 2025-01-01, "+prefix+"I chose monolith because operations capacity is limited.");let wire:any;global.fetch=jest.fn(async(url,options)=>{if(url!=="https://api.openai.com/v1/chat/completions")throw Error("External call forbidden");wire=JSON.parse(String(options?.body));return new Response('data: [DONE]\n\n');});
  const result=await runChatEngine({expertId:owner,query:"As of 2024-06-01, what architecture choice was documented for monolith?",chatHistory:[]});expect(result.temporalTrace.stances).toHaveLength(1);expect(result.sources[0].metadata.temporalTrace).toMatchObject({mode:"as-of"});expect(wire.messages[0].content).toContain("operations capacity is limited");expect(wire.messages[0].content).toContain("Recorded time is not validity");expect(global.fetch).toHaveBeenCalledTimes(1);
- const {writeFileSync}=await import("fs");writeFileSync("audit/exp13/answer-trace.json",JSON.stringify({synthetic:true,modelResponse:"in-process fake; no network",temporalTrace:result.temporalTrace,sources:result.sources,systemPrompt:wire.messages[0].content},null,2)+"\n");
+ const {writeFileSync}=await import("fs");writeFileSync(process.env.EXPERTHUB_AUDIT_DIR ? `${process.env.EXPERTHUB_AUDIT_DIR}/regression-exp13-answer-trace.json` : "audit/exp13/answer-trace.json",JSON.stringify({synthetic:true,modelResponse:"in-process fake; no network",temporalTrace:result.temporalTrace,sources:result.sources,systemPrompt:wire.messages[0].content},null,2)+"\n");
 });
 
 test("EXP13 additive rollback DDL preserves EXP12 sources/evidence and rolls back transactionally",async()=>{
@@ -81,3 +81,5 @@ test("mismatched decision-span support cannot inject restricted fields into a pu
  await prisma.evidenceDecisionCase.create({data:{id:"synthetic-inconsistent-support",stanceId:publicStance.id,spanId:restricted.spanId,chosenAction:"RESTRICTED_ONLY",documentedReasons:"RESTRICTED_REASON",decisionType:"recommendation",extractorVersion:"literal-temporal-decision-v1"}});
  const r=await read();expect(r.stances).toHaveLength(1);expect(r.stances[0].documentedReasons).toBeNull();expect(JSON.stringify(r)).not.toContain("RESTRICTED_REASON");
 });
+
+import { syntheticPaidPeriod } from "../../__tests__/helpers/paid-period";

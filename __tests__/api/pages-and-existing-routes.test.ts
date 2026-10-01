@@ -123,9 +123,9 @@ describe("SECTION 1: Existing API Routes Still Work", () => {
   // 1. POST /api/auth/register
   // -----------------------------------------------------------------------
   describe("POST /api/auth/register", () => {
-    it("creates user successfully", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(null);
-      const createdUser = {
+    it("retired password registration: creates user successfully", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(null);
+const createdUser = {
         id: "new-user-id",
         name: "New Expert",
         email: "new@test.com",
@@ -145,29 +145,23 @@ describe("SECTION 1: Existing API Routes Still Work", () => {
           vectorNamespace: "expert_temp",
         },
       };
-      mockPrisma.user.create.mockResolvedValue(createdUser);
-      mockPrisma.expertProfile.update.mockResolvedValue({
+mockPrisma.user.create.mockResolvedValue(createdUser);
+mockPrisma.expertProfile.update.mockResolvedValue({
         ...createdUser.expertProfile,
         vectorNamespace: "expert_new-expert_new-user",
       });
-
-      const req = createPOST("/api/auth/register", {
+const req = createPOST("/api/auth/register", {
         name: "New Expert",
         email: "new@test.com",
         password: "password123",
         role: "EXPERT",
       });
-
-      const res = await registerUser(req);
-      const data = await res.json();
-
-      expect(res.status).toBe(201);
-      expect(data.user).toBeDefined();
-      expect(data.user.email).toBe("new@test.com");
-      expect(data.user.hashedPassword).toBeUndefined();
-      expect(mockPrisma.user.create).toHaveBeenCalled();
-      expect(mockPrisma.expertProfile.update).toHaveBeenCalled();
-    });
+const res = await registerUser(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
   });
 
   // -----------------------------------------------------------------------

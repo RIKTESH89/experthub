@@ -1,5 +1,8 @@
 "use client";
 
+import { createSSEDecoder } from "@/lib/ai/sse";
+import { toMessageSources } from "@/lib/ai/citations";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Bot, Brain, Plus, History, MessageSquare, X, ChevronDown, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -133,7 +136,7 @@ export function ChatInterface({
               role: msg.role as "user" | "assistant",
               content: msg.content,
               createdAt: msg.createdAt,
-              sources: Array.isArray(msg.sources) ? msg.sources : [],
+              sources: toMessageSources(msg.sources),
             })
           );
           setMessages(loadedMessages);
@@ -194,7 +197,7 @@ export function ChatInterface({
                 role: msg.role as "user" | "assistant",
                 content: msg.content,
                 createdAt: msg.createdAt,
-                sources: Array.isArray(msg.sources) ? msg.sources : [],
+                sources: toMessageSources(msg.sources),
               })
             );
             setMessages(loadedMessages);
@@ -290,7 +293,7 @@ export function ChatInterface({
           role: msg.role as "user" | "assistant",
           content: msg.content,
           createdAt: msg.createdAt,
-          sources: Array.isArray(msg.sources) ? msg.sources : [],
+          sources: toMessageSources(msg.sources),
         })
       );
       setSessionId(targetSessionId);
@@ -395,18 +398,12 @@ export function ChatInterface({
         const reader = res.body?.getReader();
         if (!reader) throw new Error("No response stream");
 
-        const decoder = new TextDecoder();
+        const decoder = createSSEDecoder();
         let fullContent = "";
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
-
-          for (const line of lines) {
-            const data = line.slice(6);
+          for (const data of decoder.push(value, done)) {
             if (data === "[DONE]") continue;
 
             try {
@@ -433,7 +430,7 @@ export function ChatInterface({
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === assistantId
-                      ? { ...m, sources: parsed.sources }
+                      ? { ...m, id: typeof parsed.messageId === "string" ? parsed.messageId : m.id, sources: toMessageSources(parsed.sources) }
                       : m
                   )
                 );
@@ -442,6 +439,7 @@ export function ChatInterface({
               // Skip malformed chunks
             }
           }
+          if (done) break;
         }
         // Background refetch of memory count after streaming completes
         fetch(`/api/chat/sessions/${activeSessionId}/memories`)

@@ -6,11 +6,8 @@ import { SourceCitation } from "./source-citation";
 import { ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { motion } from "motion/react";
 
-export interface MessageSource {
-  title: string;
-  snippet: string;
-  url?: string;
-}
+import type { MessageSource } from "@/lib/ai/citations";
+export type { MessageSource } from "@/lib/ai/citations";
 
 export interface Message {
   id: string;

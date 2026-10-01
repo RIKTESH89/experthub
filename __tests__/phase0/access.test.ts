@@ -26,16 +26,16 @@ describe.each(["ada", "ben"])("EXP8 expert %s", (expert) => {
     ["entitled", true, ["paidpost","premium","public","published"]],
     [`${expert}-owner`, false, ["draft","hidden","paidpost","premium","private","public","published"]],
   ])("audience %s", async (viewer, entitled, expected) => {
-    prisma.expertSubscription.findUnique.mockResolvedValue(entitled ? {status:"ACTIVE",tier:"PREMIUM"}:null);
+    prisma.expertSubscription.findUnique.mockResolvedValue(entitled ? {status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod}:null);
     const scope = await resolveRetrievalScope(expert, `${expert}-ns`, `${expert}-owner`, viewer);
     expect(scope.allowedVectorIds).toEqual(expected.map((id) => `${expert}:${id}`).sort());
     expect(scope.allowedVectorIds.every((id) => id.startsWith(`${expert}:`))).toBe(true);
   });
 });
 test("warm vector manifest cannot outlive permission downgrade, unpublish, disable, or deletion", async () => {
-  prisma.expertSubscription.findUnique.mockResolvedValue({status:"ACTIVE",tier:"PREMIUM"});
+  prisma.expertSubscription.findUnique.mockResolvedValue({status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod});
   expect((await resolveRetrievalScope("ada","ada-ns","ada-owner","subscriber")).allowedVectorIds).toContain("ada:paidpost");
-  prisma.expertSubscription.findUnique.mockResolvedValue({status:"CANCELED",tier:"PREMIUM"});
+  prisma.expertSubscription.findUnique.mockResolvedValue({status:"CANCELED",tier:"PREMIUM",...syntheticPaidPeriod});
   posts.find((p) => p.authorId === "ada-owner" && p.id === "published")!.isHidden=true;
   items=items.filter((i) => !(i.expertProfileId === "ada" && i.id === "public"));
   expect((await resolveRetrievalScope("ada","ada-ns","ada-owner","subscriber")).allowedVectorIds).toEqual([]);
@@ -58,3 +58,5 @@ test("cached assistant text/citations with revoked sources cannot enter a new pu
   ],scope)).toEqual([{role:"user",content:"current goal"},{role:"assistant",content:"public answer"}]);
   expect(sourcesAllowed([{metadata:{expertProfileId:"ben",vectorId:"ada:public"}}],scope)).toBe(false);
 });
+
+import { syntheticPaidPeriod } from "../helpers/paid-period";

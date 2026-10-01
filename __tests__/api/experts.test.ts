@@ -99,6 +99,7 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 describe("GET /api/experts", () => {
   it("1. lists experts with expert profiles", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     const experts = [mockExpertListItem, mockExpertListItem2];
     mockPrisma.user.findMany.mockResolvedValue(experts);
     mockPrisma.user.count.mockResolvedValue(2);
@@ -127,6 +128,7 @@ describe("GET /api/experts", () => {
   });
 
   it("2. filters by search term", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([mockExpertListItem]);
     mockPrisma.user.count.mockResolvedValue(1);
 
@@ -148,6 +150,7 @@ describe("GET /api/experts", () => {
   });
 
   it("3. filters by specialty", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([mockExpertListItem]);
     mockPrisma.user.count.mockResolvedValue(1);
 
@@ -164,6 +167,7 @@ describe("GET /api/experts", () => {
   });
 
   it("4. sorts by creation date when sort=newest", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([mockExpertListItem]);
     mockPrisma.user.count.mockResolvedValue(1);
 
@@ -178,6 +182,7 @@ describe("GET /api/experts", () => {
   });
 
   it("5. sorts by subscriber count when sort=most_subscribers", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([mockExpertListItem2, mockExpertListItem]);
     mockPrisma.user.count.mockResolvedValue(2);
 
@@ -192,6 +197,7 @@ describe("GET /api/experts", () => {
   });
 
   it("6. respects page and limit for pagination", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([mockExpertListItem2]);
     mockPrisma.user.count.mockResolvedValue(15);
 
@@ -241,6 +247,7 @@ describe("GET /api/experts/:id", () => {
     mockPrisma.user.findUnique.mockResolvedValue(mockExpertDetail);
 
     const activeSub = {
+ tier: "FREE",
       id: "sub-id-1",
       subscriberId: "subscriber-id-1",
       expertProfileId: "profile-id-1",
@@ -324,7 +331,8 @@ describe("POST /api/experts/:id/subscribe", () => {
         subscriberId: "subscriber-id-1",
         expertProfileId: "profile-id-1",
         status: "ACTIVE",
-        price: 9.99,
+        price: 0,
+        tier: "FREE",
       }),
     });
 
@@ -341,6 +349,7 @@ describe("POST /api/experts/:id/subscribe", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const activeSub = {
+ tier: "FREE",
       id: "sub-id-1",
       subscriberId: "subscriber-id-1",
       expertProfileId: "profile-id-1",
@@ -399,6 +408,7 @@ describe("POST /api/experts/:id/subscribe", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const activeSub = {
+ tier: "FREE",
       id: "sub-id-1",
       subscriberId: "subscriber-id-1",
       expertProfileId: "profile-id-1",
@@ -474,6 +484,7 @@ describe("POST /api/experts/:id/subscribe", () => {
 // ---------------------------------------------------------------------------
 describe("GET /api/experts/trending", () => {
   it("17. returns top experts by engagement", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     const trendingExperts = [
       {
         id: "expert-id-1",
@@ -525,7 +536,7 @@ describe("GET /api/experts/trending", () => {
 
     mockPrisma.user.findMany.mockResolvedValue(trendingExperts);
 
-    const res = await getTrending(createRequest("/api/experts/trending"));
+    const res = await getTrending();
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -587,7 +598,7 @@ describe("GET /api/subscriptions", () => {
     ];
     mockPrisma.expertSubscription.findMany.mockResolvedValue(subs);
 
-    const res = await getSubscriptions(createRequest("/api/subscriptions"));
+    const res = await getSubscriptions();
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -600,10 +611,10 @@ describe("GET /api/subscriptions", () => {
     // Verify only ACTIVE subscriptions for current user are queried
     expect(mockPrisma.expertSubscription.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: {
+        where: expect.objectContaining({
           subscriberId: "subscriber-id-1",
-          status: "ACTIVE",
-        },
+          OR: expect.arrayContaining([{ tier: "FREE", status: "ACTIVE" }, expect.objectContaining({ razorpayPaymentId: { not: null } })]),
+        }),
         orderBy: { createdAt: "desc" },
       })
     );
@@ -612,7 +623,7 @@ describe("GET /api/subscriptions", () => {
   it("19. returns 401 when unauthenticated", async () => {
     mockAuth.mockResolvedValue(null);
 
-    const res = await getSubscriptions(createRequest("/api/subscriptions"));
+    const res = await getSubscriptions();
     const body = await res.json();
 
     expect(res.status).toBe(401);

@@ -228,9 +228,7 @@ const mockPrismaClient = {
   $queryRawUnsafe: jest.fn().mockResolvedValue([]),
   $executeRaw: jest.fn().mockResolvedValue(0),
   $executeRawUnsafe: jest.fn().mockResolvedValue(0),
-  $transaction: jest.fn((input) =>
-    Array.isArray(input) ? Promise.all(input) : input(mockPrismaClient)
-  ),
+  $transaction: jest.fn(),
 };
 
 export default mockPrismaClient;
@@ -244,4 +242,9 @@ export const resetAllMocks = () => {
       });
     }
   });
+  mockPrismaClient.twinInteraction.create.mockResolvedValue({});
 };
+
+mockPrismaClient.$transaction.mockImplementation((input: unknown) =>
+  Array.isArray(input) ? Promise.all(input) : (input as (tx: typeof mockPrismaClient) => unknown)(mockPrismaClient)
+);

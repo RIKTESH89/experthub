@@ -1,3 +1,5 @@
+import { syntheticPaidPeriod } from "../helpers/paid-period";
+import { toMessageSources } from "@/lib/ai/citations";
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import { mockExpertProfile, mockChatSession } from "../mocks/data";
@@ -86,6 +88,7 @@ async function readSSEStream(
  */
 function setupAuthenticatedSession(overrides: Record<string, unknown> = {}) {
   mockAuth.mockResolvedValue(mockSession.subscriber);
+  mockPrisma.expertSubscription.findUnique.mockResolvedValue({ status: "ACTIVE", tier: "PREMIUM", ...syntheticPaidPeriod });
 
   const defaultSession = {
     ...mockChatSession,
@@ -603,7 +606,7 @@ describe("Enhanced Message Route - Chat Engine Integration", () => {
 
     const doneEvent = events.find((e) => e.done === true);
     expect(doneEvent).toBeDefined();
-    expect(doneEvent!.sources).toEqual(mockSources);
+    expect(doneEvent!.sources).toEqual(toMessageSources(mockSources));
   });
 
   it("updates session timestamp after stream completes", async () => {

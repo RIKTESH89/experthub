@@ -17,7 +17,7 @@ beforeEach(()=>{
  resetAllMocks();auth.mockReset();engine.mockReset();memoryExtractor.mockResolvedValue([]);process.env.AUTH_SECRET="synthetic-phase0-signing-secret";
  auth.mockResolvedValue({user:{id:"visitor-a",role:"SUBSCRIBER"}});
  prisma.chatSession.findUnique.mockImplementation(async({include}: {include:{messages:{orderBy:unknown;take:number}}})=>({id:"session-a",subscriberId:"visitor-a",expertProfileId:"ada",expertProfile:{userId:"ada-owner"},isTrial:false,messages:ordered(include.messages)}));
- prisma.expertSubscription.findUnique.mockResolvedValue({status:"ACTIVE",tier:"PREMIUM"});prisma.expertPricingTier.findUnique.mockResolvedValue({monthlyQuestions:null});
+ prisma.expertSubscription.findUnique.mockResolvedValue({status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod});prisma.expertPricingTier.findUnique.mockResolvedValue({monthlyQuestions:null});
  prisma.chatMessage.create.mockResolvedValue({});prisma.monthlyTwinUsage.upsert.mockResolvedValue({});
  prisma.widgetConfig.findUnique.mockResolvedValue({id:"widget-ada",isEnabled:true,freeQuestions:100,expertProfile:{id:"ada",userId:"ada-owner"}});
  prisma.widgetSession.upsert.mockResolvedValue({id:"widget-session-a",questionCount:0});prisma.widgetMessage.findMany.mockImplementation(async(query:{orderBy:unknown;take:number})=>ordered(query));
@@ -45,3 +45,5 @@ test("EXP7 frozen original route reproduces the >50-message stale-window failure
  const response=await oldSubscriberChat(createPOST("/api/chat/sessions/session-a/messages",{content:"What next?"}),{params:Promise.resolve({sessionId:"session-a"})});await response.text();
  const history=engine.mock.calls[0][0].chatHistory;expect(history).toHaveLength(50);expect(history.some((m:{content:string})=>m.content==="Correction: my team now has 20 engineers")).toBe(false);
 });
+
+import { syntheticPaidPeriod } from "../helpers/paid-period";

@@ -40,6 +40,36 @@ export function SourceCitation({ sources }: SourceCitationProps) {
                     <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
                       {source.snippet}
                     </p>
+                    {!!source.metadata?.temporalTrace && (() => {
+                      const temporal = source.metadata.temporalTrace as Record<string, unknown>;
+                      const stances = Array.isArray(temporal.stances) ? temporal.stances : [];
+                      return <details className="mt-2 text-[11px] text-muted-foreground">
+                        <summary className="cursor-pointer">Time and source context</summary>
+                        <p>{String(temporal.mode || "current")} · {String(temporal.validAt || "unknown date")}</p>
+                        <p>{String(temporal.coverage || "selected sources")}</p>
+                        {stances.map((value, index) => {
+                          const stance = value as Record<string, unknown>;
+                          return <div key={index} className="mt-1 break-words">
+                            <p>{String(stance.origin || "unknown origin")} · {String(stance.kind || "unknown")} · {String(stance.certainty || "unknown certainty")}</p>
+                            <p>Valid from {String(stance.validFrom || "unknown")} until {String(stance.validUntil || "unknown")}</p>
+                            <p>Revision {String(stance.revisionId || "unknown")} · span {String(stance.start ?? "?")}–{String(stance.end ?? "?")}</p>
+                          </div>;
+                        })}
+                      </details>;
+                    })()}
+                    {Array.isArray(source.metadata?.evidenceTrace) && source.metadata.evidenceTrace.length > 0 && (
+                      <details className="mt-2 text-[11px] text-muted-foreground">
+                        <summary className="cursor-pointer">Evidence and attribution</summary>
+                        {source.metadata.evidenceTrace.map((value, index) => {
+                          const trace = value as Record<string, unknown>;
+                          return <div key={index} className="mt-1 break-words">
+                            <p>{String(trace.speakerRole || "unknown")} · {String(trace.kind || "unknown")} · {trace.endorsedByOwner === true ? "owner endorsed" : "no owner endorsement"}</p>
+                            <p>Revision {String(trace.revisionId || "unknown")} · span {String(trace.start ?? "?")}–{String(trace.end ?? "?")}</p>
+                            <blockquote>{String(trace.text || "")}</blockquote>
+                          </div>;
+                        })}
+                      </details>
+                    )}
                   </div>
                   {source.url && (
                     <a

@@ -1,3 +1,5 @@
+import { cancelSubscription } from "@/lib/payments/cancel";
+import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (existing && existing.status === "ACTIVE") {
+    if (existing && hasSubscriptionAccess(existing)) {
       return NextResponse.json(
         { error: "You already have an active subscription to this expert" },
         { status: 409 }
@@ -62,12 +64,11 @@ export async function POST(request: NextRequest) {
     }
 
     // If there's a PENDING subscription, cancel the old Razorpay subscription first
-    if (existing && existing.status === "PENDING" && existing.razorpaySubscriptionId) {
+    if (existing && existing.razorpaySubscriptionId) {
       try {
-        const razorpayForCancel = getRazorpay();
-        await razorpayForCancel.subscriptions.cancel(existing.razorpaySubscriptionId);
+        await cancelSubscription(existing.id, session.user.id);
       } catch {
-        // Old subscription may already be expired/cancelled on Razorpay — safe to ignore
+        return NextResponse.json({ error: "Existing payment subscription could not be cancelled. Retry or contact support." }, { status: 503 });
       }
     }
 
@@ -130,6 +131,12 @@ export async function POST(request: NextRequest) {
             razorpaySubscriptionId: subscription.id,
             startDate: new Date(),
             endDate: null,
+            currentPeriodEnd: null,
+            paidPeriodStart: null,
+            renewalCancelledAt: null,
+            razorpayPaymentId: null,
+            lastPaymentEventAt: null,
+            lastPaymentEventRank: 0,
           },
         });
       } else {

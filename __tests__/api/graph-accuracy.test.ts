@@ -51,7 +51,7 @@ describe("GET /api/expert/graph", () => {
     mockAuth.mockResolvedValue(null);
 
     const req = createGET("/api/expert/graph");
-    const res = await getGraph(req);
+    const res = await getGraph();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -62,7 +62,7 @@ describe("GET /api/expert/graph", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const req = createGET("/api/expert/graph");
-    const res = await getGraph(req);
+    const res = await getGraph();
     const data = await res.json();
 
     expect(res.status).toBe(403);
@@ -99,7 +99,7 @@ describe("GET /api/expert/graph", () => {
     ]);
 
     const req = createGET("/api/expert/graph");
-    const res = await getGraph(req);
+    const res = await getGraph();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -120,7 +120,7 @@ describe("GET /api/expert/graph", () => {
     mockPrisma.knowledgeNode.findMany.mockResolvedValue([]);
 
     const req = createGET("/api/expert/graph");
-    const res = await getGraph(req);
+    const res = await getGraph();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -135,7 +135,7 @@ describe("POST /api/expert/graph", () => {
     mockAuth.mockResolvedValue(null);
 
     const req = createPOST("/api/expert/graph", {});
-    const res = await buildGraph(req);
+    const res = await buildGraph();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -146,7 +146,7 @@ describe("POST /api/expert/graph", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const req = createPOST("/api/expert/graph", {});
-    const res = await buildGraph(req);
+    const res = await buildGraph();
     const data = await res.json();
 
     expect(res.status).toBe(403);
@@ -194,7 +194,7 @@ describe("POST /api/expert/graph", () => {
     mockPrisma.knowledgeEdge.upsert.mockResolvedValue({ id: "edge-1" });
 
     const req = createPOST("/api/expert/graph", {});
-    const res = await buildGraph(req);
+    const res = await buildGraph();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -210,7 +210,7 @@ describe("POST /api/expert/graph", () => {
     mockPrisma.knowledgeItem.findMany.mockResolvedValue([]);
 
     const req = createPOST("/api/expert/graph", {});
-    const res = await buildGraph(req);
+    const res = await buildGraph();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -327,7 +327,7 @@ describe("GET /api/expert/accuracy-score", () => {
     mockAuth.mockResolvedValue(null);
 
     const req = createGET("/api/expert/accuracy-score");
-    const res = await getScore(req);
+    const res = await getScore();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -338,7 +338,7 @@ describe("GET /api/expert/accuracy-score", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const req = createGET("/api/expert/accuracy-score");
-    const res = await getScore(req);
+    const res = await getScore();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -365,7 +365,7 @@ describe("GET /api/expert/accuracy-score", () => {
     mockPrisma.twinAccuracyScore.findUnique.mockResolvedValue(cachedScore);
 
     const req = createGET("/api/expert/accuracy-score");
-    const res = await getScore(req);
+    const res = await getScore();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -418,7 +418,7 @@ describe("GET /api/expert/accuracy-score", () => {
     mockPrisma.twinAccuracyScore.upsert.mockResolvedValue({});
 
     const req = createGET("/api/expert/accuracy-score");
-    const res = await getScore(req);
+    const res = await getScore();
     const data = await res.json();
 
     expect(res.status).toBe(200);
@@ -433,7 +433,7 @@ describe("POST /api/expert/accuracy-score", () => {
     mockAuth.mockResolvedValue(null);
 
     const req = createPOST("/api/expert/accuracy-score", {});
-    const res = await calcScore(req);
+    const res = await calcScore();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -444,7 +444,7 @@ describe("POST /api/expert/accuracy-score", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const req = createPOST("/api/expert/accuracy-score", {});
-    const res = await calcScore(req);
+    const res = await calcScore();
     const data = await res.json();
 
     expect(res.status).toBe(401);
@@ -489,7 +489,7 @@ describe("POST /api/expert/accuracy-score", () => {
     mockPrisma.twinAccuracyScore.upsert.mockResolvedValue({});
 
     const req = createPOST("/api/expert/accuracy-score", {});
-    const res = await calcScore(req);
+    const res = await calcScore();
     const data = await res.json();
 
     expect(res.status).toBe(200);

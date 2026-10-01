@@ -231,6 +231,7 @@ describe("Featured Experts API", () => {
 
   // 9. Returns featured experts sorted by subscribers
   it("GET /experts/featured - returns featured experts", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue(expertsList);
 
     const req = createGET("/api/experts/featured");
@@ -250,6 +251,7 @@ describe("Featured Experts API", () => {
 
   // 10. Respects limit parameter
   it("GET /experts/featured?limit=3 - respects limit parameter", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([]);
 
     const req = createGET("/api/experts/featured", { limit: "3" });

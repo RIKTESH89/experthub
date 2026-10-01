@@ -1,0 +1,20 @@
+PASS scripts/exp13/temporal.integration.ts
+  ✓ dated contradictory stance periods distinguish current/as-of; ingestion never becomes validity (70 ms)
+  ✓ undated contradiction and different-choice disagreement remain unresolved with both supports (49 ms)
+  ✓ source-backed decision reason/constraints/alternatives/tradeoffs/exceptions; reason-missing stays null (42 ms)
+  ✓ quoted/third-party/visitor disagreement is not expert stance; topic cooccurrence creates no attribute (59 ms)
+  ✓ principles and boundaries have immutable exact-span evidence, no inferred links (66 ms)
+  ✓ dated supersession is effective only at declared date and retains both auditable spans (45 ms)
+  ✓ restricted supersession cannot suppress public stance or leak its relation; downgrade rechecks live entitlement (49 ms)
+  ✓ same revision replay/concurrent backfill is idempotent; deletion retracts independent support and audit persists (60 ms)
+  ✓ edit/unpublish retracts current and as-of serving, preserves historical decisions and blocks foreign tenant (46 ms)
+  ✓ actual chat engine supports explicit as-of query and carries allowed decision trace without model network (41 ms)
+  ✓ EXP13 additive rollback DDL preserves EXP12 sources/evidence and rolls back transactionally (41 ms)
+  ✓ mismatched decision-span support cannot inject restricted fields into a public stance (42 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        0.847 s, estimated 1 s
+Ran all test suites.
+Test results written to: audit/exp25-26/exp13-regression.json

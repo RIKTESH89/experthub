@@ -650,7 +650,7 @@ describe("Trending", () => {
     mockPrisma.post.findMany.mockResolvedValue(trendingPosts);
 
     const req = createGET("/api/posts/trending");
-    const res = await getTrending();
+    const res = await getTrending(req);
     const json = await res.json();
 
     expect(res.status).toBe(200);

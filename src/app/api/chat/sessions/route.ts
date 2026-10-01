@@ -1,3 +1,4 @@
+import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
         messages: {
           orderBy: { createdAt: "desc" },
           take: 1,
+          select: { id: true, role: true, content: true, createdAt: true },
         },
       },
       orderBy: { updatedAt: "desc" },
@@ -98,7 +100,7 @@ export async function POST(request: NextRequest) {
     });
 
     const hasActiveSubscription =
-      !!subscription && subscription.status === "ACTIVE";
+      hasSubscriptionAccess(subscription);
 
     let isTrial = false;
 

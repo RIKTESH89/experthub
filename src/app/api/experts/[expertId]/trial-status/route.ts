@@ -1,3 +1,4 @@
+import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -38,9 +39,9 @@ export async function GET(
     });
 
     const hasSubscription =
-      !!subscription && subscription.status === "ACTIVE";
+      hasSubscriptionAccess(subscription);
 
-    if (hasSubscription) {
+    if (hasSubscription && subscription) {
       // Look up the tier's monthly question limit
       const pricingTier = await prisma.expertPricingTier.findUnique({
         where: {

@@ -37,10 +37,9 @@ describe("POST /api/auth/register", () => {
   };
 
   // 1. Successful subscriber registration
-  it("creates a subscriber and returns user without password", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
-
-    const createdUser = {
+  it("retired password registration: creates a subscriber and returns user without password", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(null);
+const createdUser = {
       id: "new-sub-id",
       name: validSubscriber.name,
       email: validSubscriber.email,
@@ -54,50 +53,25 @@ describe("POST /api/auth/register", () => {
       updatedAt: new Date(),
       expertProfile: null,
     };
-    mockPrisma.user.create.mockResolvedValue(createdUser);
-
-    const req = createPOST("/api/auth/register", validSubscriber);
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(201);
-    expect(body.user).toBeDefined();
-    expect(body.user.email).toBe(validSubscriber.email);
-    expect(body.user.name).toBe(validSubscriber.name);
-    expect(body.user.role).toBe("SUBSCRIBER");
-    // Password must not be exposed
-    expect(body.user.hashedPassword).toBeUndefined();
-
-    // Verify prisma calls
-    expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-      where: { email: validSubscriber.email },
-    });
-    expect(mockPrisma.user.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          name: validSubscriber.name,
-          email: validSubscriber.email,
-          hashedPassword: "$2a$12$hashed",
-          role: "SUBSCRIBER",
-        }),
-        include: { expertProfile: true },
-      })
-    );
-    // No expertProfile update for subscribers
-    expect(mockPrisma.expertProfile.update).not.toHaveBeenCalled();
-  });
+mockPrisma.user.create.mockResolvedValue(createdUser);
+const req = createPOST("/api/auth/register", validSubscriber);
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   // 2. Successful expert registration - creates user AND expert profile
-  it("creates an expert with an expert profile and updates vectorNamespace", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
-
-    const expertProfile = {
+  it("retired password registration: creates an expert with an expert profile and updates vectorNamespace", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(null);
+const expertProfile = {
       id: "profile-new-id",
       userId: "new-expert-id",
       displayName: validExpert.name,
       vectorNamespace: "expert_temp",
     };
-    const createdUser = {
+const createdUser = {
       id: "new-expert-id",
       name: validExpert.name,
       email: validExpert.email,
@@ -111,105 +85,71 @@ describe("POST /api/auth/register", () => {
       updatedAt: new Date(),
       expertProfile,
     };
-    mockPrisma.user.create.mockResolvedValue(createdUser);
-    mockPrisma.expertProfile.update.mockResolvedValue({
+mockPrisma.user.create.mockResolvedValue(createdUser);
+mockPrisma.expertProfile.update.mockResolvedValue({
       ...expertProfile,
       vectorNamespace: "expert_new-expert_new-expe",
     });
-
-    const req = createPOST("/api/auth/register", validExpert);
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(201);
-    expect(body.user).toBeDefined();
-    expect(body.user.role).toBe("EXPERT");
-    expect(body.user.expertProfile).toBeDefined();
-    expect(body.user.hashedPassword).toBeUndefined();
-
-    // Verify expert profile was included in create
-    expect(mockPrisma.user.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          role: "EXPERT",
-          expertProfile: {
-            create: {
-              displayName: validExpert.name,
-              vectorNamespace: "expert_temp",
-            },
-          },
-        }),
-      })
-    );
-
-    // Verify vectorNamespace was updated with slugified name + id prefix
-    expect(mockPrisma.expertProfile.update).toHaveBeenCalledWith({
-      where: { id: expertProfile.id },
-      data: {
-        vectorNamespace: `expert_new-expert_${createdUser.id.slice(0, 8)}`,
-      },
-    });
-  });
+const req = createPOST("/api/auth/register", validExpert);
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   // 3. Registration with existing email
-  it("returns 409 when email already exists", async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(mockUsers.subscriber);
-
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: returns 409 when email already exists", async () => {
+mockPrisma.user.findUnique.mockResolvedValue(mockUsers.subscriber);
+const req = createPOST("/api/auth/register", {
       ...validSubscriber,
       email: mockUsers.subscriber.email,
     });
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(409);
-    expect(body.message).toBe("An account with this email already exists");
-    expect(mockPrisma.user.create).not.toHaveBeenCalled();
-  });
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   // 4. Registration with missing fields
-  it("returns 400 when required fields are missing", async () => {
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: returns 400 when required fields are missing", async () => {
+const req = createPOST("/api/auth/register", {
       email: "test@test.com",
       // missing name, password, role
     });
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(400);
-    expect(body.message).toBeDefined();
-    expect(body.details).toBeDefined();
-    expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
-    expect(mockPrisma.user.create).not.toHaveBeenCalled();
-  });
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   // 4b. Registration with short password
-  it("returns 400 when password is too short", async () => {
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: returns 400 when password is too short", async () => {
+const req = createPOST("/api/auth/register", {
       ...validSubscriber,
       password: "short",
     });
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(400);
-    expect(body.message).toContain("Password must be at least 8 characters");
-    expect(mockPrisma.user.create).not.toHaveBeenCalled();
-  });
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 
   // 5. Registration with invalid role
-  it("returns 400 when role is invalid", async () => {
-    const req = createPOST("/api/auth/register", {
+  it("retired password registration: returns 400 when role is invalid", async () => {
+const req = createPOST("/api/auth/register", {
       ...validSubscriber,
       role: "INVALID_ROLE",
     });
-    const res = await registerPOST(req);
-    const body = await res.json();
-
-    expect(res.status).toBe(400);
-    expect(body.message).toBeDefined();
-    expect(mockPrisma.user.create).not.toHaveBeenCalled();
-  });
+const res = await registerPOST(req);
+expect(res.status).toBe(410);
+expect((await res.json()).code).toBe("REGISTRATION_RETIRED");
+expect(mockPrisma.user.create).not.toHaveBeenCalled();
+expect(mockPrisma.expertProfile.create).not.toHaveBeenCalled();
+});
 });
 
 // ---------------------------------------------------------------------------

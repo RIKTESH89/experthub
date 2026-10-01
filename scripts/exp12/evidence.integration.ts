@@ -48,7 +48,7 @@ test("edit excludes superseded assertions immediately and keeps historical snaps
 });
 test("premium derivatives never affect public trace or weights; stale entitlement fails closed",async()=>{
  await post("public");await post("paid",undefined,true);expect((await edges())[0].weight).toBe(2);expect((await trace())[0].weight).toBe(1);
- await prisma.user.create({data:{id:"visitor",email:"visitor@example.invalid"}});await prisma.expertSubscription.create({data:{subscriberId:"visitor",expertProfileId:expert,status:"ACTIVE",tier:"PREMIUM",price:0}});
+ await prisma.user.create({data:{id:"visitor",email:"visitor@example.invalid"}});await prisma.expertSubscription.create({data:{subscriberId:"visitor",expertProfileId:expert,status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod,price:0}});
  const entitled=await scope("visitor");expect(await trace(entitled)).toHaveLength(2);await prisma.expertSubscription.update({where:{subscriberId_expertProfileId:{subscriberId:"visitor",expertProfileId:expert}},data:{tier:"STANDARD"}});expect(await trace(entitled)).toHaveLength(1);expect((await trace(entitled))[0].weight).toBe(1);
 });
 test("unpublish/hide/RAG disable/delete revoke trace even with previously allowed chunk IDs",async()=>{
@@ -66,7 +66,7 @@ test("actual chat engine receives allowed assertion/span context and returns cit
  await post();let wire:any;global.fetch=jest.fn(async(url,options)=>{if(url!=="https://api.openai.com/v1/chat/completions")throw Error("External call forbidden");wire=JSON.parse(String(options?.body));return new Response('data: [DONE]\n\n');});
  // Retrieval embedding is mocked; one candidate skips reranking. Fake chat fetch never reaches network.
  const result=await runChatEngine({expertId:owner,query:"monolith",chatHistory:[]});expect(result.evidenceTrace).toHaveLength(1);expect(result.sources[0].metadata.evidenceTrace).toEqual(result.evidenceTrace);expect(wire.messages[0].content).toContain(result.evidenceTrace[0].revisionId);expect(wire.messages[0].content).toContain("owner endorsement true");expect(global.fetch).toHaveBeenCalledTimes(1);
- const {writeFileSync}=await import("fs");writeFileSync("audit/exp12/answer-trace.json",JSON.stringify({synthetic:true,modelResponse:"in-process fake; no network",query:"monolith",evidenceTrace:result.evidenceTrace,sources:result.sources,systemPrompt:wire.messages[0].content},null,2)+"\n");
+ const {writeFileSync}=await import("fs");writeFileSync(process.env.EXPERTHUB_AUDIT_DIR ? `${process.env.EXPERTHUB_AUDIT_DIR}/regression-exp12-answer-trace.json` : "audit/exp12/answer-trace.json",JSON.stringify({synthetic:true,modelResponse:"in-process fake; no network",query:"monolith",evidenceTrace:result.evidenceTrace,sources:result.sources,systemPrompt:wire.messages[0].content},null,2)+"\n");
 });
 test("foreign tenant or forged owner flag cannot retrieve restricted assertions",async()=>{
  await post("paid",undefined,true);const ownerScope=await scope(owner);expect(await trace({...ownerScope,viewerId:undefined,isOwner:true})).toEqual([]);expect(await trace({...ownerScope,expertProfileId:"foreign"})).toEqual([]);
@@ -91,3 +91,5 @@ test("concurrent owner rebuilds serialize and do not duplicate revision supports
 test("unresolved identical quoted names remain source-local, not merged person identities",async()=>{
  await post("quote-one",'Ben said: "I prefer services."');await post("quote-two",'Ben said: "I prefer services."');const t=await trace();expect(t).toHaveLength(2);expect(new Set(t.map(t=>t.subject)).size).toBe(2);expect(t.every(t=>!t.endorsedByOwner && t.weight===1)).toBe(true);
 });
+
+import { syntheticPaidPeriod } from "../../__tests__/helpers/paid-period";

@@ -111,8 +111,8 @@ export async function authorizedEvidenceSpans(scope:RetrievalScope,results:Retri
        ELSE CASE WHEN i."metadata"->>'audience' IN ('public','premium') THEN i."metadata"->>'audience' ELSE 'private' END END
     AND (${scope.viewerId || null}::text=e."userId" OR r."audience"='public' OR (r."audience"='premium' AND EXISTS (
        SELECT 1 FROM "ExpertSubscription" sub WHERE sub."expertProfileId"=e."id" AND sub."subscriberId"=${scope.viewerId || null}
-       AND sub."status"='ACTIVE' AND sub."tier"='PREMIUM' AND (sub."endDate" IS NULL OR sub."endDate">CURRENT_TIMESTAMP)
-       AND (sub."currentPeriodEnd" IS NULL OR sub."currentPeriodEnd">CURRENT_TIMESTAMP))))
+       AND sub."status" IN ('ACTIVE','CANCELLED','PAST_DUE','EXPIRED') AND sub."tier"='PREMIUM'
+       AND sub."razorpayPaymentId" IS NOT NULL AND sub."paidPeriodStart"<=CURRENT_TIMESTAMP AND sub."currentPeriodEnd">CURRENT_TIMESTAMP)))
     AND p."chunkIds" && ${selected}::text[] AND p."chunkIds" && ${scope.allowedVectorIds}::text[]
   ) SELECT * FROM eligible ORDER BY "revisionId","spanId" LIMIT 100`;
 }

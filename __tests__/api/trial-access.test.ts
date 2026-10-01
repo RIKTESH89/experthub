@@ -1,3 +1,4 @@
+import { syntheticPaidPeriod } from "../helpers/paid-period";
 /**
  * Feature 1: Free Trial Twin Access — Integration Tests
  */
@@ -76,6 +77,7 @@ describe("Trial Status Endpoint", () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.expertProfile.findUnique.mockResolvedValue(mockExpertProfile);
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ ...syntheticPaidPeriod, tier: "PREMIUM",
       status: "ACTIVE",
     });
     mockPrisma.freeTrialUsage.findUnique.mockResolvedValue(null);
@@ -155,6 +157,7 @@ describe("Chat Session Creation with Trial", () => {
       user: { name: "Expert User" },
     });
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
+ ...syntheticPaidPeriod, tier: "PREMIUM",
       status: "ACTIVE",
     });
     mockPrisma.chatSession.create.mockResolvedValue({

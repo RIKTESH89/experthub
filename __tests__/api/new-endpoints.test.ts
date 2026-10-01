@@ -95,6 +95,7 @@ describe("GET /api/subscriber/stats", () => {
 // ---------------------------------------------------------------------------
 describe("GET /api/topics/trending", () => {
   it("returns tags sorted by postCount descending", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     const mockTopics = [
       { name: "Machine Learning", postCount: 42 },
       { name: "AI", postCount: 35 },
@@ -121,6 +122,7 @@ describe("GET /api/topics/trending", () => {
   });
 
   it("works without authentication (public endpoint)", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     // No mockAuth setup needed -- route doesn't call auth()
     mockPrisma.tag.findMany.mockResolvedValue([]);
 
@@ -132,6 +134,7 @@ describe("GET /api/topics/trending", () => {
   });
 
   it("returns empty array when no tags exist", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.tag.findMany.mockResolvedValue([]);
 
     const res = await getTrendingTopics();

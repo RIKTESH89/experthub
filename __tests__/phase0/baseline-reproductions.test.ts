@@ -26,6 +26,6 @@ test("original baseline manufactured embeddings when credentials were absent",as
 test("synthetic retrieval-only timing comparison; no provider/model performance claim",async()=>{
  const sample=async(fn:()=>Promise<unknown>)=>{const timings=[];for(let i=0;i<100;i++){const start=performance.now();await fn();timings.push(performance.now()-start);}timings.sort((a,b)=>a-b);return {medianMs:timings[50],p95Ms:timings[95],iterations:100};};
  const baseline=await sample(()=>oldRetrieve("ada-ns","rare-tool",5));const phase0=await sample(()=>newRetrieve("ada-ns","rare-tool",5,scope));
- writeFileSync("audit/phase0/synthetic-latency.json",JSON.stringify({kind:"mocked in-process harness only",baseline,phase0,warning:"Not provider, DB or production latency; not model faithfulness/naturalness"},null,2)+"\n");
+ writeFileSync(process.env.EXPERTHUB_AUDIT_DIR ? `${process.env.EXPERTHUB_AUDIT_DIR}/regression-phase0-synthetic-latency.json` : "audit/phase0/synthetic-latency.json",JSON.stringify({kind:"mocked in-process harness only",baseline,phase0,warning:"Not provider, DB or production latency; not model faithfulness/naturalness"},null,2)+"\n");
  expect(baseline.iterations).toBe(100);expect(phase0.iterations).toBe(100);
 });

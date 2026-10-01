@@ -1,3 +1,6 @@
+import { hasSubscriptionAccess } from "@/lib/payments/access";
+import { cancelSubscription } from "@/lib/payments/cancel";
+import { PaymentError } from "@/lib/payments/state";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -45,33 +48,15 @@ export async function POST(
 
     let isSubscribed: boolean;
 
-    if (existingSubscription && existingSubscription.status === "ACTIVE") {
-      // If it's a paid subscription with Razorpay, cancel via payment API
+    if (existingSubscription && hasSubscriptionAccess(existingSubscription)) {
       if (existingSubscription.razorpaySubscriptionId) {
-        try {
-          const { getRazorpay } = await import("@/lib/razorpay");
-          const razorpay = getRazorpay();
-          await razorpay.subscriptions.cancel(existingSubscription.razorpaySubscriptionId);
-        } catch (error) {
-          console.error("Failed to cancel Razorpay subscription:", error);
-        }
+        await cancelSubscription(existingSubscription.id, session.user.id);
+      } else {
+        await prisma.expertSubscription.update({ where: { id: existingSubscription.id }, data: { status: "CANCELLED", endDate: new Date() } });
+        await prisma.expertProfile.update({ where: { id: expertProfile.id }, data: { totalSubscribers: { decrement: 1 } } });
       }
 
-      // Cancel subscription in DB
-      await prisma.expertSubscription.update({
-        where: { id: existingSubscription.id },
-        data: {
-          status: "CANCELLED",
-          endDate: new Date(),
-        },
-      });
-
-      await prisma.expertProfile.update({
-        where: { id: expertProfile.id },
-        data: { totalSubscribers: { decrement: 1 } },
-      });
-
-      isSubscribed = false;
+      isSubscribed = existingSubscription.razorpaySubscriptionId ? hasSubscriptionAccess(await prisma.expertSubscription.findUnique({ where: { id: existingSubscription.id } })) : false;
     } else if (existingSubscription) {
       // Re-activate existing subscription (FREE tier only — paid goes through payment API)
       const { tier } = await request.json().catch(() => ({}));
@@ -84,15 +69,8 @@ export async function POST(
         );
       }
 
-      // If PENDING, cancel the orphaned Razorpay subscription first
-      if (existingSubscription.status === "PENDING" && existingSubscription.razorpaySubscriptionId) {
-        try {
-          const { getRazorpay } = await import("@/lib/razorpay");
-          const razorpay = getRazorpay();
-          await razorpay.subscriptions.cancel(existingSubscription.razorpaySubscriptionId);
-        } catch {
-          // Safe to ignore — may already be expired on Razorpay
-        }
+      if (existingSubscription.razorpaySubscriptionId) {
+        await cancelSubscription(existingSubscription.id, session.user.id);
       }
 
       const wasPreviouslyActive = existingSubscription.status === "ACTIVE";
@@ -108,6 +86,10 @@ export async function POST(
           razorpaySubscriptionId: null,
           razorpayPaymentId: null,
           currentPeriodEnd: null,
+          paidPeriodStart: null,
+          renewalCancelledAt: null,
+          lastPaymentEventAt: null,
+          lastPaymentEventRank: 0,
         },
       });
 
@@ -178,6 +160,7 @@ export async function POST(
       totalSubscribers: updatedProfile?.totalSubscribers || 0,
     });
   } catch (error) {
+    if (error instanceof PaymentError) return NextResponse.json({ error: error.message }, { status: error.status });
     console.error("Subscribe error:", error);
     return NextResponse.json(
       { error: "Internal server error" },

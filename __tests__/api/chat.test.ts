@@ -1,3 +1,4 @@
+import { syntheticPaidPeriod } from "../helpers/paid-period";
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";
 import {
@@ -28,6 +29,7 @@ function sessionParams(sessionId: string) {
 beforeEach(() => {
   resetAllMocks();
   mockAuth.mockReset();
+  mockPrisma.expertSubscription.findUnique.mockResolvedValue(mockSubscription);
   (runChatEngine as jest.Mock).mockReset();
 });
 
@@ -114,6 +116,7 @@ describe("Chat Sessions API", () => {
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
       ...mockSubscription,
       status: "CANCELLED",
+      currentPeriodEnd: new Date("2020-02-01"),
     });
     // Trial is also exhausted
     mockPrisma.freeTrialUsage.findUnique.mockResolvedValue({

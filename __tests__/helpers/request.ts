@@ -10,7 +10,7 @@ export function createRequest(
 ): NextRequest {
   const { method = "GET", body, headers = {} } = options;
 
-  const requestInit: RequestInit = {
+  const requestInit: NonNullable<ConstructorParameters<typeof NextRequest>[1]> = {
     method,
     headers: {
       "Content-Type": "application/json",

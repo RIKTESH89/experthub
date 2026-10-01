@@ -1,0 +1,42 @@
+{
+  "full-jest-latest.json": {
+    "sha256": "0e602bccd6d3d49e193d997d4950f9a14c3c057ede0692cc1361d0dd9f1867dd",
+    "bytes": 276903
+  },
+  "payment-integration.json": {
+    "sha256": "ad40c23c89868ea6dba616de7561a9f9b3d8bd2c490f5f9685bbbf1ed17476c5",
+    "bytes": 7518
+  },
+  "exp13-regression.json": {
+    "sha256": "2f8392177a23540b84f0d1c735fdbd7e4a1ccdc4f955b9e4c58efc64a6aec81d",
+    "bytes": 5414
+  },
+  "exp12-regression.json": {
+    "sha256": "2a5bb0f680f39c0be8ca4cf86e94d806bfa2461e9664b3a572cb9185a43c3ab4",
+    "bytes": 5854
+  },
+  "phase0-regression.json": {
+    "sha256": "782f4f985368f5ba94fb3900e8da302f49689b4954b0408caaa90572b28450bd",
+    "bytes": 9394
+  },
+  "built-browser.json": {
+    "sha256": "42089b0f99293471c006d14c7c0e219b334c22011797e6081fffb91319ede9af",
+    "bytes": 1407
+  },
+  "types-latest.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "lint-latest.log": {
+    "sha256": "9f6ac1417a1fb3d8c8d6551b62726b54a8545079ed74fe6eb00db0cac12b57bc",
+    "bytes": 33
+  },
+  "build.log": {
+    "sha256": "95f19132fa6104d720eda095e336a95a2e620953e3b97852b08aed8dc30752be",
+    "bytes": 63087
+  },
+  "citation-wire.json": {
+    "sha256": "d9aeb8bccf5b7f9b184ad4947bf17662201f15f414b5d2096d6d7f43c39a1b98",
+    "bytes": 31063
+  }
+}

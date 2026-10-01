@@ -1,0 +1,16 @@
+PASS scripts/phase0-integration/browser.integration.ts
+  ● Console
+
+    console.info
+      Existing Chrome fresh-context version: 154.0.8037.59
+
+      at Object.<anonymous> (scripts/phase0-integration/browser.integration.ts:36:10)
+
+PASS scripts/phase0-integration/database.integration.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       26 passed, 26 total
+Snapshots:   0 total
+Time:        6.345 s, estimated 7 s
+Ran all test suites matching /(database|browser).integration/i.
+Test results written to: audit/exp25-26/phase0-regression.json

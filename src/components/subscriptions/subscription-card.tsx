@@ -14,6 +14,9 @@ interface Subscription {
   monthlyPrice: number;
   tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
+  hasAccess?: boolean;
+  currentPeriodEnd?: string | null;
+  renewalCancelled?: boolean;
   expert: {
     id: string;
     displayName: string;
@@ -81,9 +84,11 @@ export function SubscriptionCard({
   onCancel,
   index = 0,
 }: SubscriptionCardProps) {
-  const status = statusConfig[subscription.status] ?? statusConfig.ACTIVE;
+  const status = subscription.renewalCancelled && subscription.hasAccess
+    ? { ...statusConfig.CANCELLED, label: "Renewal cancelled" }
+    : statusConfig[subscription.status] ?? statusConfig.ACTIVE;
   const isInactive =
-    subscription.status === "CANCELLED" || subscription.status === "EXPIRED";
+    subscription.hasAccess === false || ((subscription.status === "CANCELLED" || subscription.status === "EXPIRED") && !subscription.hasAccess);
   const tier = subscription.tier
     ? tierConfig[subscription.tier] ?? tierConfig.FREE
     : null;

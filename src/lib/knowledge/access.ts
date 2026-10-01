@@ -1,3 +1,4 @@
+import { hasPaidAccess, type SubscriptionAccess } from "@/lib/payments/access";
 import prisma from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
@@ -9,10 +10,8 @@ export interface RetrievalScope {
   allowedVectorIds: string[];
 }
 
-export function isEntitled(subscription: { status: string; tier: string; endDate?: Date | null; currentPeriodEnd?: Date | null } | null, now = new Date()): boolean {
-  return !!subscription && subscription.status === "ACTIVE" && subscription.tier === "PREMIUM" &&
-    (!subscription.endDate || subscription.endDate > now) &&
-    (!subscription.currentPeriodEnd || subscription.currentPeriodEnd > now);
+export function isEntitled(subscription: SubscriptionAccess | null, now = new Date()): boolean {
+  return !!subscription && subscription.tier === "PREMIUM" && hasPaidAccess(subscription, now);
 }
 
 /** Resolve from current source/entitlement rows on every request. Never cache this scope. */

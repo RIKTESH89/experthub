@@ -1,0 +1,9 @@
+PASS: built login and Google provider declaration load
+PASS: anonymous webhook reaches signature validation; anonymous expert application reaches handler
+PASS: anonymous protected APIs and dotted/prefix bypasses remain protected
+PASS: retired password registration cannot create an expert or reserve identity
+PASS: signed synthetic subscriber traverses middleware to experts/pricing/free subscribe APIs
+PASS: cancelled paid feed access ends exactly at verified paid expiry
+PASS: built chat UI renders retained citation revision/span and removes it after revocation
+PASS: same JWT immediately sees promotion and demotion in API and server layouts
+PASS: same JWT immediately loses access after ban, inactive state and deletion

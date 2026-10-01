@@ -13,6 +13,9 @@ interface Subscription {
   monthlyPrice: number;
   tier?: "FREE" | "STANDARD" | "PREMIUM";
   startDate: string;
+  hasAccess?: boolean;
+  currentPeriodEnd?: string | null;
+  renewalCancelled?: boolean;
   expert: {
     id: string;
     displayName: string;
@@ -54,14 +57,15 @@ export function SubscriptionList() {
       });
       if (!res.ok) throw new Error("Failed to cancel");
 
+      const result = await res.json();
       setSubscriptions((prev) =>
         prev.map((sub) =>
           sub.id === subscriptionId
-            ? { ...sub, status: "CANCELLED" as const }
+            ? { ...sub, status: "CANCELLED" as const, hasAccess: result.hasAccess, currentPeriodEnd: result.currentPeriodEnd, renewalCancelled: true }
             : sub
         )
       );
-      toast.success("Subscription cancelled");
+      toast.success(result.hasAccess ? "Renewal cancelled. Access continues through your paid period." : "Subscription cancelled");
     } catch {
       toast.error("Failed to cancel subscription");
     }

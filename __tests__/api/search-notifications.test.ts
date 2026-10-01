@@ -21,6 +21,7 @@ beforeEach(() => {
 describe("Search API", () => {
   // 1. Returns experts, tags, and posts matching query
   it("GET /search?q=AI - returns experts, tags, and posts", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     const expertResults = [
       {
         id: "expert-id-1",
@@ -67,6 +68,7 @@ describe("Search API", () => {
 
   // 2. Returns 400 for empty query
   it("GET /search - returns 400 for empty query", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     const req = createGET("/api/search");
     const res = await search(req);
     const json = await res.json();
@@ -77,6 +79,7 @@ describe("Search API", () => {
 
   // 3. Handles query with no results
   it("GET /search?q=nonexistent - handles no results", async () => {
+    mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.user.findMany.mockResolvedValue([]);
     mockPrisma.tag.findMany.mockResolvedValue([]);
     mockPrisma.post.findMany.mockResolvedValue([]);

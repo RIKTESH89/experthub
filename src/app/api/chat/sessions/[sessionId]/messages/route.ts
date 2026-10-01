@@ -1,3 +1,6 @@
+import { hasSubscriptionAccess } from "@/lib/payments/access";
+import { createSSEDecoder } from "@/lib/ai/sse";
+import { toMessageSources } from "@/lib/ai/citations";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -80,7 +83,10 @@ export async function POST(
         },
       });
 
-      if (subscription && subscription.status === "ACTIVE") {
+      if (!hasSubscriptionAccess(subscription) && chatSession.expertProfile.userId !== session.user.id) {
+        return NextResponse.json({ error: "Your paid period has ended or is not confirmed. Start a free session or subscribe.", code: "NO_CURRENT_SUBSCRIPTION" }, { status: 403 });
+      }
+      if (subscription && hasSubscriptionAccess(subscription)) {
         const pricingTier = await prisma.expertPricingTier.findUnique({
           where: {
             expertProfileId_tier: {
@@ -194,20 +200,13 @@ export async function POST(
     let fullResponse = "";
     const encoder = new TextEncoder();
 
-    const transformStream = new TransformStream({
-      transform(chunk, controller) {
-        const text = new TextDecoder().decode(chunk);
-        const lines = text.split("\n");
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
+    const streamDecoder = createSSEDecoder();
+    let providerDone = false;
+    let persistedMessageId: string | undefined;
+    const forward = (data: string, controller: TransformStreamDefaultController<Uint8Array>) => {
             if (data === "[DONE]") {
-              controller.enqueue(
-                encoder.encode(
-                  `data: ${JSON.stringify({ done: true, sources: sources.map((s: { content: string; score: number; metadata: Record<string, unknown> }) => ({ title: (s.metadata?.title as string) || s.content.split("\n")[0]?.slice(0, 80) || "Source", snippet: s.content.slice(0, 200), score: s.score })) })}\n\n`
-                )
-              );
-              continue;
+              providerDone = true;
+              return;
             }
             try {
               const parsed = JSON.parse(data);
@@ -223,13 +222,16 @@ export async function POST(
             } catch {
               // Skip unparseable chunks
             }
-          }
-        }
+    }
+    const transformStream = new TransformStream({
+      transform(chunk, controller) {
+        for (const data of streamDecoder.push(chunk)) forward(data, controller);
       },
-      async flush() {
+      async flush(controller) {
+        for (const data of streamDecoder.push(undefined, true)) forward(data, controller);
         // Save the AI response after streaming completes
         if (fullResponse) {
-          await prisma.chatMessage.create({
+          const savedMessage = await prisma.chatMessage.create({
             data: {
               chatSessionId: sessionId,
               role: "assistant",
@@ -237,6 +239,8 @@ export async function POST(
               sources: JSON.parse(JSON.stringify(sources)),
             },
           });
+
+          persistedMessageId = savedMessage?.id;
 
           // Update session timestamp
           await prisma.chatSession.update({
@@ -272,6 +276,7 @@ export async function POST(
             })
             .catch(() => {});
         }
+        if (providerDone) controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, messageId: persistedMessageId, sources: toMessageSources(sources) })}\n\n`));
       },
     });
 

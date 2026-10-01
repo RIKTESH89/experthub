@@ -1,3 +1,4 @@
+import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { readablePostsWhere } from "@/lib/knowledge/post-access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -77,7 +78,7 @@ export async function GET(
 
       if (sub) {
         subscription = sub;
-        if (sub.status === "ACTIVE") {
+        if (hasSubscriptionAccess(sub)) {
           isSubscribed = true;
         }
       }

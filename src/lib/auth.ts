@@ -1,25 +1,13 @@
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import { authConfig } from "./auth.config";
 import prisma from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  pages: {
-    signIn: "/login",
-  },
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
-  ],
+  ...authConfig,
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
-        if (!user.email) return false;
+        if (!user.email || profile?.email_verified !== true) return false;
 
         // Check if user exists
         const existingUser = await prisma.user.findUnique({
@@ -28,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (existingUser) {
           // Block banned users
-          if (existingUser.isBanned) return false;
+          if (existingUser.isBanned || !existingUser.isActive) return false;
 
           // Update profile image from Google if not set
           if (!existingUser.image && user.image) {
@@ -69,6 +57,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id as string;
         token.role = (user as { role?: string }).role as string;
       }
+      // Every server auth()/session read resolves current account state. JWT role is not authority.
+      if (typeof token.id !== "string" || !token.id) return null;
+      const currentUser = await prisma.user.findUnique({
+        where: { id: token.id }, select: { role: true, isBanned: true, isActive: true },
+      });
+      if (!currentUser || currentUser.isBanned || !currentUser.isActive) return null;
+      token.role = currentUser.role;
       return token;
     },
     async session({ session, token }) {

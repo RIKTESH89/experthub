@@ -1,3 +1,4 @@
+import { subscriptionAccessWhere, hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -12,7 +13,7 @@ export async function GET() {
     const subscriptions = await prisma.expertSubscription.findMany({
       where: {
         subscriberId: session.user.id,
-        status: "ACTIVE",
+        ...subscriptionAccessWhere(),
       },
       include: {
         expertProfile: {
@@ -41,6 +42,9 @@ export async function GET() {
       monthlyPrice: sub.price,
       tier: sub.tier,
       startDate: sub.startDate.toISOString(),
+      currentPeriodEnd: sub.currentPeriodEnd?.toISOString() || null,
+      renewalCancelled: !!sub.renewalCancelledAt,
+      hasAccess: hasSubscriptionAccess(sub),
       expert: {
         id: sub.expertProfile.user.id,
         displayName: sub.expertProfile.displayName,

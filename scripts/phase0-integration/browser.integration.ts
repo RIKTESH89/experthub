@@ -59,7 +59,7 @@ test("existing Chrome: actual embed persists signed identity and real route sele
 test("fresh Chrome subscriber fetch: newest history and warm premium permission downgrade removes evidence/history",async()=>{
  await prisma.chatSession.create({data:{id:"synthetic-session",subscriberId:viewer,expertProfileId:expert}});
  await prisma.chatMessage.createMany({data:Array.from({length:64},(_,i)=>({id:`synthetic-chat-${String(i).padStart(3,"0")}`,chatSessionId:"synthetic-session",senderId:viewer,role:"user",content:i===63?"LATEST SUBSCRIBER CORRECTION":"old chat",createdAt:new Date("2026-01-01T00:00:00Z")}))});
- await prisma.expertSubscription.create({data:{subscriberId:viewer,expertProfileId:expert,tier:"PREMIUM",status:"ACTIVE",price:0}});
+ await prisma.expertSubscription.create({data:{subscriberId:viewer,expertProfileId:expert,tier:"PREMIUM",...syntheticPaidPeriod,status:"ACTIVE",price:0}});
  const vectorId="synthetic-premium-vector";
  await prisma.knowledgeItem.create({data:{id:"premium-source",expertProfileId:expert,title:"Premium",content:"architecture PREMIUM_SYNTHETIC_ONLY",sourceType:"manual",metadata:{audience:"premium"},vectorIds:[vectorId],isIndexed:true,sourceVersion:1,indexedVersion:1}});
  await prisma.$executeRawUnsafe('INSERT INTO "VectorChunk" ("id","vectorId","namespace","content","metadata") VALUES ($1,$2,$3,$4,$5::jsonb)',"premiumchunk",vectorId,"synthetic-ns","architecture PREMIUM_SYNTHETIC_ONLY",JSON.stringify({expertProfileId:expert,embeddingModel:"text-embedding-3-small"}));
@@ -69,3 +69,5 @@ test("fresh Chrome subscriber fetch: newest history and warm premium permission 
  await prisma.expertSubscription.update({where:{subscriberId_expertProfileId:{subscriberId:viewer,expertProfileId:expert}},data:{tier:"STANDARD"}});
  const result=await send();expect(result.status).toBe(200);expect(result.body).not.toContain(vectorId);expect(JSON.stringify(prompts.at(-1))).not.toContain("PREMIUM_SYNTHETIC_ONLY");await context.close();
 });
+
+import { syntheticPaidPeriod } from "../../__tests__/helpers/paid-period";

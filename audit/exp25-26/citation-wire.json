@@ -1,0 +1,676 @@
+{
+  "synthetic": true,
+  "model": "in-process fake, every-byte fragmentation",
+  "sources": [
+    {
+      "title": "Architecture public",
+      "snippet": "Architecture public\n\nI prefer monolith.\nFrom 2025-01-01, In software architecture, For small teams, I prefer monolith because capacity is limited.",
+      "score": 1,
+      "metadata": {
+        "expertProfileId": "synthetic-citation-expert",
+        "vectorId": "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0",
+        "generationAudience": "viewer",
+        "sourceVersion": 1,
+        "evidenceTrace": [
+          {
+            "assertionId": "068d259fb012bc20f293c0f11f32ae0ffa8846f479348e8f97d2a759514a15fa",
+            "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+            "spanId": "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+            "itemId": "cmuplhuuw0003xy6834556w0x",
+            "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+            "sourceVersion": 1,
+            "subject": "synthetic-citation-owner",
+            "predicate": "prefer",
+            "object": "monolith",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "authorId": "synthetic-citation-owner",
+            "uploaderId": "synthetic-citation-owner",
+            "speakerId": "synthetic-citation-owner",
+            "speakerRole": "author",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+            "ingestedAt": "2026-10-01T13:53:59.678Z",
+            "start": 21,
+            "end": 39,
+            "text": "I prefer monolith.",
+            "chunkIds": [
+              "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+            ],
+            "extractorVersion": "literal-preference-v1",
+            "weight": 1
+          }
+        ],
+        "temporalTrace": {
+          "mode": "as-of",
+          "validAt": "2025-06-01T00:00:00.000Z",
+          "coverage": "selected currently authorized sources only; not an exhaustive belief inventory",
+          "stances": [
+            {
+              "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+              "spanId": "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+              "itemId": "cmuplhuuw0003xy6834556w0x",
+              "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "public",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+              "ingestedAt": "2026-10-01T13:53:59.678Z",
+              "start": 21,
+              "end": 39,
+              "text": "I prefer monolith.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": null,
+              "context": null,
+              "category": "preference",
+              "polarity": "positive",
+              "action": "monolith",
+              "validFrom": null,
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.678Z",
+              "situation": null,
+              "constraints": null,
+              "chosenAction": "monolith",
+              "documentedReasons": null,
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            },
+            {
+              "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+              "spanId": "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+              "itemId": "cmuplhuuw0003xy6834556w0x",
+              "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "public",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+              "ingestedAt": "2026-10-01T13:53:59.678Z",
+              "start": 40,
+              "end": 146,
+              "text": "From 2025-01-01, In software architecture, For small teams, I prefer monolith because capacity is limited.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": "software architecture",
+              "context": "small teams",
+              "category": "preference",
+              "polarity": "positive",
+              "action": "monolith",
+              "validFrom": "2025-01-01T00:00:00.000Z",
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.678Z",
+              "situation": "small teams",
+              "constraints": null,
+              "chosenAction": "monolith",
+              "documentedReasons": "capacity is limited",
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            }
+          ],
+          "supersededStances": [],
+          "relations": [
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "to": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "evidenceSpanIds": [
+                "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+                "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148"
+              ],
+              "uncertainty": "valid-time-unknown; do not resolve by recorded recency"
+            },
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "to": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "evidenceSpanIds": [
+                "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+                "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631"
+              ],
+              "uncertainty": "different choices need review; not necessarily mutually exclusive"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Architecture premium",
+      "snippet": "Architecture premium\n\nI prefer services.\nFrom 2025-01-01, In software architecture, For small teams, I prefer services because capacity is limited.",
+      "score": 1,
+      "metadata": {
+        "expertProfileId": "synthetic-citation-expert",
+        "vectorId": "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0",
+        "generationAudience": "viewer",
+        "sourceVersion": 1,
+        "evidenceTrace": [
+          {
+            "assertionId": "7ecebbad19c450b5bbe42609b90e2a9d445e7f92ed6828d24a98799fb09115ec",
+            "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+            "spanId": "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148",
+            "itemId": "cmuplhuv90005xy687t20glfe",
+            "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+            "sourceVersion": 1,
+            "subject": "synthetic-citation-owner",
+            "predicate": "prefer",
+            "object": "services",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "authorId": "synthetic-citation-owner",
+            "uploaderId": "synthetic-citation-owner",
+            "speakerId": "synthetic-citation-owner",
+            "speakerRole": "author",
+            "audience": "premium",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+            "ingestedAt": "2026-10-01T13:53:59.688Z",
+            "start": 22,
+            "end": 40,
+            "text": "I prefer services.",
+            "chunkIds": [
+              "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+            ],
+            "extractorVersion": "literal-preference-v1",
+            "weight": 1
+          }
+        ],
+        "temporalTrace": {
+          "mode": "as-of",
+          "validAt": "2025-06-01T00:00:00.000Z",
+          "coverage": "selected currently authorized sources only; not an exhaustive belief inventory",
+          "stances": [
+            {
+              "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+              "spanId": "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631",
+              "itemId": "cmuplhuv90005xy687t20glfe",
+              "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "premium",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+              "ingestedAt": "2026-10-01T13:53:59.688Z",
+              "start": 41,
+              "end": 147,
+              "text": "From 2025-01-01, In software architecture, For small teams, I prefer services because capacity is limited.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": "software architecture",
+              "context": "small teams",
+              "category": "preference",
+              "polarity": "positive",
+              "action": "services",
+              "validFrom": "2025-01-01T00:00:00.000Z",
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.688Z",
+              "situation": "small teams",
+              "constraints": null,
+              "chosenAction": "services",
+              "documentedReasons": "capacity is limited",
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            },
+            {
+              "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+              "spanId": "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148",
+              "itemId": "cmuplhuv90005xy687t20glfe",
+              "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "premium",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+              "ingestedAt": "2026-10-01T13:53:59.688Z",
+              "start": 22,
+              "end": 40,
+              "text": "I prefer services.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": null,
+              "context": null,
+              "category": "preference",
+              "polarity": "positive",
+              "action": "services",
+              "validFrom": null,
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.688Z",
+              "situation": null,
+              "constraints": null,
+              "chosenAction": "services",
+              "documentedReasons": null,
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            }
+          ],
+          "supersededStances": [],
+          "relations": [
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "to": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "evidenceSpanIds": [
+                "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+                "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148"
+              ],
+              "uncertainty": "valid-time-unknown; do not resolve by recorded recency"
+            },
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "to": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "evidenceSpanIds": [
+                "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+                "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631"
+              ],
+              "uncertainty": "different choices need review; not necessarily mutually exclusive"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "reloadedSources": [
+    {
+      "title": "Architecture public",
+      "snippet": "Architecture public\n\nI prefer monolith.\nFrom 2025-01-01, In software architecture, For small teams, I prefer monolith because capacity is limited.",
+      "score": 1,
+      "metadata": {
+        "expertProfileId": "synthetic-citation-expert",
+        "vectorId": "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0",
+        "generationAudience": "viewer",
+        "sourceVersion": 1,
+        "evidenceTrace": [
+          {
+            "assertionId": "068d259fb012bc20f293c0f11f32ae0ffa8846f479348e8f97d2a759514a15fa",
+            "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+            "spanId": "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+            "itemId": "cmuplhuuw0003xy6834556w0x",
+            "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+            "sourceVersion": 1,
+            "subject": "synthetic-citation-owner",
+            "predicate": "prefer",
+            "object": "monolith",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "authorId": "synthetic-citation-owner",
+            "uploaderId": "synthetic-citation-owner",
+            "speakerId": "synthetic-citation-owner",
+            "speakerRole": "author",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+            "ingestedAt": "2026-10-01T13:53:59.678Z",
+            "start": 21,
+            "end": 39,
+            "text": "I prefer monolith.",
+            "chunkIds": [
+              "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+            ],
+            "extractorVersion": "literal-preference-v1",
+            "weight": 1
+          }
+        ],
+        "temporalTrace": {
+          "mode": "as-of",
+          "validAt": "2025-06-01T00:00:00.000Z",
+          "coverage": "selected currently authorized sources only; not an exhaustive belief inventory",
+          "stances": [
+            {
+              "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+              "spanId": "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+              "itemId": "cmuplhuuw0003xy6834556w0x",
+              "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "public",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+              "ingestedAt": "2026-10-01T13:53:59.678Z",
+              "start": 21,
+              "end": 39,
+              "text": "I prefer monolith.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": null,
+              "context": null,
+              "category": "preference",
+              "polarity": "positive",
+              "action": "monolith",
+              "validFrom": null,
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.678Z",
+              "situation": null,
+              "constraints": null,
+              "chosenAction": "monolith",
+              "documentedReasons": null,
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            },
+            {
+              "revisionId": "b18686a77b28f8178556b56cbd6f8061983cf65663b8ae7beb4d8809a8b49eab",
+              "spanId": "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+              "itemId": "cmuplhuuw0003xy6834556w0x",
+              "contentHash": "3698e621804b83a387be1de5e87102c7268383c275e841d0a9ac00e4ddb760a4",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "public",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.671Z",
+              "ingestedAt": "2026-10-01T13:53:59.678Z",
+              "start": 40,
+              "end": 146,
+              "text": "From 2025-01-01, In software architecture, For small teams, I prefer monolith because capacity is limited.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuuw0003xy6834556w0x:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": "software architecture",
+              "context": "small teams",
+              "category": "preference",
+              "polarity": "positive",
+              "action": "monolith",
+              "validFrom": "2025-01-01T00:00:00.000Z",
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.678Z",
+              "situation": "small teams",
+              "constraints": null,
+              "chosenAction": "monolith",
+              "documentedReasons": "capacity is limited",
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            }
+          ],
+          "supersededStances": [],
+          "relations": [
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "to": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "evidenceSpanIds": [
+                "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+                "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148"
+              ],
+              "uncertainty": "valid-time-unknown; do not resolve by recorded recency"
+            },
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "to": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "evidenceSpanIds": [
+                "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+                "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631"
+              ],
+              "uncertainty": "different choices need review; not necessarily mutually exclusive"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Architecture premium",
+      "snippet": "Architecture premium\n\nI prefer services.\nFrom 2025-01-01, In software architecture, For small teams, I prefer services because capacity is limited.",
+      "score": 1,
+      "metadata": {
+        "expertProfileId": "synthetic-citation-expert",
+        "vectorId": "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0",
+        "generationAudience": "viewer",
+        "sourceVersion": 1,
+        "evidenceTrace": [
+          {
+            "assertionId": "7ecebbad19c450b5bbe42609b90e2a9d445e7f92ed6828d24a98799fb09115ec",
+            "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+            "spanId": "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148",
+            "itemId": "cmuplhuv90005xy687t20glfe",
+            "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+            "sourceVersion": 1,
+            "subject": "synthetic-citation-owner",
+            "predicate": "prefer",
+            "object": "services",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "authorId": "synthetic-citation-owner",
+            "uploaderId": "synthetic-citation-owner",
+            "speakerId": "synthetic-citation-owner",
+            "speakerRole": "author",
+            "audience": "premium",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+            "ingestedAt": "2026-10-01T13:53:59.688Z",
+            "start": 22,
+            "end": 40,
+            "text": "I prefer services.",
+            "chunkIds": [
+              "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+            ],
+            "extractorVersion": "literal-preference-v1",
+            "weight": 1
+          }
+        ],
+        "temporalTrace": {
+          "mode": "as-of",
+          "validAt": "2025-06-01T00:00:00.000Z",
+          "coverage": "selected currently authorized sources only; not an exhaustive belief inventory",
+          "stances": [
+            {
+              "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+              "spanId": "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631",
+              "itemId": "cmuplhuv90005xy687t20glfe",
+              "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "premium",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+              "ingestedAt": "2026-10-01T13:53:59.688Z",
+              "start": 41,
+              "end": 147,
+              "text": "From 2025-01-01, In software architecture, For small teams, I prefer services because capacity is limited.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": "software architecture",
+              "context": "small teams",
+              "category": "preference",
+              "polarity": "positive",
+              "action": "services",
+              "validFrom": "2025-01-01T00:00:00.000Z",
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.688Z",
+              "situation": "small teams",
+              "constraints": null,
+              "chosenAction": "services",
+              "documentedReasons": "capacity is limited",
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            },
+            {
+              "revisionId": "719aa93847d8de9f34bd8ba99d3a1c3da0634791ee53f889b7547c05c87c0af6",
+              "spanId": "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148",
+              "itemId": "cmuplhuv90005xy687t20glfe",
+              "contentHash": "077acc43145ed50d163ee6ade8f324dd34789863cf76e63a158565db6ef1e122",
+              "sourceVersion": 1,
+              "kind": "explicit",
+              "endorsedByOwner": true,
+              "authorId": "synthetic-citation-owner",
+              "uploaderId": "synthetic-citation-owner",
+              "speakerId": "synthetic-citation-owner",
+              "speakerRole": "author",
+              "audience": "premium",
+              "publishedAt": null,
+              "publicationTimeBasis": "unavailable",
+              "sourceUpdatedAt": "2026-10-01T13:53:59.684Z",
+              "ingestedAt": "2026-10-01T13:53:59.688Z",
+              "start": 22,
+              "end": 40,
+              "text": "I prefer services.",
+              "chunkIds": [
+                "synthetic-citation-expert:cmuplhuv90005xy687t20glfe:v1:chunk_0"
+              ],
+              "extractorVersion": "literal-temporal-decision-v1",
+              "id": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "speaker": "synthetic-citation-owner",
+              "origin": "expert-authored",
+              "domain": null,
+              "context": null,
+              "category": "preference",
+              "polarity": "positive",
+              "action": "services",
+              "validFrom": null,
+              "validUntil": null,
+              "certainty": "source-explicit",
+              "supersedes": null,
+              "recordedAt": "2026-10-01T13:53:59.688Z",
+              "situation": null,
+              "constraints": null,
+              "chosenAction": "services",
+              "documentedReasons": null,
+              "alternatives": null,
+              "tradeoffs": null,
+              "exceptions": null,
+              "decisionType": "recommendation"
+            }
+          ],
+          "supersededStances": [],
+          "relations": [
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "4ad6a75287df632c675af3625ae77e62e6b496126978c90f9d9cd5b7e82c730d",
+              "to": "c96f6a07ca3a7c6f04441b50b36eac08733adef3f6ca527096f81d9ed96d71e1",
+              "evidenceSpanIds": [
+                "a12aff82c69f91ec1b7c517c2e276f27f3c325ed454fc6eae0a6f942646c693a",
+                "9ea8becebfddfe8e2fd3b22d637c3f7efec0890ed403c8627eb8b75126220148"
+              ],
+              "uncertainty": "valid-time-unknown; do not resolve by recorded recency"
+            },
+            {
+              "type": "unresolved-disagreement",
+              "kind": "inferred",
+              "from": "6e67468867b7c08c4094964348adb163249bca64fb918006f93261d027730975",
+              "to": "9bd1460db410bdd9d0130c7772801b1eb2c398b26658a51b240d85d8eebe8f01",
+              "evidenceSpanIds": [
+                "cd11ea4d75af83ce323f3ff491672a6b7d5ef491b33c0776b8dd5051d792d57c",
+                "3b7a16c69aa5ccd14e8df27baf7770b7c9041dc0d136f64e95ab1841d6ae6631"
+              ],
+              "uncertainty": "different choices need review; not necessarily mutually exclusive"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
