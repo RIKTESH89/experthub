@@ -14,12 +14,12 @@ Payment state is shared and transactional with row locking, durable hashed event
 
 | Criterion | Status | Evidence |
 |---|---|---|
-| Types, lint, unit baseline plus new cases | PASS | types-latest.log empty; lint-latest.log clean; full-jest-latest.json 772/772 across 48 suites |
+| Types, lint, unit baseline plus new cases | PASS | types-latest.log empty; lint-latest.log clean; full-jest-latest.json 774/774 across 49 suites |
 | Fragmented stream, exact DB evidence, reload, persisted-ID rating | PASS | payment-integration.json: 2 citation integration tests; citation-wire.json |
 | Signed events, replay/concurrency/ordering, rollback, B1–B4, cancellation failures/replacement | PASS | payment-integration.json: 16 payment integration tests |
 | EXP13/EXP12/Phase0 regressions | PASS | exp13-regression.json 12/12; exp12-regression.json 14/14; phase0-regression.json 26/26 |
 | Optimized Next build and compiled middleware | PASS | build.log; middleware manifest asserted by browser runner |
-| Actual built UI/API with fresh existing Chrome and synthetic JWT/DB | PASS | built-browser.json: 9 scenarios, including role/account changes, anonymous boundaries, citation revocation and persisted feedback, canceled paid feed and expiry |
+| Actual built UI/API with fresh existing Chrome and synthetic JWT/DB | PASS | built-browser.json: 10 scenarios, including role/account changes, anonymous boundaries, citation revocation and persisted feedback, canceled paid feed and expiry |
 | Real Google OAuth handshake/callback/cookie/domain behavior | BLOCKED | No authorized real OAuth setup; synthetic encrypted sessions exercise actual NextAuth callbacks but do not substitute for provider acceptance |
 | Real Razorpay sandbox checkout/cancellation/webhook payload lifecycle | BLOCKED | No authorized sandbox credentials/setup or provider traffic; local captured payloads and mocked cancellation boundary only |
 | Real model faithfulness, volunteer feedback, load/cost, production rollout | NOT RUN | Outside this local implementation scope |
@@ -40,4 +40,15 @@ Checkout creation remains a provider/DB boundary with best-effort orphan cancell
 
 Validation used cleared explicit environments, the pre-existing disposable cluster, installed dependencies and existing Chrome. Runtime external traffic was blocked by the harness; browser telemetry tunnel traffic was aborted. Build used Next's offline font-response hook with a local system font, so typography/font-provider acceptance is not claimed. Test scripts contain harness-only fake model/embedding data, never an application auth/model bypass.
 
-Commands: bash /tmp/exp25-final-unit.sh (equivalent tsc --noEmit --incremental false, next lint, offline jest --runInBand); env -i PATH=/opt/homebrew/bin:/usr/bin:/bin EXP25_26_REGRESSIONS=1 EXP25_26_BUILD=1 bash scripts/exp25-26/run-local.sh; final acceptance rerun with EXP25_26_BROWSER=1. Runner refuses an already-running/occupied cluster and stops it on exit.
+Commands: bash scripts/exp25-26/validate-offline.sh (equivalent tsc --noEmit --incremental false, next lint, offline jest --runInBand); env -i PATH=/opt/homebrew/bin:/usr/bin:/bin EXP25_26_REGRESSIONS=1 EXP25_26_BUILD=1 bash scripts/exp25-26/run-local.sh; final acceptance rerun with EXP25_26_BROWSER=1. Runner refuses an already-running/occupied cluster and stops it on exit.
+
+
+## Checkout confirmation follow-up
+
+Local checkout UI no longer claims a successful payment from the gateway callback. It persists a pending provider subscription identity in browser storage, blocks another plan checkout while that identity is unresolved, and confirms only through the authenticated read-only verification endpoint. A 30-second initial refresh window leaves an explicit manual status retry afterward. Pending identity survives dismissal/reload and network errors; successful confirmation clears it and updates subscribed UI. Status retries never invoke create-subscription or the gateway. This protects the status-retry flow, not general server provisioning idempotency or ambiguous create-subscription network failures; durable provisioning remains separate work.
+
+Two new actual React tests cover delayed confirmation beyond 30 seconds, callback truthfulness, offline recovery, dismissal/reload, and exactly one creation across retries. Jest now transforms JSX for component acceptance. Fresh optimized build and Chrome rerun pass ten scenarios. The new Chrome scenario uses a locally fulfilled fake Razorpay script/create-subscription response, creates the synthetic pending row, waits 31 real seconds, reloads, injects a verification network failure, and then supplies a synthetic confirmed interval directly in PostgreSQL. Actual built verification API and UI are exercised; signed delayed-charge processing is independently covered by the existing payment integration tests. It makes zero real provider requests.
+
+The offline validation wrapper is committed at scripts/exp25-26/validate-offline.sh. Production build plus DB/browser wrapper remains scripts/exp25-26/run-local.sh with EXP25_26_BUILD=1; run from a cleared explicit environment as above. Font substitution remains explicit and machine-dependent; no external font fetch or typography acceptance is implied. Host-specific existing PostgreSQL cluster, installed dependencies/system font/Chrome are still prerequisites.
+
+Remaining: real Google OAuth acceptance, real Razorpay TEST MODE lifecycle acceptance, legacy paid-row reconciliation dry-run/apply/rollback operational tooling, durable checkout recovery/concurrent provisioning, durable email retry, and separately scoped model/volunteer/load/production rollout work. EXP26 remains open; no live changes or provider setup occurred.

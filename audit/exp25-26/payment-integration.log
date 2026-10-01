@@ -4,6 +4,6 @@ PASS scripts/exp25-26/payments.integration.ts
 Test Suites: 2 passed, 2 total
 Tests:       18 passed, 18 total
 Snapshots:   0 total
-Time:        5.042 s
+Time:        5.055 s
 Ran all test suites.
 Test results written to: audit/exp25-26/payment-integration.json

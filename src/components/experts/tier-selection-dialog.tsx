@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Crown, Star, User, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,69 @@ export function TierSelectionDialog({
 }: TierSelectionDialogProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
+  const [pending, setPending] = useState<{ subscriptionId: string; tier: string } | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const requestInFlight = useRef(false);
+  const verificationInFlight = useRef(false);
+  const pendingKey = `experthub-pending-payment:${expertId}`;
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(pendingKey) || "null");
+      setPending(saved && typeof saved.subscriptionId === "string" && ["STANDARD", "PREMIUM"].includes(saved.tier) ? saved : null);
+    } catch { setPending(null); }
+  }, [pendingKey]);
+
+  const rememberPending = (value: { subscriptionId: string; tier: string }) => {
+    setPending(value);
+    try { localStorage.setItem(pendingKey, JSON.stringify(value)); } catch { /* Keep in-memory retry available. */ }
+  };
+
+  const refreshPayment = async (value = pending) => {
+    if (!value || verificationInFlight.current) return;
+    verificationInFlight.current = true;
+    setChecking(true);
+    try {
+      // Read-only verification waits for the signed confirmed-charge transaction.
+      // Retrying this endpoint never creates a subscription or initiates a charge.
+      const response = await fetch("/api/payments/verify", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ razorpaySubscriptionId: value.subscriptionId }),
+      });
+      if (!response.ok) throw new Error("Payment status is unavailable. Try checking again.");
+      const result = await response.json();
+      if (result.verified === true) {
+        setPending(null);
+        try { localStorage.removeItem(pendingKey); } catch { /* Verification is authoritative. */ }
+        toast.success("Payment confirmed. Your subscription is active.");
+        onSubscribe(value.tier, true);
+        onClose();
+      } else {
+        setStatusMessage("Confirmation is still pending. You can check again later. Do not pay again for this subscription.");
+      }
+    } catch {
+      setStatusMessage("Payment status is unavailable. Your pending checkout is saved. Check again when you are online; do not pay again.");
+    } finally {
+      verificationInFlight.current = false;
+      setChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen || !pending) return;
+    void refreshPayment(pending);
+    // A bounded initial refresh window; pending state and manual retry remain afterward.
+    const interval = setInterval(() => { void refreshPayment(pending); }, 3000);
+    const timeout = setTimeout(() => clearInterval(interval), 30000);
+    return () => { clearInterval(interval); clearTimeout(timeout); };
+    // The saved subscription identity controls this polling cycle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, pending?.subscriptionId]);
+
   const handleSelect = async (tier: string) => {
+    if (requestInFlight.current || pending) return;
+    requestInFlight.current = true;
     setIsLoading(tier);
 
     if (tier === "FREE") {
@@ -79,6 +141,7 @@ export function TierSelectionDialog({
         toast.error(e instanceof Error ? e.message : "Failed to subscribe. Please try again.");
       } finally {
         setIsLoading(null);
+        requestInFlight.current = false;
       }
       return;
     }
@@ -97,6 +160,9 @@ export function TierSelectionDialog({
       }
 
       const data = await res.json();
+      if (typeof data.subscriptionId !== "string" || !data.subscriptionId) throw new Error("Invalid checkout response");
+      rememberPending({ subscriptionId: data.subscriptionId, tier });
+      setStatusMessage("Checkout created. Payment confirmation is pending.");
 
       // Load Razorpay checkout
       const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
@@ -107,47 +173,19 @@ export function TierSelectionDialog({
           subscription_id: data.subscriptionId,
           name: "ExpertHub",
           description: `${data.expertName} - Premium Plan`,
-          handler: async () => {
-            toast.success("Payment successful! Activating your subscription...");
-            onClose();
-
-            // Verify payment directly with our API (doesn't depend on webhook timing)
-            try {
-              const verifyRes = await fetch("/api/payments/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ razorpaySubscriptionId: data.subscriptionId }),
-              });
-              if (verifyRes.ok) {
-                const verifyData = await verifyRes.json();
-                if (verifyData.verified) {
-                  onSubscribe(tier, true);
-                  window.location.reload();
-                  return;
-                }
-              }
-            } catch { /* fall through to polling */ }
-
-            // Fallback: poll if verify didn't confirm immediately
-            const poll = setInterval(async () => {
-              try {
-                const checkRes = await fetch(`/api/experts/${expertId}`);
-                if (checkRes.ok) {
-                  const checkData = await checkRes.json();
-                  if (checkData.isSubscribed) {
-                    clearInterval(poll);
-                    onSubscribe(tier, true);
-                    window.location.reload();
-                  }
-                }
-              } catch { /* retry */ }
-            }, 3000);
-            setTimeout(() => clearInterval(poll), 30000);
+          handler: () => {
+            setIsLoading(null);
+            requestInFlight.current = false;
+            setStatusMessage("Checkout completed. Waiting for confirmed payment before activating access.");
+            toast.info("Checkout completed. Payment confirmation is pending.");
+            // The provider callback is not proof of a captured charge.
+            void refreshPayment({ subscriptionId: data.subscriptionId, tier });
           },
           modal: {
             ondismiss: () => {
               setIsLoading(null);
-              toast.error("Payment was cancelled");
+              requestInFlight.current = false;
+              setStatusMessage("Checkout closed. Check its payment status before starting another payment.");
             },
           },
           theme: {
@@ -157,7 +195,7 @@ export function TierSelectionDialog({
 
         const rzp = new (window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay(options);
         rzp.open();
-        // NOTE: Do NOT clear isLoading here — Razorpay modal's ondismiss handles it
+        // Loading is cleared by completion/dismissal; pending identity remains until verification.
       };
 
       if (existingScript) {
@@ -169,13 +207,15 @@ export function TierSelectionDialog({
         script.onload = openCheckout;
         script.onerror = () => {
           setIsLoading(null);
-          toast.error("Failed to load payment gateway. Please try again.");
+          requestInFlight.current = false;
+          setStatusMessage("Payment gateway could not load. Check the saved subscription status before paying again.");
         };
         document.body.appendChild(script);
       }
       // Do NOT have a finally block here — loading is managed by Razorpay modal callbacks
     } catch (e) {
       setIsLoading(null);
+      requestInFlight.current = false;
       toast.error(e instanceof Error ? e.message : "Failed to subscribe. Please try again.");
     }
   };
@@ -198,6 +238,15 @@ export function TierSelectionDialog({
           </p>
         </DialogHeader>
 
+        {pending && (
+          <div role="status" className="rounded-lg border p-3 text-sm">
+            <p className="font-medium">Payment confirmation pending</p>
+            <p>{statusMessage || "A saved checkout is awaiting confirmation. Check its status before paying again."}</p>
+            <Button className="mt-2" variant="outline" disabled={checking} onClick={() => void refreshPayment()}>
+              {checking ? "Checking payment status…" : "Check payment status"}
+            </Button>
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-3 py-2 sm:grid-cols-2 sm:gap-4 sm:py-4">
           {sortedTiers.map((t) => {
             const Icon = tierIcons[t.tier] || User;
@@ -259,7 +308,7 @@ export function TierSelectionDialog({
                   variant={isPremium ? "default" : "outline"}
                   className="w-full"
                   size="sm"
-                  disabled={isCurrent || isLoading !== null}
+                  disabled={isCurrent || isLoading !== null || pending !== null}
                   onClick={() => handleSelect(t.tier)}
                 >
                   {isLoading === t.tier ? (

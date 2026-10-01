@@ -23,6 +23,10 @@
       "status": "PASS"
     },
     {
+      "name": "checkout callback remains pending after 30 seconds and reload; offline retry confirms without another checkout",
+      "status": "PASS"
+    },
+    {
       "name": "cancelled paid feed access ends exactly at verified paid expiry",
       "status": "PASS"
     },

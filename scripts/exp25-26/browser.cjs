@@ -74,6 +74,37 @@ async function run() {
     assert((await api('/api/admin/users')).status === 403, 'Subscriber accessed admin');
     await page.goto(base + '/subscriber/feed'); await page.locator('main').waitFor(); assert(page.url().includes('/subscriber/feed'), 'Subscriber navigation failed');
   });
+  await check('checkout callback remains pending after 30 seconds and reload; offline retry confirms without another checkout', async () => {
+    await prisma.expertSubscription.deleteMany({ where: { subscriberId: 'synthetic-built-viewer' } });
+    let creates = 0;
+    await page.route('https://checkout.razorpay.com/v1/checkout.js', route => route.fulfill({ contentType: 'text/javascript', body: 'window.Razorpay = class { constructor(options) { this.options = options; } open() { this.options.handler(); } };' }));
+    await page.route('**/api/payments/create-subscription', async route => {
+      creates++;
+      await prisma.expertSubscription.create({ data: { subscriberId: 'synthetic-built-viewer', expertProfileId: 'synthetic-built-expert', status: 'PENDING', tier: 'PREMIUM', price: 10, razorpaySubscriptionId: 'synthetic-delayed-checkout' } });
+      await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ subscriptionId: 'synthetic-delayed-checkout', razorpayKeyId: 'synthetic', expertName: 'Synthetic Built Expert' }) });
+    });
+    await page.goto(base + '/subscriber/experts/synthetic-built-owner');
+    await page.getByRole('button', { name: 'View Plans', exact: true }).click();
+    await page.getByRole('button', { name: 'Go Premium', exact: true }).click();
+    await page.getByText('Payment confirmation pending', { exact: true }).waitFor();
+    assert(!await page.getByText('Payment successful!', { exact: true }).count(), 'Premature successful charge claim');
+    await new Promise(resolve => setTimeout(resolve, 31000));
+    assert(await page.getByRole('button', { name: 'Check payment status', exact: true }).isEnabled(), 'Retry unavailable after initial window');
+    await page.reload(); await page.getByRole('button', { name: 'View Plans', exact: true }).click();
+    await page.getByText('Payment confirmation pending', { exact: true }).waitFor();
+    assert(await page.getByRole('button', { name: 'Go Premium', exact: true }).isDisabled(), 'Saved checkout permits duplicate payment');
+    await page.route('**/api/payments/verify', route => route.abort());
+    await page.getByRole('button', { name: 'Check payment status', exact: true }).click();
+    await page.getByText(/Payment status is unavailable/).waitFor();
+    await page.unroute('**/api/payments/verify');
+    // Synthetic delayed webhook result; signed event processing is independently integration-tested.
+    await prisma.expertSubscription.updateMany({ where: { subscriberId: 'synthetic-built-viewer' }, data: { status: 'ACTIVE', razorpayPaymentId: 'synthetic-delayed-charge', paidPeriodStart: new Date('2020-01-01'), currentPeriodEnd: new Date('2099-01-01') } });
+    await page.getByRole('button', { name: 'Check payment status', exact: true }).click();
+    await page.getByText('Payment confirmed. Your subscription is active.', { exact: true }).waitFor();
+    assert(creates === 1, 'Status retry created another checkout');
+    assert(await page.evaluate(() => localStorage.getItem('experthub-pending-payment:synthetic-built-owner')) === null, 'Confirmed checkout remains pending');
+    await page.unroute('**/api/payments/create-subscription'); await page.unroute('https://checkout.razorpay.com/v1/checkout.js');
+  });
   await check('cancelled paid feed access ends exactly at verified paid expiry', async () => {
     await prisma.post.create({ data: { id: 'synthetic-paid-feed', authorId: 'synthetic-built-owner', title: 'Paid feed proof', content: 'Synthetic', status: 'PUBLISHED', isPremiumOnly: true } });
     await prisma.expertSubscription.updateMany({ where: { subscriberId: 'synthetic-built-viewer' }, data: { tier: 'PREMIUM', status: 'CANCELLED', razorpayPaymentId: 'synthetic-confirmed-charge', paidPeriodStart: new Date('2020-01-01'), currentPeriodEnd: new Date('2099-01-01') } });
