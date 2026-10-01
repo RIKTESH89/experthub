@@ -1,0 +1,462 @@
+{
+  "method": "Exploratory assistant semantic annotation of distinct factual propositions. Repeated paraphrases, headings and rhetoric excluded. Supported means entailed by eligible public source/conversation; plausible unlabeled extensions count unsupported. Not independent human adjudication or automatic entailment validation. Gold labels/source snapshot unchanged.",
+  "reviewer": "assistant; no additional provider/model-judge calls",
+  "coverage": "All four valid answers annotated; H3 failed before valid answer, H4-H6 not run. No completed abstention/history/keyword pairs.",
+  "answers": [
+    {
+      "caseId": "H1-ada-expertise",
+      "variant": "original",
+      "claims": [
+        {
+          "proposition": "Ada recommends a monolith for a small team",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2025",
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit preference",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2025",
+              "span": "I prefer a monolith for a small team because operations cost matters."
+            },
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "Operations cost matters",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2025"
+          ],
+          "reason": "Explicit reason",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2025",
+              "span": "I prefer a monolith for a small team because operations cost matters."
+            }
+          ]
+        },
+        {
+          "proposition": "A monolith reduces operational work",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit reason",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "A monolith is simpler to deploy, monitor and maintain",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific comparative capabilities absent from source; unlabeled generalization",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Team spends far less time and money on operational overhead",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Strong magnitude/cost outcome not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "A monolith has only one codebase and one deployment pipeline",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Implementation constraints not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Team can focus on delivering features instead of managing many services",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Causal benefit not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Ada says start small, state the tradeoff and keep next step reversible",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-style-2025"
+          ],
+          "reason": "Explicit reference",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-style-2025",
+              "span": "Start small. State the tradeoff. Keep the next step reversible."
+            }
+          ]
+        },
+        {
+          "proposition": "Independent deployment requirement triggers reconsideration",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit exception",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "Ada would refactor to a more distributed architecture later",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific next architecture/action not documented",
+          "sourceSpans": []
+        }
+      ],
+      "answerSha256": "bd8c94f516759ec4e81b7bd777af933b6ed016b50171593ba70a2b3ad913124b"
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "variant": "candidate",
+      "claims": [
+        {
+          "proposition": "Ada recommends a monolith for a small team",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2025",
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit preference",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2025",
+              "span": "I prefer a monolith for a small team because operations cost matters."
+            },
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "Operations cost matters",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2025"
+          ],
+          "reason": "Explicit reason; source quote deduplicated",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2025",
+              "span": "I prefer a monolith for a small team because operations cost matters."
+            }
+          ]
+        },
+        {
+          "proposition": "A monolith reduces operational work",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit reason; source quote deduplicated",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "Small team has limited resources to manage infrastructure",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Context/generalization not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Fewer moving parts reduce deployment, monitoring and debugging complexity",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific causal explanation not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Team focuses on delivering features rather than maintaining distributed system",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Causal benefit not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Independent deployment requirement triggers reconsideration",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ada-public-2026-confirmation"
+          ],
+          "reason": "Explicit trigger",
+          "sourceSpans": [
+            {
+              "sourceId": "ada-public-2026-confirmation",
+              "span": "For a small team, I prefer a monolith to reduce operational work. I reconsider when independent deployment is required."
+            }
+          ]
+        },
+        {
+          "proposition": "Ada would reconsider only if independent deployment is needed",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Exclusive only-condition exceeds documented trigger",
+          "sourceSpans": []
+        }
+      ],
+      "answerSha256": "482a17164ca05be81082dca6e32ed6430ec0abaac9c7726584d20cc87c7e49b3"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "variant": "candidate",
+      "claims": [
+        {
+          "proposition": "Ben recommends independently deployable services for a large team",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2025",
+            "ben-public-2026-reason"
+          ],
+          "reason": "Explicit preference",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2025",
+              "span": "I prefer independently deployable services for large teams."
+            },
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            }
+          ]
+        },
+        {
+          "proposition": "Each service can be built/tested independently",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Independent deployment does not document build/test isolation",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Teams can release separately",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2026-reason"
+          ],
+          "reason": "Explicit reason",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            }
+          ]
+        },
+        {
+          "proposition": "Separate releases dramatically speed delivery and reduce coordination overhead",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Magnitude and causal effects not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Independent services map cleanly to team boundaries and full lifecycle ownership",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Ownership mapping not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Ben weighs independent releases against operating complexity",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-style-2025"
+          ],
+          "reason": "Explicit reference",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-style-2025",
+              "span": "I weigh independent releases against operating complexity, then propose a bounded experiment."
+            }
+          ]
+        },
+        {
+          "proposition": "Ben starts with a small bounded experiment before migration",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2026-reason",
+            "ben-style-2025"
+          ],
+          "reason": "Explicit approach",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            },
+            {
+              "sourceId": "ben-style-2025",
+              "span": "I weigh independent releases against operating complexity, then propose a bounded experiment."
+            }
+          ]
+        },
+        {
+          "proposition": "Experiment validates approach, surfaces hidden operational challenges and mitigates risk",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific experiment outcomes not documented",
+          "sourceSpans": []
+        }
+      ],
+      "answerSha256": "d8426ecd29842eab7f041c3dc51831be40e4b9b11fd4b9c9e20f47097d76b913"
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "variant": "original",
+      "claims": [
+        {
+          "proposition": "Ben recommends independently deployable services for a large team",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2025",
+            "ben-public-2026-reason"
+          ],
+          "reason": "Explicit preference",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2025",
+              "span": "I prefer independently deployable services for large teams."
+            },
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            }
+          ]
+        },
+        {
+          "proposition": "Teams can release autonomously",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2026-reason"
+          ],
+          "reason": "Explicit reason",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            }
+          ]
+        },
+        {
+          "proposition": "Team-owned service removes monolithic release coordination",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Ownership and monolith coordination account not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Release autonomy dramatically reduces friction and speeds delivery",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific magnitude/benefits not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Services give teams ownership of code/runtime and eventually separate data stores",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Ownership/storage arrangement not documented in eligible public evidence",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Services ease impact reasoning, enforce boundaries and prevent big-monolith interference",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific operational properties not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Ben weighs independent releases against operating complexity",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-style-2025"
+          ],
+          "reason": "Explicit reasoning",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-style-2025",
+              "span": "I weigh independent releases against operating complexity, then propose a bounded experiment."
+            }
+          ]
+        },
+        {
+          "proposition": "Ben specifically considers deployment pipelines, monitoring and service discovery",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Specific cost components not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Ben begins with a small bounded experiment before migration",
+          "status": "supported",
+          "evidenceSourceIds": [
+            "ben-public-2026-reason",
+            "ben-style-2025"
+          ],
+          "reason": "Explicit approach",
+          "sourceSpans": [
+            {
+              "sourceId": "ben-public-2026-reason",
+              "span": "For a large team, I prefer independently deployable services because teams can release separately. I start with a small experiment before a migration."
+            },
+            {
+              "sourceId": "ben-style-2025",
+              "span": "I weigh independent releases against operating complexity, then propose a bounded experiment."
+            }
+          ]
+        },
+        {
+          "proposition": "Only favorable tradeoff leads to experiment/scaling across organization",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Decision sequence and rollout condition not documented",
+          "sourceSpans": []
+        },
+        {
+          "proposition": "Experiment validates approach and controls added overhead",
+          "status": "unsupported",
+          "evidenceSourceIds": [],
+          "reason": "Claimed outcomes not documented",
+          "sourceSpans": []
+        }
+      ],
+      "answerSha256": "1192125af7301a5f08b56a00ede18f13829a5fb5fbf790efb9a9bb53a1251783"
+    }
+  ],
+  "summary": {
+    "original": {
+      "supported": 9,
+      "unsupported": 12,
+      "contradicted": 0,
+      "ungradable": 0,
+      "assessedDistinctPropositions": 21,
+      "exploratorySupportPrecision": 0.42857142857142855
+    },
+    "candidate": {
+      "supported": 8,
+      "unsupported": 8,
+      "contradicted": 0,
+      "ungradable": 0,
+      "assessedDistinctPropositions": 16,
+      "exploratorySupportPrecision": 0.5
+    }
+  },
+  "limitations": "Strict eligible-source grounding; unsupported may be plausible engineering advice rather than false. Clause segmentation and entailment are assistant judgments, not blinded independent human assessments; differences are not a validated causal faithfulness estimate. No invented biographical experiences observed in these four professional answers. Naturalness/style not scored."
+}

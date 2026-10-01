@@ -1,0 +1,26 @@
+/* Offline measurements only. No env, secret, model or application imports. */
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'../..'),dir=path.join(root,'audit/phase0/exp7-next');
+const fixtures=JSON.parse(fs.readFileSync(path.join(root,'audit/phase0/exp7-preflight/fixtures.json')));
+const ledger=JSON.parse(fs.readFileSync(path.join(dir,'ledger.json')));
+const sum=values=>values.reduce((a,b)=>a+b,0),median=values=>{const s=[...values].sort((a,b)=>a-b);return s.length?s.length%2?s[(s.length-1)/2]:(s[s.length/2-1]+s[s.length/2])/2:null;};
+const measurements=ledger.outputs.map(o=>{
+ const c=fixtures.cases.find(c=>c.id===o.caseId),gold=new Set(c.gold.relevantChunkIds);
+ const relevant=o.selectedChunkIds.filter(id=>gold.has(id));
+ const restricted=o.selectedChunkIds.filter(id=>fixtures.sources.some(s=>s.chunkIds.includes(id)&&s.audience!=='public'));
+ const crossPerson=o.selectedChunkIds.filter(id=>fixtures.sources.some(s=>s.chunkIds.includes(id)&&s.expert!==c.expert));
+ const records=ledger.records.filter(r=>r.caseId===o.caseId&&r.variant===o.variant);
+ return {caseId:o.caseId,variant:o.variant,retrieved:o.selectedChunkIds.length,relevant:relevant.length,goldRelevant:gold.size,precision:o.selectedChunkIds.length?relevant.length/o.selectedChunkIds.length:null,recall:gold.size?relevant.length/gold.size:null,restrictedSelected:restricted,crossPersonSelected:crossPerson,answerLatencyMs:records.find(r=>r.stage==='answer')?.latencyMs??null,rerankLatencyMs:records.find(r=>r.stage==='rerank')?.latencyMs??null,sumProviderMs:sum(records.map(r=>r.latencyMs||0)),pipelineIncludingPacingMs:o.pipelineMs,usage:{input:sum(records.map(r=>r.usage?.prompt_tokens||0)),output:sum(records.map(r=>r.usage?.completion_tokens||0)),total:sum(records.map(r=>r.usage?.total_tokens||0))}};
+});
+const summary=Object.fromEntries(['original','candidate'].map(variant=>{
+ const m=measurements.filter(m=>m.variant===variant);
+ const selected=sum(m.map(x=>x.retrieved)),relevant=sum(m.map(x=>x.relevant)),gold=sum(m.map(x=>x.goldRelevant));
+ return [variant,{validAnswers:m.length,microPrecision:selected?relevant/selected:null,microRecall:gold?relevant/gold:null,selected,relevant,goldRelevant:gold,restrictedSelected:sum(m.map(x=>x.restrictedSelected.length)),crossPersonSelected:sum(m.map(x=>x.crossPersonSelected.length)),medianAnswerLatencyMs:median(m.map(x=>x.answerLatencyMs).filter(x=>x!==null)),medianSumProviderMs:median(m.map(x=>x.sumProviderMs)),usage:{input:sum(m.map(x=>x.usage.input)),output:sum(m.map(x=>x.usage.output)),total:sum(m.map(x=>x.usage.total))}}];
+}));
+const pairs=fixtures.cases.map(c=>{
+ const original=measurements.find(m=>m.caseId===c.id&&m.variant==='original'),candidate=measurements.find(m=>m.caseId===c.id&&m.variant==='candidate');
+ return {caseId:c.id,complete:!!original&&!!candidate,answerLatencyDeltaMs:original&&candidate?candidate.answerLatencyMs-original.answerLatencyMs:null,providerSumDeltaMs:original&&candidate?candidate.sumProviderMs-original.sumProviderMs:null};
+});
+const result={runStatus:ledger.status,attempts:ledger.attempts,answers:ledger.answers,reranks:ledger.reranks,validAnswers:ledger.outputs.length,completedPairs:pairs.filter(p=>p.complete).length,actualUsage:{input:ledger.promptTokens,output:ledger.completionTokens,total:ledger.totalTokens},usageCoverage:{requestsReportingUsage:ledger.records.filter(r=>r.usage).length,requestsWithoutUsage:ledger.records.filter(r=>!r.usage).length,interpretation:'Observed reported usage only. Failed requests without returned usage have unknown token consumption; do not treat absent usage as zero.'},priorSpent:ledger.priorSpent,combinedKnownUsage:{attempts:ledger.attempts+ledger.priorSpent.attempts,total:ledger.totalTokens+ledger.priorSpent.total},measurements,summary,pairs,generatedRestrictedSentinelMatches:ledger.outputs.filter(o=>/PRIVATE_ADA_SENTINEL|PREMIUM_BEN_SENTINEL|PREMIUM_BEN_V2/.test(o.answer)).map(o=>({caseId:o.caseId,variant:o.variant})),interpretation:{retrieval:'Strict frozen gold IDs. Other partially useful public/style chunks count irrelevant under these unchanged labels. Null precision means no selected evidence; null recall means no evidence gold (conversation-state or unanswerable case).',access:'Restricted selected evidence measures prompt exposure, not generated leakage. All sources are fictional. No literal sentinel matches does not prove absence of restricted semantic influence.',latency:'Nonstream full-response latency; headers are not first-token latency. One run per pair; no significance/p95/load claim. Pipeline duration includes mandated 65-second waits.',naturalness:'unvalidated: no human ratings',style:'unvalidated: no human ratings',claimSupport:'requires separately documented semantic clause annotation; retrieval is not entailment',cost:'Dollar billing unmeasured',reasoning:'Counts only where provider reports numeric details; excluded text does not imply no internal reasoning'}};
+fs.writeFileSync(path.join(dir,'metrics.json'),JSON.stringify(result,null,2)+'\n');
+process.stdout.write(JSON.stringify({runStatus:result.runStatus,attempts:result.attempts,completedPairs:result.completedPairs,actualUsage:result.actualUsage})+'\n');

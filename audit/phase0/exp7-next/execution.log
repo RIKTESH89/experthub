@@ -1,0 +1,10 @@
+{"event":"attempt","attempt":1,"caseId":"H1-ada-expertise","variant":"original","stage":"answer"}
+{"event":"complete","attempt":1,"stage":"answer","latencyMs":1250.678166,"usage":{"prompt_tokens":376,"completion_tokens":219,"total_tokens":595}}
+{"event":"attempt","attempt":2,"caseId":"H1-ada-expertise","variant":"candidate","stage":"answer"}
+{"event":"complete","attempt":2,"stage":"answer","latencyMs":990.8782080000092,"usage":{"prompt_tokens":369,"completion_tokens":210,"total_tokens":579}}
+{"event":"attempt","attempt":3,"caseId":"H2-ben-expertise","variant":"candidate","stage":"answer"}
+{"event":"complete","attempt":3,"stage":"answer","latencyMs":1065.664625000005,"usage":{"prompt_tokens":351,"completion_tokens":239,"total_tokens":590}}
+{"event":"attempt","attempt":4,"caseId":"H2-ben-expertise","variant":"original","stage":"answer"}
+{"event":"complete","attempt":4,"stage":"answer","latencyMs":1530.3359159999818,"usage":{"prompt_tokens":381,"completion_tokens":315,"total_tokens":696}}
+{"event":"attempt","attempt":5,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
+{"event":"final","status":"stopped","attempts":5,"answers":5,"reranks":0,"totalTokens":2460}
