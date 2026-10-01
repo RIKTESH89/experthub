@@ -87,7 +87,7 @@ test('runtime fetch timeout is terminal and redacted',async()=>{
 test('diagnostics preserve finish/refusal/reasoning counts without reasoning text or secret',()=>{
  const d=runner.responseDiagnostics({status:'completed',choices:[{finish_reason:'length',message:{content:'partial synthetic-mock-key',refusal:'synthetic-mock-key',reasoning:'DO_NOT_STORE'}}],usage:{completion_tokens_details:{reasoning_tokens:10}}},'synthetic-mock-key');assert.equal(d.choices[0].finishReason,'length');assert.equal(d.usageShape.reasoningTokens,10);assert.ok(!JSON.stringify(d).includes('synthetic-mock-key'));assert.ok(!JSON.stringify(d).includes('DO_NOT_STORE'));
 });
-test('network execution remains disabled regardless of execute/approval argument',async()=>{await assert.rejects(runner.execute(),/offline only/);await assert.rejects(runner.execute(undefined,true),/offline only/);assert.equal(runner.createLedger().attempts,0);});
+test('network execution requires explicit approved execution flag; default path starts no requests',async()=>{await assert.rejects(runner.execute(),/explicit approved/);await assert.rejects(runner.execute(undefined,false),/explicit approved/);assert.equal(runner.createLedger().attempts,0);});
 test('optional null reasoning/cache details remain unknown rather than falsely zero or invalid',()=>{
  const d={model:'openai/gpt-oss-120b',usage:{prompt_tokens:100,completion_tokens:10,total_tokens:110,completion_tokens_details:{reasoning_tokens:null},prompt_tokens_details:{cached_tokens:null}}};runner.validateUsage(d);const r=runner.responseDiagnostics(d,'synthetic-mock-key');assert.equal(r.usageShape.reasoningTokens,null);assert.equal(r.usageShape.cachedTokens,null);
 });

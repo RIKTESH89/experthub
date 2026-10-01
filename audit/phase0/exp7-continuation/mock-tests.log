@@ -1,23 +1,23 @@
 {"event":"attempt","attempt":1,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
-{"event":"complete","attempt":1,"stage":"answer","latencyMs":0.20120900000000574,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":1,"stage":"answer","latencyMs":0.41729200000003175,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":2,"caseId":"H3-latest-correction","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":2,"stage":"answer","latencyMs":0.06425000000001546,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":2,"stage":"answer","latencyMs":0.079166999999984,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":3,"caseId":"H4-keyword-only","variant":"candidate","stage":"rerank"}
-{"event":"complete","attempt":3,"stage":"rerank","latencyMs":0.04820799999993142,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":3,"stage":"rerank","latencyMs":0.05124999999998181,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":4,"caseId":"H4-keyword-only","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":4,"stage":"answer","latencyMs":0.054583999999977095,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":4,"stage":"answer","latencyMs":0.05691700000011224,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":5,"caseId":"H4-keyword-only","variant":"original","stage":"rerank"}
-{"event":"complete","attempt":5,"stage":"rerank","latencyMs":0.05729199999996126,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":5,"stage":"rerank","latencyMs":0.056874999999990905,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":6,"caseId":"H4-keyword-only","variant":"original","stage":"answer"}
-{"event":"complete","attempt":6,"stage":"answer","latencyMs":0.055708999999978914,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":6,"stage":"answer","latencyMs":0.05749999999989086,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":7,"caseId":"H5-unknown-experience","variant":"original","stage":"answer"}
-{"event":"complete","attempt":7,"stage":"answer","latencyMs":0.07470899999998437,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":7,"stage":"answer","latencyMs":0.0597499999998945,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":8,"caseId":"H5-unknown-experience","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":8,"stage":"answer","latencyMs":0.05554200000005949,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":8,"stage":"answer","latencyMs":0.05887499999971624,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":9,"caseId":"H6-premium-denial","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":9,"stage":"answer","latencyMs":0.07212500000014188,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":9,"stage":"answer","latencyMs":0.06870900000012625,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":10,"caseId":"H6-premium-denial","variant":"original","stage":"answer"}
-{"event":"complete","attempt":10,"stage":"answer","latencyMs":0.07404200000019046,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":10,"stage":"answer","latencyMs":0.06783399999994799,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"final","status":"complete","attempts":10,"answers":8,"reranks":2,"totalTokens":1100}
 {"event":"attempt","attempt":1,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
 {"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":0}
@@ -66,55 +66,55 @@
 {"event":"attempt","attempt":1,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
 {"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":0}
 {"event":"attempt","attempt":1,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
-{"event":"complete","attempt":1,"stage":"answer","latencyMs":0.07416700000067067,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":1,"stage":"answer","latencyMs":0.06704200000058336,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":2,"caseId":"H3-latest-correction","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":2,"stage":"answer","latencyMs":0.04591699999946286,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":2,"stage":"answer","latencyMs":0.044292000000496046,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":3,"caseId":"H4-keyword-only","variant":"candidate","stage":"rerank"}
 {"event":"final","status":"stopped","attempts":3,"answers":2,"reranks":1,"totalTokens":220}
 {"event":"attempt","attempt":3,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
-{"event":"complete","attempt":3,"stage":"answer","latencyMs":0.0605409999989206,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":3,"stage":"answer","latencyMs":0.062167000000044936,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"attempt","attempt":4,"caseId":"H3-latest-correction","variant":"candidate","stage":"answer"}
-{"event":"complete","attempt":4,"stage":"answer","latencyMs":0.04700000000048021,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
+{"event":"complete","attempt":4,"stage":"answer","latencyMs":0.04291600000033213,"usage":{"prompt_tokens":100,"completion_tokens":10,"total_tokens":110}}
 {"event":"final","status":"stopped","attempts":4,"answers":2,"reranks":2,"totalTokens":220}
 {"event":"attempt","attempt":1,"caseId":"H3-latest-correction","variant":"original","stage":"answer"}
 {"event":"final","status":"stopped","attempts":1,"answers":1,"reranks":0,"totalTokens":0}
-✔ exact H3-H6 continuation sequence: eight answers plus two native reranks, no completed pairs replayed (2945.93425ms)
-✔ all frozen remaining payloads conform to documented restricted Groq wire schema (0.278459ms)
-✔ 64-round fixture produces original oldest history and candidate latest correction without database columns (14.214084ms)
-✔ completed H1/H2 wire payloads remain byte-equivalent under repaired adapter, so preserved pairs remain comparable (22.377208ms)
-✔ first failure stops entire remaining run: HTTP400 JSON (294.424291ms)
-✔ first failure stops entire remaining run: HTTP429 (293.294625ms)
-✔ first failure stops entire remaining run: HTTP500 nonJSON (294.642916ms)
-✔ first failure stops entire remaining run: invalid success JSON (293.894083ms)
-✔ first failure stops entire remaining run: null success object (293.232708ms)
-✔ first failure stops entire remaining run: model mismatch (294.155667ms)
-✔ first failure stops entire remaining run: missing usage (298.170917ms)
-✔ first failure stops entire remaining run: invalid usage total (294.7615ms)
-✔ first failure stops entire remaining run: invalid usage negative (293.6095ms)
-✔ first failure stops entire remaining run: reasoning over reported completion (293.282292ms)
-✔ first failure stops entire remaining run: cached over reported prompt (292.815834ms)
-✔ first failure stops entire remaining run: prompt cap (296.447209ms)
-✔ first failure stops entire remaining run: completion cap (293.648875ms)
-✔ first failure stops entire remaining run: truncation (293.253833ms)
-✔ first failure stops entire remaining run: refusal (291.587292ms)
-✔ first failure stops entire remaining run: missing choices (290.732917ms)
-✔ first failure stops entire remaining run: two choices (292.467417ms)
-✔ first failure stops entire remaining run: finish filter (292.561208ms)
-✔ first failure stops entire remaining run: null final (294.811667ms)
-✔ first failure stops entire remaining run: empty final (293.472375ms)
-✔ first failure stops entire remaining run: tool call (292.344625ms)
-✔ first failure stops entire remaining run: timeout (291.98075ms)
-✔ real Response non2xx JSON/text decoding preserves a redacted bounded error body (300.458917ms)
-✔ rerank failure cannot trigger pinned score fallback followed by another provider call (886.455125ms)
-✔ third-rerank guard latches before dispatch even through pinned retriever catch (877.033375ms)
-✔ actual tolerant pinned rerank parser deduplicates valid indices, ignores out-of-range and fills by score (8.847709ms)
-✔ keyword-only candidate is offered to candidate rerank and starved by original 15-vector budget, without altering parser (0.065917ms)
-✔ all request fields/roles/configuration validated before dispatch; no tools, JSON schema, DB fields or unsupported params (0.214083ms)
-✔ new maximums and spent history arithmetic; overrun boundaries stop before further dispatch (0.083709ms)
-✔ runtime fetch timeout is terminal and redacted (293.395ms)
-✔ diagnostics preserve finish/refusal/reasoning counts without reasoning text or secret (0.085083ms)
-✔ network execution remains disabled regardless of execute/approval argument (0.078125ms)
-✔ optional null reasoning/cache details remain unknown rather than falsely zero or invalid (0.03325ms)
+✔ exact H3-H6 continuation sequence: eight answers plus two native reranks, no completed pairs replayed (2945.459542ms)
+✔ all frozen remaining payloads conform to documented restricted Groq wire schema (0.269417ms)
+✔ 64-round fixture produces original oldest history and candidate latest correction without database columns (15.119875ms)
+✔ completed H1/H2 wire payloads remain byte-equivalent under repaired adapter, so preserved pairs remain comparable (19.679416ms)
+✔ first failure stops entire remaining run: HTTP400 JSON (292.973708ms)
+✔ first failure stops entire remaining run: HTTP429 (293.0245ms)
+✔ first failure stops entire remaining run: HTTP500 nonJSON (291.566542ms)
+✔ first failure stops entire remaining run: invalid success JSON (292.243875ms)
+✔ first failure stops entire remaining run: null success object (292.140625ms)
+✔ first failure stops entire remaining run: model mismatch (291.770625ms)
+✔ first failure stops entire remaining run: missing usage (292.753958ms)
+✔ first failure stops entire remaining run: invalid usage total (292.074542ms)
+✔ first failure stops entire remaining run: invalid usage negative (295.716ms)
+✔ first failure stops entire remaining run: reasoning over reported completion (292.897583ms)
+✔ first failure stops entire remaining run: cached over reported prompt (293.812833ms)
+✔ first failure stops entire remaining run: prompt cap (293.311042ms)
+✔ first failure stops entire remaining run: completion cap (292.572209ms)
+✔ first failure stops entire remaining run: truncation (296.25675ms)
+✔ first failure stops entire remaining run: refusal (293.264125ms)
+✔ first failure stops entire remaining run: missing choices (292.835625ms)
+✔ first failure stops entire remaining run: two choices (291.373875ms)
+✔ first failure stops entire remaining run: finish filter (291.33275ms)
+✔ first failure stops entire remaining run: null final (292.959792ms)
+✔ first failure stops entire remaining run: empty final (291.86975ms)
+✔ first failure stops entire remaining run: tool call (294.167458ms)
+✔ first failure stops entire remaining run: timeout (290.914042ms)
+✔ real Response non2xx JSON/text decoding preserves a redacted bounded error body (307.351208ms)
+✔ rerank failure cannot trigger pinned score fallback followed by another provider call (874.920375ms)
+✔ third-rerank guard latches before dispatch even through pinned retriever catch (878.27125ms)
+✔ actual tolerant pinned rerank parser deduplicates valid indices, ignores out-of-range and fills by score (9.000917ms)
+✔ keyword-only candidate is offered to candidate rerank and starved by original 15-vector budget, without altering parser (0.066584ms)
+✔ all request fields/roles/configuration validated before dispatch; no tools, JSON schema, DB fields or unsupported params (0.215916ms)
+✔ new maximums and spent history arithmetic; overrun boundaries stop before further dispatch (0.085958ms)
+✔ runtime fetch timeout is terminal and redacted (293.109666ms)
+✔ diagnostics preserve finish/refusal/reasoning counts without reasoning text or secret (0.087583ms)
+✔ network execution requires explicit approved execution flag; default path starts no requests (0.07725ms)
+✔ optional null reasoning/cache details remain unknown rather than falsely zero or invalid (0.034625ms)
 ℹ tests 37
 ℹ suites 0
 ℹ pass 37
@@ -122,4 +122,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 11916.509541
+ℹ duration_ms 11898.323208

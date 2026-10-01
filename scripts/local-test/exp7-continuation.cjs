@@ -1,4 +1,4 @@
-/* Prepared remaining-case continuation: offline only until new approval. */
+/* Approved H3-H6 continuation: network only through explicit approved CLI flag. */
 const fs=require('fs'),path=require('path'),vm=require('vm'),crypto=require('crypto');
 const {spawnSync}=require('child_process'),ts=require('typescript');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'audit/phase0/exp7-continuation');
@@ -157,7 +157,7 @@ async function preflight(){
  return manifest;
 }
 async function execute(test,approved=false){
- if(!test)throw Error('Repair is offline only; further provider calls require new authorization');
+ if(!test&&approved!==true)throw Error('Continuation requires explicit approved execution flag');
  const manifest=JSON.parse(fs.readFileSync(path.join(out,'manifest.json')));
  if(JSON.stringify(manifest.preservedHistory)!==JSON.stringify(preservedHistory()))throw Error('Preserved result history changed');
  if(manifest.runnerHash!==sha(fs.readFileSync(__filename))||manifest.tokenCounterHash!==sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py')))||manifest.fixturesHash!==sha(fs.readFileSync(path.join(frozen,'fixtures.json'))))throw Error('Preflight changed');
@@ -215,4 +215,4 @@ async function execute(test,approved=false){
  save();process.stdout.write(JSON.stringify({event:'final',status:ledger.status,attempts:ledger.attempts,answers:ledger.answers,reranks:ledger.reranks,totalTokens:ledger.totalTokens})+'\n');if(!test&&ledger.status!=='complete')process.exitCode=1;return ledger;
 }
 module.exports={validatePayload,validateUsage,httpErrorDiagnostics,preservedHistory,count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure,assertAttemptBudget,assertUsageBudget,LIMITS,PRIOR_SPENT,createLedger};
-if(require.main===module){(process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m&&!process.argv.includes('--execute-approved-exp22'))console.log(JSON.stringify(m));}).catch(()=>{console.error('Local preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}
+if(require.main===module){(process.argv.includes('--execute-approved-continuation')?execute(undefined,true):process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m&&!process.argv.includes('--execute-approved-continuation'))console.log(JSON.stringify(m));}).catch(()=>{console.error('Local preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}
