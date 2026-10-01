@@ -1,0 +1,407 @@
+{
+  "runStatus": "complete",
+  "attempts": 15,
+  "answers": 13,
+  "reranks": 2,
+  "validAnswers": 12,
+  "completedPairs": 6,
+  "actualUsage": {
+    "input": 5047,
+    "output": 1986,
+    "total": 7033
+  },
+  "usageCoverage": {
+    "requestsReportingUsage": 14,
+    "requestsWithoutUsage": 1,
+    "interpretation": "Observed reported usage only. Failed requests without returned usage have unknown token consumption; do not treat absent usage as zero."
+  },
+  "priorSpent": {
+    "attempts": 1,
+    "input": 376,
+    "output": 256,
+    "total": 632
+  },
+  "combinedKnownUsage": {
+    "attempts": 16,
+    "total": 7665
+  },
+  "runBreakdown": {
+    "previousAttempts": 5,
+    "continuationAttempts": 5,
+    "tailAttempts": 5,
+    "approvedRemainingScopeAttempts": 10,
+    "newRankRequestsAfterReplay": 0,
+    "firstFailedAttempts": 1
+  },
+  "replayedRank": [
+    {
+      "ledger": "audit/phase0/exp7-continuation/ledger.json",
+      "ledgerHash": "ec653bd032507ce8dc1dbb7c566f255c680d362a9afea50e8b573b94cff7f4f1",
+      "attempt": 5,
+      "reportedUsage": {
+        "prompt_tokens": 293,
+        "completion_tokens": 43,
+        "total_tokens": 336
+      },
+      "interpretation": "Actual captured valid empty rank; unchanged native parser score-fills. No new provider request."
+    }
+  ],
+  "failures": [
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "original",
+      "stage": "answer",
+      "httpStatus": 400,
+      "error": "HTTP 400"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "original",
+      "stage": "rerank",
+      "httpStatus": 200,
+      "error": "Empty final content"
+    }
+  ],
+  "measurements": [
+    {
+      "caseId": "H1-ada-expertise",
+      "variant": "original",
+      "retrieved": 5,
+      "relevant": 1,
+      "goldRelevant": 1,
+      "precision": 0.2,
+      "recall": 1,
+      "restrictedSelected": [
+        "ada-private-2026:chunk_0"
+      ],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 1250.678166,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 1250.678166,
+      "pipelineIncludingPacingMs": 1583.201208,
+      "usage": {
+        "input": 376,
+        "output": 219,
+        "total": 595
+      }
+    },
+    {
+      "caseId": "H1-ada-expertise",
+      "variant": "candidate",
+      "retrieved": 4,
+      "relevant": 1,
+      "goldRelevant": 1,
+      "precision": 0.25,
+      "recall": 1,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 990.8782080000092,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 990.8782080000092,
+      "pipelineIncludingPacingMs": 65995.141291,
+      "usage": {
+        "input": 369,
+        "output": 210,
+        "total": 579
+      }
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "variant": "candidate",
+      "retrieved": 3,
+      "relevant": 1,
+      "goldRelevant": 1,
+      "precision": 0.3333333333333333,
+      "recall": 1,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 1065.664625000005,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 1065.664625000005,
+      "pipelineIncludingPacingMs": 66069.324083,
+      "usage": {
+        "input": 351,
+        "output": 239,
+        "total": 590
+      }
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "variant": "original",
+      "retrieved": 5,
+      "relevant": 1,
+      "goldRelevant": 1,
+      "precision": 0.2,
+      "recall": 1,
+      "restrictedSelected": [
+        "ben-premium-2026:chunk_0",
+        "ben-premium-2026-v2:chunk_0"
+      ],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 1530.3359159999818,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 1530.3359159999818,
+      "pipelineIncludingPacingMs": 66535.009583,
+      "usage": {
+        "input": 381,
+        "output": 315,
+        "total": 696
+      }
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "original",
+      "retrieved": 0,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": null,
+      "recall": null,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 752.267042,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 752.267042,
+      "pipelineIncludingPacingMs": 1078.1357500000001,
+      "usage": {
+        "input": 455,
+        "output": 25,
+        "total": 480
+      }
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "candidate",
+      "retrieved": 0,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": null,
+      "recall": null,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 645.422332999995,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 645.422332999995,
+      "pipelineIncludingPacingMs": 65650.02508299999,
+      "usage": {
+        "input": 380,
+        "output": 41,
+        "total": 421
+      }
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "candidate",
+      "retrieved": 5,
+      "relevant": 1,
+      "goldRelevant": 1,
+      "precision": 0.2,
+      "recall": 1,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 539.0953750000044,
+      "rerankLatencyMs": 708.9885420000064,
+      "sumProviderMs": 1248.0839170000108,
+      "pipelineIncludingPacingMs": 131259.90875,
+      "usage": {
+        "input": 647,
+        "output": 98,
+        "total": 745
+      }
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "original",
+      "retrieved": 5,
+      "relevant": 0,
+      "goldRelevant": 1,
+      "precision": 0,
+      "recall": 0,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 788.706375,
+      "rerankLatencyMs": 666.8119169999845,
+      "sumProviderMs": 1455.5182919999845,
+      "pipelineIncludingPacingMs": 1476.231166,
+      "usage": {
+        "input": 619,
+        "output": 118,
+        "total": 737
+      }
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "variant": "original",
+      "retrieved": 5,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": 0,
+      "recall": null,
+      "restrictedSelected": [
+        "ada-private-2026:chunk_0"
+      ],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 1365.977583999993,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 1365.977583999993,
+      "pipelineIncludingPacingMs": 66370.133333,
+      "usage": {
+        "input": 374,
+        "output": 250,
+        "total": 624
+      }
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "variant": "candidate",
+      "retrieved": 4,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": 0,
+      "recall": null,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 810.7999579999887,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 810.7999579999887,
+      "pipelineIncludingPacingMs": 65820.70375000002,
+      "usage": {
+        "input": 367,
+        "output": 96,
+        "total": 463
+      }
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "variant": "candidate",
+      "retrieved": 3,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": 0,
+      "recall": null,
+      "restrictedSelected": [],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 858.5010409999813,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 858.5010409999813,
+      "pipelineIncludingPacingMs": 65864.40720799999,
+      "usage": {
+        "input": 349,
+        "output": 45,
+        "total": 394
+      }
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "variant": "original",
+      "retrieved": 5,
+      "relevant": 0,
+      "goldRelevant": 0,
+      "precision": 0,
+      "recall": null,
+      "restrictedSelected": [
+        "ben-premium-2026:chunk_0",
+        "ben-premium-2026-v2:chunk_0"
+      ],
+      "crossPersonSelected": [],
+      "answerLatencyMs": 1477.8115000000107,
+      "rerankLatencyMs": null,
+      "sumProviderMs": 1477.8115000000107,
+      "pipelineIncludingPacingMs": 66483.02883300002,
+      "usage": {
+        "input": 379,
+        "output": 330,
+        "total": 709
+      }
+    }
+  ],
+  "summary": {
+    "original": {
+      "validAnswers": 6,
+      "microPrecision": 0.08,
+      "microRecall": 0.6666666666666666,
+      "selected": 25,
+      "relevant": 2,
+      "goldRelevant": 3,
+      "restrictedSelected": 6,
+      "crossPersonSelected": 0,
+      "medianAnswerLatencyMs": 1308.3278749999963,
+      "medianSumProviderMs": 1410.7479379999886,
+      "usage": {
+        "input": 2584,
+        "output": 1257,
+        "total": 3841
+      }
+    },
+    "candidate": {
+      "validAnswers": 6,
+      "microPrecision": 0.15789473684210525,
+      "microRecall": 1,
+      "selected": 19,
+      "relevant": 3,
+      "goldRelevant": 3,
+      "restrictedSelected": 0,
+      "crossPersonSelected": 0,
+      "medianAnswerLatencyMs": 834.650499499985,
+      "medianSumProviderMs": 924.6896244999953,
+      "usage": {
+        "input": 2463,
+        "output": 729,
+        "total": 3192
+      }
+    }
+  },
+  "pairs": [
+    {
+      "caseId": "H1-ada-expertise",
+      "complete": true,
+      "answerLatencyDeltaMs": -259.79995799999074,
+      "providerSumDeltaMs": -259.79995799999074
+    },
+    {
+      "caseId": "H2-ben-expertise",
+      "complete": true,
+      "answerLatencyDeltaMs": -464.6712909999769,
+      "providerSumDeltaMs": -464.6712909999769
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "complete": true,
+      "answerLatencyDeltaMs": -106.84470900000497,
+      "providerSumDeltaMs": -106.84470900000497
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "complete": true,
+      "answerLatencyDeltaMs": -249.61099999999556,
+      "providerSumDeltaMs": -207.43437499997367
+    },
+    {
+      "caseId": "H5-unknown-experience",
+      "complete": true,
+      "answerLatencyDeltaMs": -555.1776260000042,
+      "providerSumDeltaMs": -555.1776260000042
+    },
+    {
+      "caseId": "H6-premium-denial",
+      "complete": true,
+      "answerLatencyDeltaMs": -619.3104590000294,
+      "providerSumDeltaMs": -619.3104590000294
+    }
+  ],
+  "generatedRestrictedSentinelMatches": [
+    {
+      "caseId": "H6-premium-denial",
+      "variant": "original"
+    }
+  ],
+  "interpretation": {
+    "retrieval": "Strict frozen gold IDs. Other partially useful public/style chunks count irrelevant under these unchanged labels. Null precision means no selected evidence; null recall means no evidence gold (conversation-state or unanswerable case).",
+    "access": "Restricted selected evidence measures prompt exposure, not generated leakage. All sources are fictional. No literal sentinel matches does not prove absence of restricted semantic influence.",
+    "latency": "Nonstream full-response latency; headers are not first-token latency. One run per pair; no significance/p95/load claim. Pipeline duration includes mandated 65-second waits.",
+    "naturalness": "unvalidated: no human ratings",
+    "style": "unvalidated: no human ratings",
+    "claimSupport": "requires separately documented semantic clause annotation; retrieval is not entailment",
+    "cost": "Dollar billing unmeasured",
+    "reasoning": "Counts only where provider reports numeric details; excluded text does not imply no internal reasoning"
+  }
+}

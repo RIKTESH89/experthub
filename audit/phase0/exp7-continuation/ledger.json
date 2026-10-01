@@ -1,0 +1,505 @@
+{
+  "status": "stopped",
+  "priorSpent": {
+    "attempts": 6,
+    "input": 1853,
+    "output": 1239,
+    "total": 3092,
+    "requestsWithoutUsage": 1
+  },
+  "attempts": 5,
+  "answers": 3,
+  "reranks": 2,
+  "promptTokens": 1775,
+  "completionTokens": 207,
+  "totalTokens": 1982,
+  "records": [
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "original",
+      "stage": "answer",
+      "attempt": 1,
+      "localTokens": 371,
+      "estimatedHostFraming": 512,
+      "payload": {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are the Digital Twin of Ada. You represent their knowledge, expertise, and perspective. Answer questions as if you are Ada, drawing from their published content and knowledge base. Be helpful, insightful, and true to their voice and expertise.\n\nCRITICAL INSTRUCTIONS FOR ANSWERING:\n- You MUST base your answers on the expert's content provided above. This is your primary and most trusted source.\n- When the expert's content mentions specific names, tools, projects, or examples, you MUST use those exact names in your answer — do NOT substitute with your own knowledge.\n- If the expert's content directly answers the question, use that answer even if your general knowledge suggests something different.\n- Only supplement with your general knowledge when the expert's content does not cover the topic at all.\n- Always maintain the expert's voice and perspective.\n- If you don't have enough information from the expert's content, say so honestly."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "assistant",
+            "content": "Understood."
+          },
+          {
+            "role": "user",
+            "content": "What is my current team size?"
+          }
+        ],
+        "temperature": 0.5,
+        "stream": false,
+        "max_completion_tokens": 2048,
+        "reasoning_effort": "low",
+        "include_reasoning": false
+      },
+      "startUtc": "2026-10-01T07:33:12.602Z",
+      "headersMs": 748.7100420000002,
+      "httpStatus": 200,
+      "latencyMs": 752.267042,
+      "responseDiagnostics": {
+        "model": "openai/gpt-oss-120b",
+        "systemFingerprint": "fp_6b677c2caf",
+        "responseStatus": null,
+        "choicesType": "array",
+        "choiceCount": 1,
+        "choices": [
+          {
+            "finishReason": "stop",
+            "messageType": "object",
+            "contentType": "string",
+            "contentLength": 40,
+            "finalContent": "Your current team size is two engineers.",
+            "refusalType": "undefined",
+            "refusal": null,
+            "refusalPresent": false,
+            "reasoningType": "undefined",
+            "reasoningLength": null,
+            "toolCallCount": 0
+          }
+        ],
+        "usageShape": {
+          "promptTokens": 455,
+          "completionTokens": 25,
+          "totalTokens": 480,
+          "reasoningTokens": 8,
+          "cachedTokens": null
+        }
+      },
+      "usage": {
+        "prompt_tokens": 455,
+        "completion_tokens": 25,
+        "total_tokens": 480
+      },
+      "content": "Your current team size is two engineers.",
+      "finishReason": "stop",
+      "status": "ok"
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "candidate",
+      "stage": "answer",
+      "attempt": 2,
+      "localTokens": 316,
+      "estimatedHostFraming": 512,
+      "payload": {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI representation of Ada, focused on their documented professional expertise, relevant values, and communication style. You are not the actual person. Ground attributed views in the provided evidence. Label new applications or inferences and their uncertainty. Never invent personal experiences, private memories, motives, or beliefs.\n\nCRITICAL INSTRUCTIONS FOR ANSWERING:\n- You MUST base your answers on the expert's content provided above. This is your primary and most trusted source.\n- When the expert's content mentions specific names, tools, projects, or examples, you MUST use those exact names in your answer — do NOT substitute with your own knowledge.\n- If the expert's content directly answers the question, use that answer even if your general knowledge suggests something different.\n- Only supplement with your general knowledge when the expert's content does not cover the topic at all.\n- Always maintain the expert's voice and perspective.\n- If you don't have enough information from the expert's content, say so honestly."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "My team has two engineers."
+          },
+          {
+            "role": "user",
+            "content": "Correction: my team now has twenty engineers."
+          },
+          {
+            "role": "user",
+            "content": "What is my current team size?"
+          }
+        ],
+        "temperature": 0.5,
+        "stream": false,
+        "max_completion_tokens": 2048,
+        "reasoning_effort": "low",
+        "include_reasoning": false
+      },
+      "startUtc": "2026-10-01T07:34:18.359Z",
+      "headersMs": 644.2074169999978,
+      "httpStatus": 200,
+      "latencyMs": 645.422332999995,
+      "responseDiagnostics": {
+        "model": "openai/gpt-oss-120b",
+        "systemFingerprint": "fp_90620edd96",
+        "responseStatus": null,
+        "choicesType": "array",
+        "choiceCount": 1,
+        "choices": [
+          {
+            "finishReason": "stop",
+            "messageType": "object",
+            "contentType": "string",
+            "contentLength": 47,
+            "finalContent": "Your current team size is **twenty engineers**.",
+            "refusalType": "undefined",
+            "refusal": null,
+            "refusalPresent": false,
+            "reasoningType": "undefined",
+            "reasoningLength": null,
+            "toolCallCount": 0
+          }
+        ],
+        "usageShape": {
+          "promptTokens": 380,
+          "completionTokens": 41,
+          "totalTokens": 421,
+          "reasoningTokens": 21,
+          "cachedTokens": null
+        }
+      },
+      "usage": {
+        "prompt_tokens": 380,
+        "completion_tokens": 41,
+        "total_tokens": 421
+      },
+      "content": "Your current team size is **twenty engineers**.",
+      "finishReason": "stop",
+      "status": "ok"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "candidate",
+      "stage": "rerank",
+      "attempt": 3,
+      "localTokens": 237,
+      "estimatedHostFraming": 256,
+      "payload": {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a relevance ranking system. Given a query and numbered text chunks, return ONLY the numbers of the most relevant chunks in order of relevance (most relevant first). Return numbers separated by commas. No explanation."
+          },
+          {
+            "role": "user",
+            "content": "Query: \"What is Ada's documented recommendation about rare-tool?\"\n\nChunks:\n[1] Unrelated synthetic note 00.\n\n[2] For rare-tool, I recommend a reversible trial before making it a standard.\n\n[3] Unrelated synthetic note 01.\n\n[4] Unrelated synthetic note 02.\n\n[5] Unrelated synthetic note 03.\n\n[6] Unrelated synthetic note 04.\n\n[7] Unrelated synthetic note 05.\n\n[8] Unrelated synthetic note 06.\n\n[9] Unrelated synthetic note 07.\n\n[10] Unrelated synthetic note 08.\n\n[11] Unrelated synthetic note 09.\n\n[12] Unrelated synthetic note 10.\n\n[13] Unrelated synthetic note 11.\n\n[14] Unrelated synthetic note 12.\n\n[15] Unrelated synthetic note 13.\n\nReturn the 5 most relevant chunk numbers, comma-separated:"
+          }
+        ],
+        "temperature": 0,
+        "stream": false,
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "low",
+        "include_reasoning": false
+      },
+      "startUtc": "2026-10-01T07:35:24.009Z",
+      "headersMs": 707.3731670000125,
+      "httpStatus": 200,
+      "latencyMs": 708.9885420000064,
+      "responseDiagnostics": {
+        "model": "openai/gpt-oss-120b",
+        "systemFingerprint": "fp_1d982b31b2",
+        "responseStatus": null,
+        "choicesType": "array",
+        "choiceCount": 1,
+        "choices": [
+          {
+            "finishReason": "stop",
+            "messageType": "object",
+            "contentType": "string",
+            "contentLength": 1,
+            "finalContent": "2",
+            "refusalType": "undefined",
+            "refusal": null,
+            "refusalPresent": false,
+            "reasoningType": "undefined",
+            "reasoningLength": null,
+            "toolCallCount": 0
+          }
+        ],
+        "usageShape": {
+          "promptTokens": 301,
+          "completionTokens": 33,
+          "totalTokens": 334,
+          "reasoningTokens": 23,
+          "cachedTokens": null
+        }
+      },
+      "usage": {
+        "prompt_tokens": 301,
+        "completion_tokens": 33,
+        "total_tokens": 334
+      },
+      "content": "2",
+      "finishReason": "stop",
+      "status": "ok"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "candidate",
+      "stage": "answer",
+      "attempt": 4,
+      "localTokens": 282,
+      "estimatedHostFraming": 512,
+      "payload": {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI representation of Ada, focused on their documented professional expertise, relevant values, and communication style. You are not the actual person. Ground attributed views in the provided evidence. Label new applications or inferences and their uncertainty. Never invent personal experiences, private memories, motives, or beliefs.\n\nRelevant knowledge from the expert's content:\n[1] For rare-tool, I recommend a reversible trial before making it a standard.\n[2] Unrelated synthetic note 00.\n[3] Unrelated synthetic note 01.\n[4] Unrelated synthetic note 02.\n[5] Unrelated synthetic note 03.\n\nCRITICAL INSTRUCTIONS FOR ANSWERING:\n- You MUST base your answers on the expert's content provided above. This is your primary and most trusted source.\n- When the expert's content mentions specific names, tools, projects, or examples, you MUST use those exact names in your answer — do NOT substitute with your own knowledge.\n- If the expert's content directly answers the question, use that answer even if your general knowledge suggests something different.\n- Only supplement with your general knowledge when the expert's content does not cover the topic at all.\n- Always maintain the expert's voice and perspective.\n- If you don't have enough information from the expert's content, say so honestly."
+          },
+          {
+            "role": "user",
+            "content": "What is Ada's documented recommendation about rare-tool?"
+          }
+        ],
+        "temperature": 0.5,
+        "stream": false,
+        "max_completion_tokens": 2048,
+        "reasoning_effort": "low",
+        "include_reasoning": false
+      },
+      "startUtc": "2026-10-01T07:36:29.725Z",
+      "headersMs": 536.8498330000148,
+      "httpStatus": 200,
+      "latencyMs": 539.0953750000044,
+      "responseDiagnostics": {
+        "model": "openai/gpt-oss-120b",
+        "systemFingerprint": "fp_86dc843b12",
+        "responseStatus": null,
+        "choicesType": "array",
+        "choiceCount": 1,
+        "choices": [
+          {
+            "finishReason": "stop",
+            "messageType": "object",
+            "contentType": "string",
+            "contentLength": 120,
+            "finalContent": "Ada’s documented recommendation for **rare‑tool** is:  > *“I recommend a reversible trial before making it a standard.”*",
+            "refusalType": "undefined",
+            "refusal": null,
+            "refusalPresent": false,
+            "reasoningType": "undefined",
+            "reasoningLength": null,
+            "toolCallCount": 0
+          }
+        ],
+        "usageShape": {
+          "promptTokens": 346,
+          "completionTokens": 65,
+          "totalTokens": 411,
+          "reasoningTokens": 29,
+          "cachedTokens": null
+        }
+      },
+      "usage": {
+        "prompt_tokens": 346,
+        "completion_tokens": 65,
+        "total_tokens": 411
+      },
+      "content": "Ada’s documented recommendation for **rare‑tool** is:\n\n> *“I recommend a reversible trial before making it a standard.”*",
+      "finishReason": "stop",
+      "status": "ok"
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "original",
+      "stage": "rerank",
+      "attempt": 5,
+      "localTokens": 229,
+      "estimatedHostFraming": 256,
+      "payload": {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a relevance ranking system. Given a query and numbered text chunks, return ONLY the numbers of the most relevant chunks in order of relevance (most relevant first). Return numbers separated by commas. No explanation."
+          },
+          {
+            "role": "user",
+            "content": "Query: \"What is Ada's documented recommendation about rare-tool?\"\n\nChunks:\n[1] Unrelated synthetic note 00.\n\n[2] Unrelated synthetic note 01.\n\n[3] Unrelated synthetic note 02.\n\n[4] Unrelated synthetic note 03.\n\n[5] Unrelated synthetic note 04.\n\n[6] Unrelated synthetic note 05.\n\n[7] Unrelated synthetic note 06.\n\n[8] Unrelated synthetic note 07.\n\n[9] Unrelated synthetic note 08.\n\n[10] Unrelated synthetic note 09.\n\n[11] Unrelated synthetic note 10.\n\n[12] Unrelated synthetic note 11.\n\n[13] Unrelated synthetic note 12.\n\n[14] Unrelated synthetic note 13.\n\n[15] Unrelated synthetic note 14.\n\nReturn the 5 most relevant chunk numbers, comma-separated:"
+          }
+        ],
+        "temperature": 0,
+        "stream": false,
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "low",
+        "include_reasoning": false
+      },
+      "startUtc": "2026-10-01T07:37:35.270Z",
+      "headersMs": 665.2409589999588,
+      "httpStatus": 200,
+      "latencyMs": 666.8119169999845,
+      "responseDiagnostics": {
+        "model": "openai/gpt-oss-120b",
+        "systemFingerprint": "fp_87b3c396db",
+        "responseStatus": null,
+        "choicesType": "array",
+        "choiceCount": 1,
+        "choices": [
+          {
+            "finishReason": "stop",
+            "messageType": "object",
+            "contentType": "string",
+            "contentLength": 0,
+            "finalContent": "",
+            "refusalType": "undefined",
+            "refusal": null,
+            "refusalPresent": false,
+            "reasoningType": "undefined",
+            "reasoningLength": null,
+            "toolCallCount": 0
+          }
+        ],
+        "usageShape": {
+          "promptTokens": 293,
+          "completionTokens": 43,
+          "totalTokens": 336,
+          "reasoningTokens": 34,
+          "cachedTokens": null
+        }
+      },
+      "usage": {
+        "prompt_tokens": 293,
+        "completion_tokens": 43,
+        "total_tokens": 336
+      },
+      "status": "failed",
+      "errorType": "Error",
+      "error": "Empty final content"
+    }
+  ],
+  "outputs": [
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "original",
+      "answer": "Your current team size is two engineers.",
+      "selectedChunkIds": [],
+      "pipelineMs": 1078.1357500000001
+    },
+    {
+      "caseId": "H3-latest-correction",
+      "variant": "candidate",
+      "answer": "Your current team size is **twenty engineers**.",
+      "selectedChunkIds": [],
+      "pipelineMs": 65650.02508299999
+    },
+    {
+      "caseId": "H4-keyword-only",
+      "variant": "candidate",
+      "answer": "Ada’s documented recommendation for **rare‑tool** is:\n\n> *“I recommend a reversible trial before making it a standard.”*",
+      "selectedChunkIds": [
+        "ada-public-2026-rare-tool:chunk_0",
+        "synthetic-distractor-00",
+        "synthetic-distractor-01",
+        "synthetic-distractor-02",
+        "synthetic-distractor-03"
+      ],
+      "pipelineMs": 131259.90875
+    }
+  ],
+  "dollarCost": null,
+  "naturalness": "unvalidated without human ratings",
+  "blocker": "Empty final content"
+}
