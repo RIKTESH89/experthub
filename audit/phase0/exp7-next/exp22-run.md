@@ -1,0 +1,9 @@
+# EXP22 approved execution
+
+Parent delegated explicit user approval “Yes i approve” (`Sentinel_6da485d01fe48191adb29d1ff4ffed06`) on 2026-10-01 for the revised fourteen-request restart. This activates only the explicit `--execute-approved-exp22` CLI path. Earlier diagnostic-preparation notes describe its prior disabled state.
+
+Limits:14 new attempted requests,12 answers/2 native reranks,53248 prompt/26624 completion/79872 total tokens. Per-answer4096/2048; per-rerank2048/1024. Symmetric `reasoning_effort=low`, `include_reasoning=false`, `max_completion_tokens`; reasoning still counts in usage. Serial65 seconds after completion; timeout15 seconds. Stop first error/refusal/truncation/missing usage/cap overrun. Third-rerank guard stops before dispatch and latches through retriever fallback. No automatic retries, extra calls or fallback provider. Existing Free confirmation accepted; no guaranteed daily headroom. Exact local counts plus disclosed estimated host framing512 answer/256 rerank are retained.
+
+Use same frozen six cases/golds/split, balanced one-pass pairs, pinned original5a723b6bf7c7e0d8d02cab6279d786b63a73307e and candidate6caea0f7b8ee1ca6f8701792ba7cc420ac2f3bbc. No schema/style/prompt changes beyond symmetric transport parameters. Synthetic profile/vector/scope/graph/memory/history adapters and evaluation limitations remain documented in diagnostics-and-proposal.md. No private source data, production services, embeddings, model judges, live deployment or publishing.
+
+Existing EXP21 ledger remains unchanged:1 failed attempted request,376 prompt/256 completion/632 total. EXP22 writes a separate new ledger here, refuses existing ledger/restart, and reports prior consumption separately. No user key is included in artifacts. Naturalness/style are unvalidated without blinded human ratings; dollar billing cost is unmeasured. No automatic EXP7 closure.

@@ -1,4 +1,4 @@
-/* EXP7 prepared diagnostics: offline execution only pending new provider approval. */
+/* EXP22 bounded synthetic pilot; network requires the explicit approved CLI flag. */
 const fs=require('fs'),path=require('path'),vm=require('vm'),crypto=require('crypto');
 const {spawnSync}=require('child_process'),ts=require('typescript');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'audit/phase0/exp7-next');
@@ -107,12 +107,12 @@ async function preflight(){
  }
  const sourceManifest=JSON.parse(fs.readFileSync(path.join(frozen,'manifest.json')));
  for(const s of sourceManifest.sourceFiles){const p=path.join(root,s.snapshot||'audit/phase0/exp7-preflight/'+s.artifact);if(sha(fs.readFileSync(p))!==s.sha256)throw Error('Frozen artifact changed');}
- const manifest={protocol:'EXP7 diagnostics preparation only; no new network authorization',original:sourceManifest.originalCommit,candidate:sourceManifest.candidateCommit,fixturesHash:sha(fs.readFileSync(path.join(frozen,'fixtures.json'))),runnerHash:sha(fs.readFileSync(__filename)),tokenCounterHash:sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py'))),historyHash:sha(fs.readFileSync(path.join(frozen,'candidate/src/lib/ai/history.ts.source'))),tracesHash:sha(JSON.stringify(traces)),attemptCap:LIMITS.attempts,answerCap:LIMITS.answers,rerankCap:LIMITS.reranks,inputCap:LIMITS.input,outputCap:LIMITS.output,totalCap:LIMITS.total,priorSpent:PRIOR_SPENT,combinedAttemptCap:15,combinedTotalCap:80504,pacingAfterCompletionMs:65000,timeoutMs:15000,hostFraming:'512 answer / 256 rerank estimated tokens; not a proven hosted bound',freePlan:'accepted existing user confirmation; no live account/quota proof',adapters:'synthetic vectors and declared channels; mocked audience scope, profile, empty graph/memories; route history query reproduced; actual pinned retriever/prompts/chat engine executed unchanged',preflightCalls:traces.flatMap(t=>t.requests).length};
+ const manifest={protocol:'EXP22 approved restart, explicit parent-delegated user approval 2026-10-01',original:sourceManifest.originalCommit,candidate:sourceManifest.candidateCommit,fixturesHash:sha(fs.readFileSync(path.join(frozen,'fixtures.json'))),runnerHash:sha(fs.readFileSync(__filename)),tokenCounterHash:sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py'))),historyHash:sha(fs.readFileSync(path.join(frozen,'candidate/src/lib/ai/history.ts.source'))),tracesHash:sha(JSON.stringify(traces)),attemptCap:LIMITS.attempts,answerCap:LIMITS.answers,rerankCap:LIMITS.reranks,inputCap:LIMITS.input,outputCap:LIMITS.output,totalCap:LIMITS.total,priorSpent:PRIOR_SPENT,combinedAttemptCap:15,combinedTotalCap:80504,pacingAfterCompletionMs:65000,timeoutMs:15000,hostFraming:'512 answer / 256 rerank estimated tokens; not a proven hosted bound',freePlan:'accepted existing user confirmation; no live account/quota proof',adapters:'synthetic vectors and declared channels; mocked audience scope, profile, empty graph/memories; route history query reproduced; actual pinned retriever/prompts/chat engine executed unchanged',preflightCalls:traces.flatMap(t=>t.requests).length};
  fs.writeFileSync(path.join(out,'prompt-traces.json'),JSON.stringify(traces,null,2)+'\n');fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
  return manifest;
 }
-async function execute(test){
- if(!test)throw Error('New provider execution is not authorized; offline mocks only');
+async function execute(test,approved=false){
+ if(!test&&!approved)throw Error('New provider execution is not authorized without explicit EXP22 flag');
  const manifest=JSON.parse(fs.readFileSync(path.join(out,'manifest.json')));
  if(manifest.runnerHash!==sha(fs.readFileSync(__filename))||manifest.tokenCounterHash!==sha(fs.readFileSync(path.join(__dirname,'exp21-token-count.py')))||manifest.fixturesHash!==sha(fs.readFileSync(path.join(frozen,'fixtures.json'))))throw Error('Preflight changed');
  if(manifest.tracesHash!==sha(JSON.stringify(JSON.parse(fs.readFileSync(path.join(out,'prompt-traces.json')))))||manifest.historyHash!==sha(fs.readFileSync(path.join(frozen,'candidate/src/lib/ai/history.ts.source'))))throw Error('Frozen traces changed');
@@ -167,4 +167,4 @@ async function execute(test){
  save();process.stdout.write(JSON.stringify({event:'final',status:ledger.status,attempts:ledger.attempts,answers:ledger.answers,reranks:ledger.reranks,totalTokens:ledger.totalTokens})+'\n');if(!test&&ledger.status!=='complete')process.exitCode=1;return ledger;
 }
 module.exports={count,load,setup,sequence,envelope,preflight,execute,responseDiagnostics,responseFailure,assertAttemptBudget,assertUsageBudget,LIMITS,PRIOR_SPENT};
-if(require.main===module){(process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m)console.log(JSON.stringify(m));}).catch(()=>{console.error('Local diagnostic preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}
+if(require.main===module){(process.argv.includes('--execute-approved-exp22')?execute(undefined,true):process.argv.some(a=>a.includes('execute'))?execute():preflight()).then(m=>{if(m&&!process.argv.includes('--execute-approved-exp22'))console.log(JSON.stringify(m));}).catch(()=>{console.error('Local preparation failed or execution unauthorized; no secret/error body printed');process.exitCode=1;});}
