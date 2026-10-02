@@ -1,0 +1,318 @@
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:116:31)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:126:11)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:126:11)
+
+  console.log
+    Staging guard: ENGINE_COMPLETED
+
+      at Object.main (scripts/staging/build.cjs:128:11)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+  console.log
+    Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:117:10)
+
+  console.log
+    Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:120:10)
+
+PASS __tests__/exp26/staging-build.test.ts
+  ✓ non-Preview production is existing build only and never constructs a DB client (11 ms)
+  ✓ non-Preview development is existing build only and never constructs a DB client
+  ✓ non-Preview undefined is existing build only and never constructs a DB client (1 ms)
+  ✓ unselected branch/flag is build only {"VERCEL_GIT_COMMIT_REF": "master"}
+  ✓ unselected branch/flag is build only {"VERCEL_GIT_COMMIT_REF": "another-branch"} (1 ms)
+  ✓ unselected branch/flag is build only {"EXPERTHUB_STAGING_MIGRATE": undefined}
+  ✓ unselected branch/flag is build only {"EXPERTHUB_STAGING_MIGRATE": "true"}
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@production.example.invalid/neondb?sslmode=require"} (2 ms)
+  ✓ invalid staging target fails before connection {"DATABASE_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/production?sslmode=require"} (1 ms)
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://other_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"} (2 ms)
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=disable"}
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"} (1 ms)
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&host=production.example.invalid"}
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&sslmode=disable"} (1 ms)
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&schema=private"}
+  ✓ invalid staging target fails before connection {"DIRECT_URL": "postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech:5433/neondb?sslmode=require"}
+  ✓ invalid staging target fails before connection {"VERCEL_BRANCH_URL": undefined} (1 ms)
+  ✓ invalid staging target fails before connection {"VERCEL_BRANCH_URL": "https://synthetic-branch.vercel.app"}
+  ✓ allowlisted fresh staging runs preflight then engine then verification then build, once (2 ms)
+  ✓ preflight mismatch stops engine and build {"database": "production"} (1 ms)
+  ✓ preflight mismatch stops engine and build {"role": "wrong"}
+  ✓ preflight mismatch stops engine and build {"version": 180006} (1 ms)
+  ✓ preflight mismatch stops engine and build {"tables": 1} (1 ms)
+  ✓ preflight mismatch stops engine and build {"vector_available": "0.4.0"}
+  ✓ preflight mismatch stops engine and build {"schema_create": false} (1 ms)
+  ✓ engine errors containing credentials are suppressed; no retry, reset, seed or build (2 ms)
+  ✓ ledger mismatch stops publication
+  ✓ ledger mismatch stops publication
+  ✓ ledger mismatch stops publication
+  ✓ ledger mismatch stops publication
+  ✓ verification failure after engine stops build and disconnects; no fabricated history (1 ms)
+  ✓ existing complete history is verified before idempotent engine run; incomplete history never proceeds (1 ms)
+  ✓ successful standard engine invokes only migrate deploy with isolated environment
+  ✓ client construction failure is sanitized and never starts engine or build (1 ms)
+  ✓ selection validation gives safe code { VERCEL_ENV: 'DO_NOT_LOG_SECRET' }
+  ✓ selection validation gives safe code { VERCEL_GIT_COMMIT_REF: 'DO_NOT_LOG_SECRET' }
+  ✓ selection validation gives safe code { EXPERTHUB_STAGING_MIGRATE: 'DO_NOT_LOG_SECRET' }
+  ✓ selection validation gives safe code { VERCEL_BRANCH_URL: undefined }
+  ✓ selection validation gives safe code { VERCEL_BRANCH_URL: 'DO_NOT_LOG_SECRET' }
+  ✓ URL rejection reports only fixed code undefined (1 ms)
+  ✓ URL rejection reports only fixed code DO_NOT_LOG_SECRET
+  ✓ URL rejection reports only fixed code https://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require#DO_NOT_LOG_SECRET
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech:5433/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@DO_NOT_LOG_SECRET.invalid/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/DO_NOT_LOG_SECRET?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://DO_NOT_LOG_SECRET:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://%ZZ:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&host=DO_NOT_LOG_SECRET
+  ✓ URL rejection reports only fixed code postgresql://neondb_owner:synthetic-only@ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=disable
+  ✓ preflight mismatch is classified without values undefined (1 ms)
+  ✓ preflight mismatch is classified without values { database: 'DO_NOT_LOG_SECRET' }
+  ✓ preflight mismatch is classified without values { role: 'DO_NOT_LOG_SECRET' }
+  ✓ preflight mismatch is classified without values { version: 180000 }
+  ✓ preflight mismatch is classified without values { database_create: false }
+  ✓ preflight mismatch is classified without values { vector_available: 'DO_NOT_LOG_SECRET' }
+  ✓ preflight mismatch is classified without values { tables: 1 }
+  ✓ schema mismatch has fixed code { vector_version: 'DO_NOT_LOG_SECRET' }
+  ✓ schema mismatch has fixed code { tables_ok: false }
+  ✓ schema mismatch has fixed code { all_tables: 0 }
+  ✓ schema mismatch has fixed code { view_ok: false }
+  ✓ schema mismatch has fixed code { triggers: 0 }
+  ✓ schema mismatch has fixed code { payment_columns: 0 }
+  ✓ history diagnostics never include stored values [
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object]
+]
+  ✓ history diagnostics never include stored values [
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object]
+] (1 ms)
+  ✓ history diagnostics never include stored values [
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object], [Object],
+  [Object]
+]
+  ✓ catalog identity results are explicitly cast to supported text
+  ✓ unknown/forged external errors cannot supply diagnostic text
+  ✓ manifest and installed version diagnostics are fixed
+  ✓ opaque errors classify stage CLIENT_INIT and do not leak (1 ms)
+  ✓ opaque errors classify stage PREFLIGHT_QUERY and do not leak
+  ✓ opaque errors classify stage ENGINE and do not leak (1 ms)
+  ✓ opaque errors classify stage LEDGER_QUERY and do not leak (1 ms)
+  ✓ opaque errors classify stage SCHEMA_QUERY and do not leak (1 ms)
+  ✓ opaque errors classify stage DISCONNECT and do not leak
+  ✓ opaque errors classify stage BUILD and do not leak
+  ✓ standard engine failure code is safe even when stdout/stderr contain secrets
+  ✓ CLI emits only safe stage and enum when a selected URL is malformed (26 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       79 passed, 79 total
+Snapshots:   0 total
+Time:        0.188 s, estimated 1 s
+Ran all test suites within paths "__tests__/exp26/staging-build.test.ts".
+Test results written to: audit/staging-diagnostics/focused.json

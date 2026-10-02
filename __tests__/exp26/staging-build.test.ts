@@ -18,10 +18,10 @@ test.each([{VERCEL_GIT_COMMIT_REF:'master'},{VERCEL_GIT_COMMIT_REF:'another-bran
  const make=jest.fn();const build=jest.fn();expect(await guard.main({...env,...override},{makeClient:make,build})).toBe('build-only');expect(make).not.toHaveBeenCalled();expect(build).toHaveBeenCalledTimes(1);
 });
 test.each([
- {DIRECT_URL:direct.replace(guard.DIRECT,'production.example.invalid')}, {DATABASE_URL:direct.replace('/neondb','/production')},
+ {DIRECT_URL:direct.replace(guard.DIRECT,'production.example.invalid')}, {DATABASE_URL:direct.replace('/neondb?','/production?')},
  {DIRECT_URL:direct.replace('neondb_owner','other_owner')}, {DIRECT_URL:direct.replace('sslmode=require','sslmode=disable')},
  {DIRECT_URL:direct.replace(guard.DIRECT,guard.POOLED)}, {DIRECT_URL:direct+'&host=production.example.invalid'},
- {DIRECT_URL:direct+'&sslmode=disable'}, {DIRECT_URL:direct+'&schema=private'}, {DIRECT_URL:direct.replace('/neondb',':5433/neondb')},
+ {DIRECT_URL:direct+'&sslmode=disable'}, {DIRECT_URL:direct+'&schema=private'}, {DIRECT_URL:direct.replace(guard.DIRECT,guard.DIRECT+':5433')},
  {VERCEL_BRANCH_URL:undefined}, {VERCEL_BRANCH_URL:'https://synthetic-branch.vercel.app'}
 ])('invalid staging target fails before connection %p', async override => {
  const make=jest.fn();const build=jest.fn();await expect(guard.main({...env,...override},{makeClient:make,build})).rejects.toThrow();expect(make).not.toHaveBeenCalled();expect(build).not.toHaveBeenCalled();
@@ -38,7 +38,7 @@ test.each([{database:'production'},{role:'wrong'},{version:180006},{tables:1},{v
 test('engine errors containing credentials are suppressed; no retry, reset, seed or build',async()=>{
  const client=fake();const engine=jest.fn(()=>{throw Error('postgresql://neondb_owner:never-expose-this@production.example.invalid/neondb');});const build=jest.fn();
  await expect(guard.main(env,{makeClient:()=>client,engine,build})).rejects.toThrow('Staging migration validation or execution failed');expect(engine).toHaveBeenCalledTimes(1);expect(build).not.toHaveBeenCalled();
- const runner=jest.fn(()=>({status:1,stderr:'never-expose-this',stdout:'never-expose-this'}));expect(()=>guard.standardEngine(env,runner)).toThrow('Staging Prisma migration failed');
+ const runner=jest.fn(()=>({status:1,stderr:'never-expose-this',stdout:'never-expose-this'}));expect(()=>guard.standardEngine(env,runner)).toThrow('[ENGINE]');
  const options=(runner.mock.calls[0] as unknown[])[2] as {env:Record<string,string>;stdio:string};expect(options.stdio).toBe('pipe');expect(options.env).not.toHaveProperty('OPENAI_API_KEY');
 });
 test.each([ledger.slice(1),[...ledger,{...ledger[0]}],ledger.map((row:object,index:number)=>index?row:{...row,checksum:'wrong'}),ledger.map((row:object,index:number)=>index?row:{...row,finished_at:null})])('ledger mismatch stops publication', rows=>{expect(()=>guard.verifyLedger(rows,list)).toThrow();});
@@ -57,4 +57,81 @@ test('successful standard engine invokes only migrate deploy with isolated envir
 });
 test('client construction failure is sanitized and never starts engine or build',async()=>{
  const engine=jest.fn();const build=jest.fn();await expect(guard.main(env,{makeClient:()=>{throw Error('secret-from-driver');},engine,build})).rejects.toThrow('Staging migration validation or execution failed');expect(engine).not.toHaveBeenCalled();expect(build).not.toHaveBeenCalled();
+});
+
+// Diagnostics expose fixed codes only, never a supplied value, URL, or raw exception.
+const poison='DO_NOT_LOG_SECRET';
+function expectCode(action:()=>unknown,code:string) {
+ try {action();throw Error('expected rejection');}catch(error) {
+  expect(guard.diagnostic(error)).toBe(code);
+  expect(String(error)).not.toContain(poison);
+  expect(String(error)).not.toContain('postgresql://');
+ }
+}
+test.each([
+ [{VERCEL_ENV:poison},'ENVIRONMENT'],[{VERCEL_GIT_COMMIT_REF:poison},'BRANCH'],[{EXPERTHUB_STAGING_MIGRATE:poison},'FLAG'],
+ [{VERCEL_BRANCH_URL:undefined},'BRANCH_URL_MISSING'],[{VERCEL_BRANCH_URL:poison},'BRANCH_URL_FORMAT'],
+])('selection validation gives safe code %s', (override,code)=>expectCode(()=>guard.validate({...env,...override}),code as string));
+test.each([
+ [undefined,'URL_MISSING'],[poison,'URL_FORMAT'],[direct.replace('postgresql:','https:'),'URL_PROTOCOL'],
+ [direct+'#'+poison,'URL_PROTOCOL'],[direct.replace(guard.DIRECT,guard.DIRECT+':5433'),'URL_PORT'],
+ [direct.replace(guard.DIRECT,poison+'.invalid'),'URL_HOST'],[direct.replace('/neondb?','/'+poison+'?'),'URL_DATABASE'],
+ [direct.replace('neondb_owner',poison),'URL_ROLE'],[direct.replace('neondb_owner','%ZZ'),'URL_ROLE'],
+ [direct.replace(':synthetic-only',''),'URL_PASSWORD'],[direct+'&host='+poison,'URL_QUERY'],
+ [direct.replace('sslmode=require','sslmode=disable'),'URL_TLS'],
+])('URL rejection reports only fixed code %s', (url,code)=>expectCode(()=>guard.validateUrl(url,true),code as string));
+test.each([
+ [undefined,'PREFLIGHT_EMPTY'],[{database:poison},'PREFLIGHT_DATABASE'],[{role:poison},'PREFLIGHT_ROLE'],
+ [{version:180000},'PREFLIGHT_VERSION'],[{database_create:false},'PREFLIGHT_PRIVILEGES'],
+ [{vector_available:poison},'PREFLIGHT_EXTENSION'],[{tables:1},'PREFLIGHT_NONEMPTY'],
+])('preflight mismatch is classified without values %s',async(override,code)=>{
+ const client=fake([override ? [{...identity,...override}] : []]);
+ try{await guard.preflight(client,list);throw Error('expected rejection');}catch(error){expect(guard.diagnostic(error)).toBe(code);expect(String(error)).not.toContain(poison);}
+});
+test.each([
+ [{vector_version:poison},'SCHEMA_EXTENSION'],[{tables_ok:false},'SCHEMA_TABLES'],[{all_tables:0},'SCHEMA_TABLES'],
+ [{view_ok:false},'SCHEMA_VIEW'],[{triggers:0},'SCHEMA_TRIGGERS'],[{payment_columns:0},'SCHEMA_PAYMENT'],
+])('schema mismatch has fixed code %s',async(override,code)=>{
+ const client=fake([ledger,[{...schema,...override}]]);
+ try{await guard.verify(client,list);throw Error('expected rejection');}catch(error){expect(guard.diagnostic(error)).toBe(code);expect(String(error)).not.toContain(poison);}
+});
+test.each([
+ [ledger.slice(1),'LEDGER_COUNT'],[ledger.map((r:object,i:number)=>i?r:{...r,checksum:poison}),'LEDGER_CHECKSUM'],
+ [ledger.map((r:object,i:number)=>i?r:{...r,finished_at:null}),'LEDGER_COMPLETION'],
+])('history diagnostics never include stored values %s',(rows,code)=>expectCode(()=>guard.verifyLedger(rows,list),code as string));
+test('catalog identity results are explicitly cast to supported text',async()=>{
+ const client=fake([[identity]]);await guard.preflight(client,list);
+ expect(client.$queryRawUnsafe.mock.calls[0][0]).toContain('current_database()::text AS database, current_user::text AS role');
+});
+test('unknown/forged external errors cannot supply diagnostic text',()=>{
+ expect(guard.diagnostic(Object.assign(Error(poison),{code:'URL_HOST'}))).toBe('INTERNAL');
+ expect(guard.diagnostic({code:poison})).toBe('INTERNAL');
+});
+test('manifest and installed version diagnostics are fixed',()=>{
+ expectCode(()=>guard.validateVersions(poison,'6.19.2'),'PRISMA_VERSION');
+ const fs=require('fs');const os=require('os');const path=require('path');const root=fs.mkdtempSync(path.join(os.tmpdir(),'staging-manifest-'));
+ try{fs.mkdirSync(path.join(root,'prisma/migrations'),{recursive:true});expectCode(()=>guard.migrations(root),'MANIFEST');}finally{fs.rmSync(root,{recursive:true});}
+});
+test.each(['CLIENT_INIT','PREFLIGHT_QUERY','ENGINE','LEDGER_QUERY','SCHEMA_QUERY','DISCONNECT','BUILD'])('opaque errors classify stage %s and do not leak',async code=>{
+ const client=fake();const engine=jest.fn();const build=jest.fn();const makeClient=()=>client;
+ const error=Object.assign(Error(poison+' postgresql://private.invalid'),{code:poison});
+ const deps:{makeClient:()=>unknown;engine:()=>unknown;build:()=>unknown}={makeClient,engine,build};
+ if(code==='CLIENT_INIT')deps.makeClient=()=>{throw error;};
+ if(code==='PREFLIGHT_QUERY')client.$queryRawUnsafe.mockReset().mockRejectedValueOnce(error);
+ if(code==='ENGINE')deps.engine=()=>{throw error;};
+ if(code==='LEDGER_QUERY')client.$queryRawUnsafe.mockReset().mockResolvedValueOnce([identity]).mockRejectedValueOnce(error);
+ if(code==='SCHEMA_QUERY')client.$queryRawUnsafe.mockReset().mockResolvedValueOnce([identity]).mockResolvedValueOnce(ledger).mockRejectedValueOnce(error);
+ if(code==='DISCONNECT')client.$disconnect.mockRejectedValueOnce(error);
+ if(code==='BUILD')deps.build=()=>{throw error;};
+ const log=jest.spyOn(console,'log').mockImplementation(()=>{});
+ try{await guard.main(env,deps);throw Error('expected rejection');}catch(caught){expect(guard.diagnostic(caught)).toBe(code);expect(String(caught)).not.toContain(poison);expect(JSON.stringify(log.mock.calls)).not.toContain(poison);}finally{log.mockRestore();}
+});
+test('standard engine failure code is safe even when stdout/stderr contain secrets',()=>{
+ expectCode(()=>guard.standardEngine(env,()=>({status:1,stdout:poison,stderr:poison,error:Error(poison)})),'ENGINE');
+});
+test('CLI emits only safe stage and enum when a selected URL is malformed',()=>{
+ const {spawnSync}=require('child_process');
+ const r=spawnSync(process.execPath,['scripts/staging/build.cjs'],{env:{...env,DIRECT_URL:poison},encoding:'utf8'});
+ expect(r.status).toBe(1);expect(r.stdout).toContain('Staging guard: SELECTED');expect(r.stderr).toContain('Staging guard failure: URL_FORMAT');
+ expect(r.stdout+r.stderr).not.toContain(poison);expect(r.stdout+r.stderr).not.toContain('postgresql://');
 });
