@@ -28,3 +28,10 @@ test("Google email must be verified before identity creation or linking", async 
   expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
   expect(mockPrisma.user.create).not.toHaveBeenCalled();
 });
+test('Preview Google callback rejects verified identity before database linking', async () => {
+ process.env.VERCEL_ENV = 'preview';
+ try {
+  expect(await signIn({ account: { provider: 'google' }, user: { email: 'synthetic@example.invalid' }, profile: { email_verified: true } } as Parameters<typeof signIn>[0])).toBe(false);
+  expect(mockPrisma.user.findUnique).not.toHaveBeenCalled(); expect(mockPrisma.user.create).not.toHaveBeenCalled();
+ } finally { delete process.env.VERCEL_ENV; }
+});

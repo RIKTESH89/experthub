@@ -1,5 +1,8 @@
 "use client";
 
+import { previewCanonicalOrigin } from "@/lib/preview-isolation";
+
+
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -682,7 +685,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
 
   const baseUrl = typeof window !== "undefined"
     ? window.location.origin
-    : process.env.NEXT_PUBLIC_APP_URL || "https://experthub.co.in";
+    : previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "https://experthub.co.in";
 
   const profileUrl = `${baseUrl}/e/${userId}`;
 

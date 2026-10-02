@@ -67,7 +67,7 @@ export async function retrieveContext(
  * Uses the LLM to re-rank retrieved chunks by relevance to the query.
  * Much cheaper than a dedicated re-ranker service, good enough for our scale.
  */
-async function rerankWithLLM(
+export async function rerankWithLLM(
   query: string,
   candidates: RetrievalResult[],
   topK: number

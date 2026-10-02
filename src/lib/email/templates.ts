@@ -1,3 +1,4 @@
+import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 export function passwordResetEmail(resetUrl: string, userName: string): string {
   return baseTemplate(`
     <h1 style="font-size: 24px; font-weight: 600; color: #111827; margin: 0 0 8px;">Reset Your Password</h1>
@@ -24,7 +25,7 @@ export function passwordChangedEmail(userName: string): string {
 }
 
 export function welcomeEmail(userName: string, role: string): string {
-  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/${role.toLowerCase()}`;
+  const dashboardUrl = `${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/${role.toLowerCase()}`;
   const tip = role === "EXPERT"
     ? "Start by setting up your Digital Twin and uploading your knowledge base."
     : "Explore our expert marketplace and find experts to learn from.";
@@ -39,7 +40,7 @@ export function welcomeEmail(userName: string, role: string): string {
 }
 
 export function newSubscriberEmail(expertName: string, subscriberName: string): string {
-  const url = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert/subscribers`;
+  const url = `${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert/subscribers`;
   return baseTemplate(`
     <h1 style="font-size: 24px; font-weight: 600; color: #111827; margin: 0 0 8px;">New Subscriber!</h1>
     <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
@@ -50,7 +51,7 @@ export function newSubscriberEmail(expertName: string, subscriberName: string): 
 }
 
 export function newCommentEmail(expertName: string, commenterName: string, postTitle: string, postId: string): string {
-  const url = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert/posts/${postId}`;
+  const url = `${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert/posts/${postId}`;
   return baseTemplate(`
     <h1 style="font-size: 24px; font-weight: 600; color: #111827; margin: 0 0 8px;">New Comment</h1>
     <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
@@ -61,7 +62,7 @@ export function newCommentEmail(expertName: string, commenterName: string, postT
 }
 
 export function digestEmail(userName: string, stats: { newSubscribers: number; newComments: number; twinChats: number; period: string }): string {
-  const url = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert`;
+  const url = `${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/expert`;
   return baseTemplate(`
     <h1 style="font-size: 24px; font-weight: 600; color: #111827; margin: 0 0 8px;">Your ${stats.period} Digest</h1>
     <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">Hi ${userName}, here's what happened:</p>
@@ -101,7 +102,7 @@ function baseTemplate(content: string): string {
     </div>
     <p style="text-align: center; color: #9ca3af; font-size: 11px; margin-top: 24px;">
       &copy; ${new Date().getFullYear()} ExpertHub. All rights reserved.<br>
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/subscriber/settings" style="color: #9ca3af;">Manage email preferences</a>
+      <a href="${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/subscriber/settings" style="color: #9ca3af;">Manage email preferences</a>
     </p>
   </div>
 </body>

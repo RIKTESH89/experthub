@@ -1,5 +1,6 @@
 {
   "browser": "154.0.8037.95",
+  "canonicalOrigin": "https://synthetic-experthub-staging.vercel.app; production URL overrides ignored",
   "google": "disabled in client and provider declaration",
   "outcomes": [
     {
@@ -27,6 +28,7 @@
   "sentryTunnel": "absent",
   "database": "not started or configured",
   "limitations": [
+    "Synthetic HTTPS branch origin intercepted and served exclusively through loopback; no real TLS/domain acceptance",
     "Synthetic JWT gates only; no real OAuth or providers",
     "Offline font substitution"
   ]

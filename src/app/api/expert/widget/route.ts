@@ -1,3 +1,4 @@
+import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -43,7 +44,7 @@ export async function GET() {
       });
     }
 
-    const appUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = previewCanonicalOrigin() || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const embedCode = `<script src="${appUrl}/embed/widget.js" data-api-key="${widgetConfig.apiKey}"></script>`;
 
     return NextResponse.json({
@@ -106,7 +107,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    const appUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = previewCanonicalOrigin() || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const embedCode = `<script src="${appUrl}/embed/widget.js" data-api-key="${widgetConfig.apiKey}"></script>`;
 
     return NextResponse.json({

@@ -1,3 +1,4 @@
+import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import crypto from "crypto";
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${token}`;
+      const resetUrl = `${previewCanonicalOrigin() || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${token}`;
 
       await sendEmail({
         to: user.email,

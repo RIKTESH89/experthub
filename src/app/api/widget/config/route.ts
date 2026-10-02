@@ -1,3 +1,4 @@
+import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const platformUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "";
+    const platformUrl = previewCanonicalOrigin() || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "";
 
     return NextResponse.json(
       {

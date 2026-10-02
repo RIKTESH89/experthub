@@ -9,7 +9,10 @@ jest.mock('@aws-sdk/client-s3', () => ({ S3Client: class { constructor() { mockS
 jest.mock('razorpay', () => ({ __esModule: true, default: class { constructor() { mockRazorpay(); } } }));
 import { isPreviewIsolated, assertExternalServiceAllowed } from '@/lib/preview-isolation';
 import { runChatEngine } from '@/lib/ai/chat-engine';
-import { retrieveContext } from '@/lib/vector/retriever';
+import { retrieveContext, rerankWithLLM } from '@/lib/vector/retriever';
+import { analyzePersonality } from '@/lib/ai/personality-analyzer';
+import { runLifecycleJob } from '@/lib/knowledge/outbox';
+import { extractEntities } from '@/lib/graph/entity-extractor';
 import { extractMemories } from '@/lib/ai/memory-extractor';
 import { callOpenAI } from '@/lib/ai/openai';
 import { generateEmbedding } from '@/lib/vector/embeddings';
@@ -38,6 +41,8 @@ test('runtime Preview cannot be weakened by false client marker; client build ma
 test('AI embeddings/extraction, URL imports, web search, email and Razorpay never call providers despite inherited credentials', async () => {
  await expect(callOpenAI({ messages: [{ role: 'user', content: 'synthetic' }] })).rejects.toThrow('disabled in Preview');
  await expect(runChatEngine({ expertId: 'synthetic', query: 'synthetic', chatHistory: [] })).rejects.toThrow('disabled in Preview');
+ await expect(rerankWithLLM('synthetic', [{ content: 'synthetic', score: 1, metadata: {} }], 1)).rejects.toThrow('disabled in Preview');
+ await expect(extractEntities('synthetic')).rejects.toThrow('disabled in Preview');
  await expect(retrieveContext('synthetic', 'synthetic')).rejects.toThrow('disabled in Preview');
  await expect(extractMemories('synthetic', 'synthetic')).rejects.toThrow('disabled in Preview');
  await expect(generateEmbedding('synthetic')).rejects.toThrow('disabled in Preview'); await expect(scrapeBlogContent('https://example.invalid')).rejects.toThrow('disabled in Preview');
@@ -57,4 +62,16 @@ test('post deletion cannot initialize production S3 cleanup in Preview', async (
  prisma.post.delete.mockResolvedValue({});
  const response = await deletePost(createPOST('/api/posts/synthetic-post', {}), { params: Promise.resolve({ postId: 'synthetic-post' }) });
  expect(response.status).toBe(200); expect(mockS3).not.toHaveBeenCalled(); expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('personality analysis and claimed background index job reach guarded providers without any external call', async () => {
+ prisma.knowledgeItem.findMany.mockResolvedValue([{ content: 'Synthetic writing sample' }]);
+ prisma.expertProfile.findUnique.mockResolvedValue(null);
+ await expect(analyzePersonality('synthetic-expert')).rejects.toThrow('disabled in Preview');
+ let leaseToken: string | undefined;
+ prisma.knowledgeLifecycleJob.updateMany.mockImplementation(async ({ data }: { data: { leaseToken?: string } }) => { if(data.leaseToken) leaseToken=data.leaseToken; return {count:1}; });
+ prisma.knowledgeLifecycleJob.findUnique.mockImplementation(async () => ({ id:'synthetic-job', expertProfileId:'synthetic-expert', kind:'INDEX', leaseToken, attempts:1 }));
+ await expect(runLifecycleJob('synthetic-job', 'synthetic-expert', async () => { await generateEmbedding('synthetic'); })).rejects.toThrow('disabled in Preview');
+ expect(prisma.knowledgeLifecycleJob.updateMany).toHaveBeenLastCalledWith(expect.objectContaining({data:expect.objectContaining({state:'PENDING',lastError:'External services are disabled in Preview'})}));
+ expect(global.fetch).not.toHaveBeenCalled();
 });
