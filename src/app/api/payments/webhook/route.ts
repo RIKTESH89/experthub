@@ -1,8 +1,10 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { sendNotificationEmail } from "@/lib/email/send-notification-email";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { applyPaymentSnapshot, PaymentError, providerDate, supportedPaymentEvent } from "@/lib/payments/state";
 export async function POST(request: NextRequest) {
+  if (isPreviewIsolated()) return NextResponse.json({ error: "External services are disabled in Preview" }, { status: 503 });
   try {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     if (!secret) return NextResponse.json({ error: "Webhook unavailable" }, { status: 503 });

@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -266,7 +267,7 @@ export async function DELETE(
       select: { url: true },
     });
 
-    if (mediaItems && mediaItems.length > 0 && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+    if (!isPreviewIsolated() && mediaItems && mediaItems.length > 0 && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
       const bucket = process.env.AWS_S3_BUCKET || "experthub-uploads";
       const region = process.env.AWS_REGION || "ap-south-1";
       const bucketUrl = `https://${bucket}.s3.${region}.amazonaws.com/`;

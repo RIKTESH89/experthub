@@ -1,5 +1,6 @@
 "use client";
 
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { useEffect, useRef, useState } from "react";
 import { Crown, Star, User, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -144,6 +145,11 @@ export function TierSelectionDialog({
         requestInFlight.current = false;
       }
       return;
+    }
+
+    if (isPreviewIsolated()) {
+      setIsLoading(null); requestInFlight.current = false;
+      toast.info("Payments are disabled in Preview."); return;
     }
 
     // Paid tier — create Razorpay subscription

@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { Resend } from "resend";
 
 let resendClient: Resend | null = null;
@@ -19,6 +20,7 @@ interface SendEmailOptions {
 }
 
 export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
+  if (isPreviewIsolated()) return false;
   const resend = getResend();
   if (!resend) {
     console.log("[Email] No RESEND_API_KEY — would have sent:", options.subject, "to", options.to);

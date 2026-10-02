@@ -1,4 +1,6 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 export async function searchWeb(query: string): Promise<string[]> {
+  if (isPreviewIsolated()) return [];
   try {
     if (!process.env.TAVILY_API_KEY) return [];
 

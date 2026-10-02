@@ -1,3 +1,4 @@
+import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import { parse } from "node-html-parser";
 
 /**
@@ -8,6 +9,7 @@ import { parse } from "node-html-parser";
  * 2. Fallback to direct fetch + HTML parsing (for simple server-rendered pages)
  */
 export async function scrapeBlogContent(url: string): Promise<{ title: string; content: string }> {
+  assertExternalServiceAllowed();
   // Strategy 1: Jina Reader (free, handles Medium/Substack/JS-rendered sites)
   try {
     const jinaResult = await scrapeViaJina(url);
@@ -27,6 +29,7 @@ async function scrapeViaJina(url: string): Promise<{ title: string; content: str
   const timeout = setTimeout(() => controller.abort(), 30000);
 
   try {
+    assertExternalServiceAllowed();
     const res = await fetch(`https://r.jina.ai/${url}`, {
       headers: {
         "Accept": "text/plain",
@@ -97,6 +100,7 @@ async function scrapeDirectly(url: string): Promise<{ title: string; content: st
   const timeout = setTimeout(() => controller.abort(), 15000);
 
   try {
+    assertExternalServiceAllowed();
     const res = await fetch(url, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",

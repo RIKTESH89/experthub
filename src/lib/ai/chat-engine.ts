@@ -1,3 +1,4 @@
+import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import { retrieveContext, type RetrievalResult } from "@/lib/vector/retriever";
 import { searchWeb } from "@/lib/ai/web-search";
 import {
@@ -39,6 +40,7 @@ interface ChatEngineResult {
 }
 
 export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
+  assertExternalServiceAllowed();
   const { expertId, subscriberId, query, chatHistory, enableWebSearch = false } = options;
 
   const thinkingSteps: string[] = [];
@@ -138,6 +140,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   ];
 
   // Stream response from OpenAI
+  assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {

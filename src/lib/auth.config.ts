@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -5,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 export const authConfig = {
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: "/login" },
-  providers: [GoogleProvider({
+  providers: isPreviewIsolated() ? [] : [GoogleProvider({
     clientId: process.env.GOOGLE_CLIENT_ID || "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
   })],

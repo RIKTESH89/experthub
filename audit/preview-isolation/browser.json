@@ -1,0 +1,33 @@
+{
+  "browser": "154.0.8037.95",
+  "google": "disabled in client and provider declaration",
+  "outcomes": [
+    {
+      "url": "/api/payments/webhook",
+      "status": 503
+    },
+    {
+      "url": "/api/payments/create-subscription",
+      "status": 503
+    },
+    {
+      "url": "/api/payments/cancel",
+      "status": 503
+    },
+    {
+      "url": "/api/upload",
+      "status": 503
+    },
+    {
+      "url": "/api/email/digest",
+      "status": 503
+    }
+  ],
+  "externalAttempts": [],
+  "sentryTunnel": "absent",
+  "database": "not started or configured",
+  "limitations": [
+    "Synthetic JWT gates only; no real OAuth or providers",
+    "Offline font substitution"
+  ]
+}

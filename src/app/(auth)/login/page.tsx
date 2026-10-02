@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck } from "lucide-react";
@@ -73,7 +74,7 @@ export default function LoginPage() {
           >
             <button
               onClick={handleGoogleSignIn}
-              disabled={isGoogleLoading}
+              disabled={isGoogleLoading || isPreviewIsolated()}
               className="w-full flex items-center justify-center gap-3 h-12 px-5 rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] text-slate-700 font-medium text-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:shadow-sm disabled:hover:translate-y-0 cursor-pointer"
             >
               <div className="relative h-5 w-5 shrink-0">
@@ -109,7 +110,7 @@ export default function LoginPage() {
                   <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
                 </motion.div>
               </div>
-              <span>Continue with Google</span>
+              <span>{isPreviewIsolated() ? "Google sign-in disabled in Preview" : "Continue with Google"}</span>
             </button>
           </motion.div>
 

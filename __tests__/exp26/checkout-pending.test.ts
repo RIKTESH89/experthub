@@ -38,3 +38,11 @@ test('offline/reload/dismissal preserves status retry and blocks another payment
  expect(props.onSubscribe).toHaveBeenCalledWith('PREMIUM', true);
  expect((global.fetch as jest.Mock).mock.calls.filter(call => call[0] === '/api/payments/create-subscription')).toHaveLength(1);
 });
+test('Preview client cannot create checkout despite inherited-looking provider setup', async () => {
+ process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED = 'true';
+ try {
+  render(React.createElement(TierSelectionDialog, props));
+  fireEvent.click(screen.getByRole('button', { name: 'Go Premium' })); await flush();
+  expect(global.fetch).not.toHaveBeenCalled(); expect(mockInfo).toHaveBeenCalledWith('Payments are disabled in Preview.');
+ } finally { delete process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED; }
+});

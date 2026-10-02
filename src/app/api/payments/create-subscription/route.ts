@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { cancelSubscription } from "@/lib/payments/cancel";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,6 +7,7 @@ import prisma from "@/lib/prisma";
 import { getRazorpay } from "@/lib/razorpay";
 
 export async function POST(request: NextRequest) {
+  if (isPreviewIsolated()) return NextResponse.json({ error: "External services are disabled in Preview" }, { status: 503 });
   try {
     const session = await auth();
     if (!session?.user?.id) {

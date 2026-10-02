@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { randomUUID } from "crypto";
@@ -42,6 +43,7 @@ function getS3Client(): S3Client | null {
 }
 
 export async function POST(request: NextRequest) {
+  if (isPreviewIsolated()) return NextResponse.json({ error: "External services are disabled in Preview" }, { status: 503 });
   try {
     const session = await auth();
     if (!session?.user?.id) {

@@ -1,3 +1,4 @@
+import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 /**
  * Shared OpenAI helper for non-streaming JSON extraction calls.
  * Used by personality-analyzer, memory-extractor, entity-extractor.
@@ -23,6 +24,7 @@ export async function callOpenAI(options: CallOpenAIOptions): Promise<string> {
     model = process.env.OPENAI_MODEL || "gpt-4o-mini",
   } = options;
 
+  assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {

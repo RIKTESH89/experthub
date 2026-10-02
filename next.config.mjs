@@ -1,6 +1,8 @@
 import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
+const previewIsolated = process.env.VERCEL_ENV === "preview";
 const nextConfig = {
+  env: { NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED: String(previewIsolated) },
   images: {
     remotePatterns: [
       {
@@ -14,7 +16,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default previewIsolated ? nextConfig : withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

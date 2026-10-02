@@ -1,11 +1,13 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/resend";
 import { digestEmail } from "@/lib/email/templates";
 
 export async function POST(request: NextRequest) {
+  if (isPreviewIsolated()) return NextResponse.json({ error: "External services are disabled in Preview" }, { status: 503 });
   try {
-    // Validate API key (skip if CRON_SECRET not set — for dev)
+    // Existing production dispatch configuration; Preview is rejected above.
     const cronSecret = process.env.CRON_SECRET;
     if (cronSecret) {
       const apiKey = request.headers.get("x-api-key");

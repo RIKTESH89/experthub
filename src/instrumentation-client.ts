@@ -1,10 +1,11 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 // This file configures the initialization of Sentry on the client.
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
 
-Sentry.init({
+if (!isPreviewIsolated()) Sentry.init({
   dsn: "https://62f4b8a811a7ad372e365f7386d8eabe@o4511114405019648.ingest.us.sentry.io/4511114415046656",
 
   // Add optional integrations for additional features
@@ -28,4 +29,4 @@ Sentry.init({
   sendDefaultPii: true,
 });
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+export const onRouterTransitionStart: typeof Sentry.captureRouterTransitionStart = (...args) => { if (!isPreviewIsolated()) Sentry.captureRouterTransitionStart(...args); };

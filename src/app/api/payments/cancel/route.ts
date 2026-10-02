@@ -1,8 +1,10 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { cancelSubscription } from "@/lib/payments/cancel";
 import { PaymentError } from "@/lib/payments/state";
 export async function POST(request: NextRequest) {
+  if (isPreviewIsolated()) return NextResponse.json({ error: "External services are disabled in Preview" }, { status: 503 });
   try {
     const session = await auth();
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

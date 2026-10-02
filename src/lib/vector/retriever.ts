@@ -1,3 +1,4 @@
+import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import { vectorStore } from "./client";
 import type { RetrievalScope } from "@/lib/knowledge/access";
 import { generateEmbedding } from "./embeddings";
@@ -21,6 +22,7 @@ export async function retrieveContext(
   scope?: RetrievalScope,
   diagnostics?: (value: { vectorAvailable: boolean; vectorCandidates: number; keywordCandidates: number; eligibleCandidates: number; retrievalMs: number }) => void
 ): Promise<RetrievalResult[]> {
+  assertExternalServiceAllowed();
   const started = Date.now();
   if (!scope || scope.namespace !== namespace) throw new Error("Retrieval requires an authorized scope");
   const allowed = new Set(scope.allowedVectorIds);
@@ -80,6 +82,7 @@ async function rerankWithLLM(
     .map((c, i) => `[${i + 1}] ${c.content.slice(0, 500)}`)
     .join("\n\n");
 
+  assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {

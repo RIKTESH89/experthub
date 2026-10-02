@@ -1,3 +1,4 @@
+import { isPreviewIsolated } from "@/lib/preview-isolation";
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import prisma from "@/lib/prisma";
@@ -7,6 +8,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
+        if (isPreviewIsolated()) return false;
         if (!user.email || profile?.email_verified !== true) return false;
 
         // Check if user exists
