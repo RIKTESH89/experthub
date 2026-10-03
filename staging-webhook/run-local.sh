@@ -17,3 +17,5 @@ export DATABASE_URL='postgresql://webhook_local@127.0.0.1:55447/webhook_local' D
 node node_modules/prisma/build/index.js migrate deploy >audit/staging-webhook/migrations.log 2>&1
 node node_modules/prisma/build/index.js validate >audit/staging-webhook/schema-validation.log 2>&1
 node node_modules/jest/bin/jest.js --config staging-webhook/jest.config.cjs --runInBand --json --outputFile audit/staging-webhook/tests.json >audit/staging-webhook/tests.log 2>&1
+
+if [ -f staging-webhook/dist/verify-local.mjs ]; then staging-webhook/.package-runtime/node24/bin/node staging-webhook/package-smoke.cjs >audit/staging-webhook/package-smoke.log 2>&1; fi

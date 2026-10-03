@@ -1,0 +1,68 @@
+{
+  "receiver": {
+    "bytes": 32390531,
+    "sha256": "3acedcd02229c816a0d7ae21361f7ca2fc1d8f164cc01557f0370a88a5c2fba7",
+    "build": {
+      "kind": "receiver",
+      "schemaSha256": "a3fba04b7de0ee9009f04a8b97d0da03724f6d118866e064284b6c4d3de0f7f7",
+      "prisma": "6.19.2",
+      "neonFunctions": "0.8.0",
+      "binaryTargets": [
+        "native",
+        "debian-openssl-3.0.x",
+        "rhel-openssl-3.0.x",
+        "linux-arm64-openssl-3.0.x"
+      ],
+      "sources": {
+        "preview-environment.cjs": "154b586944b356a470d5579661ffbc4d77934b20bbb18a12345ee02898e8b1d4",
+        "src/lib/preview-isolation.ts": "fba201f7e01bcbb481b14b672d81f330cda20b31e209b820349074cd084f5ae6",
+        "src/lib/payments/billing-runtime.ts": "6f946f7d4ce48816f72c417652cec17da9d12d0d72e1997f5df9fd828deff0b7",
+        "src/lib/payments/billing-admin-store.ts": "9f24f08d91ed3370bfc63ed522ff4f30dcc6467c67ffdb72445040c4af8ed7b3",
+        "staging-webhook/deny-ambient-prisma.ts": "b3aedae9c794743650cd7563a7a6016dcfb04e75aa6cf047076e302107245707",
+        "src/lib/payments/access.ts": "1b4b98a947df980a4dc3529da1d7413fc655538df395726255c4deb62e745261",
+        "src/lib/payments/billing-store.ts": "c5634cf5212d44351a43e1e29d7b5747c5cb6ed363f90c8fd246ce868891457e",
+        "src/lib/payments/state.ts": "b72fdbc1aa4ec1791d0e7a058a49f04f74246ee92167fc63edc8f7ddd653e5f4",
+        "staging-webhook/snapshot.ts": "cc01c7ea46612c3712c1bdcdb9533419b29f22bc5fef69af6e54d62d4bfd7363",
+        "staging-webhook/core.ts": "e377cabe0a5a1ff552bc51c1df6d318c4824b9944ea20594f5e097c5d5f3293a",
+        "staging-webhook/worker.ts": "14ae7420eedf3023d561b7c9c72dbe2551b5cc436fcd14e5f79e76322a8ee229",
+        "staging-webhook/database.ts": "0fdda118b666793614422ce252d7819ebdc05aae7c8491e6410413b78d079555",
+        "staging-webhook/runtime.ts": "f8f5aeb80bf903b72fb31630eb809b8a15da96c83e87be19e7a9e16e8ee6578d",
+        "staging-webhook/host.ts": "e88ca90fb0c6649eb7aeb4aa1d6111c1b121dd8d47bb05aa0934622909de086e",
+        "staging-webhook/neon-receiver.ts": "1c618af7d2ff61b1c1c3e495767aa2ced72ab66d20a3448e11781b858a6c544e"
+      }
+    }
+  },
+  "worker": {
+    "bytes": 32394823,
+    "sha256": "18310c24d924b35a70d282a4b4beb43b252fc3e2a1f8806f5c8ee78f97fb989f",
+    "build": {
+      "kind": "worker",
+      "schemaSha256": "a3fba04b7de0ee9009f04a8b97d0da03724f6d118866e064284b6c4d3de0f7f7",
+      "prisma": "6.19.2",
+      "neonFunctions": "0.8.0",
+      "binaryTargets": [
+        "native",
+        "debian-openssl-3.0.x",
+        "rhel-openssl-3.0.x",
+        "linux-arm64-openssl-3.0.x"
+      ],
+      "sources": {
+        "preview-environment.cjs": "154b586944b356a470d5579661ffbc4d77934b20bbb18a12345ee02898e8b1d4",
+        "src/lib/preview-isolation.ts": "fba201f7e01bcbb481b14b672d81f330cda20b31e209b820349074cd084f5ae6",
+        "src/lib/payments/billing-runtime.ts": "6f946f7d4ce48816f72c417652cec17da9d12d0d72e1997f5df9fd828deff0b7",
+        "src/lib/payments/billing-admin-store.ts": "9f24f08d91ed3370bfc63ed522ff4f30dcc6467c67ffdb72445040c4af8ed7b3",
+        "staging-webhook/deny-ambient-prisma.ts": "b3aedae9c794743650cd7563a7a6016dcfb04e75aa6cf047076e302107245707",
+        "src/lib/payments/access.ts": "1b4b98a947df980a4dc3529da1d7413fc655538df395726255c4deb62e745261",
+        "src/lib/payments/billing-store.ts": "c5634cf5212d44351a43e1e29d7b5747c5cb6ed363f90c8fd246ce868891457e",
+        "src/lib/payments/state.ts": "b72fdbc1aa4ec1791d0e7a058a49f04f74246ee92167fc63edc8f7ddd653e5f4",
+        "staging-webhook/snapshot.ts": "cc01c7ea46612c3712c1bdcdb9533419b29f22bc5fef69af6e54d62d4bfd7363",
+        "staging-webhook/core.ts": "e377cabe0a5a1ff552bc51c1df6d318c4824b9944ea20594f5e097c5d5f3293a",
+        "staging-webhook/worker.ts": "14ae7420eedf3023d561b7c9c72dbe2551b5cc436fcd14e5f79e76322a8ee229",
+        "staging-webhook/database.ts": "0fdda118b666793614422ce252d7819ebdc05aae7c8491e6410413b78d079555",
+        "staging-webhook/runtime.ts": "f8f5aeb80bf903b72fb31630eb809b8a15da96c83e87be19e7a9e16e8ee6578d",
+        "staging-webhook/host.ts": "e88ca90fb0c6649eb7aeb4aa1d6111c1b121dd8d47bb05aa0934622909de086e",
+        "staging-webhook/neon-worker.ts": "adc33936a8a3577a99a5e7a8589fcdf783f0eda41468b2bf7b675a207907f8bd"
+      }
+    }
+  }
+}

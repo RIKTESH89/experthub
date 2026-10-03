@@ -36,3 +36,7 @@ Run `bash staging-webhook/run-local.sh`: own mktemp cluster, loopback 55447, syn
 4. Approve host adapters/dependency packaging and deploying one public receiver plus restricted worker; no protected Vercel relay. Verify timeouts and platform post-response wake lifecycle, retaining recovery sweep as correctness mechanism.
 5. Separately approve an authenticated 30-minute recovery sweep and immediate wake transport. No recurring schedule currently exists.
 6. Separately approve registering Razorpay Test webhook, provider test plans and transactions. None performed.
+
+## Host packaging followup
+
+Concrete Neon entrypoints, generic/native route trust boundaries, own generated-client ZIPs, Node24 smoke and later setup instructions are in HOST-SETUP.md. These supersede prior host-adapter/generated-packaging TODOs; PG16 and actual hosted Linux/routing/capability checks remain gates. No root manifest/schema changes in this followup.

@@ -21,7 +21,7 @@ export function credentials(env:NodeJS.ProcessEnv,role='staging_webhook_worker')
 }
 const digestOf=(body:Buffer)=>createHash('sha256').update(body).digest('hex');
 class BodyError extends Error {constructor(public status:number){super('Body unavailable');}}
-async function readBody(request:Request,timeoutMs:number):Promise<Buffer>{
+export async function readBody(request:Request,timeoutMs:number):Promise<Buffer>{
  if(request.signal.aborted)throw new BodyError(408);
  const reader=request.body?.getReader();if(!reader)throw new BodyError(400);
  let timer:ReturnType<typeof setTimeout>,abort:()=>void=()=>{};
