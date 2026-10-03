@@ -1,0 +1,11 @@
+PASS scripts/exp32-34-continuation/payments-regression.test.ts
+PASS scripts/exp32-34-continuation/database.test.ts
+PASS scripts/exp32-34/contracts.test.ts
+PASS scripts/exp32-34-continuation/adapters.test.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       54 passed, 54 total
+Snapshots:   0 total
+Time:        1.551 s, estimated 2 s
+Ran all test suites.
+Test results written to: audit/exp32-34-continuation/tests.json

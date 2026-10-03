@@ -51,3 +51,5 @@ next-env.d.ts
 /.integration-runtime/
 
 /.billing-runtime/
+
+/.billing-continuation-runtime/

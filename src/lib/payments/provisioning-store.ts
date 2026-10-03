@@ -1,3 +1,5 @@
+import { requireBillingAdmin } from "./billing-admin-store";
+import { enqueueBilling } from "./billing-store";
 import prisma from "@/lib/prisma";
 import { randomUUID } from "crypto";
 import type { ProvisioningIntent, ProvisioningStore } from "./provisioning";
@@ -47,7 +49,11 @@ export const provisioningStore: ProvisioningStore = {
     if (!rows.length) throw new Error("Provisioning version conflict");
     return rows[0];
   },
-  attach: intent => prisma.$transaction(async tx => {
+  attach: intent => attachIntent(intent),
+};
+function attachIntent(intent:ProvisioningIntent,review?:{actorId:string;digest:string}) {
+ return prisma.$transaction(async tx => {
+    if(review)await requireBillingAdmin(tx,review.actorId);
     const rows = await tx.$queryRaw<StoredIntent[]>`SELECT * FROM "BillingProvisioning" WHERE "id"=${intent.id}`;
     const current = rows[0];
     if (!current || current.version !== intent.version || !intent.providerId || !['IN_FLIGHT','UNKNOWN'].includes(current.state)) throw new Error("Provisioning version conflict");
@@ -59,5 +65,9 @@ export const provisioningStore: ProvisioningStore = {
     if (changed !== 1) throw new Error("Subscription version conflict");
     const attached = await tx.$executeRaw`UPDATE "BillingProvisioning" SET "state"='ATTACHED', "providerId"=${intent.providerId}, "version"="version"+1 WHERE "id"=${intent.id} AND "version"=${intent.version}`;
     if (attached !== 1) throw new Error("Provisioning version conflict");
-  }),
-};
+    if(review)await enqueueBilling(tx,`billing-review-recovery-${intent.id}-${intent.version}`,{type:'billing_review_audit',actorId:review.actorId,reviewedDigest:review.digest,intentId:intent.id,providerId:intent.providerId});
+  });
+}
+export function reviewedProvisioningStore(actorId:string,digest:string):ProvisioningStore {
+ return {...provisioningStore,attach:intent=>attachIntent(intent,{actorId,digest})};
+}

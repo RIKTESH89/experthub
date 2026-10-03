@@ -1,7 +1,8 @@
 export const isWithin = (path: string, root: string) => path === root || path.startsWith(`${root}/`);
 const publicPages = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/about", "/pricing", "/offline"];
 export function isPublicRoute(path: string) {
-  return publicPages.includes(path) || path === "/api/payments/webhook" || path === "/api/expert-applications" ||
+  // This exact scheduler path has its own dedicated credential gate in the server route.
+  return publicPages.includes(path) || path === "/api/internal/billing/worker" || path === "/api/payments/webhook" || path === "/api/expert-applications" ||
     ["/api/auth", "/api/widget", "/embed", "/shared", "/api/shared", "/e", "/api/public", "/_next", "/icons", "/uploads"].some(root => isWithin(path, root)) ||
     ["/favicon.ico", "/manifest.json", "/sw.js"].includes(path);
 }

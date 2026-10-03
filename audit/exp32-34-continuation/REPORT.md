@@ -1,0 +1,52 @@
+# EXP32/33/34 disabled runtime continuation
+
+Isolated worktree: `/Users/rikteshs20/Documents/Codex/2026-10-03/task-10/payments-continuation`.
+Branch: `codex/exp32-34-continuation`; base: `26eb012b0193750ac76d8944696cb6d5c4c40e69`.
+Original payment commits remain in prior worktree/history and were not edited. Parent confirmed owned payment modules/new internal and admin routes, and exact worker route-access exception. No repository AGENTS.md or .agents/skills found. Dependency symlink reuses integration dependencies read-only. No schema, migrations, client generation, full build, deployment, push, role grant, real email/payment/provider call, production data or credential configuration occurred.
+
+## Implemented
+
+**EXP33 delivery and scheduler entry point**
+
+- Separate billing Resend adapter leaves legacy boolean-returning email flows unchanged. Default flags disable it; Preview isolation blocks it even when all flags are enabled. Missing/invalid configuration fails closed. Email preferences, active/ban state and recipient changes are respected.
+- Durable message content, sender, recipient and earliest possible send timestamp are stored in existing outbox JSON before sending. Retry cannot rebuild a different body from changed names/templates/from address. HTML names are escaped; subjects have line breaks removed.
+- Stable provider idempotency key is `billing/` plus SHA-256 outbox ID. Uses Resend SDK idempotency option. Resend successful IDs, permanent payload errors, temporary/in-progress conflicts, missing acknowledgement and timeouts are distinguished. Generic failures remain bounded retries; payload conflict is terminal, in-progress conflict is retryable. No provider error bodies or keys logged.
+- Resend documented retention is 24 hours. Automatic retries stop at 23 hours after persisted earliest attempt, with `delivery-ambiguity-review-required`. This is conservative and **not an exactly-once guarantee beyond provider retention**. Both provider acceptance after timeout and process crashes remain ambiguous. Local timeout stops waiting; it does not guarantee remote cancellation.
+- Worker retains one-job lease claims, verifies ownership both before callback and after durable preparation immediately before provider send, and uses the same five-attempt crash/failure bound. Worker invocation processes at most three jobs; each send waits at most ten seconds. No inline transport retries.
+- `POST /api/internal/billing/worker` is ready for an authorized scheduler to call but not scheduled/activated. It requires a purpose-specific `BILLING_WORKER_SECRET` (minimum 32 trimmed characters) via Bearer header with constant-time digest comparison. `BILLING_WORKER_ENABLED` and `BILLING_EMAIL_DELIVERY_ENABLED` must both equal `true`; Resend key/from/HTTPS application origin must be configured. No broadly scoped CRON/JWT/webhook secret reused.
+- Only exact `/api/internal/billing/worker` bypasses user-session middleware. Every sibling, trailing, encoded or extended path is excluded and the actual handler independently rejects variants. GET/PUT/PATCH/DELETE/HEAD/OPTIONS return 405; wrong path returns 404; absent/invalid credential returns 401; disabled/config/Preview returns 503 before queue/provider access. Correct scheduler credential works without a user session.
+
+**EXP32 read-only recovery lookup**
+
+- `makeProviderRecoveryLookup` has a read-only injected client; exposes no create/cancel/capture/refund operations. Default adapter uses existing Razorpay abstraction only after explicit `BILLING_PROVIDER_LOOKUP_ENABLED=true`, Preview rejection and Test Mode key/secret validation.
+- Known provider ID is fetched directly. Unknown ID scans at most two pages of 50 subscriptions and matches exact provisioning intent notes. Incomplete pages, no match, multiple matches, identity mismatch, cancelled/completed unsupported states and pricing mismatch all require review. Nothing automatically recreates an uncertain plan/subscription.
+- Plan period, interval, INR currency and exact intended amount are verified. Each read has a five-second local timeout; no inline retry (at most 15 seconds for bounded lookup). Timeout/permission/provider uncertainty returns unavailable/review-required.
+- Paid evidence uses captured/unrefunded payment linked to a paid invoice for exactly the known subscription. Dates come from invoice billing_start/end; missing/invalid dates reject, with no local month fallback. Lookup never grants paid access itself.
+
+**EXP34 authenticated review workflow**
+
+- Existing ADMIN semantics support this workflow; no new grants or roles needed. `POST /api/admin/billing/review` remains behind session middleware and explicit `BILLING_REVIEW_ENABLED=true`; Preview is always blocked. Purpose-specific signing configuration is required. Request bytes are capped at 32 KiB.
+- Same-origin Origin must match configured canonical HTTPS origin (HTTP localhost allowed only outside production). No Host trust. Session is resolved and persisted role/active/ban state refreshed for **each** request before provider lookup or apply.
+- `action=plan` produces dry-run proposal, exact digest and actor-bound HMAC token expiring in ten minutes. Evidence is fetched server-side through the read-only provider adapter; caller cannot submit arbitrary paid dates/capture assertions or a replacement provider object. Client shows/reviews proposal then explicitly submits `action=apply`, token and reviewedDigest.
+- Apply verifies signature, actor, expiry and digest; uses existing subscription/intent version, identity and cancellation CAS. ADMIN active/ban/role is checked again under a database row share lock inside the mutation transaction. Reconciliation already-verified rows still refuse apply.
+- Durable reconciliation evidence includes actor ID, exact reviewed proposal digest and reconciliation-plan digest. Recovery commits actor/review digest/identity audit intent in the SAME attachment transaction. Audit-only intents are handled without emailing. No refunds/charges/renewal restart. Cancelled paid interval semantics and end-exclusive expiry remain unchanged.
+
+## Actual verification
+
+**54/54 tests across four suites**, including prior payment contracts and signed payment route regressions. Logs/JSON: `tests.log`, `tests.json`. TypeScript noEmit, Prisma schema validation and focused production lint all passed. Git diff check passed.
+
+Native PostgreSQL tests used a fresh owned cluster `.billing-continuation-runtime/pgdata`, loopback **55439**, database/user **billing_continuation**. All existing migrations applied to empty synthetic data; no new migration added. Runner validates free port, refuses an already running cluster, and stops only its captured PID. Cluster is stopped. Repeat with `bash scripts/exp32-34-continuation/run-local.sh` under authorized local process/socket permissions.
+
+Coverage: success-but-ack-lost with persisted body/idempotency key; six overlapping workers and one synthetic recipient effect; retry exhaustion with no sixth send; 23-hour ambiguity cutoff; in-progress versus payload-conflict provider responses; provider read/send timeout budgets with synthetic hanging promises; missing/invalid credentials and default flags; recipient opt-out; lease loss between preparation and send; incomplete/duplicate/wrong identity recovery lookup; exact invoice binding/no fallback; invalid review signature, changed actor, expired token, origin/session rejection; four-way reviewed apply race, stale version replay, role revocation/active/ban rechecks, durable actor+digest audit; HTTP stale session role; exact middleware classification and actual wrong-method/encoded-path/trailing/sibling/unauthenticated handler checks; correct scheduler credential without user session; Preview rejection before queue/provider operations; existing B1–B4 webhook/cancellation/access regressions.
+
+## Remaining activation choices and limits
+
+No hosted schedule or live runtime is activated. Owner must separately approve environment, provider access/Test Mode setup, distinct purpose credentials, verified Resend sender, scheduler frequency/POST invocation and review-secret lifecycle before runtime activation. Preview remains blocked; testing actual staging services requires separate approved isolation change. No secrets were generated/configured in any settings or environment files; test fixtures use synthetic in-memory literals only.
+
+No reviewer UI or bulk production scanner added: the authenticated two-phase API is complete, but a future UI can consume it. Terminal ambiguous deliveries require manual operational review; no automatic replay/reset or refunds. Intent search is deliberately bounded and can require manual investigation for large provider accounts or orphan plans. Review approval expires after ten minutes and relies on server-fetched evidence at planning time; it does not continuously poll provider changes. Persistent email envelope adds recipient/body data to existing outbox JSON, so production retention remains an owner operational decision. Scheduled worker authorization is independent of application sessions; role authority is never expanded.
+
+Reference checks (official documentation only):
+- Resend idempotency keys, 24-hour retention and distinct 409 outcomes: https://resend.com/docs/dashboard/emails/idempotency-keys
+- Razorpay subscription APIs: https://razorpay.com/docs/api/payments/subscriptions/
+- Razorpay invoice billing_start/billing_end/subscription/payment relationships: https://razorpay.com/docs/api/payments/invoices/entity/
+Installed SDK definitions corroborate exact send options and read methods. No live SDK/provider endpoint was called.
