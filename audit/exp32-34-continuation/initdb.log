@@ -21,4 +21,3 @@ syncing data to disk ... ok
 Success. You can now start the database server using:
 
     '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /Users/rikteshs20/Documents/Codex/2026-10-03/task-10/payments-continuation/.billing-continuation-runtime/pgdata -l logfile start
-
