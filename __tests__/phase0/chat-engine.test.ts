@@ -60,3 +60,17 @@ test("EXP17 malformed SSE fails closed even when a valid claim precedes it",asyn
  const raw='data: malformed\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});
  const result=await runChatEngine({expertId:"ada-owner",query:"view",chatHistory:[]});expect(result.verification.status).toBe("abstained");
 });
+test("EXP15 general discussion category survives chat SSE while unchecked factual prose does not", async()=>{
+ retrieve.mockResolvedValue({version:"intent-evidence-v1",plan:{intent:"factual"},sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:"bounded",gaps:[]});
+ const run=async(draft:string)=>{
+  const raw='data: '+JSON.stringify({choices:[{delta:{content:draft}}]})+'\n\ndata: [DONE]\n\n';
+  global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});
+  const result=await runChatEngine({expertId:"ada-owner",query:"Explain research methods",chatHistory:[]});
+  return {result, output:await new Response(result.stream).text()};
+ };
+ const accepted=await run('{"spanIds":[],"segments":[{"category":"general-information","id":"research-design"}]}');
+ expect(accepted.result.verification.status).toBe('verified');expect(accepted.output).toContain('not an attributed expert view');expect(accepted.output).toContain('association alone does not establish causation');
+ // Frozen chat passed through provider prose. This same provider fixture must now fail closed.
+ const unchecked=await run('The expert proved that every observational study establishes causation.');
+ expect(unchecked.result.verification.status).toBe('abstained');expect(unchecked.output).not.toContain('every observational');
+});

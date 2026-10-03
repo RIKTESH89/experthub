@@ -173,7 +173,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     }
   } catch { malformed = true; }
   finally { reader.releaseLock(); }
-  const verification = verifyPersonResponse(malformed || !completed ? "" : draft, dialogueState, evidenceBundle);
+  const verification = verifyPersonResponse(malformed || !completed ? "" : draft, dialogueState, evidenceBundle, style);
   const stream = new ReadableStream({ start(controller) {
     controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:verification.text}}]})}\n\ndata: [DONE]\n\n`));
     controller.close();
