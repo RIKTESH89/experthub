@@ -1,5 +1,7 @@
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
-import { retrieveContext, type RetrievalResult } from "@/lib/vector/retriever";
+import type { RetrievalResult } from "@/lib/vector/retriever";
+import { retrieveIntentEvidence } from "@/lib/retrieval/retrieve";
+import type { EvidenceBundle } from "@/lib/retrieval/bundle";
 import { searchWeb } from "@/lib/ai/web-search";
 import {
   getDigitalTwinSystemPrompt,
@@ -8,13 +10,13 @@ import {
   type PersonalityProfile,
   type TwinEnhancements,
 } from "@/lib/ai/prompts";
-import {retrieveTemporalEvidence,temporalPrompt,type TemporalRetrievalResult} from "@/lib/graph/temporal/retriever";
+import {type TemporalRetrievalResult} from "@/lib/graph/temporal/retriever";
 import {temporalQueryFromQuestion,type TemporalQuery} from "@/lib/graph/temporal/timeline";
 import { authorizedHistory } from "@/lib/ai/history";
 import { getMemories } from "@/lib/ai/memory-manager";
 import { resolveRetrievalScope } from "@/lib/knowledge/access";
 import prisma from "@/lib/prisma";
-import { retrieveEvidenceTrace, evidencePrompt, type EvidenceTrace } from "@/lib/graph/evidence-store";
+import { type EvidenceTrace } from "@/lib/graph/evidence-store";
 
 interface ChatMessage {
   role: "user" | "assistant" | "system";
@@ -37,6 +39,7 @@ interface ChatEngineResult {
   thinkingSteps: string[];
   evidenceTrace: EvidenceTrace[];
   temporalTrace: TemporalRetrievalResult;
+  evidenceBundle: EvidenceBundle;
 }
 
 export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
@@ -71,12 +74,12 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   let retrievalResults: RetrievalResult[] = [];
   let contextTexts: string[] = [];
 
+  const evidenceBundle = await retrieveIntentEvidence(ragEnabled ? scope : {...scope, allowedVectorIds: []}, query, temporalQuery);
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
-    const namespace = expert?.vectorNamespace || `expert_${expertId}`;
-    retrievalResults = (await retrieveContext(namespace, query, 5, scope)).map((result) => ({ ...result, metadata: { ...result.metadata, generationAudience: scope.isOwner ? "owner" : "viewer" } }));
-    // Truncate each chunk to limit total prompt size
-    contextTexts = retrievalResults.map((r) => r.content.slice(0, 1500));
+    retrievalResults = evidenceBundle.sources.map(result => ({...result,metadata:{...result.metadata,generationAudience:scope.isOwner ? "owner" : "viewer"}}));
+    // The bounded bundle is the sole source evidence prompt; avoid duplicate chunk context.
+    contextTexts = [];
   } else {
     thinkingSteps.push("Knowledge base search disabled by expert");
   }
@@ -93,17 +96,9 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     thinkingSteps.push("No direct matches found in knowledge base");
   }
 
-  // Only revision-supported assertions can augment chat; legacy graph stays quarantined.
-  const evidenceTrace = await retrieveEvidenceTrace(scope,retrievalResults);
-  retrievalResults = retrievalResults.map(r=>({...r,metadata:{...r.metadata,
-    evidenceTrace:evidenceTrace.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string))}}));
-  const temporalTrace = await retrieveTemporalEvidence(scope,retrievalResults,temporalQuery);
-  retrievalResults = retrievalResults.map(r=>({...r,metadata:{...r.metadata,temporalTrace:{
-    mode:temporalTrace.mode,validAt:temporalTrace.validAt,coverage:temporalTrace.coverage,
-    supersededStances:temporalTrace.supersededStances.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string)),
-    stances:temporalTrace.stances.filter(t=>t.chunkIds.includes(r.metadata.vectorId as string)),
-    relations:temporalTrace.relations.filter(relation=>[...temporalTrace.stances,...temporalTrace.supersededStances].some(t=>t.chunkIds.includes(r.metadata.vectorId as string)&&relation.evidenceSpanIds.includes(t.spanId)))}}}));
-  const graphContext = [...evidencePrompt(evidenceTrace),...temporalPrompt(temporalTrace)];
+  const evidenceTrace = evidenceBundle.evidenceTrace;
+  const temporalTrace = evidenceBundle.temporalTrace;
+  const graphContext = [evidenceBundle.prompt, ...evidenceBundle.gaps.map(gap => `Evidence gap: ${gap}`)];
 
   // Step 3: Retrieve subscriber memories
   let memories: { fact: string; category: string }[] = [];
@@ -166,5 +161,6 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     thinkingSteps,
     evidenceTrace,
     temporalTrace,
+    evidenceBundle,
   };
 }

@@ -1,0 +1,15 @@
+PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp14/retrieval.test.ts
+PASS __tests__/exp12/evidence-extractor.test.ts
+PASS __tests__/phase0/access.test.ts
+PASS __tests__/exp13/temporal.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
+
+Test Suites: 8 passed, 8 total
+Tests:       72 passed, 72 total
+Snapshots:   0 total
+Time:        0.264 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp14|__tests__\/exp13\/temporal.test.ts|__tests__\/exp12\/evidence-extractor.test.ts|__tests__\/phase0\/retrieval.test.ts|__tests__\/phase0\/access.test.ts|__tests__\/phase0\/shared-access.test.ts|__tests__\/phase0\/chat-engine.test.ts/i.
+Test results written to: audit/exp14/jest.json
