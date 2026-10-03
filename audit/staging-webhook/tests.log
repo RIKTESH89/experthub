@@ -1,21 +1,34 @@
 PASS staging-webhook/inbox.test.ts
-  ✓ HMAC covers exact bytes; invalid signatures and oversized body never persist (31 ms)
-  ✓ ack follows persistence; wake failure harmless; altered unsigned header dedupes (30 ms)
-  ✓ same header with changed signed body preserves distinct events and out of order cancellation (39 ms)
-  ✓ crash after shared reducer commit replays same receipt without duplicate effects (32 ms)
-  ✓ distinct body serialization repeats no entitlement/counter/notification (35 ms)
-  ✓ concurrent workers claim one lease; expired lease recovered; final expired lease dead (35 ms)
-  ✓ signed malformed payload retries durably to max attempts; unauthorized worker cannot drain (29 ms)
-  ✓ identity guards endpoint and overrides pooled/unpooled automatically injected credentials (28 ms)
-  ✓ crash before apply retains inbox; retry commits effects once (31 ms)
-  ✓ expired worker cannot acknowledge or overwrite a replacement lease (30 ms)
-  ✓ shared receipt collision with different payload hash rejected without mutations (52 ms)
+  ✓ HMAC covers exact bytes; invalid signatures and oversized body never persist (32 ms)
+  ✓ ack follows persistence; wake failure harmless; altered unsigned header dedupes (32 ms)
+  ✓ same header with changed signed body preserves distinct events and out of order cancellation (42 ms)
+  ✓ crash after reducer before transaction commit rolls back all effects and retries (40 ms)
+  ✓ distinct body serialization repeats no entitlement/counter/notification (37 ms)
+  ✓ concurrent workers claim one lease; expired lease recovered; final expired lease dead (39 ms)
+  ✓ signed malformed payload retries durably to max attempts; unauthorized worker cannot drain (32 ms)
+  ✓ identity guards endpoint and overrides pooled/unpooled automatically injected credentials (30 ms)
+  ✓ crash before apply retains inbox; retry commits effects once (34 ms)
+  ✓ expiry during apply rolls back receipt and all effects atomically (32 ms)
+  ✓ shared receipt collision with different payload hash rejected without mutations (54 ms)
   ✓ runtime factories default disabled before opening any pool (25 ms)
-  ✓ different serialization increments billingVersion and invalidates earlier review CAS (43 ms)
+  ✓ different serialization increments billingVersion and invalidates earlier review CAS (39 ms)
+  ✓ independent repaired: final expired lease deadletter cannot commit first business effects (27 ms)
+  ✓ independent repaired: exact routing rejects lookalikes wrong database role port TLS and options (25 ms)
+  ✓ independent repaired: invalid header and already aborted request never open reader (25 ms)
+  ✓ slow body and hanging cancel are bounded; stream errors cannot persist (47 ms)
+  ✓ independent repaired: stalled apply returns bounded503 and delayed transaction writes cannot commit (93 ms)
+  ✓ database stall canceled at statement deadline before any payment effects (95 ms)
+  ✓ lost response after atomic commit and exact replay retain one receipt/effect (41 ms)
+  ✓ inbox→subscription→expert contention skips locked inbox and commits once without deadlock (34 ms)
+  ✓ disposable local restricted roles permit receiver insert and worker reducer, deny unrelated writes (47 ms)
+  ✓ replaced token fences old owner before any domain effects (29 ms)
+  ✓ abort during body read cancels without persistence (24 ms)
+  ✓ abort during worker apply rolls back and closes late transaction capability (28 ms)
+  ✓ claim database stall honors deadline without leaving mutations running (89 ms)
 
 Test Suites: 1 passed, 1 total
-Tests:       13 passed, 13 total
+Tests:       26 passed, 26 total
 Snapshots:   0 total
-Time:        0.662 s, estimated 1 s
+Time:        1.312 s, estimated 2 s
 Ran all test suites.
 Test results written to: audit/staging-webhook/tests.json

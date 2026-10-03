@@ -1,0 +1,94 @@
+FAIL staging-webhook/inbox.test.ts
+  ✓ HMAC covers exact bytes; invalid signatures and oversized body never persist (32 ms)
+  ✓ ack follows persistence; wake failure harmless; altered unsigned header dedupes (31 ms)
+  ✓ same header with changed signed body preserves distinct events and out of order cancellation (39 ms)
+  ✓ crash after shared reducer commit replays same receipt without duplicate effects (31 ms)
+  ✓ distinct body serialization repeats no entitlement/counter/notification (35 ms)
+  ✓ concurrent workers claim one lease; expired lease recovered; final expired lease dead (35 ms)
+  ✓ signed malformed payload retries durably to max attempts; unauthorized worker cannot drain (29 ms)
+  ✓ identity guards endpoint and overrides pooled/unpooled automatically injected credentials (29 ms)
+  ✓ crash before apply retains inbox; retry commits effects once (31 ms)
+  ✓ expired worker cannot acknowledge or overwrite a replacement lease (31 ms)
+  ✓ shared receipt collision with different payload hash rejected without mutations (53 ms)
+  ✓ runtime factories default disabled before opening any pool (26 ms)
+  ✓ different serialization increments billingVersion and invalidates earlier review CAS (38 ms)
+  ✕ independent: expired final lease cannot commit business effects after dead letter (32 ms)
+  ✕ independent: credential guard rejects lookalike staging hostname and wrong database (25 ms)
+  ✕ independent: already-aborted public request is rejected without hanging on a body read (25 ms)
+  ✕ independent: worker invocation enforces its stated 45 second budget during apply (25 ms)
+
+  ● independent: expired final lease cannot commit business effects after dead letter
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      113 |  await drainOne(wrapped,applyPaymentSnapshot);
+      114 |  expect((await inbox()).rows[0].state).toBe('dead');
+    > 115 |  expect(await prisma.paymentEvent.count()).toBe(0);
+          |                                            ^
+      116 | });
+      117 | test('independent: credential guard rejects lookalike staging hostname and wrong database',()=>{
+      118 |  const env:NodeJS.ProcessEnv=Object.fromEntries(Object.entries(stagingIdentity).map(([k,v])=>[`STAGING_${k.toUpperCase()}_ID`,v]));
+
+      at Object.<anonymous> (staging-webhook/inbox.test.ts:115:44)
+
+  ● independent: credential guard rejects lookalike staging hostname and wrong database
+
+    expect(received).toThrow()
+
+    Received function did not throw
+
+      119 |  env.WEBHOOK_DATABASE_URL=`postgresql://staging_webhook_worker:synthetic@${stagingIdentity.endpoint}.unrelated.neon.tech/other?sslmode=require`;
+      120 |  env.WEBHOOK_DIRECT_URL=env.WEBHOOK_DATABASE_URL;
+    > 121 |  expect(()=>credentials(env)).toThrow();
+          |                               ^
+      122 | });
+      123 | test('independent: already-aborted public request is rejected without hanging on a body read',async()=>{
+      124 |  const read=jest.fn(()=>new Promise<never>(()=>{}));
+
+      at Object.<anonymous> (staging-webhook/inbox.test.ts:121:31)
+
+  ● independent: already-aborted public request is rejected without hanging on a body read
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: called with 0 arguments
+
+      126 |  void receiver(db,secret)(request);
+      127 |  await Promise.resolve();
+    > 128 |  expect(read).not.toHaveBeenCalled();
+          |                   ^
+      129 | });
+      130 | test('independent: worker invocation enforces its stated 45 second budget during apply',async()=>{
+      131 |  const raw=Buffer.from(body()),digest=createHash('sha256').update(raw).digest('hex');
+
+      at Object.<anonymous> (staging-webhook/inbox.test.ts:128:19)
+
+  ● independent: worker invocation enforces its stated 45 second budget during apply
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      138 |   void handle(new Request('http://localhost/',{method:'POST',headers:{authorization:`Bearer ${secret}`}})).then(()=>{finished=true;});
+      139 |   await applying;await jest.advanceTimersByTimeAsync(46000);
+    > 140 |   expect(finished).toBe(true);
+          |                    ^
+      141 |  }finally{jest.useRealTimers();}
+      142 | });
+      143 |
+
+      at Object.<anonymous> (staging-webhook/inbox.test.ts:140:20)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 13 passed, 17 total
+Snapshots:   0 total
+Time:        0.772 s, estimated 1 s
+Ran all test suites.
+Test results written to: audit/staging-webhook/tests.json
