@@ -1,0 +1,20 @@
+PASS staging-webhook/inbox.test.ts
+  ✓ HMAC covers exact bytes; invalid signatures and oversized body never persist (31 ms)
+  ✓ ack follows persistence; wake failure harmless; altered unsigned header dedupes (33 ms)
+  ✓ same header with changed signed body preserves distinct events and out of order cancellation (41 ms)
+  ✓ crash after shared reducer commit replays same receipt without duplicate effects (36 ms)
+  ✓ distinct body serialization repeats no entitlement/counter/notification (38 ms)
+  ✓ concurrent workers claim one lease; expired lease recovered; final expired lease dead (40 ms)
+  ✓ signed malformed payload retries durably to max attempts; unauthorized worker cannot drain (29 ms)
+  ✓ identity guards endpoint and overrides pooled/unpooled automatically injected credentials (31 ms)
+  ✓ crash before apply retains inbox; retry commits effects once (36 ms)
+  ✓ expired worker cannot acknowledge or overwrite a replacement lease (32 ms)
+  ✓ shared receipt collision with different payload hash rejected without mutations (62 ms)
+  ✓ runtime factories default disabled before opening any pool (27 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        0.705 s, estimated 1 s
+Ran all test suites.
+Test results written to: audit/staging-webhook/tests.json

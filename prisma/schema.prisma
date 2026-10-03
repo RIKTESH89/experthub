@@ -869,3 +869,18 @@ model BillingReconciliation {
   evidence Json
   createdAt DateTime @default(now())
 }
+
+// Owned by staging-webhook; digest authenticates raw bytes, never provider event-ID header.
+model StagingWebhookInbox {
+  digest      String   @id
+  rawBody     Bytes    @map("raw_body")
+  state       String   @default("ready")
+  attempts    Int      @default(0)
+  nextAttempt DateTime @default(now()) @map("next_attempt") @db.Timestamptz
+  leaseToken  String?  @map("lease_token") @db.Uuid
+  leaseUntil  DateTime? @map("lease_until") @db.Timestamptz
+  lastError   String?  @map("last_error")
+  receivedAt  DateTime @default(now()) @map("received_at") @db.Timestamptz
+
+  @@map("staging_webhook_inbox")
+}
