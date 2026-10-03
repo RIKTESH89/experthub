@@ -1,10 +1,12 @@
 import { previewOriginFromHost } from "./preview-environment.cjs";
+import { stagingGoogleConfig } from "./staging-google.cjs";
 import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
 const previewIsolated = process.env.VERCEL_ENV === "preview";
 const previewOrigin = previewIsolated ? previewOriginFromHost(process.env.VERCEL_BRANCH_URL) : undefined;
 const nextConfig = {
   env: { NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED: String(previewIsolated),
+    NEXT_PUBLIC_EXPERTHUB_STAGING_GOOGLE_ENABLED: String(Boolean(stagingGoogleConfig())),
     ...(previewIsolated ? { NEXT_PUBLIC_EXPERTHUB_PREVIEW_ORIGIN: previewOrigin, AUTH_URL: previewOrigin, NEXTAUTH_URL: previewOrigin, NEXT_PUBLIC_APP_URL: previewOrigin } : {}),
   },
   images: {

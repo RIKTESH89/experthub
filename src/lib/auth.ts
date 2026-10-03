@@ -1,4 +1,5 @@
 import { isPreviewIsolated } from "@/lib/preview-isolation";
+import { approvedStagingGoogleIdentity } from "../../staging-google.cjs";
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import prisma from "@/lib/prisma";
@@ -7,8 +8,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   callbacks: {
     async signIn({ user, account, profile }) {
+      // Authorization precedes every application identity query/write. No adapter is configured.
+      if (isPreviewIsolated() && (account?.provider !== "google" || !approvedStagingGoogleIdentity(user.email, profile))) return false;
       if (account?.provider === "google") {
-        if (isPreviewIsolated()) return false;
         if (!user.email || profile?.email_verified !== true) return false;
 
         // Check if user exists
