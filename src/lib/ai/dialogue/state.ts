@@ -12,7 +12,9 @@ export interface DialogueState {
 }
 /** Request-local state: history is continuity data, never evidence about the represented person. */
 export function buildDialogueState(expertId: string, query: string, history: HistoryMessage[], bundle: EvidenceBundle): DialogueState {
-  const userTurns = [...history.filter(m => m.role === "user").map(m => m.content), query].slice(-6).map(t => t.slice(0, 2000));
+  if (!query.trim() || query.length > 8000) throw new Error("Invalid dialogue query");
+  if (history.some(m => m.content.length > 8000)) throw new Error("Dialogue history exceeds accepted message budget");
+  const userTurns = [...history.filter(m => m.role === "user").map(m => m.content).slice(-5), query];
   const text = query;
   const risk = /\b(medical|diagnos\w*|medication|symptoms?|suicid\w*|chest pain|treatment|dose)\b/i.test(text) ? "medical"
     : /\b(invest\w*|stocks?|portfolio|trading|securities)\b/i.test(text) ? "investment"
