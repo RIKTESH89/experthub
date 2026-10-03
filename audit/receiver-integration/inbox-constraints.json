@@ -1,0 +1,46 @@
+[
+  {
+    "conname": "staging_webhook_inbox_attempts_check",
+    "definition": "CHECK ((attempts >= 0))"
+  },
+  {
+    "conname": "staging_webhook_inbox_attempts_not_null",
+    "definition": "NOT NULL attempts"
+  },
+  {
+    "conname": "staging_webhook_inbox_check",
+    "definition": "CHECK (((state = 'leased'::text) = ((lease_token IS NOT NULL) AND (lease_until IS NOT NULL))))"
+  },
+  {
+    "conname": "staging_webhook_inbox_digest_check",
+    "definition": "CHECK ((digest ~ '^[0-9a-f]{64}$'::text))"
+  },
+  {
+    "conname": "staging_webhook_inbox_digest_not_null",
+    "definition": "NOT NULL digest"
+  },
+  {
+    "conname": "staging_webhook_inbox_next_attempt_not_null",
+    "definition": "NOT NULL next_attempt"
+  },
+  {
+    "conname": "staging_webhook_inbox_pkey",
+    "definition": "PRIMARY KEY (digest)"
+  },
+  {
+    "conname": "staging_webhook_inbox_raw_body_not_null",
+    "definition": "NOT NULL raw_body"
+  },
+  {
+    "conname": "staging_webhook_inbox_received_at_not_null",
+    "definition": "NOT NULL received_at"
+  },
+  {
+    "conname": "staging_webhook_inbox_state_check",
+    "definition": "CHECK ((state = ANY (ARRAY['ready'::text, 'leased'::text, 'done'::text, 'dead'::text])))"
+  },
+  {
+    "conname": "staging_webhook_inbox_state_not_null",
+    "definition": "NOT NULL state"
+  }
+]

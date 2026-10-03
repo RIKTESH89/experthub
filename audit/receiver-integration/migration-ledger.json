@@ -1,0 +1,110 @@
+[
+  {
+    "migration_name": "20260323175143_init_with_all_features",
+    "checksum": "c717bd96c27da3cbc8a0ad4819aca291a0c04961784c97cc7a6cfea4c04db311",
+    "finished_at": "2026-10-03T19:40:39.387Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260323185226_pgvector_persistent_store",
+    "checksum": "63fb1913d5c1544c6a5fbecaa46e0d5301492fc267b6c817e518919b55ec6cf6",
+    "finished_at": "2026-10-03T19:40:39.399Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260323190303_pgvector_persistent_store",
+    "checksum": "2a651588d6bbef426a3844bf51ead0898bce0e621b73b2d93940378c6742275e",
+    "finished_at": "2026-10-03T19:40:39.400Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260324135829_add_password_reset_token",
+    "checksum": "07facd7cf7e39b2a5dfab10d30458a3674ab3ccd83e44666fc3825eb26c73f2d",
+    "finished_at": "2026-10-03T19:40:39.401Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260325033209_add_post_view_dedup",
+    "checksum": "c74d8124d28161db211b0c80bd147b80e0e5690bb437e9a1800a671f8addc990",
+    "finished_at": "2026-10-03T19:40:39.403Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260327000000_make_password_optional",
+    "checksum": "26b3b0d1615dcb693ff86d105df2595bbe4308ca131c992ce018ad553f4770a3",
+    "finished_at": "2026-10-03T19:40:39.404Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260327010000_add_expert_application",
+    "checksum": "b195d13cd743149de7557d0923d48aa72c5260ed05c3157dc0e1a61fd30a8429",
+    "finished_at": "2026-10-03T19:40:39.406Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260327020000_add_razorpay_fields",
+    "checksum": "b28aa5d2c005bc1e973e6cc34210f2cd33c5f4375040ed5351581127f7ecd531",
+    "finished_at": "2026-10-03T19:40:39.407Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260327030000_add_twin_opinions_framework",
+    "checksum": "abe27db302e4920f19acf1bb91c52b4e99573f275266d8a5bb0ed88eddeeee02",
+    "finished_at": "2026-10-03T19:40:39.407Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260930170000_phase0_source_lifecycle",
+    "checksum": "fcb3d7d617d16a5f01063312d360b024556621bd972edc8542a0ee910c4fab88",
+    "finished_at": "2026-10-03T19:40:39.408Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20260930173000_lifecycle_outbox",
+    "checksum": "bc04bc67a0693b069eedd4a571f9ea6bb99f92718f5917e75955132263a99312",
+    "finished_at": "2026-10-03T19:40:39.410Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261001090000_evidence_backed_kg",
+    "checksum": "a38688b9ae5c4c708bb87914a7c370780c821eb014033ef893c616b66c86ab92",
+    "finished_at": "2026-10-03T19:40:39.415Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261001100000_temporal_stances",
+    "checksum": "694160bc0cf4181be049af927ed1aceca22e063c3b3a112de9473a7e913625af",
+    "finished_at": "2026-10-03T19:40:39.417Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261001130000_payment_event_receipts",
+    "checksum": "7eeda071620e2b699f1cabaf043d48987ce5e8dedff6be226014119f16c1bbd1",
+    "finished_at": "2026-10-03T19:40:39.418Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261001140000_verified_paid_periods",
+    "checksum": "98e2c844f11fad80eef69c168761d2bda264312341de7bdbb1522ef0b6662058",
+    "finished_at": "2026-10-03T19:40:39.419Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261003110000_reviewed_persona_releases",
+    "checksum": "5a8d5c8a7baebe50ce3318f4714452b1d1a8e10fee970bfa2f47fdccd2b1a7be",
+    "finished_at": "2026-10-03T19:40:39.424Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261003180000_billing_recovery_outbox",
+    "checksum": "64d8320bc94d117ea4af9454791cb23f85c342739ddee0de855b7d40c36608b2",
+    "finished_at": "2026-10-03T19:40:39.427Z",
+    "rolled_back_at": null
+  },
+  {
+    "migration_name": "20261004000100_staging_webhook_inbox",
+    "checksum": "b66506651f55e743e5c36477b6294d90154df254ac6db7db55962b9d7c52619c",
+    "finished_at": "2026-10-03T19:40:40.221Z",
+    "rolled_back_at": null
+  }
+]

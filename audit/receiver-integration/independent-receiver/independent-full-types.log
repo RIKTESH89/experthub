@@ -1,0 +1,9 @@
+audit/continuations-local/independent-dialogue/independent-review.test.ts(3,42): error TS2307: Cannot find module '../../scripts/exp15-exp17/fixtures' or its corresponding type declarations.
+audit/continuations-local/independent-dialogue/independent-review.test.ts(4,31): error TS2307: Cannot find module '../../scripts/exp15-exp17/runner' or its corresponding type declarations.
+audit/continuations-local/independent-dialogue/independent-review.test.ts(11,33): error TS7006: Parameter 'request' implicitly has an 'any' type.
+audit/continuations-local/independent-dialogue/independent-review.test.ts(12,37): error TS7006: Parameter 'original' implicitly has an 'any' type.
+audit/continuations-local/independent-dialogue/independent-review.test.ts(21,37): error TS7006: Parameter 'original' implicitly has an 'any' type.
+audit/continuations-local/independent-dialogue/independent-review.test.ts(21,179): error TS7006: Parameter 's' implicitly has an 'any' type.
+audit/continuations-local/independent-payment/independent-cancellation.test.ts(1,60): error TS2307: Cannot find module '../../src/lib/payments/billing-review' or its corresponding type declarations.
+audit/continuations-local/independent-payment/independent-cancellation.test.ts(2,42): error TS2307: Cannot find module '../../src/lib/payments/provider-lookup' or its corresponding type declarations.
+audit/continuations-local/independent-payment/independent-review.test.ts(1,60): error TS2307: Cannot find module '../../src/lib/payments/billing-review' or its corresponding type declarations.

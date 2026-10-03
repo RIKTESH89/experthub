@@ -1,0 +1,9 @@
+PASS public pages mobile/desktop noindex, no overflow and zoom enabled
+Anonymous destination: https://experthub-git-exp25-26-launch-au-e842c4-riktesh-singhs-projects.vercel.app/login
+PASS anonymous review page redirects and API rejects
+PASS subscriber cannot render workspace or read owner data
+PASS owner cancel creates no decision and repeated acceptance writes once
+PASS source CAS conflict blocks decision until refresh
+PASS rollback preview/cancel is read-only and confirm creates audited release
+PASS live account deactivation revokes synthetic existing session
+PASS pinned Google declaration and five Preview provider guards remain closed

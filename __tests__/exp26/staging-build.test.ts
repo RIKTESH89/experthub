@@ -6,7 +6,7 @@ const env = { PATH:process.env.PATH, VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:
 const list=guard.migrations();
 const ledger=list.map((m: {name:string;checksum:string})=>({migration_name:m.name,checksum:m.checksum,finished_at:new Date(),rolled_back_at:null}));
 const identity={database:'neondb',role:'neondb_owner',version:160015,database_create:true,schema_create:true,vector_available:'0.8.0',tables:0,ledger:false};
-const schema={vector_version:'0.8.0',tables_ok:true,view_ok:true,triggers:8,payment_columns:5,all_tables:49};
+const schema={vector_version:'0.8.0',tables_ok:true,view_ok:true,triggers:8,payment_columns:5,all_tables:50,inbox_ok:true};
 function fake(rows: unknown[]=[ [identity],ledger,[schema] ]) {
  const query=jest.fn<(...args: unknown[])=>Promise<unknown>>(); for(const value of rows)query.mockResolvedValueOnce(value);
  return {$queryRawUnsafe:query,$disconnect:jest.fn<()=>Promise<void>>().mockResolvedValue(undefined)};
@@ -48,9 +48,9 @@ test('verification failure after engine stops build and disconnects; no fabricat
 });
 
 test('existing complete history is verified before idempotent engine run; incomplete history never proceeds',async()=>{
- const client=fake([[{...identity,ledger:true,tables:50}],ledger,[schema],ledger,[schema]]);const engine=jest.fn();const build=jest.fn();const log=jest.spyOn(console,'log').mockImplementation(()=>{});
+ const client=fake([[{...identity,ledger:true,tables:51}],ledger,[schema],ledger,[schema]]);const engine=jest.fn();const build=jest.fn();const log=jest.spyOn(console,'log').mockImplementation(()=>{});
  try {await guard.main(env,{makeClient:()=>client,engine,build});expect(engine).toHaveBeenCalledTimes(1);expect(build).toHaveBeenCalledTimes(1);}finally{log.mockRestore();}
- const bad=fake([[{...identity,ledger:true,tables:50}],ledger.slice(2)]);const never=jest.fn();await expect(guard.main(env,{makeClient:()=>bad,engine:never,build})).rejects.toThrow('deployment stopped');expect(never).not.toHaveBeenCalled();
+ const bad=fake([[{...identity,ledger:true,tables:51}],ledger.slice(2)]);const never=jest.fn();await expect(guard.main(env,{makeClient:()=>bad,engine:never,build})).rejects.toThrow('deployment stopped');expect(never).not.toHaveBeenCalled();
 });
 test('successful standard engine invokes only migrate deploy with isolated environment',()=>{
  const runner=jest.fn(()=>({status:0,stdout:'private output discarded'}));guard.standardEngine({...env,OPENAI_API_KEY:'synthetic-never-forward'},runner);
@@ -91,7 +91,7 @@ test.each([
 });
 test.each([
  [{vector_version:poison},'SCHEMA_EXTENSION'],[{tables_ok:false},'SCHEMA_TABLES'],[{all_tables:0},'SCHEMA_TABLES'],
- [{view_ok:false},'SCHEMA_VIEW'],[{triggers:0},'SCHEMA_TRIGGERS'],[{payment_columns:0},'SCHEMA_PAYMENT'],
+ [{view_ok:false},'SCHEMA_VIEW'],[{triggers:0},'SCHEMA_TRIGGERS'],[{payment_columns:0},'SCHEMA_PAYMENT'],[{inbox_ok:false},'SCHEMA_INBOX'],
 ])('schema mismatch has fixed code %s',async(override,code)=>{
  const client=fake([ledger,[{...schema,...override}]]);
  try{await guard.verify(client,list);throw Error('expected rejection');}catch(error){expect(guard.diagnostic(error)).toBe(code);expect(String(error)).not.toContain(poison);}
@@ -137,12 +137,20 @@ test('CLI emits only safe stage and enum when a selected URL is malformed',()=>{
  expect(r.stdout+r.stderr).not.toContain(poison);expect(r.stdout+r.stderr).not.toContain('postgresql://');
 });
 
-test('verified predecessor 16 migrations upgrades without reset and verifies all 17 afterward',async()=>{
- const client=fake([[{...identity,ledger:true,tables:47}],ledger.slice(0,-1),[{...schema,triggers:8,payment_columns:4,all_tables:46}],ledger,[schema]]);
+test('verified predecessor 17 migrations upgrades without reset and verifies all 18 afterward',async()=>{
+ const client=fake([[{...identity,ledger:true,tables:50}],ledger.slice(0,-1),[{...schema,triggers:8,payment_columns:5,all_tables:49,inbox_ok:true}],ledger,[schema]]);
  const engine=jest.fn(),build=jest.fn();await guard.main(env,{makeClient:()=>client,engine,build});
  expect(engine).toHaveBeenCalledTimes(1);expect(build).toHaveBeenCalledTimes(1);
 });
 test('predecessor with untracked partial upgrade tables fails before engine',async()=>{
- const client=fake([[{...identity,ledger:true,tables:48}],ledger.slice(0,-1),[{...schema,triggers:8,payment_columns:4,all_tables:46}]]);
+ const client=fake([[{...identity,ledger:true,tables:51}],ledger.slice(0,-1),[{...schema,triggers:8,payment_columns:5,all_tables:49,inbox_ok:true}]]);
  const engine=jest.fn();await expect(guard.main(env,{makeClient:()=>client,engine,build:jest.fn()})).rejects.toThrow('[SCHEMA_TABLES]');expect(engine).not.toHaveBeenCalled();
+});
+
+test('migration manifest includes unquoted owned inbox and pins reviewed migration18',()=>{
+ expect(list).toHaveLength(18);expect(list.at(-1)).toMatchObject({name:'20261004000100_staging_webhook_inbox',checksum:'b66506651f55e743e5c36477b6294d90154df254ac6db7db55962b9d7c52619c',tables:['staging_webhook_inbox']});
+});
+test('old sixteen-migration history cannot bypass exact predecessor17 validation',async()=>{
+ const client=fake([[{...identity,ledger:true,tables:47}],ledger.slice(0,-2)]);const engine=jest.fn();
+ await expect(guard.main(env,{makeClient:()=>client,engine,build:jest.fn()})).rejects.toThrow('[LEDGER_COUNT]');expect(engine).not.toHaveBeenCalled();
 });

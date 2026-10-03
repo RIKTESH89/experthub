@@ -5,12 +5,38 @@ const { previewOriginFromHost } = require('../../preview-environment.cjs');
 const BRANCH = 'exp25-26-launch-auth-payments';
 const DIRECT = 'ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech';
 const POOLED = 'ep-quiet-bread-b3rqji3g-pooler.c-4.ap-southeast-1.aws.neon.tech';
-const EXPECTED_COUNT = 17;
-const UPGRADE_NAME = '20261003180000_billing_recovery_outbox';
-const UPGRADE_CHECKSUM = '64d8320bc94d117ea4af9454791cb23f85c342739ddee0de855b7d40c36608b2';
+const EXPECTED_COUNT = 18;
+const UPGRADE_NAME = '20261004000100_staging_webhook_inbox';
+const UPGRADE_CHECKSUM = 'b66506651f55e743e5c36477b6294d90154df254ac6db7db55962b9d7c52619c';
+const inboxConstraints=[
+ "CHECK ((digest ~ '^[0-9a-f]{64}$'::text))",
+ "CHECK ((state = ANY (ARRAY['ready'::text, 'leased'::text, 'done'::text, 'dead'::text])))",
+ "CHECK ((attempts >= 0))",
+ "CHECK (((state = 'leased'::text) = ((lease_token IS NOT NULL) AND (lease_until IS NOT NULL))))",
+];
+const normalize = value => value.replace(/\s/g,'');
+const sqlLiteral = value => "'" + value.replace(/'/g,"''") + "'";
+const inboxCheckSQL=`
+ (SELECT count(*) FROM pg_constraint WHERE conrelid=to_regclass('public.staging_webhook_inbox') AND contype='c'
+ AND regexp_replace(pg_get_constraintdef(oid), '[[:space:]]', '', 'g') IN (${inboxConstraints.map(value=>sqlLiteral(normalize(value))).join(',')}))=4
+ AND (SELECT count(*) FROM pg_constraint WHERE conrelid=to_regclass('public.staging_webhook_inbox') AND contype='p' AND conkey=ARRAY[1]::smallint[])=1
+ AND (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox')=9
+ AND (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox' AND
+ ((column_name IN ('digest','state') AND data_type='text' AND is_nullable='NO') OR
+ (column_name='raw_body' AND data_type='bytea' AND is_nullable='NO') OR
+ (column_name='attempts' AND data_type='integer' AND is_nullable='NO') OR
+ (column_name IN ('next_attempt','received_at') AND data_type='timestamp with time zone' AND is_nullable='NO') OR
+ (column_name='lease_token' AND data_type='uuid' AND is_nullable='YES') OR
+ (column_name='lease_until' AND data_type='timestamp with time zone' AND is_nullable='YES') OR
+ (column_name='last_error' AND data_type='text' AND is_nullable='YES')))=9
+ AND (SELECT regexp_replace(pg_get_indexdef(to_regclass('public.staging_webhook_due')),'[[:space:]]','','g'))=${sqlLiteral(normalize("CREATE INDEX staging_webhook_due ON public.staging_webhook_inbox USING btree (next_attempt, lease_until) WHERE (state = ANY (ARRAY['ready'::text, 'leased'::text]))"))}
+ AND (SELECT column_default FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox' AND column_name='state')='''ready''::text'
+ AND (SELECT column_default FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox' AND column_name='attempts')='0'
+ AND (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox' AND column_name IN ('next_attempt','received_at') AND column_default='now()')=2
+ AND (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='staging_webhook_inbox' AND column_name IN ('digest','raw_body','lease_token','lease_until','last_error') AND column_default IS NULL)=5`;
 const vectorSupported = v => /^0\.(?:[5-9]|[1-9][0-9]+)\./.test(v || '');
 const ROOT = path.resolve(__dirname, '../..');
-const CODES = Object.freeze(['ENVIRONMENT','BRANCH','FLAG','BRANCH_URL_MISSING','BRANCH_URL_FORMAT','URL_MISSING','URL_FORMAT','URL_PROTOCOL','URL_PORT','URL_HOST','URL_DATABASE','URL_ROLE','URL_PASSWORD','URL_QUERY','URL_TLS','MANIFEST','PRISMA_VERSION','CLIENT_INIT','PREFLIGHT_QUERY','PREFLIGHT_EMPTY','PREFLIGHT_DATABASE','PREFLIGHT_ROLE','PREFLIGHT_VERSION','PREFLIGHT_PRIVILEGES','PREFLIGHT_EXTENSION','PREFLIGHT_NONEMPTY','LEDGER_QUERY','LEDGER_COUNT','LEDGER_CHECKSUM','LEDGER_COMPLETION','SCHEMA_QUERY','SCHEMA_EXTENSION','SCHEMA_TABLES','SCHEMA_VIEW','SCHEMA_TRIGGERS','SCHEMA_PAYMENT','ENGINE','DISCONNECT','BUILD','INTERNAL']);
+const CODES = Object.freeze(['ENVIRONMENT','BRANCH','FLAG','BRANCH_URL_MISSING','BRANCH_URL_FORMAT','URL_MISSING','URL_FORMAT','URL_PROTOCOL','URL_PORT','URL_HOST','URL_DATABASE','URL_ROLE','URL_PASSWORD','URL_QUERY','URL_TLS','MANIFEST','PRISMA_VERSION','CLIENT_INIT','PREFLIGHT_QUERY','PREFLIGHT_EMPTY','PREFLIGHT_DATABASE','PREFLIGHT_ROLE','PREFLIGHT_VERSION','PREFLIGHT_PRIVILEGES','PREFLIGHT_EXTENSION','PREFLIGHT_NONEMPTY','LEDGER_QUERY','LEDGER_COUNT','LEDGER_CHECKSUM','LEDGER_COMPLETION','SCHEMA_QUERY','SCHEMA_EXTENSION','SCHEMA_TABLES','SCHEMA_VIEW','SCHEMA_TRIGGERS','SCHEMA_PAYMENT','SCHEMA_INBOX','ENGINE','DISCONNECT','BUILD','INTERNAL']);
 class GuardError extends Error {
  constructor(code) { super(`Staging migration validation or execution failed; deployment stopped. [${CODES.includes(code) ? code : 'INTERNAL'}] No reset or retry attempted.`); this.code=CODES.includes(code) ? code : 'INTERNAL'; }
 }
@@ -51,7 +77,7 @@ function validate(env) {
 }
 function migrations(root = ROOT) {
  const base = path.join(root, 'prisma/migrations');
- const list = fs.readdirSync(base).filter(n=>fs.existsSync(path.join(base,n,'migration.sql'))).sort().map(name=>{ const sql=fs.readFileSync(path.join(base,name,'migration.sql')); return {name,checksum:crypto.createHash('sha256').update(sql).digest('hex'),tables:[...sql.toString().matchAll(/CREATE TABLE \"([^\"]+)\"/g)].map(match=>match[1])}; });
+ const list = fs.readdirSync(base).filter(n=>fs.existsSync(path.join(base,n,'migration.sql'))).sort().map(name=>{ const sql=fs.readFileSync(path.join(base,name,'migration.sql')); return {name,checksum:crypto.createHash('sha256').update(sql).digest('hex'),tables:[...sql.toString().matchAll(/CREATE TABLE (?:"([A-Za-z0-9_]+)"|([A-Za-z0-9_]+)\s*\()/g)].map(match=>match[1] || match[2])}; });
  if(list.length !== EXPECTED_COUNT || list.at(-1).name !== UPGRADE_NAME || list.at(-1).checksum !== UPGRADE_CHECKSUM) fail('MANIFEST'); return list;
 }
 function verifyLedger(rows, list) {
@@ -67,7 +93,7 @@ async function verify(client, list, existingRows) {
  const upgraded = list.length === EXPECTED_COUNT;
  if(!upgraded && list.length !== EXPECTED_COUNT-1)fail('MANIFEST');
  const expectedTables=[...new Set(list.flatMap(m=>m.tables))];
- if(expectedTables.length!==(upgraded ? 49 : 46) || expectedTables.some(name=>!/^\w+$/.test(name)))fail('MANIFEST');
+ if(expectedTables.length!==(upgraded ? 50 : 49) || expectedTables.some(name=>!/^\w+$/.test(name)))fail('MANIFEST');
  const tableLiterals=expectedTables.map(name=>`'${name}'`).join(',');
  const rows = existingRows || await checked('LEDGER_QUERY',()=>client.$queryRawUnsafe('SELECT migration_name, checksum, finished_at, rolled_back_at FROM public._prisma_migrations'));
  verifyLedger(rows,list);
@@ -80,15 +106,17 @@ async function verify(client, list, existingRows) {
  EXISTS(SELECT 1 FROM pg_views WHERE schemaname='public' AND viewname='EvidenceEdge') AS view_ok,
  (SELECT count(*)::int FROM pg_trigger WHERE NOT tgisinternal AND tgname IN
  ('EvidenceRevision_immutable','EvidenceSpan_immutable','EvidenceAssertion_immutable','EvidenceSupport_immutable','TemporalStance_immutable','EvidenceDecisionCase_immutable','CorrectionEvent_append_only','PersonaRelease_append_only')) AS triggers,
- (SELECT count(*)::int FROM information_schema.columns WHERE table_schema='public' AND table_name='ExpertSubscription' AND column_name IN ('paidPeriodStart','renewalCancelledAt','lastPaymentEventAt','lastPaymentEventRank'${upgraded ? ",'billingVersion'" : ''})) AS payment_columns,
- (SELECT count(*)::int FROM pg_tables WHERE schemaname='public' AND tablename IN (${tableLiterals})) AS all_tables`));
+ (SELECT count(*)::int FROM information_schema.columns WHERE table_schema='public' AND table_name='ExpertSubscription' AND column_name IN ('paidPeriodStart','renewalCancelledAt','lastPaymentEventAt','lastPaymentEventRank', 'billingVersion')) AS payment_columns,
+ (SELECT count(*)::int FROM pg_tables WHERE schemaname='public' AND tablename IN (${tableLiterals})) AS all_tables,
+ ${upgraded ? inboxCheckSQL : 'true'} AS inbox_ok`));
  const row=checks[0];
  if(!row)fail('SCHEMA_QUERY');
  if(!vectorSupported(row.vector_version))fail('SCHEMA_EXTENSION');
  if(!row.tables_ok || Number(row.all_tables)!==expectedTables.length)fail('SCHEMA_TABLES');
  if(!row.view_ok)fail('SCHEMA_VIEW');
  if(Number(row.triggers)!==8)fail('SCHEMA_TRIGGERS');
- if(Number(row.payment_columns)!==(upgraded ? 5 : 4))fail('SCHEMA_PAYMENT');
+ if(Number(row.payment_columns)!==5)fail('SCHEMA_PAYMENT');
+ if(upgraded && !row.inbox_ok)fail('SCHEMA_INBOX');
 }
 async function preflight(client,list) {
  // PostgreSQL identity functions return catalog type name; cast for Prisma raw decoding.
@@ -111,7 +139,7 @@ async function preflight(client,list) {
   // Permit only the exact completed predecessor or current history. No reset/resolve.
   const previous=history.length===EXPECTED_COUNT-1;
   await verify(client,previous ? list.slice(0,-1) : list,history);
-  if(previous && Number(row.tables)!==47)fail('SCHEMA_TABLES');
+  if(Number(row.tables)!==(previous ? 50 : 51))fail('SCHEMA_TABLES');
  } else if(Number(row.tables)!==0)fail('PREFLIGHT_NONEMPTY');
 }
 function standardEngine(env, run=spawnSync) {
@@ -139,7 +167,7 @@ async function main(env=process.env,deps={}) {
   await verify(client,list);
  } catch(error) { if(error instanceof GuardError)throw error; fail('INTERNAL'); }
  finally { try { if(client) await client.$disconnect(); } catch { fail('DISCONNECT'); } }
- console.log('Staging migration verified: 17 completed checksums, expected schema, no seed.');
+ console.log('Staging migration verified: 18 completed checksums, expected schema, no seed.');
  await checked('BUILD',build); return 'migrated-build';
 }
 module.exports={selected,validate,validateUrl,migrations,verifyLedger,preflight,verify,standardEngine,main,BRANCH,DIRECT,POOLED,diagnostic,validateVersions,CODES};
