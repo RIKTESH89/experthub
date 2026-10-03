@@ -1,0 +1,9 @@
+# Final-commit type-check correction
+
+Read-only rerun of `node node_modules/typescript/bin/tsc --noEmit --incremental false` on clean published commit2fe72a1 fails with9 diagnostics. The previous successful full tsc check ran before copying the three independent regression source files into audit/continuations-local in the final evidence commit. These files were never explicitly excluded: tsconfig includes all TypeScript files and excludes only node_modules. The final file additions invalidated the earlier full-check result.
+
+Affected files: independent-dialogue/independent-review.test.ts has2 TS2307 unresolved fixture/runner imports and4 resulting TS7006 implicit-any parameters; independent-payment/independent-review.test.ts has1 TS2307; independent-payment/independent-cancellation.test.ts has2 TS2307. Each copied relative import still uses ../../ as in its original runnable test location; audit copies require ../../../. Executable application/harness source has no diagnostics in this rerun.
+
+Hosted Preview build passed because Next14 runTypeCheck.js filters diagnostics from *.test.* and __tests__/__mocks__ files (installed source lines70–71), even when full tsc includes them. This is an explicit difference between Next build validation and standalone tsc, not evidence of a clean full checkout.
+
+Published SHA remains unchanged. This local follow-up corrects the five relative import paths and replaces four audit-only any annotations with explicit types/narrowing. The deliberately sparse stance fixture retains its original shape using an unknown cast. Full standalone tsc passes; five independent regressions pass in three suites; targeted lint passes. No application changes, push or redeployment. Checks run after these edits; report/log additions contain no TypeScript sources.

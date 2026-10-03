@@ -1,0 +1,10 @@
+PASS audit/continuations-local/independent-dialogue/independent-review.test.ts
+PASS audit/continuations-local/independent-payment/independent-cancellation.test.ts
+PASS audit/continuations-local/independent-payment/independent-review.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        0.252 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../../../../../../../tmp/experthub-audit-import-fix-tests.json
