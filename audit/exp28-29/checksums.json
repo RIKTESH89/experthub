@@ -1,0 +1,239 @@
+{
+  "algorithm": "SHA-256 over ordered table names and canonical full-row JSON; includes vector values, evidence, sources, jobs and lease tokens",
+  "before": "48fcd7250198395c556fd08a451c3b584078f7ee099fa1e02ed60b9ed21a9334",
+  "afterCrashRestart": "48fcd7250198395c556fd08a451c3b584078f7ee099fa1e02ed60b9ed21a9334",
+  "restoredBeforeReplay": "48fcd7250198395c556fd08a451c3b584078f7ee099fa1e02ed60b9ed21a9334",
+  "dumpFile": "1a862c455252a8148bd790d37c361edd98dda82874fefe46a4b232d9cab031cb",
+  "tables": [
+    {
+      "table": "AnalyticsEvent",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Bookmark",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "ChatMessage",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "ChatSession",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Comment",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "CorrectionEvent",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "CorrectionReview",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "EvidenceAssertion",
+      "rowCount": 17,
+      "sha256": "1eaab42307a6b5f88c2e91629008e29a3197aaf4f38945ef3a9a9b419a28ffb8"
+    },
+    {
+      "table": "EvidenceDecisionCase",
+      "rowCount": 17,
+      "sha256": "22e9924f5f129852174302e3d7a2f4298dae1f91ea124376da08d025c618786e"
+    },
+    {
+      "table": "EvidenceRevision",
+      "rowCount": 17,
+      "sha256": "948ddf47c0177e9b669c0c8b337d182b70d461dd1f91d1129909e32af95b2650"
+    },
+    {
+      "table": "EvidenceSpan",
+      "rowCount": 17,
+      "sha256": "1ee7bed3151760123eb1f76f87af7a7829f4d8463b8002d306c701e9621efaf7"
+    },
+    {
+      "table": "EvidenceSupport",
+      "rowCount": 17,
+      "sha256": "7d03dd3a235423a2b83b90ab2501d5c32dedb33c207b39a1c05c53a0b2715948"
+    },
+    {
+      "table": "ExpertApplication",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "ExpertPricingTier",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "ExpertProfile",
+      "rowCount": 2,
+      "sha256": "f4e35f340186a19b633aeae6101f717160ad1abdf739f73955bb9ab3fa799d8e"
+    },
+    {
+      "table": "ExpertSubscription",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "FreeTrialUsage",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "ImportJob",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "KnowledgeEdge",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "KnowledgeItem",
+      "rowCount": 20,
+      "sha256": "1a7c1bc1d452035ec96ce70f2d08e7b1a8b56f7787962e72f8dc8feac369dd02"
+    },
+    {
+      "table": "KnowledgeLifecycleJob",
+      "rowCount": 141,
+      "sha256": "4f2b1ff31f8965b560cdea78d3f5c14b2377d64ddbf0f24cf66554abef4756b6"
+    },
+    {
+      "table": "KnowledgeNode",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Like",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "MonthlyTwinUsage",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Notification",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PasswordResetToken",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PaymentEvent",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PersonaRelease",
+      "rowCount": 3,
+      "sha256": "5887c06fb290a9c36e17484297539816223c1ca5b439770e57b1eaf04e778e39"
+    },
+    {
+      "table": "PersonaReleaseHead",
+      "rowCount": 1,
+      "sha256": "b1df1ddaa0aff50f5a441fc8246f32c6861cbb338a5b14b7e8c5c1d7e28b00e3"
+    },
+    {
+      "table": "Post",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PostMedia",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PostTag",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "PostView",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Report",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "SharedConversation",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "SubscriberMemory",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "Tag",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "TemporalStance",
+      "rowCount": 17,
+      "sha256": "6fa516005c698ae2407b0a25a1426d306e27c7862854fb024cf7fe9ec1bd552a"
+    },
+    {
+      "table": "TwinAccuracyScore",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "TwinInteraction",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "User",
+      "rowCount": 2,
+      "sha256": "e9b40cac1ed8cc1f586c7bd11993ca8284c4a1c47ff74c62b83bb166aeca5999"
+    },
+    {
+      "table": "UserSettings",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "VectorChunk",
+      "rowCount": 17,
+      "sha256": "4245e448ea3391324dd95a29862a1bd8f10935d1e2396efa4115a9042754f63c"
+    },
+    {
+      "table": "WidgetConfig",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "WidgetMessage",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "WidgetSession",
+      "rowCount": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "before": {
+    "pending": {
+      "id": "a7e401d845cf2f8c10173d23d9ede991cf0d261e12060eae94a9f8f844682d0a",
+      "state": "PENDING",
+      "attempts": 0
+    },
+    "inflight": {
+      "id": "a58c1b7f551bb745b4bdc071996700ebecddf199ad36fadb0c2bcfb5492e5da9",
+      "state": "RUNNING",
+      "attempts": 1
+    },
+    "vectors": 17
+  },
+  "recovered": [
+    {
+      "itemId": "exp28-backup-inflight",
+      "state": "DONE",
+      "attempts": 2
+    },
+    {
+      "itemId": "exp28-backup-pending",
+      "state": "DONE",
+      "attempts": 1
+    }
+  ],
+  "idempotentReplays": 20,
+  "idempotencyChecksumBefore": "e78de9817d41586e7d8fa23314491cc20afad167021e88d6f8ecf2d6e0abcd5f",
+  "idempotencyChecksumAfter": "e78de9817d41586e7d8fa23314491cc20afad167021e88d6f8ecf2d6e0abcd5f",
+  "checksumScope": "All application table contents, including vector values and evidence supports",
+  "alreadyCompletedJobAttempts": 1,
+  "embeddingsGenerated": 2,
+  "adapter": "only generateEmbedding synthetic; native chunking, pgvector upsert, evidence and outbox",
+  "restoreBoundary": "Replay occurs only after whole-database snapshot equality/checksum verification"
+}

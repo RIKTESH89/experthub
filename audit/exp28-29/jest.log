@@ -1,16 +1,9 @@
+PASS scripts/exp28-29/ingestion.integration.ts
 PASS scripts/exp28-29/reliability.integration.ts
-  ✓ 10 concurrent claims have exactly one side effect; retries are idempotent (8 ms)
-  ✓ bounded 10-worker batch completes 100 synthetic jobs (37 ms)
-  ✓ failure respects backoff; wrong tenant cannot claim; expired interrupted lease recovers (6 ms)
-  ✓ stale worker cannot acknowledge a replacement lease (1 ms)
-  ✓ cleanup protects current vector IDs; deletion revokes before failed cleanup (6 ms)
-  ✓ persona rollback appends audited release and preserves source data (16 ms)
-  ✓ live retrieval guard excludes stale revisions and undeclared audience (2 ms)
-  ✓ local guard admits only bounded work and rate limit rejects request eleven (1 ms)
 
-Test Suites: 1 passed, 1 total
-Tests:       8 passed, 8 total
+Test Suites: 2 passed, 2 total
+Tests:       16 passed, 16 total
 Snapshots:   0 total
-Time:        0.313 s, estimated 1 s
+Time:        1.093 s, estimated 2 s
 Ran all test suites.
 Test results written to: audit/exp28-29/jest.json
