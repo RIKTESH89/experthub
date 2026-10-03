@@ -1,3 +1,8 @@
+import { drainBillingOutbox } from "../../src/lib/payments/outbox";
+import { spawnSync } from "child_process";
+import { mkdtempSync, writeFileSync, rmSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import { changeExistingFree } from "../../src/lib/payments/free-transition";
 import prisma from '../../src/lib/prisma';
 import { applyPaymentSnapshot, completeCancellation } from '../../src/lib/payments/state';
@@ -71,4 +76,37 @@ test('free activation and cancellation each commit one version and accurate coun
  await changeExistingFree('sub','visitor','activate');await changeExistingFree('sub','visitor','activate');
  expect(await version()).toBe(1);expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:'expert'}})).totalSubscribers).toBe(1);
  await changeExistingFree('sub','visitor','cancel');expect(await version()).toBe(2);expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:'expert'}})).totalSubscribers).toBe(0);
+});
+
+test('duplicate intent and ambiguous successful delivery retry dedupe at the injected receiver',async()=>{
+ await prisma.$transaction(async tx=>{await enqueueBilling(tx,'dedupe',{});await enqueueBilling(tx,'dedupe',{});});
+ const seen=new Set<string>();let sends=0;const deliver=async(_payload:unknown,key:string)=>{if(!seen.has(key)){seen.add(key);sends++;}};
+ let lost=true;const store={...billingOutboxStore,settle:async(...args:Parameters<typeof billingOutboxStore.settle>)=>{if(args[2].state==='DELIVERED'&&lost){lost=false;throw Error('response lost after recipient accepted');}return billingOutboxStore.settle(...args);}};
+ const now=new Date(Date.now()+10);await drainBillingOutbox(store,deliver,now);await drainBillingOutbox(store,deliver,new Date(now.getTime()+3000));
+ expect(sends).toBe(1);expect(await prisma.$queryRaw`SELECT "id" FROM "BillingOutbox" WHERE "state"='DELIVERED'`).toHaveLength(1);
+});
+test('synthetic operator reviewed reconciliation and recovery apply through durable stores',async()=>{
+ const folder=mkdtempSync(join(tmpdir(),'billing-operator-'));
+ try {
+  const evidence={providerId:'provider',paymentId:'paid',captured:true,start:new Date(Date.now()-1000),end:new Date(Date.now()+60000)};
+  const plan=planReconciliation({id:'sub',version:0,providerId:'provider',cancelled:false},evidence);
+  const file=join(folder,'review.json');writeFileSync(file,JSON.stringify({row:plan.row,evidence}));
+  const command=(kind:string,digest:string)=>spawnSync(process.execPath,['scripts/exp32-34/operator.cjs',kind,'--input',file,'--apply','--reviewed-digest',digest],{encoding:'utf8',env:process.env});
+  const applied=command('reconcile',plan.digest);expect(applied.status).toBe(0);expect(JSON.parse(applied.stdout).outcome).toBe('applied');expect(await version()).toBe(1);
+  // New synthetic unpaid interval for independent recovery scenario.
+  await prisma.expertSubscription.update({where:{id:'sub'},data:{status:'PENDING',razorpaySubscriptionId:null,razorpayPaymentId:null,paidPeriodStart:null,currentPeriodEnd:null}});
+  const intent=await beginProvisioning('visitor','expert','PREMIUM',10);const claimed=await provisioningStore.claim(intent.id,intent.version);const unknown=await provisioningStore.save(intent.id,claimed!.version,{state:'UNKNOWN'});
+  const input={intent:unknown,evidence:{intentId:intent.id,providerId:'recovered-provider'}};writeFileSync(file,JSON.stringify(input));
+  const dry=spawnSync(process.execPath,['scripts/exp32-34/operator.cjs','recover','--input',file],{encoding:'utf8',env:process.env});
+  const recovered=command('recover',JSON.parse(dry.stdout).digest);expect(recovered.status).toBe(0);expect(JSON.parse(recovered.stdout).outcome).toBe('attached');expect(await version()).toBe(2);
+ } finally {rmSync(folder,{recursive:true,force:true});}
+});
+test('cancellation during provider creation fences stale attachment with subscription version',async()=>{
+ await prisma.expertSubscription.update({where:{id:'sub'},data:{razorpaySubscriptionId:null}});
+ const intent=await beginProvisioning('visitor','expert','PREMIUM',10);
+ const claimed=await provisioningStore.claim(intent.id,intent.version);
+ const created=await provisioningStore.save(intent.id,claimed!.version,{providerId:'remote-created'});
+ await completeCancellation('sub','visitor',null);
+ await expect(provisioningStore.attach(created)).rejects.toThrow('Subscription version conflict');
+ expect(await version()).toBe(1);expect((await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}})).razorpaySubscriptionId).toBeNull();
 });

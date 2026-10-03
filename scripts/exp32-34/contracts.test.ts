@@ -32,3 +32,20 @@ test('reconciliation defaults dry-run, requires reviewed immutable digest and CA
 test('legacy period cannot infer a month or accept uncaptured evidence',()=>{
  expect(()=>planReconciliation({id:'sub',version:0,providerId:'remote',cancelled:false},{providerId:'remote',paymentId:'paid',captured:false,start:new Date(1),end:new Date(2)})).toThrow();
 });
+test('ambiguous plan success timeout blocks a second plan and never starts subscription',async()=>{
+ const m=memory(), provider={createPlan:jest.fn(async()=>{throw Error('created remotely but timed out');}),createSubscription:jest.fn(async()=> 'remote')};
+ await provision(m.get(),m.store,provider);await provision(m.get(),m.store,provider);
+ expect(m.get().state).toBe('UNKNOWN');expect(provider.createPlan).toHaveBeenCalledTimes(1);expect(provider.createSubscription).not.toHaveBeenCalled();
+});
+test('lost committed plan save remains blocked and reviewed IN_FLIGHT recovery does not recreate',async()=>{
+ const m=memory(), base=m.store.save;
+ const save=jest.fn(async(id,v,patch)=>{const result=await base(id,v,patch);if(patch.planId)throw Error('committed save response lost');return result;});
+ const store={...m.store,save};const provider={createPlan:jest.fn(async()=> 'plan'),createSubscription:jest.fn(async()=> 'remote')};
+ await provision(m.get(),store,provider);expect(m.get().state).toBe('IN_FLIGHT');await provision(m.get(),store,provider);expect(provider.createPlan).toHaveBeenCalledTimes(1);
+ await recoverProvisioning(m.get(),{reviewed:true,intentId:'intent',providerId:'verified-remote'},m.store);expect(m.get().state).toBe('ATTACHED');
+});
+test('lost attachment response returns review; durable attached retry returns same provider without creating',async()=>{
+ const m=memory(), base=m.store.attach, provider={createPlan:jest.fn(async()=> 'plan'),createSubscription:jest.fn(async()=> 'remote')};
+ await provision(m.get(),{...m.store,attach:async i=>{await base(i);throw Error('response lost');}},provider);
+ expect((await provision(m.get(),m.store,provider)).providerId).toBe('remote');expect(provider.createSubscription).toHaveBeenCalledTimes(1);
+});

@@ -13,14 +13,4 @@ Datasource "db": PostgreSQL database "billing_synthetic", schema "public" at "12
 17 migrations found in prisma/migrations
 
 
-┌─────────────────────────────────────────────────────────┐
-│  Update available 6.19.2 -> 8.0.0-rc.19                 │
-│                                                         │
-│  This is a major update - please follow the guide at    │
-│  https://pris.ly/d/major-version-upgrade                │
-│                                                         │
-│  Run the following to update                            │
-│    npm i --save-dev prisma@latest                       │
-│    npm i @prisma/client@latest                          │
-└─────────────────────────────────────────────────────────┘
 No pending migrations to apply.

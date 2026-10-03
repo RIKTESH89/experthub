@@ -31,7 +31,7 @@ export async function provision(intent: ProvisioningIntent, store: ProvisioningS
 }
 /** Recovery accepts only an explicitly reviewed, exact provider identity; no provider call. */
 export async function recoverProvisioning(intent: ProvisioningIntent, evidence: { reviewed: boolean; intentId: string; providerId: string }, store: ProvisioningStore) {
-  if (!evidence.reviewed || evidence.intentId !== intent.id || !evidence.providerId || !["UNKNOWN", "IN_FLIGHT"].includes(intent.state)) throw new Error("Reviewed recovery evidence required");
+  if (evidence.reviewed !== true || !Number.isSafeInteger(intent.version) || intent.version < 0 || evidence.intentId !== intent.id || typeof evidence.providerId !== "string" || !evidence.providerId || !["UNKNOWN", "IN_FLIGHT"].includes(intent.state)) throw new Error("Reviewed recovery evidence required");
   if (intent.providerId && intent.providerId !== evidence.providerId) throw new Error("Provider identity mismatch");
   await store.attach({ ...intent, providerId: evidence.providerId });
 }

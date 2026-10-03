@@ -3,7 +3,7 @@ export type LegacyRow = { id: string; version: number; providerId: string | null
 export type PaidEvidence = { providerId: string; paymentId: string; captured: boolean; start: Date; end: Date };
 export type ReconciliationPlan = { row: LegacyRow; evidence: PaidEvidence; digest: string };
 export function planReconciliation(row: LegacyRow, evidence: PaidEvidence): ReconciliationPlan {
-  if (!row.providerId || evidence.providerId !== row.providerId || !evidence.captured || !evidence.paymentId || !Number.isFinite(evidence.start.getTime()) || !Number.isFinite(evidence.end.getTime()) || evidence.start >= evidence.end) throw new Error("Confirmed exact provider interval required");
+  if (typeof row.id !== "string" || !row.id || !Number.isSafeInteger(row.version) || row.version < 0 || typeof row.cancelled !== "boolean" || typeof row.providerId !== "string" || !row.providerId || evidence.providerId !== row.providerId || evidence.captured !== true || typeof evidence.paymentId !== "string" || !evidence.paymentId || !Number.isFinite(evidence.start.getTime()) || !Number.isFinite(evidence.end.getTime()) || evidence.start >= evidence.end) throw new Error("Confirmed exact provider interval required");
   const snapshot = { row: { ...row }, evidence: { ...evidence, start: new Date(evidence.start), end: new Date(evidence.end) } };
   return { ...snapshot, digest: createHash("sha256").update(JSON.stringify(snapshot)).digest("hex") };
 }

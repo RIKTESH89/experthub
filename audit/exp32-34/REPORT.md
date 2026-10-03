@@ -22,3 +22,37 @@ Disposable PostgreSQL 18 cluster under `.billing-runtime/pgdata`, loopback 55438
 ## Limitations
 
 Local implementation only: no push, deploy, full build, client generation, real provider requests, emails, real payments/payouts, credential changes or production data. Reviewed reconciliation/recovery are library entry points, not exposed operator HTTP routes or scheduled commands. A future authorized operator workflow must obtain trustworthy provider evidence before constructing reviewed input; synthetic tests do not establish live Razorpay semantics. Uncertain plan creation can orphan a provider plan; durable intent is blocked for review rather than attempting another plan. Unknown provisioning intentionally has no automatic expiration/retry. New SQL invariants/partial index are migration-managed. Free-new-row path retains baseline behavior; this lane hardens existing-row transitions interacting with billing. Outbox delivery activation and refund policy remain separate manual review work. Migration remains local for later integrated review; frozen release and hosted database were untouched.
+
+## Follow-up acceptance audit (after preserved commit 52b3162)
+
+Focused Next lint of all ten changed production files: PASS, no warnings/errors (`lint.log`). Follow-up runner: 36/36 tests across four suites, schema validation and TypeScript pass; owned cluster stopped by runner. No full build/client generation or real provider/email calls.
+
+### EXP32
+
+Implemented: durable pre-call intent; CAS single claimant; open-pair dedupe; provider adapter wired to existing Razorpay create route; provider intent notes; PENDING-only atomic attachment; same-provider sequential retry; sticky uncertainty after plan/subscription timeout or DB response loss; reviewed recovery with persisted intent version and subscription version guards; synthetic-only CLI recovery requiring exact reviewed input digest.
+
+Regression evidence: concurrent creators/claimants create one subscription; subscription timeout does not retry; plan success/timeout does not retry or create subscription; committed plan-save response loss remains IN_FLIGHT and supports reviewed recovery; committed attachment response loss returns review and subsequent retry returns durable provider ID without creating; real PostgreSQL reviewed recovery CLI attaches and increments subscription version exactly once.
+
+Not implemented: automated provider lookup/reconciliation adapter for ambiguous operations, remote operator endpoint/UI, scheduled recovery worker, automatic cancellation/refund of uncertain objects. These need future provider evidence and operational authorization. The provider creation adapter is implemented, not merely an interface; reviewed recovery library and local operator CLI are implemented. Production activation is not performed.
+
+### EXP33
+
+Implemented: transactional notification intent plus durable PostgreSQL queue adapter; worker loop with injected delivery callback; atomic SKIP LOCKED leases, expiry/reclaim, fencing, unique intent key; retry delay and terminal failure state. Callback receives stable dedupe key. Webhook email side effect removed. No email is sent by any validation.
+
+Regression evidence: six identical receipts produce one notification intent and one in-app notification; explicit duplicate enqueue produces one queue row; transaction rollback removes intent; five worker claims lease one job; stale lease cannot settle reclaimed work; callback failure reaches terminal state; ambiguous successful delivery before settlement retries same key and a synthetic deduplicating recipient observes exactly one send.
+
+Not implemented: production email/notification transport adapter, durable downstream dedupe receiver, scheduler/HTTP worker entrypoint, terminal failure operator replay workflow. Worker and database adapters are implemented; the transport and scheduling layer are absent, not just switched off. Delivery is at-least-once, not exactly-once; dedupe relies on downstream honoring the supplied key. No remote receiver resources added.
+
+### EXP34
+
+Implemented: exact captured interval validation; immutable reviewed digest; default dry-run without instantiating Prisma; explicit apply guarded by reviewed digest and persisted billing version/provider/cancellation snapshot; already verified rows rejected; atomic evidence audit, subscription change, cancellation preservation, counter recomputation and outbox intent. Synthetic operator command is now implemented and permits apply only to `billing_synthetic@127.0.0.1:55438/billing_synthetic` with no URL query/hash.
+
+Regression evidence: dry-run does not call store or depend on a database; unreviewed/tampered input rejected; remote apply refused; four simultaneous reviewed applies commit once; cancellation invalidates old reviewed version; verified cancellation retains exact paid interval with end-exclusive access; local CLI executes reviewed reconciliation on disposable rows.
+
+Not implemented: production legacy-row scanner/provider evidence fetcher, operator UI/remote apply, review-role identity/signature storage. The digest records which input was approved; it is not proof of reviewer identity or provider authenticity. These entry points are local synthetic tools, not production administrative authorization.
+
+### Cross-route version contract
+
+Coverage includes payment vs repeated cancellation (one cancellation increment), reconciliation vs cancellation (stale CAS refuses), free activation vs unresolved provisioning (refused), free activation vs confirmed charge (one winner, verified access cannot be overwritten), repeated free transitions (no extra increments, counter correct), provisioning attachment vs sequential creation retry (one increment), and cancellation during provider creation (stale attachment rejected by subscription version). Pending/ignored events and duplicate receipts cannot grant access. This is one billingVersion contract; no competing counter was introduced.
+
+Operator usage: `node scripts/exp32-34/operator.cjs reconcile|recover --input review.json` produces a dry-run digest. `--apply --reviewed-digest <digest>` is restricted to the synthetic database. Reconciliation input contains `{row,evidence}`; recovery contains `{intent,evidence:{intentId,providerId}}`. No .env loading; no provider calls. Tests exercise local applies only.
