@@ -62,3 +62,23 @@ export async function releasePersona(input: {expertProfileId:string; actorId:str
     return {id,expertProfileId:expert.id,manifest,manifestHash:hash,requestHash};
   });
 }
+
+/** Read-only preview; confirmation always rechecks these conditions transactionally. */
+export async function previewPersonaRollback(input:{expertProfileId:string;actorId:string;expectedHead:string|null;rollbackTo:string}) {
+ return prisma.$transaction(async tx=>{
+  await lockOwner(tx,input.expertProfileId,input.actorId);
+  const heads=await tx.$queryRaw<{releaseId:string}[]>`SELECT "releaseId" FROM "PersonaReleaseHead" WHERE "expertProfileId"=${input.expertProfileId}`;
+  const currentHead=heads[0]?.releaseId||null;
+  const targets=await tx.$queryRaw<Release[]>`SELECT * FROM "PersonaRelease" WHERE "expertProfileId"=${input.expertProfileId} AND "id"=${input.rollbackTo}`;
+  const target=targets[0];if(!target)throw new ReviewError(404,"Release not found");
+  const pins=await currentSourcePins(tx,input.expertProfileId);
+  const count=await tx.knowledgeItem.count({where:{expertProfileId:input.expertProfileId}});
+  const expert=await tx.expertProfile.findUniqueOrThrow({where:{id:input.expertProfileId}});
+  const fields=(Object.keys(target.manifest.config) as (keyof PersonaConfig)[]).filter(field=>manifestHash(target.manifest.config[field])!==manifestHash(expert[field]));
+  const reason=currentHead!==input.expectedHead?"Release head changed. Refresh before previewing again.":
+   target.manifestHash!==manifestHash(target.manifest)?"The target manifest failed its integrity check.":
+   !expert.ragEnabled && target.manifest.config.ragEnabled?"RAG access is currently disabled. Rollback cannot re-enable disabled access.":
+   count!==pins.length || !sourcePinsEqual(target.manifest.sources,pins)?"Evidence has changed, been removed, restricted, or still needs recomputation. Rollback is blocked.":null;
+  return {allowed:reason===null,reason,currentHead,targetId:target.id,changedFields:fields,targetConfig:target.manifest.config,sourceCount:target.manifest.sources.length};
+ });
+}
