@@ -36,6 +36,14 @@ import { GET as getExpertWidget, PUT as updateExpertWidget } from "@/app/api/exp
 
 beforeEach(() => {
   resetAllMocks();
+  mockPrisma.expertProfile.findUniqueOrThrow.mockResolvedValue(mockExpertProfile);
+  mockPrisma.expertSubscription.findUniqueOrThrow.mockImplementation(async (args) => {
+    const row = await mockPrisma.expertSubscription.findUnique(args);
+    if (!row) throw new Error("Missing synthetic subscription");
+    return row;
+  });
+  mockPrisma.expertSubscription.count.mockResolvedValue(0);
+
 });
 
 // ===========================================================================

@@ -26,7 +26,7 @@ test('10 concurrent claims have exactly one side effect; retries are idempotent'
  measurements.push({scenario:'10 concurrent claims',durationMs:performance.now()-start,winners:1});
 });
 test('bounded 10-worker batch completes 100 synthetic jobs',async()=>{
- const jobs=[];for(let i=0;i<100;i++)jobs.push(await enqueueLifecycleJob(work('load-'+i)));
+ const jobs: Awaited<ReturnType<typeof enqueueLifecycleJob>>[]=[];for(let i=0;i<100;i++)jobs.push(await enqueueLifecycleJob(work('load-'+i)));
  let next=0,calls=0;const durations:number[]=[];const start=performance.now();
  await Promise.all(Array.from({length:10},async()=>{while(next<jobs.length){const job=jobs[next++];const t=performance.now();expect(await runLifecycleJob(job.id,expert,async()=>{calls++;})).toBe(true);durations.push(performance.now()-t);}}));
  expect(calls).toBe(100);expect(await prisma.knowledgeLifecycleJob.count({where:{id:{in:jobs.map(j=>j.id)},state:'DONE'}})).toBe(100);

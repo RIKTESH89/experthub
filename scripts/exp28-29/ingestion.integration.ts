@@ -21,7 +21,7 @@ async function crashAtVector(id:string,mode='crash-after-vector'){
   const child=spawn(process.execPath,[join(__dirname,'native-worker.cjs'),mode,id],{env:process.env,stdio:['ignore','pipe','pipe','ipc']});
   let checkpoint:any;let diagnostics='';let settled=false;
   const timer=setTimeout(()=>{child.kill('SIGKILL');if(!settled){settled=true;reject(Error('Owned worker checkpoint timeout: '+diagnostics));}},10000);
-  child.stdout.on('data',d=>diagnostics+=d);child.stderr.on('data',d=>diagnostics+=d);
+  child.stdout!.on('data',d=>diagnostics+=d);child.stderr!.on('data',d=>diagnostics+=d);
   child.on('message',(message:any)=>{if(['vector-committed-before-publication','publication-committed-before-ack'].includes(message.checkpoint)){checkpoint=message;child.kill('SIGKILL');}});
   child.on('error',e=>{clearTimeout(timer);if(!settled){settled=true;reject(e);}});
   child.on('exit',(code,signal)=>{clearTimeout(timer);if(!settled){settled=true;if(checkpoint&&signal==='SIGKILL')resolve({...checkpoint,signal});else reject(Error(`Worker exited before checkpoint (${code}/${signal}): ${diagnostics}`));}});

@@ -63,6 +63,7 @@ const mockPrismaClient = {
   },
   expertProfile: {
     findUnique: jest.fn(),
+    findUniqueOrThrow: jest.fn(),
     findMany: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
@@ -75,6 +76,7 @@ const mockPrismaClient = {
   },
   expertSubscription: {
     findUnique: jest.fn(),
+    findUniqueOrThrow: jest.fn(),
     findMany: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),

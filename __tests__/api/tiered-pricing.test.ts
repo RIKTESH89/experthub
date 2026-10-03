@@ -22,6 +22,14 @@ import { POST as subscribe } from "@/app/api/experts/[expertId]/subscribe/route"
 
 beforeEach(() => {
   resetAllMocks();
+  mockPrisma.expertProfile.findUniqueOrThrow.mockResolvedValue(mockExpertProfile);
+  mockPrisma.expertSubscription.findUniqueOrThrow.mockImplementation(async (args) => {
+    const row = await mockPrisma.expertSubscription.findUnique(args);
+    if (!row) throw new Error("Missing synthetic subscription");
+    return row;
+  });
+  mockPrisma.expertSubscription.count.mockResolvedValue(0);
+
 });
 
 const mockTiers = [
@@ -195,6 +203,8 @@ describe("Subscribe with Tier", () => {
     mockPrisma.expertSubscription.findUnique.mockResolvedValue({
  tier: "FREE",
       id: "sub-1",
+      subscriberId: "subscriber-id-1",
+      expertProfileId: "profile-id-1",
       status: "ACTIVE",
     });
     mockPrisma.expertSubscription.update.mockResolvedValue({});

@@ -1,0 +1,28 @@
+PASS scripts/exp16/reviews.integration.ts
+  ✓ stable hash sorts keys and live scope intersection never grants historical permission (19 ms)
+  ✓ accept atomically retires evidence and queues only changed source; concurrent retry is idempotent (16 ms)
+  ✓ competing owner decisions yield exactly one terminal result (10 ms)
+  ✓ source CAS prevents stale correction after edit and after deletion (8 ms)
+  ✓ visitor feedback cannot modify beliefs, targets, or somebody else's chat (11 ms)
+  ✓ submission retry and reject are audited without source mutation (6 ms)
+  ✓ rollback restores config as a new audited release without changing sources (12 ms)
+  ✓ rollback fails closed after delete (9 ms)
+  ✓ rollback fails closed after restrict (7 ms)
+  ✓ rollback fails closed after edit (6 ms)
+  ✓ rollback fails closed after retire (6 ms)
+  ✓ foreign owner cannot release and pending/unsupported source cannot publish (4 ms)
+  ✓ release and correction events reject in-place updates (36 ms)
+  ✓ concurrent releases cannot both replace the same expected head (5 ms)
+  ✓ unsupported imported sources block a reproducibility claim (5 ms)
+  ✓ rollback restores personality profile and records actual persona prompts (7 ms)
+  ✓ additive DDL rollback leaves base sources and evidence intact (6 ms)
+  ✓ rollback cannot restore a disabled RAG permission (6 ms)
+  ✓ rollback preview and confirm consistently reject changed RAG permission from true (8 ms)
+  ✓ rollback preview and confirm consistently reject changed RAG permission from false (7 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
+Time:        0.508 s
+Ran all test suites.
+Test results written to: audit/next-wave-local/native16.json

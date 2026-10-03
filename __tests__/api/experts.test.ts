@@ -91,6 +91,14 @@ const mockExpertDetail = {
 
 beforeEach(() => {
   resetAllMocks();
+  mockPrisma.expertProfile.findUniqueOrThrow.mockResolvedValue(mockExpertProfile);
+  mockPrisma.expertSubscription.findUniqueOrThrow.mockImplementation(async (args) => {
+    const row = await mockPrisma.expertSubscription.findUnique(args);
+    if (!row) throw new Error("Missing synthetic subscription");
+    return row;
+  });
+  mockPrisma.expertSubscription.count.mockResolvedValue(0);
+
   mockAuth.mockReset();
 });
 
@@ -383,7 +391,8 @@ describe("POST /api/experts/:id/subscribe", () => {
     });
   });
 
-  it("12. increments totalSubscribers on subscribe", async () => {
+  it("12. recomputes totalSubscribers on subscribe", async () => {
+    mockPrisma.expertSubscription.count.mockResolvedValue(11);
     mockAuth.mockResolvedValue(mockSession.subscriber);
     mockPrisma.expertProfile.findUnique
       .mockResolvedValueOnce(mockProfileWithUser)
@@ -400,11 +409,12 @@ describe("POST /api/experts/:id/subscribe", () => {
 
     expect(mockPrisma.expertProfile.update).toHaveBeenCalledWith({
       where: { id: "profile-id-1" },
-      data: { totalSubscribers: { increment: 1 } },
+      data: { totalSubscribers: 11 },
     });
   });
 
-  it("13. decrements totalSubscribers on unsubscribe", async () => {
+  it("13. recomputes totalSubscribers on unsubscribe", async () => {
+    mockPrisma.expertSubscription.count.mockResolvedValue(9);
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     const activeSub = {
@@ -429,7 +439,7 @@ describe("POST /api/experts/:id/subscribe", () => {
 
     expect(mockPrisma.expertProfile.update).toHaveBeenCalledWith({
       where: { id: "profile-id-1" },
-      data: { totalSubscribers: { decrement: 1 } },
+      data: { totalSubscribers: 9 },
     });
   });
 

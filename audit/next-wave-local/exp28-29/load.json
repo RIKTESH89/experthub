@@ -1,0 +1,20 @@
+{
+  "concurrentWorkers": 10,
+  "userCapacityProved": false,
+  "externalSpendINR": 0,
+  "measurements": [
+    {
+      "scenario": "10 concurrent claims",
+      "durationMs": 4.910374999999931,
+      "winners": 1
+    },
+    {
+      "scenario": "100 jobs / 10 workers",
+      "durationMs": 17.200792000000092,
+      "p50Ms": 1.5187080000000606,
+      "p95Ms": 2.402749999999969,
+      "completed": 100
+    }
+  ],
+  "limitations": "SQL lifecycle only; no HTTP/chat/provider load; worker crash simulated by abandoned persisted lease."
+}
