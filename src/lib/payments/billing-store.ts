@@ -27,7 +27,11 @@ function applyReconciliation(plan: Parameters<ReconciliationStore["apply"]>[0], 
     if (sub.paidPeriodStart && sub.currentPeriodEnd && sub.razorpayPaymentId) return false;
     // Serialize counter recomputation in the same order as webhook/cancellation.
     await tx.$queryRaw`SELECT "id" FROM "ExpertProfile" WHERE "id"=${sub.expertProfileId} FOR UPDATE`;
-    await tx.expertSubscription.update({ where: { id: sub.id }, data: { paidPeriodStart: plan.evidence.start, currentPeriodEnd: plan.evidence.end, razorpayPaymentId: plan.evidence.paymentId, status: plan.row.cancelled ? "CANCELLED" : "ACTIVE", ...(plan.row.cancelled ? { endDate: plan.evidence.end } : {}) } });
+    const lifecycle=plan.evidence.providerSnapshot?.subscription;
+    const ended=lifecycle?.endedAt;
+    const cancelled=plan.row.cancelled || !!lifecycle && (['cancelled','completed','expired'].includes(lifecycle.status) || !!ended || lifecycle.cancelAtCycleEnd===true);
+    const status=cancelled ? "CANCELLED" : lifecycle?.status==='pending' ? "PAST_DUE" : lifecycle?.status==='halted' ? "EXPIRED" : "ACTIVE";
+    await tx.expertSubscription.update({ where: { id: sub.id }, data: { paidPeriodStart: plan.evidence.start, currentPeriodEnd: plan.evidence.end, razorpayPaymentId: plan.evidence.paymentId, status, ...(cancelled ? { endDate: plan.evidence.end, renewalCancelledAt: sub.renewalCancelledAt || (ended ? new Date(ended*1000) : new Date()) } : {}) } });
     await tx.$executeRaw`UPDATE "ExpertSubscription" SET "billingVersion"="billingVersion"+1 WHERE "id"=${sub.id}`;
     await tx.$executeRaw`INSERT INTO "BillingReconciliation" ("id", "subscriptionId", "reviewedDigest", "previousVersion", "evidence") VALUES (${randomUUID()}, ${sub.id}, ${plan.digest}, ${plan.row.version}, ${JSON.stringify(actorId ? { provider: plan.evidence, review: { actorId, digest: reviewedDigest || plan.digest, planDigest: plan.digest } } : plan.evidence)}::jsonb)`;
     const count = await tx.expertSubscription.count({ where: { expertProfileId: sub.expertProfileId, ...subscriptionAccessWhere() } });

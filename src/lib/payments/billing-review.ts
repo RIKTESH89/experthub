@@ -2,13 +2,13 @@ import { createHmac, timingSafeEqual, createHash } from 'crypto';
 import { assertBillingEnabled, BillingRuntimeError, billingTimeout } from './billing-runtime';
 import { planReconciliation, reconcile, type ReconciliationPlan, type LegacyRow, type PaidEvidence, type ReconciliationStore } from './reconciliation';
 import { recoverProvisioning, type ProvisioningStore } from './provisioning';
-import type { RecoveryIntent } from './provider-lookup';
-export type ReviewProposal={kind:'reconcile';plan:ReconciliationPlan}|{kind:'recover';intent:RecoveryIntent;evidence:{intentId:string;providerId:string}};
+import type { RecoveryIntent, RecoveryEvidence } from './provider-lookup';
+export type ReviewProposal={kind:'reconcile';plan:ReconciliationPlan}|{kind:'recover';intent:RecoveryIntent;evidence:RecoveryEvidence};
 export type BillingReviewDependencies={
  actor:()=>Promise<{id:string;role:string}|null>;
  loadRow:(id:string)=>Promise<LegacyRow>;
  loadIntent:(id:string)=>Promise<RecoveryIntent>;
- lookup:{recover:(intent:RecoveryIntent)=>Promise<{outcome:string;evidence?:{intentId:string;providerId:string}}>;paidPeriod:(providerId:string,paymentId:string)=>Promise<PaidEvidence>};
+ lookup:{recover:(intent:RecoveryIntent)=>Promise<{outcome:string;evidence?:RecoveryEvidence}>;paidPeriod:(providerId:string,paymentId:string)=>Promise<PaidEvidence>};
  reconciliation:(actorId:string,digest:string)=>ReconciliationStore;
  provisioning:(actorId:string,digest:string)=>ProvisioningStore;
  env?:NodeJS.ProcessEnv;now?:()=>Date;

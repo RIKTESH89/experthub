@@ -117,3 +117,31 @@ test('fresh changed/refunded/unavailable provider evidence cannot mutate native 
  const sub=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(sub.status).toBe('PENDING');expect(sub.paidPeriodStart).toBeNull();expect(await prisma.$queryRaw`SELECT "id" FROM "BillingReconciliation"`).toHaveLength(0);expect(await prisma.$queryRaw`SELECT "id" FROM "BillingOutbox"`).toHaveLength(0);
  const version=(await prisma.$queryRaw<{billingVersion:number}[]>`SELECT "billingVersion" FROM "ExpertSubscription" WHERE "id"='sub'`)[0];expect(version.billingVersion).toBe(0);
 });
+test('provider already cancelled at plan reconciles exact paid interval without restoring renewal',async()=>{
+ await prisma.expertSubscription.create({data:{id:'sub',subscriberId:'visitor',expertProfileId:'expert',tier:'PREMIUM',price:10,status:'PENDING',razorpaySubscriptionId:'remote'}});
+ const {makeProviderRecoveryLookup}=await import('../../src/lib/payments/provider-lookup');
+ const start=Math.floor(Date.now()/1000)-100,end=start+3600,ended=start+10;
+ const client={subscriptions:{all:jest.fn(),fetch:async()=>({id:'remote',status:'cancelled',ended_at:ended})},plans:{fetch:jest.fn()},payments:{fetch:async()=>({id:'payment',status:'captured',captured:true,amount_refunded:0,invoice_id:'invoice'})},invoices:{fetch:async()=>({id:'invoice',subscription_id:'remote',payment_id:'payment',status:'paid',billing_start:start,billing_end:end})}};
+ const deps=reviewDeps();deps.lookup=makeProviderRecoveryLookup({...env,BILLING_PROVIDER_LOOKUP_ENABLED:'true',RAZORPAY_KEY_ID:'rzp_test_synthetic',RAZORPAY_KEY_SECRET:'synthetic-no-calls'},()=>client);
+ const proposal=await reviewBilling({action:'plan',kind:'reconcile',id:'sub',paymentId:'payment'},env.NEXT_PUBLIC_APP_URL!,deps) as any;
+ await reviewBilling({action:'apply',token:proposal.token,reviewedDigest:proposal.reviewedDigest},env.NEXT_PUBLIC_APP_URL!,deps);
+ const sub=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(sub.status).toBe('CANCELLED');expect(sub.renewalCancelledAt).toEqual(new Date(ended*1000));expect(sub.paidPeriodStart).toEqual(new Date(start*1000));expect(sub.currentPeriodEnd).toEqual(new Date(end*1000));expect(sub.endDate).toEqual(new Date(end*1000));
+ const {hasPaidAccess}=await import('../../src/lib/payments/access');expect(hasPaidAccess(sub,new Date((end-1)*1000))).toBe(true);expect(hasPaidAccess(sub,new Date(end*1000))).toBe(false);
+});
+test.each([
+ {subscription:{status:'cancelled'}},{subscription:{status:'pending'}},{subscription:{status:'halted'}},{subscription:{status:'completed'}},{subscription:{status:'expired'}},{subscription:{ended_at:1790813000}},{subscription:{has_scheduled_changes:true,change_scheduled_at:1793000000}},{subscription:{cancel_at_cycle_end:true}},{subscription:{charge_at:1795000000}},{subscription:{remaining_count:'0'}},
+ {payment:{status:'refunded'}},{payment:{refund_status:'partial',amount_refunded:500}},{invoice:{status:'partially_paid',amount_due:500}},{invoice:{billing_end:1795000000}},{payment:{amount:2000},invoice:{amount_paid:2000}},
+])('native changed entitlement/renewal fields invalidate review without mutation: %j',async changes=>{
+ await prisma.expertSubscription.create({data:{id:'sub',subscriberId:'visitor',expertProfileId:'expert',tier:'PREMIUM',price:10,status:'PENDING',razorpaySubscriptionId:'remote'}});
+ const {makeProviderRecoveryLookup}=await import('../../src/lib/payments/provider-lookup');
+ let subscription:Record<string,unknown>={id:'remote',status:'active',charge_at:1793491200,remaining_count:'2',has_scheduled_changes:false};
+ let payment:Record<string,unknown>={id:'payment',status:'captured',captured:true,amount_refunded:0,refund_status:null,invoice_id:'invoice',amount:1000,currency:'INR'};
+ let invoice:Record<string,unknown>={id:'invoice',subscription_id:'remote',payment_id:'payment',status:'paid',billing_start:1790812800,billing_end:1793491200,amount_due:0,amount_paid:1000,currency:'INR'};
+ const client={subscriptions:{all:jest.fn(),fetch:async()=>subscription},plans:{fetch:jest.fn()},payments:{fetch:async()=>payment},invoices:{fetch:async()=>invoice}};
+ const deps=reviewDeps();deps.lookup=makeProviderRecoveryLookup({...env,BILLING_PROVIDER_LOOKUP_ENABLED:'true',RAZORPAY_KEY_ID:'rzp_test_synthetic',RAZORPAY_KEY_SECRET:'synthetic-no-calls'},()=>client);
+ const proposal=await reviewBilling({action:'plan',kind:'reconcile',id:'sub',paymentId:'payment'},env.NEXT_PUBLIC_APP_URL!,deps) as any;
+ subscription={...subscription,...changes.subscription};payment={...payment,...changes.payment};invoice={...invoice,...changes.invoice};
+ await expect(reviewBilling({action:'apply',token:proposal.token,reviewedDigest:proposal.reviewedDigest},env.NEXT_PUBLIC_APP_URL!,deps)).rejects.toThrow('new review required');
+ const sub=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(sub.status).toBe('PENDING');expect(sub.renewalCancelledAt).toBeNull();expect(sub.paidPeriodStart).toBeNull();
+ expect(await prisma.$queryRaw`SELECT "id" FROM "ExpertSubscription" WHERE "billingVersion"<>0`).toHaveLength(0);expect(await prisma.$queryRaw`SELECT "id" FROM "BillingReconciliation"`).toHaveLength(0);expect(await prisma.$queryRaw`SELECT "id" FROM "BillingOutbox"`).toHaveLength(0);
+});
