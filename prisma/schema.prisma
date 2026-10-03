@@ -97,6 +97,9 @@ model UserSettings {
 }
 
 model ExpertProfile {
+  correctionReviews CorrectionReview[]
+  personaReleases PersonaRelease[]
+  personaReleaseHead PersonaReleaseHead?
   temporalStances TemporalStance[]
   evidenceRevisions EvidenceRevision[]
   evidenceAssertions EvidenceAssertion[]
@@ -774,4 +777,58 @@ model PaymentEvent {
   outcome String
   createdAt DateTime @default(now())
   @@index([providerSubscriptionId])
+}
+
+// EXP16: source rows are intentionally not FK targets; deletion cannot erase review history.
+model CorrectionReview {
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  events CorrectionEvent[]
+  id String @id
+  expertProfileId String
+  submittedBy String
+  submissionKey String
+  requestHash String
+  messageId String?
+  proposal Json
+  state String @default("PENDING")
+  version Int @default(1)
+  createdAt DateTime @default(now())
+  @@unique([expertProfileId, submittedBy, submissionKey])
+  @@unique([expertProfileId, id])
+  @@index([expertProfileId, state, createdAt])
+}
+model CorrectionEvent {
+  review CorrectionReview @relation(fields: [expertProfileId, reviewId], references: [expertProfileId, id], onDelete: Cascade, onUpdate: NoAction)
+  id String @id
+  reviewId String
+  expertProfileId String
+  actorId String
+  operationKey String
+  requestHash String
+  action String
+  version Int
+  detail Json
+  createdAt DateTime @default(now())
+  @@unique([expertProfileId, operationKey])
+}
+model PersonaRelease {
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  heads PersonaReleaseHead[]
+  id String @id
+  expertProfileId String
+  actorId String
+  operationKey String
+  requestHash String
+  manifestHash String
+  manifest Json
+  createdAt DateTime @default(now())
+  @@unique([expertProfileId, operationKey])
+  @@unique([expertProfileId, id])
+}
+model PersonaReleaseHead {
+  expertProfile ExpertProfile @relation(fields: [expertProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  release PersonaRelease @relation(fields: [expertProfileId, releaseId], references: [expertProfileId, id], onDelete: NoAction, onUpdate: NoAction)
+  expertProfileId String @id
+  releaseId String
+  generation Int @default(1)
 }
