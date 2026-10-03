@@ -8,7 +8,7 @@ describe('launch indexing boundary', () => {
     expect(publicRobotsMetadata(env)).toEqual({ index: false, follow: false });
     expect(publicPageMetadata('/pricing', 'Pricing', env).alternates).toBeUndefined();
   });
-  test.each(['', 'http://experthub.example', 'https://localhost', 'https://local.vercel.app', 'https://qa.invalid', 'https://experthub.example/path', 'https://user:secret@experthub.example', 'https://experthub.example?x=1', 'not-a-url'])('unsafe/missing origin %s remains noindex', NEXT_PUBLIC_APP_URL => {
+  test.each(['', 'http://experthub.example', 'https://localhost', 'https://127.0.0.1', 'https://10.0.0.1', 'https://[::1]', 'https://site.local', 'https://site.internal', 'https://experthub.example:8443', 'https://local.vercel.app', 'https://qa.invalid', 'https://experthub.example/path', 'https://user:secret@experthub.example', 'https://experthub.example?x=1', 'not-a-url'])('unsafe/missing origin %s remains noindex', NEXT_PUBLIC_APP_URL => {
     const env = { ...production, NEXT_PUBLIC_APP_URL };
     expect(publicRobotsMetadata(env)).toEqual({ index: false, follow: false });
     expect(publicPageMetadata('/', 'Home', env).alternates).toBeUndefined();
@@ -19,8 +19,8 @@ describe('launch indexing boundary', () => {
     expect(metadata.robots).toEqual({ index: true, follow: true });
     expect(metadata.description).toContain('AI representations');
   });
-  test('self-hosted production requires an origin, local development is noindex', () => {
-    expect(productionPublicOrigin({ NODE_ENV: 'production', NEXT_PUBLIC_APP_URL: production.NEXT_PUBLIC_APP_URL })).toBe('https://experthub.example');
+  test('local builds remain noindex even with NODE_ENV production', () => {
+    expect(productionPublicOrigin({ NODE_ENV: 'production', NEXT_PUBLIC_APP_URL: production.NEXT_PUBLIC_APP_URL })).toBeUndefined();
     expect(publicRobotsMetadata({ NODE_ENV: 'development', NEXT_PUBLIC_APP_URL: production.NEXT_PUBLIC_APP_URL })).toEqual({ index: false, follow: false });
   });
 });

@@ -4,11 +4,11 @@ type LaunchEnvironment = { VERCEL_ENV?: string; NODE_ENV?: string; NEXT_PUBLIC_A
 
 // Fail closed for Preview/local builds; a trusted production origin must be configured.
 export function productionPublicOrigin(env: LaunchEnvironment = process.env): string | undefined {
-  if (env.VERCEL_ENV ? env.VERCEL_ENV !== "production" : env.NODE_ENV !== "production") return;
+  if (env.VERCEL_ENV !== "production") return;
   try {
     const url = new URL(env.NEXT_PUBLIC_APP_URL || "");
     if (url.protocol !== "https:" || url.username || url.password || url.pathname !== "/" || url.search || url.hash) return;
-    if (url.hostname === "localhost" || url.hostname.endsWith(".localhost") || url.hostname.endsWith(".invalid") || url.hostname.endsWith(".vercel.app") || !url.hostname.includes(".")) return;
+    if (url.port || /^\d+(\.\d+){3}$/.test(url.hostname) || url.hostname.startsWith("[") || url.hostname.endsWith(".local") || url.hostname.endsWith(".internal") || url.hostname === "localhost" || url.hostname.endsWith(".localhost") || url.hostname.endsWith(".invalid") || url.hostname.endsWith(".vercel.app") || !url.hostname.includes(".")) return;
     return url.origin;
   } catch { return; }
 }
