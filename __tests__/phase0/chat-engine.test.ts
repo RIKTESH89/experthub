@@ -40,3 +40,23 @@ test("EXP14 bounded bundle is the sole evidence prompt and exposes retrieval gap
  const system=JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body).messages[0].content;
  expect(system).toContain("BOUNDED_BUNDLE_SENTINEL");expect(system).toContain("Documented reasons unavailable");expect(system).not.toContain("DUPLICATE_RAW_SENTINEL");expect(result.evidenceBundle.prompt).toBe("BOUNDED_BUNDLE_SENTINEL");
 });
+
+test("EXP17 never streams an unsupported provider claim to the caller", async()=>{
+ const raw='data: '+JSON.stringify({choices:[{delta:{content:'{"spanIds":["invented"],"text":"I am a physician"}'}}]})+'\n\ndata: [DONE]\n\n';
+ global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){const bytes=new TextEncoder().encode(raw);c.enqueue(bytes.slice(0,13));c.enqueue(bytes.slice(13));c.close();}})});
+ const result=await runChatEngine({expertId:"ada-owner",query:"medication dose",chatHistory:[]});
+ const output=await new Response(result.stream).text();
+ expect(result.verification.status).toBe("abstained");expect(output).not.toContain("I am a physician");expect(output).toContain("qualified assessment");expect(output).toContain("[DONE]");
+});
+test("EXP17 accepts exact selected owner claims after fragmented SSE and ignores legacy expertise",async()=>{
+ const row={spanId:"s",text:"I prefer cautious experiments.",authorId:"ada-owner",speakerId:"ada-owner",speakerRole:"author",kind:"explicit",endorsedByOwner:true,chunkIds:["v"]};
+ retrieve.mockResolvedValue({version:"intent-evidence-v1",plan:{intent:"stance"},sources:[{content:row.text,score:1,metadata:{expertProfileId:"ada",vectorId:"v"}}],evidenceTrace:[row],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:"bounded",gaps:[]});
+ const raw='data: '+JSON.stringify({choices:[{delta:{content:'{"spanIds":["s"]}'}}]})+'\n\ndata: [DONE]\n\n';
+ global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){new TextEncoder().encode(raw).forEach(byte=>c.enqueue(Uint8Array.of(byte)));c.close();}})});
+ const result=await runChatEngine({expertId:"ada-owner",query:"preference",chatHistory:[]});
+ expect(result.verification.status).toBe("verified");expect(result.groundedStyle.samples).toHaveLength(1);expect(await new Response(result.stream).text()).toContain("cautious experiments");
+});
+test("EXP17 malformed SSE fails closed even when a valid claim precedes it",async()=>{
+ const raw='data: malformed\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});
+ const result=await runChatEngine({expertId:"ada-owner",query:"view",chatHistory:[]});expect(result.verification.status).toBe("abstained");
+});

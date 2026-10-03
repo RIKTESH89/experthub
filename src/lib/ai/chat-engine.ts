@@ -1,3 +1,7 @@
+import { buildDialogueState, dialoguePrompt, type DialogueState } from "./dialogue/state";
+import { groundedStyle, stylePrompt, type GroundedStyle } from "./dialogue/style";
+import { verifyPersonResponse, verificationPrompt, type VerificationResult } from "./dialogue/verify";
+import { createSSEDecoder } from "./sse";
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import { retrieveIntentEvidence } from "@/lib/retrieval/retrieve";
@@ -7,8 +11,6 @@ import {
   getDigitalTwinSystemPrompt,
   getContextPrompt,
   getMemoryPrompt,
-  type PersonalityProfile,
-  type TwinEnhancements,
 } from "@/lib/ai/prompts";
 import {type TemporalRetrievalResult} from "@/lib/graph/temporal/retriever";
 import {temporalQueryFromQuestion,type TemporalQuery} from "@/lib/graph/temporal/timeline";
@@ -40,6 +42,9 @@ interface ChatEngineResult {
   evidenceTrace: EvidenceTrace[];
   temporalTrace: TemporalRetrievalResult;
   evidenceBundle: EvidenceBundle;
+  dialogueState: DialogueState;
+  groundedStyle: GroundedStyle;
+  verification: VerificationResult;
 }
 
 export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
@@ -59,16 +64,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   const scope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId);
 
   const expertName = expert?.displayName || expert?.user?.name || "Expert";
-  const personality = expert?.twinPersonality || undefined;
-  const personalityProfile = scope.isOwner && expert?.personalityProfile
-    ? (expert.personalityProfile as unknown as PersonalityProfile)
-    : null;
   const ragEnabled = expert?.ragEnabled ?? true;
-  const enhancements: TwinEnhancements = {
-    opinions: (expert as unknown as { twinOpinions?: string })?.twinOpinions || null,
-    framework: (expert as unknown as { twinFramework?: string })?.twinFramework || null,
-    boundaries: (expert as unknown as { twinBoundaries?: string })?.twinBoundaries || null,
-  };
 
   // Step 1: Retrieve context from vector store (only if RAG is enabled)
   let retrievalResults: RetrievalResult[] = [];
@@ -123,10 +119,12 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   thinkingSteps.push("Formulating response...");
 
   // Build system prompt with all context
+  const dialogueState = buildDialogueState(expert.userId, query, authorizedHistory(chatHistory, scope), evidenceBundle);
+  const style = groundedStyle(evidenceBundle, expert.userId);
   const systemPrompt =
-    getDigitalTwinSystemPrompt(expertName, personality, personalityProfile, enhancements) +
+    getDigitalTwinSystemPrompt(expertName) + dialoguePrompt(dialogueState) + stylePrompt(style) +
     getMemoryPrompt(memories) +
-    getContextPrompt(contextTexts, webResults, graphContext);
+    getContextPrompt(contextTexts, webResults, graphContext) + verificationPrompt;
 
   const messages: ChatMessage[] = [
     { role: "system", content: systemPrompt },
@@ -138,6 +136,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
   assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.timeout(30000),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -155,8 +154,36 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
+  // Buffer provider SSE privately. No unverified bytes reach the caller.
+  const reader = response.body.getReader();
+  const decoder = createSSEDecoder();
+  let draft = "", bytes = 0, malformed = false, completed = false;
+  try {
+    while (true) {
+      const {value, done} = await reader.read();
+      bytes += value?.byteLength || 0;
+      if (bytes > 128000) { malformed = true; await reader.cancel(); break; }
+      for (const data of decoder.push(value, done)) {
+        if (data === "[DONE]") { completed = true; continue; }
+        if (completed) { malformed = true; continue; }
+        try { const event = JSON.parse(data); draft += event.choices?.[0]?.delta?.content || ""; }
+        catch { malformed = true; }
+      }
+      if (done) break;
+    }
+  } catch { malformed = true; }
+  finally { reader.releaseLock(); }
+  const verification = verifyPersonResponse(malformed || !completed ? "" : draft, dialogueState, evidenceBundle);
+  const stream = new ReadableStream({ start(controller) {
+    controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:verification.text}}]})}\n\ndata: [DONE]\n\n`));
+    controller.close();
+  }});
   return {
-    stream: response.body,
+    stream,
+    dialogueState,
+    groundedStyle: style,
+    verification,
+
     sources: retrievalResults,
     thinkingSteps,
     evidenceTrace,
