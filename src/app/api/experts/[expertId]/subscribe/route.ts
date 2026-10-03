@@ -1,11 +1,10 @@
-import { changeExistingFree } from "@/lib/payments/free-transition";
+import { changeExistingFree, createFreeSubscription } from "@/lib/payments/free-transition";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { cancelSubscription } from "@/lib/payments/cancel";
 import { PaymentError } from "@/lib/payments/state";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { sendNotificationEmail } from "@/lib/email/send-notification-email";
 
 export async function POST(
   request: NextRequest,
@@ -89,37 +88,7 @@ export async function POST(
         );
       }
 
-      await prisma.expertSubscription.create({
-        data: {
-          subscriberId: session.user.id,
-          expertProfileId: expertProfile.id,
-          status: "ACTIVE",
-          price: 0,
-          tier: "FREE",
-        },
-      });
-
-      await prisma.expertProfile.update({
-        where: { id: expertProfile.id },
-        data: { totalSubscribers: { increment: 1 } },
-      });
-
-      // Notify the expert
-      await prisma.notification.create({
-        data: {
-          userId: expertId,
-          title: "New Subscriber",
-          message: `${session.user.name || "Someone"} subscribed to you!`,
-          link: `/expert/subscribers`,
-        },
-      });
-
-      // Fire-and-forget email notification
-      sendNotificationEmail({
-        type: "new_subscriber",
-        recipientUserId: expertId,
-        data: { subscriberName: session.user.name || "Someone" },
-      }).catch(() => {});
+      await createFreeSubscription(session.user.id, expertProfile.id, session.user.name || "Someone");
 
       isSubscribed = true;
     }
