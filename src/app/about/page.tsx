@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { Sparkles, Brain, Zap, MessageSquare, GitBranch } from "lucide-react";
 
+import { publicPageMetadata } from "@/lib/public-metadata";
+export function generateMetadata() { return publicPageMetadata("/about", "ExpertHub — About AI Digital Twins"); }
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="public-launch min-h-screen bg-background">
+      <a className="public-skip-link" href="#main-content">Skip to content</a>
       {/* ==================== NAVIGATION ==================== */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -23,6 +27,7 @@ export default function AboutPage() {
         </div>
       </header>
 
+      <main id="main-content" tabIndex={-1}>
       {/* ==================== HERO ==================== */}
       <section className="relative overflow-hidden bg-noise">
         <div className="animate-float absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-indigo-500/20 blur-[120px]" />
@@ -39,9 +44,7 @@ export default function AboutPage() {
             About <span className="text-gradient">ExpertHub</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            We are building the bridge between world-class experts and curious
-            learners through AI Digital Twins — faithful replicas of real people
-            who share knowledge around the clock.
+            ExpertHub connects learners with expert content and AI Digital Twins — AI representations, not the real people. Generated answers can be wrong or differ from an expert’s current views.
           </p>
         </div>
       </section>
@@ -56,13 +59,7 @@ export default function AboutPage() {
             Our Mission
           </h2>
           <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Expertise should not be locked behind geography, schedules, or
-            prohibitive consulting fees. ExpertHub makes deep, domain-specific
-            knowledge accessible to anyone, anywhere, at any time. Every expert
-            who joins the platform creates an AI Digital Twin — a conversational
-            replica trained on their unique insights, writing, and thinking
-            style — so learners can tap into real expertise without waiting for
-            office hours.
+            Our goal is to make expert-provided knowledge easier to explore. A Digital Twin uses an expert’s content and settings as context for AI-generated conversations. It cannot reproduce a person’s entire knowledge, private memories or judgment.
           </p>
         </div>
       </section>
@@ -79,7 +76,7 @@ export default function AboutPage() {
             </h2>
           </div>
 
-          <div className="mt-14 grid gap-8 sm:grid-cols-3">
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
             {/* Subscribe */}
             <div className="gradient-border group relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
               <div className="relative rounded-2xl bg-card p-8 text-center">
@@ -89,7 +86,7 @@ export default function AboutPage() {
                 <span className="text-gradient text-3xl font-bold opacity-30">01</span>
                 <h3 className="mt-1 text-xl font-semibold">Subscribe</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Browse our catalog of verified experts and subscribe to the
+                  Browse expert profiles, review their available plans and subscribe to the
                   ones whose knowledge matters most to you.
                 </p>
               </div>
@@ -105,8 +102,7 @@ export default function AboutPage() {
                 <h3 className="mt-1 text-xl font-semibold">Ask</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Chat with their AI Digital Twin in natural language. Ask
-                  follow-ups, dive deeper, and get cited sources — all in
-                  real time.
+                  follow-ups and check the available source references. A citation helps you verify an answer; it does not guarantee correctness.
                 </p>
               </div>
             </div>
@@ -145,17 +141,15 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mt-14 grid gap-8 sm:grid-cols-3">
-            {/* Personality Replication */}
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
+            {/* Expert voice and settings */}
             <div className="glass relative overflow-hidden rounded-2xl border border-border/30 p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-500/10">
                 <Brain className="h-6 w-6 text-indigo-500" />
               </div>
-              <h3 className="text-lg font-semibold">Personality Replication</h3>
+              <h3 className="text-lg font-semibold">Expert voice and settings</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Our analysis engine captures an expert&apos;s tone, vocabulary,
-                reasoning patterns, and communication style so the Digital Twin
-                genuinely sounds like them — not like a generic assistant.
+                Expert content and settings help guide the AI’s tone and responses. New answers are AI-generated and are not statements personally reviewed by the expert.
               </p>
             </div>
 
@@ -166,9 +160,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-lg font-semibold">Long-term Memory</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Every conversation builds on the last. The Twin remembers your
-                goals, prior questions, and learning trajectory, delivering
-                increasingly relevant answers over time.
+                Conversation context and stored memories can help personalize responses. Recall can be incomplete or incorrect; do not rely on the AI to remember every detail.
               </p>
             </div>
 
@@ -179,9 +171,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-lg font-semibold">Knowledge Graph</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Expert content is structured into an interconnected knowledge
-                graph. This means answers cite real sources and surface related
-                concepts you might not have thought to ask about.
+                Retrieval can use indexed expert content and related concepts to inform answers. Coverage depends on the content provided and processed; check sources when available.
               </p>
             </div>
           </div>
@@ -196,15 +186,14 @@ export default function AboutPage() {
             Ready to Learn from the Best?
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Join thousands of learners already chatting with expert Digital
-            Twins.
+            Explore expert profiles and ask questions with these AI limits in mind.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/login"
               className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-8 text-base font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110"
             >
-              Get Started Free
+              Get Started
             </Link>
             <Link
               href="/pricing"
@@ -216,6 +205,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      </main>
       {/* ==================== FOOTER ==================== */}
       <footer className="border-t border-border/50 bg-muted/30 py-8">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">

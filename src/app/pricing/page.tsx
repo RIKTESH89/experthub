@@ -1,84 +1,21 @@
 import Link from "next/link";
 import { CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 
-const pricingTiers = [
-  {
-    name: "Free Tier",
-    price: "Free",
-    description: "Follow experts and try their Digital Twin",
-    features: [
-      "Browse expert profiles",
-      "Read all public posts",
-      "Limited Digital Twin questions/month",
-      "Bookmarks & collections",
-      "Basic search",
-    ],
-    cta: "Get Started",
-    popular: false,
-  },
-  {
-    name: "Premium Tier",
-    price: "Varies",
-    period: "/mo per expert",
-    description: "Each expert sets their own pricing",
-    features: [
-      "Unlimited Digital Twin chats",
-      "All posts including exclusive content",
-      "Priority responses with source citations",
-      "Long-term memory across sessions",
-      "Bookmarks & collections",
-    ],
-    cta: "Start Learning",
-    popular: true,
-  },
-  {
-    name: "For Experts",
-    price: "Free",
-    description: "Monetize your expertise with AI",
-    features: [
-      "Create your AI Digital Twin",
-      "Build & manage knowledge base",
-      "Set your own pricing tiers",
-      "Analytics & subscriber management",
-      "Personality analysis",
-      "Embeddable chat widget",
-    ],
-    cta: "Apply as Expert",
-    popular: false,
-  },
-];
+import { publicPricingTiers as pricingTiers } from "@/lib/public-launch-copy";
+import { publicPageMetadata } from "@/lib/public-metadata";
+export function generateMetadata() { return publicPageMetadata("/pricing", "ExpertHub — Access and pricing"); }
 
 const faqs = [
-  {
-    question: "How does the Digital Twin actually work?",
-    answer:
-      "When an expert joins ExpertHub, our system analyzes their writing, posts, and provided content to build an AI model that mirrors their tone, reasoning style, and domain knowledge. Subscribers then chat with this model just like messaging the expert directly.",
-  },
-  {
-    question: "Can I subscribe to multiple experts?",
-    answer:
-      "Yes. Each expert sets their own subscription price. You can subscribe to as many experts as you like, and each subscription is billed independently on a monthly basis.",
-  },
-  {
-    question: "What do I get on the Free tier?",
-    answer:
-      "The Free tier lets you browse expert profiles, read all public posts, and ask a limited number of questions to any expert's Digital Twin each month. Upgrade to Premium for unlimited chats and exclusive content.",
-  },
-  {
-    question: "How do experts get paid?",
-    answer:
-      "Experts receive the majority of their subscription revenue. Payouts are processed monthly. The analytics dashboard gives full visibility into subscriber counts, engagement, and earnings.",
-  },
-  {
-    question: "What happens to my chat history if I cancel?",
-    answer:
-      "Your conversation history and bookmarks remain accessible in read-only mode. If you resubscribe, full access resumes and the Digital Twin retains the long-term memory from your previous sessions.",
-  },
+  { question: "Am I speaking to the expert?", answer: "No. A Digital Twin is an AI representation informed by expert content and settings. It generates new answers that can be inaccurate or differ from the expert’s current views. Check available sources and contact the expert directly when their own judgment matters." },
+  { question: "What can I use for free?", answer: "You can explore public content and available free expert plans. Without an active subscription, trial chat uses an expert-specific question allowance. That allowance is cumulative; it is not a monthly refill. Review the expert’s profile for the current allowance and available plans." },
+  { question: "How does paid access work?", answer: "Each expert configures their paid plan price. Review the amount and billing details shown at checkout before paying. Paid access is confirmed after the payment service verifies the subscription; the checkout callback alone is not confirmation." },
+  { question: "What should I check before subscribing?", answer: "Check the expert’s current plan, price and available content. Cancellation, refund and data retention terms need approved published policies; this page does not promise a refund, payout schedule or access to chat history after cancellation." },
 ];
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="public-launch min-h-screen bg-background">
+      <a className="public-skip-link" href="#main-content">Skip to content</a>
       {/* ==================== NAVIGATION ==================== */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -105,6 +42,7 @@ export default function PricingPage() {
         </div>
       </header>
 
+      <main id="main-content" tabIndex={-1}>
       {/* ==================== HERO ==================== */}
       <section className="relative overflow-hidden bg-noise">
         <div className="animate-float absolute -left-32 -top-32 h-[500px] w-[500px] rounded-full bg-indigo-500/20 blur-[120px]" />
@@ -121,8 +59,7 @@ export default function PricingPage() {
             Simple, <span className="text-gradient">Transparent</span> Pricing
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Start for free. Subscribe to the experts you care about. No hidden
-            fees, cancel anytime.
+            Explore available free plans. Review each expert’s paid plan and checkout details before subscribing.
           </p>
         </div>
       </section>
@@ -132,20 +69,20 @@ export default function PricingPage() {
         <div className="bg-grid-pattern absolute inset-0 opacity-40" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-8 lg:grid-cols-3">
             {pricingTiers.map((tier) => (
               <div
                 key={tier.name}
                 className={`relative overflow-hidden rounded-2xl bg-card p-8 transition-all duration-300 hover:scale-[1.02] ${
                   tier.popular
-                    ? "gradient-border animate-pulse-glow z-10 scale-[1.03] sm:scale-105"
+                    ? "gradient-border animate-pulse-glow z-10 "
                     : "border border-border/50 shadow-warm hover:shadow-warm-md"
                 }`}
               >
                 {tier.popular && (
                   <div className="absolute -top-px left-1/2 -translate-x-1/2">
                     <div className="rounded-b-lg bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-1 text-xs font-medium text-white">
-                      Most Popular
+                      Paid access
                     </div>
                   </div>
                 )}
@@ -175,7 +112,7 @@ export default function PricingPage() {
                 </ul>
 
                 <Link
-                  href="/login"
+                  href={tier.href ?? "/login"}
                   className={`mt-8 flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all ${
                     tier.popular
                       ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:brightness-110"
@@ -228,20 +165,21 @@ export default function PricingPage() {
             Ready to Get Started?
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Create your free account and start exploring expert knowledge today.
+            Sign in to explore expert profiles, available plans and AI conversations.
           </p>
           <div className="mt-8">
             <Link
               href="/login"
               className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-8 text-base font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110"
             >
-              Sign Up Free
+              Get Started
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
       </section>
 
+      </main>
       {/* ==================== FOOTER ==================== */}
       <footer className="border-t border-border/50 bg-muted/30 py-8">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">

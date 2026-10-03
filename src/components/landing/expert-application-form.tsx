@@ -49,13 +49,13 @@ export function ExpertApplicationForm() {
 
   if (isSubmitted) {
     return (
-      <div className="flex flex-col items-center py-8 text-center">
+      <div role="status" className="flex flex-col items-center py-8 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10">
           <CheckCircle className="h-7 w-7 text-green-600" />
         </div>
         <h3 className="mt-4 text-lg font-semibold">Application Submitted!</h3>
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-          We&apos;ll review your application and get back to you via email. This usually takes 1-2 business days.
+          We&apos;ll review your application and get back to you via email. No review timeframe is guaranteed.
         </p>
       </div>
     );
@@ -71,6 +71,7 @@ export function ExpertApplicationForm() {
             placeholder="Your name"
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            required
             disabled={isSubmitting}
           />
         </div>
@@ -82,6 +83,7 @@ export function ExpertApplicationForm() {
             placeholder="you@gmail.com"
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            required
             disabled={isSubmitting}
           />
         </div>
@@ -93,6 +95,7 @@ export function ExpertApplicationForm() {
           placeholder="e.g., Machine Learning, Finance, Health & Wellness"
           value={form.specialty}
           onChange={(e) => setForm((f) => ({ ...f, specialty: e.target.value }))}
+          required
           disabled={isSubmitting}
         />
       </div>
@@ -103,6 +106,7 @@ export function ExpertApplicationForm() {
           placeholder="Tell us about your expertise, what you'd share, and why ExpertHub is right for you..."
           value={form.reason}
           onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))}
+          required
           disabled={isSubmitting}
           rows={3}
         />

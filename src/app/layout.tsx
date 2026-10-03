@@ -7,6 +7,7 @@ import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import * as Sentry from "@sentry/nextjs";
 import "./globals.css";
+import "./public-launch.css";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -18,7 +19,8 @@ export function generateMetadata(): Metadata {
   return {
     title: "ExpertHub - Connect with Expert Digital Twins",
     description:
-      "Connect with experts, access their digital twins powered by AI, and learn from the best minds in any field.",
+      "Explore expert-provided content and AI-generated conversations. Digital Twins are AI representations and can be inaccurate.",
+    robots: { index: false, follow: false },
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
@@ -45,8 +47,6 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
