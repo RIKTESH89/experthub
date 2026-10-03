@@ -92,8 +92,7 @@ async function transition(tx: Prisma.TransactionClient, sub: ExpertSubscription,
   if (notification) await enqueueBilling(tx, notificationId, { type: "new_subscriber", ...notification });
   return { status, outcome };
 }
-export async function applyPaymentSnapshot(input: PaymentSnapshot) {
-  return prisma.$transaction(async tx => {
+export async function applyPaymentSnapshotInTransaction(tx: Prisma.TransactionClient, input: PaymentSnapshot) {
     const existingReceipt = await tx.paymentEvent.findUnique({ where: { id: input.receipt.id } });
     if (existingReceipt) {
       if (existingReceipt.payloadHash !== input.receipt.payloadHash) throw new PaymentError("Event ID payload mismatch", 409);
@@ -113,7 +112,9 @@ export async function applyPaymentSnapshot(input: PaymentSnapshot) {
       periodStart: input.currentStart, periodEnd: input.currentEnd,
     } });
     return result;
-  });
+}
+export async function applyPaymentSnapshot(input: PaymentSnapshot) {
+  return prisma.$transaction(tx => applyPaymentSnapshotInTransaction(tx, input));
 }
 export async function completeCancellation(id: string, subscriberId: string, providerId: string | null) {
   return prisma.$transaction(async tx => {

@@ -48,25 +48,27 @@ export function receiver(db:Database,secret:string,wake:()=>Promise<void>=async(
   void Promise.resolve().then(wake).catch(()=>{});return new Response(null,{status:200});
  };
 }
-export async function drainOne(db:Database,apply:(s:PaymentSnapshot)=>Promise<unknown>,maxAttempts=8) {
+export async function drainOne(db:WorkerDatabase,apply:Apply,maxAttempts=8,operation:Operation={deadline:Date.now()+45000,signal:new AbortController().signal}){
  if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>32)throw new Error('Invalid attempt limit');
- // Expired final leases are dead-lettered even when a worker crashed on its last attempt.
- await db.query("UPDATE staging_webhook_inbox SET state='dead',lease_token=NULL,lease_until=NULL,last_error='lease expired at attempt limit' WHERE state='leased' AND lease_until<=now() AND attempts >= $1",[maxAttempts]);
+ await db.query("UPDATE staging_webhook_inbox SET state='dead',lease_token=NULL,lease_until=NULL,last_error='lease expired at attempt limit' WHERE state='leased' AND lease_until<=clock_timestamp() AND attempts >= $1",[maxAttempts],operation);
  const token=randomUUID();
- const {rows}=await db.query(`WITH candidate AS (SELECT digest FROM staging_webhook_inbox WHERE attempts<$1 AND ((state='ready' AND next_attempt<=now()) OR (state='leased' AND lease_until<=now())) ORDER BY received_at FOR UPDATE SKIP LOCKED LIMIT 1) UPDATE staging_webhook_inbox i SET state='leased',attempts=attempts+1,lease_token=$2::uuid,lease_until=now()+interval '2 minutes' FROM candidate c WHERE i.digest=c.digest RETURNING i.*`,[maxAttempts,token]);
- if(!rows.length)return false;
- const row=rows[0];
- try {
-  if(digestOf(Buffer.from(row.raw_body))!==row.digest)throw new Error('Inbox digest mismatch');
-  const {snapshot}=await import('./snapshot');
-  const input=snapshot(Buffer.from(row.raw_body),row.digest);if(input)await apply(input);
-  await db.query("UPDATE staging_webhook_inbox SET state='done',lease_token=NULL,lease_until=NULL,last_error=NULL WHERE digest=$1 AND lease_token=$2::uuid AND lease_until>now()",[row.digest,token]);
- } catch {
-  await db.query("UPDATE staging_webhook_inbox SET state=CASE WHEN attempts >= $3 THEN 'dead' ELSE 'ready' END,lease_token=NULL,lease_until=NULL,next_attempt=now()+make_interval(secs=>LEAST(1800,POWER(2,attempts)::integer)),last_error='processing failed' WHERE digest=$1 AND lease_token=$2::uuid AND lease_until>now()",[row.digest,token,maxAttempts]);
+ const {rows}=await db.query(`WITH candidate AS (SELECT digest FROM staging_webhook_inbox WHERE attempts<$1 AND ((state='ready' AND next_attempt<=clock_timestamp()) OR (state='leased' AND lease_until<=clock_timestamp())) ORDER BY received_at FOR UPDATE SKIP LOCKED LIMIT 1) UPDATE staging_webhook_inbox i SET state='leased',attempts=attempts+1,lease_token=$2::uuid,lease_until=clock_timestamp()+interval '2 minutes' FROM candidate c WHERE i.digest=c.digest RETURNING i.*`,[maxAttempts,token],operation);
+ if(!rows.length)return false;const row=rows[0];
+ try{
+  await db.transaction(operation,async tx=>{
+   // Lock order: inbox → subscription → expert. Existing domain paths never lock inbox.
+   const lease=await tx.query("SELECT digest FROM staging_webhook_inbox WHERE digest=$1 AND state='leased' AND lease_token=$2::uuid AND lease_until>clock_timestamp() FOR UPDATE",[row.digest,token]);
+   if(!lease.rows.length)throw new Error('Lease lost');
+   if(digestOf(Buffer.from(row.raw_body))!==row.digest)throw new Error('Inbox digest mismatch');
+   const {snapshot}=await import('./snapshot');const input=snapshot(Buffer.from(row.raw_body),row.digest);if(input)await apply(tx.raw,input);
+   const done=await tx.query("UPDATE staging_webhook_inbox SET state='done',lease_token=NULL,lease_until=NULL,last_error=NULL WHERE digest=$1 AND state='leased' AND lease_token=$2::uuid AND lease_until>clock_timestamp() RETURNING digest",[row.digest,token]);
+   if(!done.rows.length)throw new Error('Lease expired before commit');
+  });
+ }catch(error){
+  // Deadline/abort is an unknown outcome. Never retry inline; receiver/sweep recovery is durable.
+  if(operation.signal.aborted||Date.now()>=operation.deadline)throw error;
+  await db.query("UPDATE staging_webhook_inbox SET state=CASE WHEN attempts >= $3 THEN 'dead' ELSE 'ready' END,lease_token=NULL,lease_until=NULL,next_attempt=clock_timestamp()+make_interval(secs=>LEAST(1800,POWER(2,attempts)::integer)),last_error='processing failed' WHERE digest=$1 AND state='leased' AND lease_token=$2::uuid AND lease_until>clock_timestamp()",[row.digest,token,maxAttempts],operation);
  }
  return true;
 }
-export function workerAuthorization(header:string|null,secret:string) {
- if(secret.length<32)throw new Error('Worker secret unavailable');
- return timingSafeEqual(createHash('sha256').update(header||'').digest(),createHash('sha256').update(`Bearer ${secret}`).digest());
-}
+export function workerAuthorization(header:string|null,secret:string){if(secret.length<32)throw new Error('Worker secret unavailable');return timingSafeEqual(createHash('sha256').update(header||'').digest(),createHash('sha256').update(`Bearer ${secret}`).digest());}
