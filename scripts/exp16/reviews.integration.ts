@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { submitCorrection, decideCorrection, type Review } from "@/lib/corrections/service";
-import { releasePersona, currentSourcePins } from "@/lib/persona/store";
+import { releasePersona, currentSourcePins, previewPersonaRollback } from "@/lib/persona/store";
 import { publishEvidence } from "@/lib/graph/evidence-store";
 import { manifestHash, scopeForRelease, canonical } from "@/lib/persona/manifest";
 // Providers are prohibited. Planned IDs alone remain the real deterministic implementation.
@@ -150,4 +150,14 @@ test("rollback cannot restore a disabled RAG permission",async()=>{
  await prisma.expertProfile.update({where:{id:expertProfileId},data:{ragEnabled:false}});
  await expect(releasePersona({...base,operationKey:key(),expectedHead:a.id,rollbackTo:a.id})).rejects.toMatchObject({status:409});
  expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:expertProfileId}})).ragEnabled).toBe(false);
+});
+
+test.each([true,false])("rollback preview and confirm consistently reject changed RAG permission from %s",async initial=>{
+ await prisma.expertProfile.update({where:{id:expertProfileId},data:{ragEnabled:initial}});
+ const a=await releasePersona({...base,operationKey:key(),expectedHead:null});
+ await prisma.expertProfile.update({where:{id:expertProfileId},data:{ragEnabled:!initial}});
+ const input={...base,expectedHead:a.id,rollbackTo:a.id};
+ expect(await previewPersonaRollback(input)).toMatchObject({allowed:false});
+ await expect(releasePersona({...input,operationKey:key()})).rejects.toMatchObject({status:409});
+ expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:expertProfileId}})).ragEnabled).toBe(!initial);
 });

@@ -77,7 +77,7 @@ export async function previewPersonaRollback(input:{expertProfileId:string;actor
   const fields=(Object.keys(target.manifest.config) as (keyof PersonaConfig)[]).filter(field=>manifestHash(target.manifest.config[field])!==manifestHash(expert[field]));
   const reason=currentHead!==input.expectedHead?"Release head changed. Refresh before previewing again.":
    target.manifestHash!==manifestHash(target.manifest)?"The target manifest failed its integrity check.":
-   !expert.ragEnabled && target.manifest.config.ragEnabled?"RAG access is currently disabled. Rollback cannot re-enable disabled access.":
+   expert.ragEnabled !== target.manifest.config.ragEnabled?"RAG permission changed. Rollback cannot change current access.":
    count!==pins.length || !sourcePinsEqual(target.manifest.sources,pins)?"Evidence has changed, been removed, restricted, or still needs recomputation. Rollback is blocked.":null;
   return {allowed:reason===null,reason,currentHead,targetId:target.id,changedFields:fields,targetConfig:target.manifest.config,sourceCount:target.manifest.sources.length};
  });

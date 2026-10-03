@@ -1,0 +1,26 @@
+{
+  "final-jest": {
+    "numTotalTests": 1063,
+    "numPassedTests": 1063,
+    "numFailedTests": 0,
+    "numTotalTestSuites": 66,
+    "numFailedTestSuites": 0,
+    "success": true
+  },
+  "native14": {
+    "numTotalTests": 10,
+    "numPassedTests": 10,
+    "numFailedTests": 0,
+    "numTotalTestSuites": 1,
+    "numFailedTestSuites": 0,
+    "success": true
+  },
+  "native16-final": {
+    "numTotalTests": 20,
+    "numPassedTests": 20,
+    "numFailedTests": 0,
+    "numTotalTestSuites": 1,
+    "numFailedTestSuites": 0,
+    "success": true
+  }
+}
