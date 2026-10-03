@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "tablesCompared": 46,
+  "interruptionRecoveryMs": 623.9594580000003,
+  "backupRestoreAndVerificationMs": 410.1712499999999,
+  "postBackupWritesLost": 1,
+  "externalSpendINR": 0,
+  "cluster": "/var/folders/ft/53mtqdys19sgzwlht8kvvg8r0000gn/T/exp28-29-OKI8VB",
+  "scope": "Disposable synthetic SQL snapshot; excludes provider vectors, uploads, secrets, hosted recovery and application deployment rollback",
+  "planningTargets": {
+    "recoveryHours": 24,
+    "recoverableDataLossHours": 24,
+    "proved": false
+  }
+}

@@ -1,0 +1,3 @@
+# Keep verbose per-command synthetic diagnostics locally.
+*.log
+!jest.log
