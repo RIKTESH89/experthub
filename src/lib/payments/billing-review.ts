@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual, createHash } from 'crypto';
-import { assertBillingEnabled, BillingRuntimeError } from './billing-runtime';
+import { assertBillingEnabled, BillingRuntimeError, billingTimeout } from './billing-runtime';
 import { planReconciliation, reconcile, type ReconciliationPlan, type LegacyRow, type PaidEvidence, type ReconciliationStore } from './reconciliation';
 import { recoverProvisioning, type ProvisioningStore } from './provisioning';
 import type { RecoveryIntent } from './provider-lookup';
@@ -26,16 +26,38 @@ function unpack(token:string,key:string,actorId:string,now:Date):{proposal:Revie
  if(!['reconcile','recover'].includes(proposal.kind)||digest(proposal)!==parsed.digest)throw new BillingRuntimeError('Review input changed',409);
  return {proposal,digest:parsed.digest};
 }
-export async function reviewBilling(input:unknown,origin:string|null,deps:BillingReviewDependencies) {
+export async function authorizeBillingReview(origin:string|null,deps:BillingReviewDependencies) {
  const env=deps.env||process.env;assertBillingEnabled('BILLING_REVIEW_ENABLED',env);const key=secret(env);
  let canonical:string;try {const url=new URL(env.NEXT_PUBLIC_APP_URL||'');if(url.username||url.password||(url.protocol!=='https:'&&!(env.NODE_ENV!=='production'&&url.protocol==='http:'&&url.hostname==='localhost')))throw Error();canonical=url.origin;}catch{throw new BillingRuntimeError('Review origin unavailable');}
  if(origin!==canonical)throw new BillingRuntimeError('Review origin rejected',403);
  const actor=await deps.actor();if(!actor)throw new BillingRuntimeError('Unauthorized',401);if(actor.role!=='ADMIN')throw new BillingRuntimeError('Administrator required',403);
+ return {env,key,actor};
+}
+export async function reviewBilling(input:unknown,origin:string|null,deps:BillingReviewDependencies) {
+ const {key,actor}=await authorizeBillingReview(origin,deps);
  if(!input||typeof input!=='object'||Array.isArray(input))throw new BillingRuntimeError('Invalid review request',400);
  const body=input as Record<string,unknown>,now=deps.now?.()||new Date();
  if(body.action==='apply') {
   if(typeof body.token!=='string'||typeof body.reviewedDigest!=='string')throw new BillingRuntimeError('Explicit reviewed token and digest required',400);
   const signed=unpack(body.token,key,actor.id,now);if(body.reviewedDigest!==signed.digest)throw new BillingRuntimeError('Reviewed digest mismatch',409);
+  // A refund or provider-side cancellation can leave local billingVersion unchanged.
+  // Re-fetch immediately before applying; reviewed local CAS remains necessary as well.
+  let fresh:ReviewProposal;
+  try {
+   if(signed.proposal.kind==='reconcile') {
+    const plan=signed.proposal.plan;
+    const evidence=await billingTimeout(()=>deps.lookup.paidPeriod(plan.evidence.providerId,plan.evidence.paymentId),20_000);
+    fresh={kind:'reconcile',plan:planReconciliation(plan.row,evidence)};
+   } else {
+    const intent=signed.proposal.intent;
+    const candidate=await billingTimeout(()=>deps.lookup.recover(intent),20_000);
+    if(candidate.outcome!=='candidate'||!candidate.evidence)throw Error('No verified candidate');
+    fresh={kind:'recover',intent,evidence:candidate.evidence};
+   }
+  }catch {throw new BillingRuntimeError('Provider evidence changed or unavailable; new review required',409);}
+  if(digest(fresh)!==signed.digest)throw new BillingRuntimeError('Provider evidence changed; new review required',409);
+  // Recheck approval lifetime after any delayed lookup, before the local transaction.
+  unpack(body.token,key,actor.id,deps.now?.()||new Date());
   if(signed.proposal.kind==='reconcile')return reconcile(signed.proposal.plan,deps.reconciliation(actor.id,signed.digest),{apply:true,reviewedDigest:signed.proposal.plan.digest});
   await recoverProvisioning(signed.proposal.intent,{...signed.proposal.evidence,reviewed:true},deps.provisioning(actor.id,signed.digest));return {outcome:'attached'};
  }

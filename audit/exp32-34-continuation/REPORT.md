@@ -50,3 +50,19 @@ Reference checks (official documentation only):
 - Razorpay subscription APIs: https://razorpay.com/docs/api/payments/subscriptions/
 - Razorpay invoice billing_start/billing_end/subscription/payment relationships: https://razorpay.com/docs/api/payments/invoices/entity/
 Installed SDK definitions corroborate exact send options and read methods. No live SDK/provider endpoint was called.
+
+## Independent review repairs: fresh provider evidence and bounded body reader
+
+Preserved commits `9f9f8ad` and `3478cf7`. Independent review reproduced a provider refund during the ten-minute approval window that did not advance local billingVersion: cached evidence still applied. It also found ADMIN authorization and byte-cap checks occurred after whole-body allocation.
+
+Before repair: **5 failures, 54 passes, 59 tests**, captured in `review-repairs-before.log/json`. Copied the independent refund regression into this lane. Additional failing tests reproduced revoked/absent ADMIN body consumption, five 20KB chunks consumed before rejection, and aborted body read hanging until the test timeout.
+
+Repairs:
+
+- Apply re-fetches provider evidence immediately after signature/digest validation and before entering any mutation store. Both reconciliation and recovery require the fresh proposal digest to match the signed reviewed proposal. Refunded/uncaptured payment, changed invoice interval, different recovery identity, unavailable/disabled lookup and timeout all return 409 requiring new review without mutation. Fresh lookup has a 20-second outer bound in addition to existing five-second per-read provider bounds; no inline retries or creation. Approval expiry is checked again after lookup. Existing local subscription/intent CAS and transactional persisted ADMIN checks remain intact.
+- Admin route authorizes enabled state, canonical Origin, current session and persisted ADMIN/active/ban state **before requesting a body reader**. Shared service repeats authorization after body parsing, so revocation while streaming is also checked. No role grants or schema changes.
+- New streaming reader counts actual UTF-8 bytes, keeps collected payload at or below 32KiB, rejects advertised oversized bodies unread, cancels as soon as a chunk crosses the cap, rejects malformed/empty JSON, and uses a five-second body-read budget. Request abort produces 400; read timeout 408; oversize 413. Cancellation rejection is observed without blocking on hostile stream sources; listener/timer/reader lock cleanup occurs on all exits. No body text or provider error contents logged.
+
+After repair: **68/68 tests across six suites**. Adversarial coverage includes changed dates, uncaptured/refunded evidence, lookup failure/hang, changed recovery ID, revoked/unauthenticated actor before reading, chunked and multibyte oversized bodies, declared oversized body, abort and slow body timeout. Native PostgreSQL fixture verifies changed/refunded/unavailable evidence leaves status PENDING, paidPeriodStart null, billingVersion 0, and reconciliation/outbox tables empty. Existing four-way apply/CAS races still pass using stable synthetic evidence (fixture no longer fabricates new provider dates on each call). TypeScript, schema validation, focused repair lint and diff checks pass. Isolated 55439 cluster stopped.
+
+Fresh revalidation narrows the provider/local race; it cannot make provider and local database updates one atomic transaction. Evidence can change after the last remote read, and automated activation remains off. No real provider calls, integration, publication, hosted settings, credentials, schema changes or full build occurred.

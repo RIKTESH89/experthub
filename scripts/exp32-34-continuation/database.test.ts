@@ -47,7 +47,8 @@ test('recipient opt-out and changed address stop queued emails',async()=>{
  const send=jest.fn(async()=>({data:{id:'no-send'}}));await runBillingWorker(authorization,{store:billingOutboxStore,preparation:billingEmailPreparationStore,env,makeTransport:()=>({send})});expect(send).not.toHaveBeenCalled();expect((await row()).state).toBe('DELIVERED');
 });
 function reviewDeps():BillingReviewDependencies {
- return {env,actor:async()=>{const user=await prisma.user.findUnique({where:{id:'admin'}});return user?.isActive&&!user.isBanned?{id:user.id,role:user.role}:null;},loadRow:async()=>({id:'sub',version:0,providerId:'remote',cancelled:false}),loadIntent:async id=>(await prisma.$queryRaw<RecoveryIntent[]>`SELECT * FROM "BillingProvisioning" WHERE "id"=${id}`)[0],lookup:{paidPeriod:async()=>({providerId:'remote',paymentId:'payment',captured:true,start:new Date(Date.now()-1000),end:new Date(Date.now()+60000)}),recover:async intent=>({outcome:'candidate',evidence:{intentId:intent.id,providerId:'remote'}})},reconciliation:reviewedReconciliationStore,provisioning:reviewedProvisioningStore};
+ const evidence={providerId:"remote",paymentId:"payment",captured:true,start:new Date(Date.now()-1000),end:new Date(Date.now()+60000)};
+ return {env,actor:async()=>{const user=await prisma.user.findUnique({where:{id:'admin'}});return user?.isActive&&!user.isBanned?{id:user.id,role:user.role}:null;},loadRow:async()=>({id:'sub',version:0,providerId:'remote',cancelled:false}),loadIntent:async id=>(await prisma.$queryRaw<RecoveryIntent[]>`SELECT * FROM "BillingProvisioning" WHERE "id"=${id}`)[0],lookup:{paidPeriod:async()=>({...evidence}),recover:async intent=>({outcome:'candidate',evidence:{intentId:intent.id,providerId:'remote'}})},reconciliation:reviewedReconciliationStore,provisioning:reviewedProvisioningStore};
 }
 test('reviewed reconciliation commit records actor and digest; concurrent or stale input cannot apply',async()=>{
  await prisma.expertSubscription.create({data:{id:'sub',subscriberId:'visitor',expertProfileId:'expert',tier:'PREMIUM',price:10,status:'PENDING',razorpaySubscriptionId:'remote'}});
@@ -106,4 +107,13 @@ test('worker handler method path and unauthenticated access variants fail before
   await prisma.$executeRaw`DELETE FROM "BillingOutbox" WHERE "id"='notification'`;
   const valid=await workerRoute(request('/api/internal/billing/worker','POST',authorization));expect(valid.status).toBe(200);expect(await valid.json()).toEqual({processed:0});
  }finally {for(const key of Object.keys(env))if(saved[key]===undefined)delete process.env[key];else process.env[key]=saved[key];}
+});
+test('fresh changed/refunded/unavailable provider evidence cannot mutate native legacy row or audit',async()=>{
+ await prisma.expertSubscription.create({data:{id:'sub',subscriberId:'visitor',expertProfileId:'expert',tier:'PREMIUM',price:10,status:'PENDING',razorpaySubscriptionId:'remote'}});
+ const deps=reviewDeps();const initial=await deps.lookup.paidPeriod('remote','payment');let change='none';
+ deps.lookup.paidPeriod=async()=>{if(change==='unavailable'||change==='refunded')throw Error('synthetic provider evidence unavailable');return change==='period'?{...initial,end:new Date(initial.end.getTime()+1000)}:initial;};
+ const proposal=await reviewBilling({action:'plan',kind:'reconcile',id:'sub',paymentId:'payment'},env.NEXT_PUBLIC_APP_URL!,deps) as any;
+ for(change of ['period','refunded','unavailable'])await expect(reviewBilling({action:'apply',token:proposal.token,reviewedDigest:proposal.reviewedDigest},env.NEXT_PUBLIC_APP_URL!,deps)).rejects.toThrow('new review required');
+ const sub=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(sub.status).toBe('PENDING');expect(sub.paidPeriodStart).toBeNull();expect(await prisma.$queryRaw`SELECT "id" FROM "BillingReconciliation"`).toHaveLength(0);expect(await prisma.$queryRaw`SELECT "id" FROM "BillingOutbox"`).toHaveLength(0);
+ const version=(await prisma.$queryRaw<{billingVersion:number}[]>`SELECT "billingVersion" FROM "ExpertSubscription" WHERE "id"='sub'`)[0];expect(version.billingVersion).toBe(0);
 });
