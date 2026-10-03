@@ -1,3 +1,5 @@
+const revalidate=jest.fn();
+jest.mock("@/lib/ai/dialogue/revalidate",()=>({revalidateDialogueEvidence:revalidate}));
 import prisma,{resetAllMocks} from "../mocks/prisma";
 const retrieve=jest.fn();const memories=jest.fn();const graph=jest.fn();
 jest.mock("@/lib/prisma",()=>({__esModule:true,default:prisma}));
@@ -6,6 +8,7 @@ jest.mock("@/lib/ai/memory-manager",()=>({getMemories:memories}));
 jest.mock("@/lib/graph/graph-retriever",()=>({graphEnhancedRetrieval:graph}));
 import {runChatEngine} from "@/lib/ai/chat-engine";
 beforeEach(()=>{
+ revalidate.mockReset().mockImplementation((_scope:unknown,bundle:unknown)=>Promise.resolve(bundle));
  resetAllMocks();retrieve.mockReset();memories.mockReset();graph.mockReset();prisma.expertProfile.findUnique.mockResolvedValue({id:"ada",userId:"ada-owner",displayName:"Ada",vectorNamespace:"ada-ns",ragEnabled:true,personalityProfile:{tone:"PRIVATE_STYLE_SENTINEL"}});
  prisma.knowledgeItem.findMany.mockResolvedValue([]);prisma.expertSubscription.findUnique.mockResolvedValue(null);retrieve.mockResolvedValue({sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},prompt:"authorized evidence",gaps:[]});memories.mockResolvedValue([]);
  global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.close();}})});
@@ -38,7 +41,7 @@ test("EXP14 bounded bundle is the sole evidence prompt and exposes retrieval gap
  retrieve.mockResolvedValue({sources:[{content:"DUPLICATE_RAW_SENTINEL",score:1,metadata:{expertProfileId:"ada",vectorId:"public"}}],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},prompt:"BOUNDED_BUNDLE_SENTINEL",gaps:["Documented reasons unavailable"]});
  const result=await runChatEngine({expertId:"ada-owner",query:"Should I choose ZephyrDB?",chatHistory:[]});
  const system=JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body).messages[0].content;
- expect(system).toContain("BOUNDED_BUNDLE_SENTINEL");expect(system).toContain("Documented reasons unavailable");expect(system).not.toContain("DUPLICATE_RAW_SENTINEL");expect(result.evidenceBundle.prompt).toBe("BOUNDED_BUNDLE_SENTINEL");
+ expect(system).toContain("BOUNDED_BUNDLE_SENTINEL");expect(system).toContain("Documented reasons unavailable");expect(system).not.toContain("DUPLICATE_RAW_SENTINEL");expect(result.evidenceBundle.sources).toEqual([]);expect(result.evidenceBundle.prompt).not.toContain("BOUNDED_BUNDLE_SENTINEL");
 });
 
 test("EXP17 never streams an unsupported provider claim to the caller", async()=>{
@@ -60,7 +63,7 @@ test("EXP17 malformed SSE fails closed even when a valid claim precedes it",asyn
  const raw='data: malformed\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});
  const result=await runChatEngine({expertId:"ada-owner",query:"view",chatHistory:[]});expect(result.verification.status).toBe("abstained");
 });
-test("EXP15 general discussion category survives chat SSE while unchecked factual prose does not", async()=>{
+test("EXP15 catalogue and unchecked factual prose are unreleased in chat SSE", async()=>{
  retrieve.mockResolvedValue({version:"intent-evidence-v1",plan:{intent:"factual"},sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:"bounded",gaps:[]});
  const run=async(draft:string)=>{
   const raw='data: '+JSON.stringify({choices:[{delta:{content:draft}}]})+'\n\ndata: [DONE]\n\n';
@@ -69,8 +72,16 @@ test("EXP15 general discussion category survives chat SSE while unchecked factua
   return {result, output:await new Response(result.stream).text()};
  };
  const accepted=await run('{"spanIds":[],"segments":[{"category":"general-information","id":"research-design"}]}');
- expect(accepted.result.verification.status).toBe('verified');expect(accepted.output).toContain('not an attributed expert view');expect(accepted.output).toContain('association alone does not establish causation');
+ expect(accepted.result.verification.status).toBe('abstained');expect(accepted.output).not.toContain('association alone does not establish causation');
  // Frozen chat passed through provider prose. This same provider fixture must now fail closed.
  const unchecked=await run('The expert proved that every observational study establishes causation.');
  expect(unchecked.result.verification.status).toBe('abstained');expect(unchecked.output).not.toContain('every observational');
 });
+test("review: abstention has no accepted citations or evidence traces", async()=>{
+ retrieve.mockResolvedValue({version:'intent-evidence-v1',plan:{intent:'factual'},sources:[{content:'Unused claim',score:1,metadata:{expertProfileId:'ada',vectorId:'unused'}}],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:'bounded',gaps:[]});
+ const result=await runChatEngine({expertId:'ada-owner',query:'question',chatHistory:[]});expect(result.verification.status).toBe('abstained');expect(result.sources).toEqual([]);expect(result.evidenceTrace).toEqual([]);
+});
+test('review: source revoked during provider generation cannot release previously selected quote',async()=>{
+ const row={spanId:'s',text:'I prefer OldDB.',authorId:'ada-owner',speakerId:'ada-owner',speakerRole:'author',kind:'explicit',endorsedByOwner:true,chunkIds:['v']};const original={version:'intent-evidence-v1',plan:{intent:'stance'},sources:[{content:row.text,score:1,metadata:{expertProfileId:'ada',vectorId:'v'}}],evidenceTrace:[row],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:'bounded',gaps:[]};retrieve.mockResolvedValue(original);revalidate.mockResolvedValue({...original,sources:[],evidenceTrace:[]});const raw='data: '+JSON.stringify({choices:[{delta:{content:'{"spanIds":["s"]}'}}]})+'\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});const result=await runChatEngine({expertId:'ada-owner',query:'preference',chatHistory:[]});expect(result.verification.status).toBe('abstained');expect(result.sources).toEqual([]);expect(result.evidenceBundle.evidenceTrace).toEqual([]);expect(result.evidenceBundle.prompt).not.toContain('OldDB');
+});
+test('review: release permission failure never returns draft citations',async()=>{revalidate.mockRejectedValue(new Error('authorization failed'));const result=await runChatEngine({expertId:'ada-owner',query:'question',chatHistory:[]});expect(result.verification.status).toBe('abstained');expect(result.sources).toEqual([]);});

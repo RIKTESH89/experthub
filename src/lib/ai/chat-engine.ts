@@ -1,3 +1,5 @@
+import { revalidateDialogueEvidence } from "./dialogue/revalidate";
+import { acceptedEvidence } from "./dialogue/citations";
 import { buildDialogueState, dialoguePrompt, type DialogueState } from "./dialogue/state";
 import { groundedStyle, stylePrompt, type GroundedStyle } from "./dialogue/style";
 import { verifyPersonResponse, verificationPrompt, type VerificationResult } from "./dialogue/verify";
@@ -82,18 +84,10 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
 
   if (retrievalResults.length > 0) {
     thinkingSteps.push(`Found ${retrievalResults.length} relevant sources (re-ranked)`);
-    for (const result of retrievalResults.slice(0, 3)) {
-      const title =
-        (result.metadata?.title as string) ||
-        result.content.slice(0, 60).replace(/\n/g, " ") + "...";
-      thinkingSteps.push(`Considering: "${title}"`);
-    }
   } else {
     thinkingSteps.push("No direct matches found in knowledge base");
   }
 
-  const evidenceTrace = evidenceBundle.evidenceTrace;
-  const temporalTrace = evidenceBundle.temporalTrace;
   const graphContext = [evidenceBundle.prompt, ...evidenceBundle.gaps.map(gap => `Evidence gap: ${gap}`)];
 
   // Step 3: Retrieve subscriber memories
@@ -173,21 +167,35 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEng
     }
   } catch { malformed = true; }
   finally { reader.releaseLock(); }
-  const verification = verifyPersonResponse(malformed || !completed ? "" : draft, dialogueState, evidenceBundle, style);
+  let releaseBundle = evidenceBundle;
+  let releaseAudience: "owner" | "viewer" = scope.isOwner ? "owner" : "viewer";
+  try {
+    const current = await prisma.expertProfile.findUnique({where:{userId:expertId}});
+    if (!current || current.id !== expert.id || current.userId !== expert.userId || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
+    const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
+    releaseAudience = currentScope.isOwner ? "owner" : "viewer";
+    releaseBundle = await revalidateDialogueEvidence(current.ragEnabled === false ? {...currentScope,allowedVectorIds:[]} : currentScope,evidenceBundle);
+  } catch {
+    malformed = true;
+  }
+  const releaseState = buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),releaseBundle);
+  const releaseStyle = groundedStyle(releaseBundle,expert.userId);
+  const verification = verifyPersonResponse(malformed || !completed ? "" : draft,releaseState,releaseBundle,releaseStyle);
+  const {sources,evidenceTrace,temporalTrace} = acceptedEvidence(releaseBundle,verification.acceptedSpanIds,releaseAudience);
   const stream = new ReadableStream({ start(controller) {
     controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:verification.text}}]})}\n\ndata: [DONE]\n\n`));
     controller.close();
   }});
   return {
     stream,
-    dialogueState,
-    groundedStyle: style,
+    dialogueState: releaseState,
+    groundedStyle: releaseStyle,
     verification,
 
-    sources: retrievalResults,
+    sources,
     thinkingSteps,
     evidenceTrace,
     temporalTrace,
-    evidenceBundle,
+    evidenceBundle: {...releaseBundle,sources,evidenceTrace,temporalTrace,prompt:JSON.stringify({evidenceTrace,temporalTrace})},
   };
 }

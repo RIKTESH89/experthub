@@ -1,5 +1,7 @@
 # EXP15 / EXP17 local implementation handoff
 
+Latest status/design: see exp15-exp17-review-repair.md. The finite general-information catalogue described below was removed after independent review; semantic free-form release remains blocked. Earlier sections are retained as implementation history, not current acceptance claims.
+
 Base: d8c4eb3acc2ee8a8595f3bc5bea67da763d48203.
 Checkout: /Users/rikteshs20/Documents/Codex/2026-10-03/task-8/experthub-exp15-exp17.
 Branch: codex/exp15-exp17-local. Independent local clone: ordinary git worktree creation could not write the canonical repository's shared ref metadata. No canonical/integration files were changed. Dependencies are a read-only-use symlink to the existing integration node_modules; no install, full build or client generation.

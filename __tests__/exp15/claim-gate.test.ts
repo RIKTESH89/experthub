@@ -1,0 +1,8 @@
+import { gateStructuredClaims } from '@/lib/ai/dialogue/claim-gate';
+import {verifyPersonResponse} from '@/lib/ai/dialogue/verify';
+import {buildDialogueState} from '@/lib/ai/dialogue/state';
+import type {EvidenceBundle} from '@/lib/retrieval/bundle';
+const bundle={version:'intent-evidence-v1',plan:{intent:'factual'},evidenceTrace:[{spanId:'s'}],sources:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},gaps:[]} as unknown as EvidenceBundle;
+test.each(['general-fact','source-explanation','person-view','application','conversation','high-stakes-advice'] as const)('unreleased semantic category cannot grant itself authority: %s',category=>{const proposal={text:'Unchecked claim',claims:[{start:0,end:15,category,spanIds:['s']}]};expect(gateStructuredClaims(proposal,bundle)).toEqual({decision:'blocked',reason:'semantic-verification-unreleased'});const answer=verifyPersonResponse(JSON.stringify({spanIds:[],proposal}),buildDialogueState('owner','Explain this',[],bundle),bundle);expect(answer.status).toBe('abstained');expect(answer.text).not.toContain('Unchecked claim');});
+test('no annotations does not prove absence of hidden person claims',()=>expect(gateStructuredClaims({text:'The expert is a clinician.',claims:[]},bundle).decision).toBe('blocked'));
+test('missing evidence and malformed offsets stop before semantic evaluation',()=>{expect(gateStructuredClaims({text:'Claim',claims:[{start:0,end:5,category:'person-view',spanIds:[]}]},bundle).reason).toBe('missing-evidence');expect(gateStructuredClaims({text:'Claim',claims:[{start:0,end:99,category:'general-fact',spanIds:[]}]},bundle).reason).toBe('invalid-proposal');});
