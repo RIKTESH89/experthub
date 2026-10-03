@@ -153,18 +153,13 @@ test('inbox→subscription→expert contention skips locked inbox and commits on
  const contender=await drainOne(db,apply);expect(contender).toBe(false);release();await first;expect(await prisma.paymentEvent.count()).toBe(1);
 });
 test('disposable local restricted roles permit receiver insert and worker reducer, deny unrelated writes',async()=>{
- const {PrismaClient}=await import('@prisma/client');
- await prisma.$executeRawUnsafe('CREATE ROLE synthetic_webhook_receiver LOGIN');
+  await prisma.$executeRawUnsafe('CREATE ROLE synthetic_webhook_receiver LOGIN');
  await prisma.$executeRawUnsafe('CREATE ROLE synthetic_webhook_worker LOGIN');
  await prisma.$executeRawUnsafe('REVOKE CREATE ON SCHEMA public FROM PUBLIC');
  await prisma.$executeRawUnsafe('REVOKE TEMPORARY ON DATABASE webhook_local FROM PUBLIC');
- await prisma.$executeRawUnsafe('GRANT USAGE ON SCHEMA public TO synthetic_webhook_receiver,synthetic_webhook_worker');
- await prisma.$executeRawUnsafe('GRANT INSERT(digest,raw_body),SELECT(digest) ON staging_webhook_inbox TO synthetic_webhook_receiver');
- await prisma.$executeRawUnsafe('GRANT SELECT,UPDATE ON staging_webhook_inbox TO synthetic_webhook_worker');
- await prisma.$executeRawUnsafe('GRANT SELECT,UPDATE ON "ExpertSubscription","ExpertProfile" TO synthetic_webhook_worker');
- await prisma.$executeRawUnsafe('GRANT SELECT ON "User" TO synthetic_webhook_worker');
- await prisma.$executeRawUnsafe('GRANT SELECT,INSERT ON "PaymentEvent","Notification" TO synthetic_webhook_worker');
- await prisma.$executeRawUnsafe('GRANT INSERT,SELECT(id) ON "BillingOutbox" TO synthetic_webhook_worker');
+ const fs=await import('node:fs'),path=await import('node:path');
+ const grants=fs.readFileSync(path.join(__dirname,'permission-grants.sql'),'utf8').replace(/:"receiver_role"/g,'"synthetic_webhook_receiver"').replace(/:"worker_role"/g,'"synthetic_webhook_worker"').replace(/:"database_name"/g,'"webhook_local"');
+ for(const statement of grants.split('\n').filter(line=>!line.trim().startsWith('--')).join('\n').split(';').filter(s=>s.trim()))await prisma.$executeRawUnsafe(statement);
  const client=(role:string)=>isolatedClient(`postgresql://${role}@127.0.0.1:55447/webhook_local`);
  const r=client('synthetic_webhook_receiver'),w=client('synthetic_webhook_worker');
  try{
@@ -172,7 +167,7 @@ test('disposable local restricted roles permit receiver insert and worker reduce
   expect((await receiver(database(r),secret)(req(body(),'changed'))).status).toBe(200);
   await expect(r.$queryRawUnsafe('SELECT * FROM "User"')).rejects.toThrow();
   await expect(r.$executeRawUnsafe("UPDATE staging_webhook_inbox SET state='dead'")).rejects.toThrow();
-  await drainOne(database(w),apply);expect(await prisma.paymentEvent.count()).toBe(1);expect((await inbox()).rows[0].state).toBe('done');
+  let applyError:unknown;await drainOne(database(w),async(tx,s)=>{try{return await apply(tx,s);}catch(error){applyError=error;throw error;}});expect(applyError).toBeUndefined();expect(await prisma.paymentEvent.count()).toBe(1);expect((await inbox()).rows[0].state).toBe('done');
   for(const sql of ['DELETE FROM staging_webhook_inbox','DELETE FROM "User"','CREATE TABLE public.synthetic_forbidden(id int)','CREATE TEMP TABLE synthetic_forbidden(id int)','CREATE ROLE synthetic_forbidden','UPDATE "User" SET name=\'forbidden\''])await expect(w.$executeRawUnsafe(sql)).rejects.toThrow();
   const attrs=await w.$queryRawUnsafe<any[]>("SELECT rolsuper,rolcreaterole,rolcreatedb,rolbypassrls FROM pg_roles WHERE rolname=current_user");expect(attrs[0]).toEqual({rolsuper:false,rolcreaterole:false,rolcreatedb:false,rolbypassrls:false});
  }finally{await r.$disconnect();await w.$disconnect();}
@@ -197,4 +192,57 @@ test('claim database stall honors deadline without leaving mutations running',as
  await receiver(db,secret)(req(body()));
  const stalled={...db,query:async(sql:string,values:unknown[]=[],operation?:import('./core').Operation)=>{if(sql.includes('RETURNING i.*'))return db.transaction(operation!,async tx=>{await tx.raw.$queryRawUnsafe('SELECT pg_sleep(2)');return tx.query(sql,values);});return db.query(sql,values,operation);}};
  const handle=workerHandler(stalled,secret,apply,60);expect((await handle(new Request('http://localhost/',{method:'POST',headers:{authorization:`Bearer ${secret}`}}))).status).toBe(503);expect((await inbox()).rows[0].state).toBe('ready');expect(await prisma.paymentEvent.count()).toBe(0);
+});
+test('column privileges deny sensitive User reads and all unrelated update targets',async()=>{
+ const w=isolatedClient('postgresql://synthetic_webhook_worker@127.0.0.1:55447/webhook_local');
+ try{
+  await expect(w.$queryRawUnsafe('SELECT id,name FROM "User"')).resolves.toBeDefined();
+  for(const column of ['email','hashedPassword','role','bio'])await expect(w.$queryRawUnsafe(`SELECT "${column}" FROM "User"`)).rejects.toThrow();
+  for(const sql of ['UPDATE "ExpertProfile" SET "displayName"=\'forbidden\'','UPDATE "ExpertProfile" SET "monthlyPrice"=0','UPDATE "ExpertProfile" SET "userId"=\'visitor\'','UPDATE "ExpertSubscription" SET price=0','UPDATE "ExpertSubscription" SET tier=\'FREE\'','UPDATE "ExpertSubscription" SET "razorpaySubscriptionId"=\'forbidden\'','UPDATE "ExpertSubscription" SET "subscriberId"=\'visitor\'','UPDATE staging_webhook_inbox SET raw_body=\'forbidden\'::bytea','UPDATE "PaymentEvent" SET outcome=\'forbidden\'','UPDATE "Notification" SET "isRead"=true','UPDATE "BillingOutbox" SET state=\'READY\''])await expect(w.$executeRawUnsafe(sql)).rejects.toThrow();
+  for(const table of ['ExpertProfile','ExpertSubscription','User','PaymentEvent','Notification','BillingOutbox','staging_webhook_inbox']){
+   const value=await w.$queryRawUnsafe<any[]>('SELECT has_table_privilege(current_user,$1,\'SELECT\') AS read,has_table_privilege(current_user,$1,\'UPDATE\') AS write',`public."${table}"`);
+   expect(value[0]).toEqual({read:false,write:false});
+  }
+ }finally{await w.$disconnect();}
+});
+test('narrow receiver/worker grants preserve concurrent replay cancellation and expiry rollback',async()=>{
+ const r=isolatedClient('postgresql://synthetic_webhook_receiver@127.0.0.1:55447/webhook_local'),w=isolatedClient('postgresql://synthetic_webhook_worker@127.0.0.1:55447/webhook_local');
+ try{
+  const receive=receiver(database(r),secret),worker=database(w);await Promise.all(Array.from({length:8},(_,i)=>receive(req(body(),`narrow-${i}`))));
+  await Promise.all(Array.from({length:8},()=>drainOne(worker,apply)));expect(await prisma.paymentEvent.count()).toBe(1);expect(await prisma.notification.count()).toBe(1);expect(await prisma.billingOutbox.count()).toBe(1);
+  await receive(req(body('subscription.cancelled',20)));await drainOne(worker,apply);await receive(req(body()+' '));await drainOne(worker,apply);
+  const sub=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(sub.status).toBe('CANCELLED');expect(sub.currentPeriodEnd).toEqual(new Date((time+3600)*1000));expect(await prisma.notification.count()).toBe(1);expect(await prisma.billingOutbox.count()).toBe(1);
+  const receipts=await prisma.paymentEvent.count();await receive(req(body('subscription.pending',30)));await drainOne(worker,async(tx,s)=>{await apply(tx,s);await tx.$executeRawUnsafe("UPDATE staging_webhook_inbox SET lease_until=clock_timestamp()-interval '1 second'");});expect(await prisma.paymentEvent.count()).toBe(receipts);
+ }finally{await r.$disconnect();await w.$disconnect();}
+});
+test('PUBLIC/default/RLS audit establishes assumptions and detects inherited PUBLIC column rights',async()=>{
+ const fs=await import('node:fs'),path=await import('node:path');const w=isolatedClient('postgresql://synthetic_webhook_worker@127.0.0.1:55447/webhook_local');
+ try{
+  const defaults=await prisma.$queryRawUnsafe<any[]>('SELECT defaclobjtype,defaclacl::text FROM pg_default_acl');
+  const rls=await prisma.$queryRawUnsafe<any[]>(`SELECT relname,relrowsecurity,relforcerowsecurity FROM pg_class c JOIN pg_namespace n ON c.relnamespace=n.oid WHERE n.nspname='public' AND c.relkind IN ('r','p')`);expect(rls.every(r=>!r.relrowsecurity&&!r.relforcerowsecurity)).toBe(true);
+  const publicTables=await prisma.$queryRawUnsafe<any[]>(`SELECT c.relname,a.privilege_type FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace,LATERAL aclexplode(COALESCE(c.relacl,acldefault('r',c.relowner))) a WHERE n.nspname='public' AND c.relkind IN ('r','p') AND a.grantee=0`);expect(publicTables).toHaveLength(0);
+  const elevated=await prisma.$queryRawUnsafe<any[]>(`SELECT proname FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prosecdef AND n.nspname='public'`);expect(elevated).toHaveLength(0);
+  await prisma.$executeRawUnsafe('GRANT SELECT(email) ON "User" TO PUBLIC');
+  await expect(w.$queryRawUnsafe('SELECT email FROM "User"')).resolves.toBeDefined();
+  const inherited=await prisma.$queryRawUnsafe<any[]>(`SELECT attname,a.privilege_type FROM pg_attribute att,LATERAL aclexplode(att.attacl) a WHERE att.attrelid='public."User"'::regclass AND a.grantee=0`);expect(inherited).toContainEqual({attname:'email',privilege_type:'SELECT'});
+  await prisma.$executeRawUnsafe('REVOKE SELECT(email) ON "User" FROM PUBLIC');await expect(w.$queryRawUnsafe('SELECT email FROM "User"')).rejects.toThrow();
+  fs.writeFileSync(path.join(__dirname,'../audit/staging-webhook/permission-audit.json'),JSON.stringify({defaults,rls,publicTables,elevated,publicLeakDetected:inherited,columnGrantOnly:true,hostedActions:0},null,2));
+ }finally{await prisma.$executeRawUnsafe('REVOKE SELECT(email) ON "User" FROM PUBLIC');await w.$disconnect();}
+});
+test('RLS deny policy fails closed with narrow roles and rolls back all domain effects',async()=>{
+ const r=isolatedClient('postgresql://synthetic_webhook_receiver@127.0.0.1:55447/webhook_local'),w=isolatedClient('postgresql://synthetic_webhook_worker@127.0.0.1:55447/webhook_local');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ExpertSubscription" ENABLE ROW LEVEL SECURITY');
+ await prisma.$executeRawUnsafe('CREATE POLICY synthetic_webhook_deny ON "ExpertSubscription" FOR ALL TO synthetic_webhook_worker USING (false) WITH CHECK (false)');
+ try{expect((await receiver(database(r),secret)(req(body()))).status).toBe(200);await drainOne(database(w),apply);expect(await prisma.paymentEvent.count()).toBe(0);expect(await prisma.notification.count()).toBe(0);expect((await inbox()).rows[0].state).toBe('ready');}
+ finally{await prisma.$executeRawUnsafe('DROP POLICY synthetic_webhook_deny ON "ExpertSubscription"');await prisma.$executeRawUnsafe('ALTER TABLE "ExpertSubscription" DISABLE ROW LEVEL SECURITY');await r.$disconnect();await w.$disconnect();}
+});
+test('Prisma default INSERT columns are necessary while removal leaves no partial effects',async()=>{
+ const w=isolatedClient('postgresql://synthetic_webhook_worker@127.0.0.1:55447/webhook_local');const {snapshot}=await import('./snapshot');const input=snapshot(Buffer.from(body()),'f'.repeat(64))!;
+ try{
+  for(const [table,column] of [['Notification','isRead'],['Notification','createdAt'],['PaymentEvent','createdAt']]){
+   await prisma.$executeRawUnsafe(`REVOKE INSERT("${column}") ON "${table}" FROM synthetic_webhook_worker`);
+   try{await expect(w.$transaction(tx=>apply(tx,input))).rejects.toThrow();expect(await prisma.paymentEvent.count()).toBe(0);expect(await prisma.notification.count()).toBe(0);expect((await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}})).status).toBe('PENDING');}
+   finally{await prisma.$executeRawUnsafe(`GRANT INSERT("${column}") ON "${table}" TO synthetic_webhook_worker`);}
+  }
+ }finally{await w.$disconnect();}
 });

@@ -19,3 +19,5 @@ node node_modules/prisma/build/index.js validate >audit/staging-webhook/schema-v
 node node_modules/jest/bin/jest.js --config staging-webhook/jest.config.cjs --runInBand --json --outputFile audit/staging-webhook/tests.json >audit/staging-webhook/tests.log 2>&1
 
 if [ -f staging-webhook/dist/verify-local.mjs ]; then staging-webhook/.package-runtime/node24/bin/node staging-webhook/package-smoke.cjs >audit/staging-webhook/package-smoke.log 2>&1; fi
+
+"$PG_BIN/psql" "$DATABASE_URL" -A -F "|" -P footer=off -v ON_ERROR_STOP=1 -v database_name=webhook_local -v receiver_role=synthetic_webhook_receiver -v worker_role=synthetic_webhook_worker -f staging-webhook/permission-audit.sql >audit/staging-webhook/permission-audit.log 2>&1

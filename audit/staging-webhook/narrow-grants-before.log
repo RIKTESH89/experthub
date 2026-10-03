@@ -1,0 +1,33 @@
+FAIL staging-webhook/inbox.test.ts
+  ● disposable local restricted roles permit receiver insert and worker reducer, deny unrelated writes
+
+    expect(received).toBeUndefined()
+
+    Received: [PrismaClientUnknownRequestError:·
+    Invalid `tx.notification.create()` invocation in
+    /Users/rikteshs20/Documents/Codex/2026-10-04/task/staging-webhook-local/src/lib/payments/state.ts:90:27·
+      87 const expert = await tx.expertProfile.findUniqueOrThrow({ where: { id: sub.expertProfileId }, select: { userId: true } });
+      88 const subscriber = await tx.user.findUnique({ where: { id: sub.subscriberId }, select: { name: true } });
+      89 notification = { recipientUserId: expert.userId, subscriberName: subscriber?.name || "Someone" };
+    → 90 await tx.notification.create(
+    Error occurred during query execution:
+    ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "42501", message: "permission denied for table Notification", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })]
+
+      168 |   await expect(r.$queryRawUnsafe('SELECT * FROM "User"')).rejects.toThrow();
+      169 |   await expect(r.$executeRawUnsafe("UPDATE staging_webhook_inbox SET state='dead'")).rejects.toThrow();
+    > 170 |   let applyError:unknown;await drainOne(database(w),async(tx,s)=>{try{return await apply(tx,s);}catch(error){applyError=error;throw error;}});expect(applyError).toBeUndefined();expect(await prisma.paymentEvent.count()).toBe(1);expect((await inbox()).rows[0].state).toBe('done');
+          |                                                                                                                                                                  ^
+      171 |   for(const sql of ['DELETE FROM staging_webhook_inbox','DELETE FROM "User"','CREATE TABLE public.synthetic_forbidden(id int)','CREATE TEMP TABLE synthetic_forbidden(id int)','CREATE ROLE synthetic_forbidden','UPDATE "User" SET name=\'forbidden\''])await expect(w.$executeRawUnsafe(sql)).rejects.toThrow();
+      172 |   const attrs=await w.$queryRawUnsafe<any[]>("SELECT rolsuper,rolcreaterole,rolcreatedb,rolbypassrls FROM pg_roles WHERE rolname=current_user");expect(attrs[0]).toEqual({rolsuper:false,rolcreaterole:false,rolcreatedb:false,rolbypassrls:false});
+      173 |  }finally{await r.$disconnect();await w.$disconnect();}
+
+      at Object.<anonymous> (staging-webhook/inbox.test.ts:170:162)
+
+PASS staging-webhook/host.test.ts
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 30 passed, 31 total
+Snapshots:   0 total
+Time:        1.342 s, estimated 2 s
+Ran all test suites.
+Test results written to: audit/staging-webhook/tests.json

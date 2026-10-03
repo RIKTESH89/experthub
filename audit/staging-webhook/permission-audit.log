@@ -1,0 +1,413 @@
+ current_database | current_user  |                                                           version
+------------------+---------------+------------------------------------------------------------------------------------------------------------------------------
+ webhook_local    | webhook_local | PostgreSQL 18.6 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit
+(1 row)
+
+          rolname           | rolsuper | rolcreaterole | rolcreatedb | rolbypassrls | rolinherit | rolcanlogin
+----------------------------+----------+---------------+-------------+--------------+------------+-------------
+ synthetic_webhook_receiver | f        | f             | f           | f            | t          | t
+ synthetic_webhook_worker   | f        | f             | f           | f            | t          | t
+(2 rows)
+
+   member   |     parent_role      | admin_option
+------------+----------------------+--------------
+ pg_monitor | pg_read_all_settings | f
+ pg_monitor | pg_read_all_stats    | f
+ pg_monitor | pg_stat_scan_tables  | f
+(3 rows)
+
+    datname    | grantee | privilege_type
+---------------+---------+----------------
+ webhook_local |       0 | CONNECT
+(1 row)
+
+ nspname | grantee | privilege_type
+---------+---------+----------------
+ public  |       0 | USAGE
+(1 row)
+
+ relname | privilege_type
+---------+----------------
+(0 rows)
+
+ relname | attname | privilege_type
+---------+---------+----------------
+(0 rows)
+
+ owner | scope | defaclobjtype | defaclacl
+-------+-------+---------------+-----------
+(0 rows)
+
+        relname        |     owner     | relrowsecurity | relforcerowsecurity
+-----------------------+---------------+----------------+---------------------
+ _prisma_migrations    | webhook_local | f              | f
+ AnalyticsEvent        | webhook_local | f              | f
+ FreeTrialUsage        | webhook_local | f              | f
+ MonthlyTwinUsage      | webhook_local | f              | f
+ TwinInteraction       | webhook_local | f              | f
+ Tag                   | webhook_local | f              | f
+ VectorChunk           | webhook_local | f              | f
+ User                  | webhook_local | f              | f
+ UserSettings          | webhook_local | f              | f
+ Post                  | webhook_local | f              | f
+ Like                  | webhook_local | f              | f
+ Comment               | webhook_local | f              | f
+ ExpertApplication     | webhook_local | f              | f
+ KnowledgeLifecycleJob | webhook_local | f              | f
+ ExpertProfile         | webhook_local | f              | f
+ ExpertSubscription    | webhook_local | f              | f
+ PasswordResetToken    | webhook_local | f              | f
+ PaymentEvent          | webhook_local | f              | f
+ EvidenceAssertion     | webhook_local | f              | f
+ BillingProvisioning   | webhook_local | f              | f
+ BillingReconciliation | webhook_local | f              | f
+ Bookmark              | webhook_local | f              | f
+ ChatMessage           | webhook_local | f              | f
+ Notification          | webhook_local | f              | f
+ Report                | webhook_local | f              | f
+ PostMedia             | webhook_local | f              | f
+ PersonaRelease        | webhook_local | f              | f
+ staging_webhook_inbox | webhook_local | f              | f
+ BillingOutbox         | webhook_local | f              | f
+ EvidenceDecisionCase  | webhook_local | f              | f
+ CorrectionEvent       | webhook_local | f              | f
+ KnowledgeItem         | webhook_local | f              | f
+ ChatSession           | webhook_local | f              | f
+ PostTag               | webhook_local | f              | f
+ KnowledgeNode         | webhook_local | f              | f
+ TwinAccuracyScore     | webhook_local | f              | f
+ PostView              | webhook_local | f              | f
+ SubscriberMemory      | webhook_local | f              | f
+ EvidenceRevision      | webhook_local | f              | f
+ ExpertPricingTier     | webhook_local | f              | f
+ WidgetConfig          | webhook_local | f              | f
+ ImportJob             | webhook_local | f              | f
+ TemporalStance        | webhook_local | f              | f
+ CorrectionReview      | webhook_local | f              | f
+ PersonaReleaseHead    | webhook_local | f              | f
+ WidgetSession         | webhook_local | f              | f
+ SharedConversation    | webhook_local | f              | f
+ KnowledgeEdge         | webhook_local | f              | f
+ EvidenceSpan          | webhook_local | f              | f
+ EvidenceSupport       | webhook_local | f              | f
+ WidgetMessage         | webhook_local | f              | f
+(51 rows)
+
+ schemaname | tablename | policyname | permissive | roles | cmd | qual | with_check
+------------+-----------+------------+------------+-------+-----+------+------------
+(0 rows)
+
+ nspname | proname | oid | owner | proconfig | proacl
+---------+---------+-----+-------+-----------+--------
+(0 rows)
+
+        relname        | relacl
+-----------------------+--------
+ _prisma_migrations    |
+ AnalyticsEvent        |
+ FreeTrialUsage        |
+ MonthlyTwinUsage      |
+ TwinInteraction       |
+ Tag                   |
+ VectorChunk           |
+ User                  |
+ UserSettings          |
+ Post                  |
+ Like                  |
+ Comment               |
+ ExpertApplication     |
+ KnowledgeLifecycleJob |
+ ExpertProfile         |
+ ExpertSubscription    |
+ PasswordResetToken    |
+ PaymentEvent          |
+ EvidenceAssertion     |
+ BillingProvisioning   |
+ BillingReconciliation |
+ Bookmark              |
+ ChatMessage           |
+ Notification          |
+ Report                |
+ PostMedia             |
+ PersonaRelease        |
+ staging_webhook_inbox |
+ BillingOutbox         |
+ EvidenceDecisionCase  |
+ CorrectionEvent       |
+ KnowledgeItem         |
+ ChatSession           |
+ PostTag               |
+ KnowledgeNode         |
+ TwinAccuracyScore     |
+ PostView              |
+ SubscriberMemory      |
+ EvidenceRevision      |
+ ExpertPricingTier     |
+ WidgetConfig          |
+ ImportJob             |
+ TemporalStance        |
+ CorrectionReview      |
+ PersonaReleaseHead    |
+ WidgetSession         |
+ SharedConversation    |
+ KnowledgeEdge         |
+ EvidenceSpan          |
+ EvidenceSupport       |
+ WidgetMessage         |
+(51 rows)
+
+        relname        |        attname         |                                         attacl
+-----------------------+------------------------+----------------------------------------------------------------------------------------
+ User                  | id                     | {synthetic_webhook_worker=r/webhook_local}
+ User                  | name                   | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | id                     | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | userId                 | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | displayName            | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | specialty              | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | socialLinks            | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | id                     | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | subscriberId           | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | expertProfileId        | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | status                 | {synthetic_webhook_worker=rw/webhook_local}
+ Notification          | id                     | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | userId                 | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | title                  | {synthetic_webhook_worker=ar/webhook_local}
+ ExpertSubscription    | razorpaySubscriptionId | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | twinOpinions           | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | twinFramework          | {synthetic_webhook_worker=r/webhook_local}
+ PaymentEvent          | id                     | {synthetic_webhook_worker=ar/webhook_local}
+ ExpertSubscription    | lastPaymentEventAt     | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | lastPaymentEventRank   | {synthetic_webhook_worker=rw/webhook_local}
+ PaymentEvent          | providerSubscriptionId | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | payloadHash            | {synthetic_webhook_worker=ar/webhook_local}
+ ExpertSubscription    | billingVersion         | {synthetic_webhook_worker=rw/webhook_local}
+ BillingOutbox         | id                     | {synthetic_webhook_worker=ar/webhook_local}
+ BillingOutbox         | payload                | {synthetic_webhook_worker=a/webhook_local}
+ staging_webhook_inbox | digest                 | {synthetic_webhook_receiver=ar/webhook_local,synthetic_webhook_worker=r/webhook_local}
+ staging_webhook_inbox | raw_body               | {synthetic_webhook_receiver=a/webhook_local,synthetic_webhook_worker=r/webhook_local}
+ staging_webhook_inbox | state                  | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | attempts               | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | next_attempt           | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | lease_token            | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | lease_until            | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | last_error             | {synthetic_webhook_worker=rw/webhook_local}
+ staging_webhook_inbox | received_at            | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | startDate              | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | endDate                | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | price                  | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | tier                   | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | createdAt              | {synthetic_webhook_worker=r/webhook_local}
+ ExpertSubscription    | updatedAt              | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | razorpayPaymentId      | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | currentPeriodEnd       | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | paidPeriodStart        | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertSubscription    | renewalCancelledAt     | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertProfile         | monthlyPrice           | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | isVerified             | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | totalSubscribers       | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertProfile         | vectorNamespace        | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | ragEnabled             | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | twinPersonality        | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | twinGreeting           | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | freeTrialQuestions     | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | createdAt              | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | updatedAt              | {synthetic_webhook_worker=rw/webhook_local}
+ ExpertProfile         | personalityProfile     | {synthetic_webhook_worker=r/webhook_local}
+ ExpertProfile         | twinBoundaries         | {synthetic_webhook_worker=r/webhook_local}
+ PaymentEvent          | eventType              | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | occurredAt             | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | outcome                | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | paymentId              | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | periodStart            | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | periodEnd              | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | message                | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | link                   | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | isRead                 | {synthetic_webhook_worker=ar/webhook_local}
+ Notification          | createdAt              | {synthetic_webhook_worker=ar/webhook_local}
+ PaymentEvent          | createdAt              | {synthetic_webhook_worker=ar/webhook_local}
+(67 rows)
+
+          rolname           | can_connect | can_create_database_objects | can_temp | can_create_public | can_use_public
+----------------------------+-------------+-----------------------------+----------+-------------------+----------------
+ synthetic_webhook_receiver | t           | f                           | f        | f                 | t
+ synthetic_webhook_worker   | t           | f                           | f        | f                 | t
+(2 rows)
+
+          rolname           |        relname        | owns_object | table_read | table_insert | table_update | can_delete | can_truncate | can_trigger
+----------------------------+-----------------------+-------------+------------+--------------+--------------+------------+--------------+-------------
+ synthetic_webhook_receiver | _prisma_migrations    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | _prisma_migrations    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | AnalyticsEvent        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | AnalyticsEvent        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | FreeTrialUsage        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | FreeTrialUsage        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | MonthlyTwinUsage      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | MonthlyTwinUsage      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | TwinInteraction       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | TwinInteraction       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Tag                   | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Tag                   | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | VectorChunk           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | VectorChunk           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | User                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | User                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | UserSettings          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | UserSettings          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Post                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Post                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Like                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Like                  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Comment               | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Comment               | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ExpertApplication     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ExpertApplication     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | KnowledgeLifecycleJob | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | KnowledgeLifecycleJob | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ExpertProfile         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ExpertProfile         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ExpertSubscription    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ExpertSubscription    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PasswordResetToken    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PasswordResetToken    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PaymentEvent          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PaymentEvent          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | EvidenceAssertion     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | EvidenceAssertion     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | BillingProvisioning   | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | BillingProvisioning   | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | BillingReconciliation | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | BillingReconciliation | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Bookmark              | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Bookmark              | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ChatMessage           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ChatMessage           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Notification          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Notification          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | Report                | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | Report                | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PostMedia             | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PostMedia             | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PersonaRelease        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PersonaRelease        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | staging_webhook_inbox | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | staging_webhook_inbox | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | BillingOutbox         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | BillingOutbox         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | EvidenceDecisionCase  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | EvidenceDecisionCase  | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | CorrectionEvent       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | CorrectionEvent       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | KnowledgeItem         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | KnowledgeItem         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ChatSession           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ChatSession           | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PostTag               | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PostTag               | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | KnowledgeNode         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | KnowledgeNode         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | TwinAccuracyScore     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | TwinAccuracyScore     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PostView              | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PostView              | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | SubscriberMemory      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | SubscriberMemory      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | EvidenceRevision      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | EvidenceRevision      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ExpertPricingTier     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ExpertPricingTier     | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | WidgetConfig          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | WidgetConfig          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | ImportJob             | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | ImportJob             | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | TemporalStance        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | TemporalStance        | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | CorrectionReview      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | CorrectionReview      | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | PersonaReleaseHead    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | PersonaReleaseHead    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | WidgetSession         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | WidgetSession         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | SharedConversation    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | SharedConversation    | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | KnowledgeEdge         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | KnowledgeEdge         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | EvidenceSpan          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | EvidenceSpan          | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | EvidenceSupport       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | EvidenceSupport       | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_receiver | WidgetMessage         | f           | f          | f            | f            | f          | f            | f
+ synthetic_webhook_worker   | WidgetMessage         | f           | f          | f            | f            | f          | f            | f
+(102 rows)
+
+          rolname           |        relname        |        attname         | can_read | can_insert | can_update
+----------------------------+-----------------------+------------------------+----------+------------+------------
+ synthetic_webhook_worker   | User                  | id                     | t        | f          | f
+ synthetic_webhook_worker   | User                  | name                   | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | id                     | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | userId                 | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | displayName            | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | specialty              | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | socialLinks            | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | monthlyPrice           | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | isVerified             | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | totalSubscribers       | t        | f          | t
+ synthetic_webhook_worker   | ExpertProfile         | vectorNamespace        | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | ragEnabled             | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | twinPersonality        | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | twinGreeting           | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | freeTrialQuestions     | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | createdAt              | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | updatedAt              | t        | f          | t
+ synthetic_webhook_worker   | ExpertProfile         | personalityProfile     | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | twinOpinions           | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | twinFramework          | t        | f          | f
+ synthetic_webhook_worker   | ExpertProfile         | twinBoundaries         | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | id                     | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | subscriberId           | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | expertProfileId        | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | status                 | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | startDate              | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | endDate                | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | price                  | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | tier                   | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | createdAt              | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | updatedAt              | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | razorpaySubscriptionId | t        | f          | f
+ synthetic_webhook_worker   | ExpertSubscription    | razorpayPaymentId      | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | currentPeriodEnd       | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | lastPaymentEventAt     | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | lastPaymentEventRank   | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | paidPeriodStart        | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | renewalCancelledAt     | t        | f          | t
+ synthetic_webhook_worker   | ExpertSubscription    | billingVersion         | t        | f          | t
+ synthetic_webhook_worker   | PaymentEvent          | id                     | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | providerSubscriptionId | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | payloadHash            | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | eventType              | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | occurredAt             | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | outcome                | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | createdAt              | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | paymentId              | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | periodStart            | t        | t          | f
+ synthetic_webhook_worker   | PaymentEvent          | periodEnd              | t        | t          | f
+ synthetic_webhook_worker   | Notification          | id                     | t        | t          | f
+ synthetic_webhook_worker   | Notification          | userId                 | t        | t          | f
+ synthetic_webhook_worker   | Notification          | title                  | t        | t          | f
+ synthetic_webhook_worker   | Notification          | message                | t        | t          | f
+ synthetic_webhook_worker   | Notification          | link                   | t        | t          | f
+ synthetic_webhook_worker   | Notification          | isRead                 | t        | t          | f
+ synthetic_webhook_worker   | Notification          | createdAt              | t        | t          | f
+ synthetic_webhook_receiver | staging_webhook_inbox | digest                 | t        | t          | f
+ synthetic_webhook_worker   | staging_webhook_inbox | digest                 | t        | f          | f
+ synthetic_webhook_receiver | staging_webhook_inbox | raw_body               | f        | t          | f
+ synthetic_webhook_worker   | staging_webhook_inbox | raw_body               | t        | f          | f
+ synthetic_webhook_worker   | staging_webhook_inbox | state                  | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | attempts               | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | next_attempt           | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | lease_token            | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | lease_until            | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | last_error             | t        | f          | t
+ synthetic_webhook_worker   | staging_webhook_inbox | received_at            | t        | f          | f
+ synthetic_webhook_worker   | BillingOutbox         | id                     | t        | t          | f
+ synthetic_webhook_worker   | BillingOutbox         | payload                | f        | t          | f
+(69 rows)
