@@ -46,3 +46,6 @@ next-env.d.ts
 /.env.local-test-groq
 
 /.phase0-runtime/
+
+# Owned local integration database runtime
+/.integration-runtime/

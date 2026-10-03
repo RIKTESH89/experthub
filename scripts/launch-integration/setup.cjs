@@ -1,0 +1,1 @@
+process.env.DATABASE_URL='postgresql://integration_synthetic@127.0.0.1:55447/integration_fresh';process.env.DIRECT_URL=process.env.DATABASE_URL;global.fetch=async()=>{throw Error('External calls blocked in local integration');};

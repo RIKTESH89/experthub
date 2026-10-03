@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { submitCorrection, decideCorrection } from "@/lib/corrections/service";
+import { submitCorrection, decideCorrection, type Review } from "@/lib/corrections/service";
 import { releasePersona, currentSourcePins } from "@/lib/persona/store";
 import { publishEvidence } from "@/lib/graph/evidence-store";
 import { manifestHash, scopeForRelease, canonical } from "@/lib/persona/manifest";
@@ -14,7 +14,7 @@ async function source(id="source") {
 }
 async function publish(id="source") { await prisma.$transaction(async tx=>{const item=await tx.knowledgeItem.findUniqueOrThrow({where:{id}});await publishEvidence(tx,item,actorId);}); }
 async function submit(id="source") {return submitCorrection({...base,submissionKey:key(),proposal:{feedback:"Correct this",itemId:id,sourceVersion:1,title:"Advice",content:"I prefer coffee."}});}
-async function accept(review:any,overrides={}) {return decideCorrection({...base,reviewId:review.id,expectedVersion:review.version,operationKey:key(),action:"ACCEPT",reason:"Expert reviewed",...overrides});}
+async function accept(review:Review,overrides={}) {return decideCorrection({...base,reviewId:review.id,expectedVersion:review.version,operationKey:key(),action:"ACCEPT",reason:"Expert reviewed",...overrides});}
 beforeAll(async()=>{
  await prisma.user.create({data:{id:actorId,email:"exp16-owner@example.test",name:"Synthetic Owner",role:"EXPERT"}});
  await prisma.user.create({data:{id:"exp16-visitor",email:"exp16-visitor@example.test",name:"Synthetic Visitor",role:"SUBSCRIBER"}});
@@ -143,4 +143,11 @@ test("additive DDL rollback leaves base sources and evidence intact",async()=>{
   throw new Error("INTENTIONAL_EXP16_ROLLBACK");
  }).catch(e=>{if(e.message!=="INTENTIONAL_EXP16_ROLLBACK")throw e;});
  expect(await submit()).toMatchObject({state:"PENDING"});
+});
+
+test("rollback cannot restore a disabled RAG permission",async()=>{
+ const a=await releasePersona({...base,operationKey:key(),expectedHead:null});
+ await prisma.expertProfile.update({where:{id:expertProfileId},data:{ragEnabled:false}});
+ await expect(releasePersona({...base,operationKey:key(),expectedHead:a.id,rollbackTo:a.id})).rejects.toMatchObject({status:409});
+ expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:expertProfileId}})).ragEnabled).toBe(false);
 });

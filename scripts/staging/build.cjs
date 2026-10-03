@@ -5,7 +5,9 @@ const { previewOriginFromHost } = require('../../preview-environment.cjs');
 const BRANCH = 'exp25-26-launch-auth-payments';
 const DIRECT = 'ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech';
 const POOLED = 'ep-quiet-bread-b3rqji3g-pooler.c-4.ap-southeast-1.aws.neon.tech';
-const EXPECTED_COUNT = 15;
+const EXPECTED_COUNT = 16;
+const UPGRADE_NAME = '20261003110000_reviewed_persona_releases';
+const UPGRADE_CHECKSUM = '5a8d5c8a7baebe50ce3318f4714452b1d1a8e10fee970bfa2f47fdccd2b1a7be';
 const vectorSupported = v => /^0\.(?:[5-9]|[1-9][0-9]+)\./.test(v || '');
 const ROOT = path.resolve(__dirname, '../..');
 const CODES = Object.freeze(['ENVIRONMENT','BRANCH','FLAG','BRANCH_URL_MISSING','BRANCH_URL_FORMAT','URL_MISSING','URL_FORMAT','URL_PROTOCOL','URL_PORT','URL_HOST','URL_DATABASE','URL_ROLE','URL_PASSWORD','URL_QUERY','URL_TLS','MANIFEST','PRISMA_VERSION','CLIENT_INIT','PREFLIGHT_QUERY','PREFLIGHT_EMPTY','PREFLIGHT_DATABASE','PREFLIGHT_ROLE','PREFLIGHT_VERSION','PREFLIGHT_PRIVILEGES','PREFLIGHT_EXTENSION','PREFLIGHT_NONEMPTY','LEDGER_QUERY','LEDGER_COUNT','LEDGER_CHECKSUM','LEDGER_COMPLETION','SCHEMA_QUERY','SCHEMA_EXTENSION','SCHEMA_TABLES','SCHEMA_VIEW','SCHEMA_TRIGGERS','SCHEMA_PAYMENT','ENGINE','DISCONNECT','BUILD','INTERNAL']);
@@ -50,7 +52,7 @@ function validate(env) {
 function migrations(root = ROOT) {
  const base = path.join(root, 'prisma/migrations');
  const list = fs.readdirSync(base).filter(n=>fs.existsSync(path.join(base,n,'migration.sql'))).sort().map(name=>{ const sql=fs.readFileSync(path.join(base,name,'migration.sql')); return {name,checksum:crypto.createHash('sha256').update(sql).digest('hex'),tables:[...sql.toString().matchAll(/CREATE TABLE \"([^\"]+)\"/g)].map(match=>match[1])}; });
- if(list.length !== EXPECTED_COUNT) fail('MANIFEST'); return list;
+ if(list.length !== EXPECTED_COUNT || list.at(-1).name !== UPGRADE_NAME || list.at(-1).checksum !== UPGRADE_CHECKSUM) fail('MANIFEST'); return list;
 }
 function verifyLedger(rows, list) {
  if(rows.length !== list.length) fail('LEDGER_COUNT');
@@ -61,11 +63,13 @@ function verifyLedger(rows, list) {
   if(!matching[0].finished_at || matching[0].rolled_back_at)fail('LEDGER_COMPLETION');
  }
 }
-async function verify(client, list) {
+async function verify(client, list, existingRows) {
+ const upgraded = list.length === EXPECTED_COUNT;
+ if(!upgraded && list.length !== EXPECTED_COUNT-1)fail('MANIFEST');
  const expectedTables=[...new Set(list.flatMap(m=>m.tables))];
- if(expectedTables.length!==42 || expectedTables.some(name=>!/^\w+$/.test(name)))fail('MANIFEST');
+ if(expectedTables.length!==(upgraded ? 46 : 42) || expectedTables.some(name=>!/^\w+$/.test(name)))fail('MANIFEST');
  const tableLiterals=expectedTables.map(name=>`'${name}'`).join(',');
- const rows = await checked('LEDGER_QUERY',()=>client.$queryRawUnsafe('SELECT migration_name, checksum, finished_at, rolled_back_at FROM public._prisma_migrations'));
+ const rows = existingRows || await checked('LEDGER_QUERY',()=>client.$queryRawUnsafe('SELECT migration_name, checksum, finished_at, rolled_back_at FROM public._prisma_migrations'));
  verifyLedger(rows,list);
  const checks = await checked('SCHEMA_QUERY',()=>client.$queryRawUnsafe(`SELECT
  (SELECT extversion FROM pg_extension WHERE extname='vector') AS vector_version,
@@ -75,7 +79,7 @@ async function verify(client, list) {
  to_regclass('public."PaymentEvent"') IS NOT NULL AND to_regclass('public."KnowledgeLifecycleJob"') IS NOT NULL AS tables_ok,
  EXISTS(SELECT 1 FROM pg_views WHERE schemaname='public' AND viewname='EvidenceEdge') AS view_ok,
  (SELECT count(*)::int FROM pg_trigger WHERE NOT tgisinternal AND tgname IN
- ('EvidenceRevision_immutable','EvidenceSpan_immutable','EvidenceAssertion_immutable','EvidenceSupport_immutable','TemporalStance_immutable','EvidenceDecisionCase_immutable')) AS triggers,
+ ('EvidenceRevision_immutable','EvidenceSpan_immutable','EvidenceAssertion_immutable','EvidenceSupport_immutable','TemporalStance_immutable','EvidenceDecisionCase_immutable'${upgraded ? ",'CorrectionEvent_append_only','PersonaRelease_append_only'" : ''})) AS triggers,
  (SELECT count(*)::int FROM information_schema.columns WHERE table_schema='public' AND table_name='ExpertSubscription' AND column_name IN ('paidPeriodStart','renewalCancelledAt','lastPaymentEventAt','lastPaymentEventRank')) AS payment_columns,
  (SELECT count(*)::int FROM pg_tables WHERE schemaname='public' AND tablename IN (${tableLiterals})) AS all_tables`));
  const row=checks[0];
@@ -83,7 +87,7 @@ async function verify(client, list) {
  if(!vectorSupported(row.vector_version))fail('SCHEMA_EXTENSION');
  if(!row.tables_ok || Number(row.all_tables)!==expectedTables.length)fail('SCHEMA_TABLES');
  if(!row.view_ok)fail('SCHEMA_VIEW');
- if(Number(row.triggers)!==6)fail('SCHEMA_TRIGGERS');
+ if(Number(row.triggers)!==(upgraded ? 8 : 6))fail('SCHEMA_TRIGGERS');
  if(Number(row.payment_columns)!==4)fail('SCHEMA_PAYMENT');
 }
 async function preflight(client,list) {
@@ -102,7 +106,13 @@ async function preflight(client,list) {
  if(Number(row.version)<160000 || Number(row.version)>=170000)fail('PREFLIGHT_VERSION');
  if(!row.database_create || !row.schema_create)fail('PREFLIGHT_PRIVILEGES');
  if(!vectorSupported(row.vector_available))fail('PREFLIGHT_EXTENSION');
- if(row.ledger) await verify(client,list); else if(Number(row.tables)!==0)fail('PREFLIGHT_NONEMPTY');
+ if(row.ledger) {
+  const history=await checked('LEDGER_QUERY',()=>client.$queryRawUnsafe('SELECT migration_name, checksum, finished_at, rolled_back_at FROM public._prisma_migrations'));
+  // Permit only the exact completed predecessor or current history. No reset/resolve.
+  const previous=history.length===EXPECTED_COUNT-1;
+  await verify(client,previous ? list.slice(0,-1) : list,history);
+  if(previous && Number(row.tables)!==43)fail('SCHEMA_TABLES');
+ } else if(Number(row.tables)!==0)fail('PREFLIGHT_NONEMPTY');
 }
 function standardEngine(env, run=spawnSync) {
  // Minimal child environment. Provider tokens and inherited dotenv paths are not forwarded.
@@ -129,7 +139,7 @@ async function main(env=process.env,deps={}) {
   await verify(client,list);
  } catch(error) { if(error instanceof GuardError)throw error; fail('INTERNAL'); }
  finally { try { if(client) await client.$disconnect(); } catch { fail('DISCONNECT'); } }
- console.log('Staging migration verified: 15 completed checksums, expected schema, no seed.');
+ console.log('Staging migration verified: 16 completed checksums, expected schema, no seed.');
  await checked('BUILD',build); return 'migrated-build';
 }
 module.exports={selected,validate,validateUrl,migrations,verifyLedger,preflight,verify,standardEngine,main,BRANCH,DIRECT,POOLED,diagnostic,validateVersions,CODES};

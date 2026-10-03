@@ -1,0 +1,26 @@
+PASS scripts/exp16/reviews.integration.ts
+  ✓ stable hash sorts keys and live scope intersection never grants historical permission (20 ms)
+  ✓ accept atomically retires evidence and queues only changed source; concurrent retry is idempotent (16 ms)
+  ✓ competing owner decisions yield exactly one terminal result (9 ms)
+  ✓ source CAS prevents stale correction after edit and after deletion (8 ms)
+  ✓ visitor feedback cannot modify beliefs, targets, or somebody else's chat (11 ms)
+  ✓ submission retry and reject are audited without source mutation (7 ms)
+  ✓ rollback restores config as a new audited release without changing sources (12 ms)
+  ✓ rollback fails closed after delete (7 ms)
+  ✓ rollback fails closed after restrict (7 ms)
+  ✓ rollback fails closed after edit (6 ms)
+  ✓ rollback fails closed after retire (5 ms)
+  ✓ foreign owner cannot release and pending/unsupported source cannot publish (4 ms)
+  ✓ release and correction events reject in-place updates (35 ms)
+  ✓ concurrent releases cannot both replace the same expected head (5 ms)
+  ✓ unsupported imported sources block a reproducibility claim (4 ms)
+  ✓ rollback restores personality profile and records actual persona prompts (8 ms)
+  ✓ additive DDL rollback leaves base sources and evidence intact (6 ms)
+  ✓ rollback cannot restore a disabled RAG permission (6 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       18 passed, 18 total
+Snapshots:   0 total
+Time:        0.477 s
+Ran all test suites.
+Test results written to: ../../../../../../../tmp/experthub-integration-native.json

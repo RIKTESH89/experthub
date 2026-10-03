@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Exercise the CommonJS runtime guard directly. */
 import { jest } from '@jest/globals';
 const guard = require('../../scripts/staging/build.cjs');
 const direct = `postgresql://neondb_owner:synthetic-only@${guard.DIRECT}/neondb?sslmode=require`;
@@ -5,7 +6,7 @@ const env = { PATH:process.env.PATH, VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:
 const list=guard.migrations();
 const ledger=list.map((m: {name:string;checksum:string})=>({migration_name:m.name,checksum:m.checksum,finished_at:new Date(),rolled_back_at:null}));
 const identity={database:'neondb',role:'neondb_owner',version:160015,database_create:true,schema_create:true,vector_available:'0.8.0',tables:0,ledger:false};
-const schema={vector_version:'0.8.0',tables_ok:true,view_ok:true,triggers:6,payment_columns:4,all_tables:42};
+const schema={vector_version:'0.8.0',tables_ok:true,view_ok:true,triggers:8,payment_columns:4,all_tables:46};
 function fake(rows: unknown[]=[ [identity],ledger,[schema] ]) {
  const query=jest.fn<(...args: unknown[])=>Promise<unknown>>(); for(const value of rows)query.mockResolvedValueOnce(value);
  return {$queryRawUnsafe:query,$disconnect:jest.fn<()=>Promise<void>>().mockResolvedValue(undefined)};
@@ -47,9 +48,9 @@ test('verification failure after engine stops build and disconnects; no fabricat
 });
 
 test('existing complete history is verified before idempotent engine run; incomplete history never proceeds',async()=>{
- const client=fake([[{...identity,ledger:true,tables:43}],ledger,[schema],ledger,[schema]]);const engine=jest.fn();const build=jest.fn();const log=jest.spyOn(console,'log').mockImplementation(()=>{});
+ const client=fake([[{...identity,ledger:true,tables:47}],ledger,[schema],ledger,[schema]]);const engine=jest.fn();const build=jest.fn();const log=jest.spyOn(console,'log').mockImplementation(()=>{});
  try {await guard.main(env,{makeClient:()=>client,engine,build});expect(engine).toHaveBeenCalledTimes(1);expect(build).toHaveBeenCalledTimes(1);}finally{log.mockRestore();}
- const bad=fake([[{...identity,ledger:true,tables:43}],ledger.slice(1)]);const never=jest.fn();await expect(guard.main(env,{makeClient:()=>bad,engine:never,build})).rejects.toThrow('deployment stopped');expect(never).not.toHaveBeenCalled();
+ const bad=fake([[{...identity,ledger:true,tables:47}],ledger.slice(2)]);const never=jest.fn();await expect(guard.main(env,{makeClient:()=>bad,engine:never,build})).rejects.toThrow('deployment stopped');expect(never).not.toHaveBeenCalled();
 });
 test('successful standard engine invokes only migrate deploy with isolated environment',()=>{
  const runner=jest.fn(()=>({status:0,stdout:'private output discarded'}));guard.standardEngine({...env,OPENAI_API_KEY:'synthetic-never-forward'},runner);
@@ -134,4 +135,14 @@ test('CLI emits only safe stage and enum when a selected URL is malformed',()=>{
  const r=spawnSync(process.execPath,['scripts/staging/build.cjs'],{env:{...env,DIRECT_URL:poison},encoding:'utf8'});
  expect(r.status).toBe(1);expect(r.stdout).toContain('Staging guard: SELECTED');expect(r.stderr).toContain('Staging guard failure: URL_FORMAT');
  expect(r.stdout+r.stderr).not.toContain(poison);expect(r.stdout+r.stderr).not.toContain('postgresql://');
+});
+
+test('verified predecessor 15 migrations upgrades without reset and verifies all 16 afterward',async()=>{
+ const client=fake([[{...identity,ledger:true,tables:43}],ledger.slice(0,-1),[{...schema,triggers:6,all_tables:42}],ledger,[schema]]);
+ const engine=jest.fn(),build=jest.fn();await guard.main(env,{makeClient:()=>client,engine,build});
+ expect(engine).toHaveBeenCalledTimes(1);expect(build).toHaveBeenCalledTimes(1);
+});
+test('predecessor with untracked partial upgrade tables fails before engine',async()=>{
+ const client=fake([[{...identity,ledger:true,tables:44}],ledger.slice(0,-1),[{...schema,triggers:6,all_tables:42}]]);
+ const engine=jest.fn();await expect(guard.main(env,{makeClient:()=>client,engine,build:jest.fn()})).rejects.toThrow('[SCHEMA_TABLES]');expect(engine).not.toHaveBeenCalled();
 });

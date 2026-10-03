@@ -1,0 +1,11 @@
+# EXP14 / EXP16 local integration review
+
+EXP14 source aef201079e79e658ccfc84853642cfe8b638ed61 -> cb353aa. EXP16 source 2c5eee36569b79d29ab40d04ea3edb9ebfb4b25e -> d9674ec. Both cherry-picked with provenance.
+
+Reviewed owner-authenticated API context, strict input objects, tenant ownership, review/source/head CAS, expert-row locks, operation-key request-hash replay, selective outbox/evidence retirement, imported-source coverage refusal and rollback source-pin checks. Found rollback could restore ragEnabled=true after current permission was disabled; integration rejects any rollback changing current RAG permission and native regression proves it stays disabled. Release manifests are not adopted automatically into chat and imported/document corrections remain unsupported. EXP14 uses existing live store gates and bounded bundle; broad semantic intent/fidelity/race/load acceptance remains pending.
+
+Migration guard now pins exact reviewed EXP16 name/checksum, 16 migrations / 46 expected tables / 8 append-only triggers. Preflight permits only completed checksummed predecessor15 (42 tables plus ledger) or completed16; unknown/partial/failed history stops before engine. Standard Prisma migrate deploy owns history, no reset/resolve/custom history. Mock preflight tests retain hosted PostgreSQL16 identity restriction.
+
+Dependencies copied with APFS clone into integration node_modules, replacing symlink; Prisma6.19.2 generated only in this copy, no install or shared/lane generated-client modification. Full Jest 1059/1059 across65 suites and TypeScript passed. Native PostgreSQL18 synthetic local tests18/18 pass including rollback permission regression. Standard engine predecessor15 -> additive16 and separate fresh16 verified actual checksums, 42/46 tables, 6/8 triggers, vector/view/payment checks. This is not hosted PostgreSQL16 runtime proof. Initial predecessor harness inherited root Prisma config and applied16; explicit isolated config plus a new owned database established genuine15; no reset or fabricated ledger.
+
+No hosted migration, provider call, credential access, push or deployment. EXP16 review UI follow-up pending; full build queued. Source generated audit timing files restored byte-for-byte. Local database cluster is integration-owned loopback127.0.0.1:55447 and is stopped at handoff.

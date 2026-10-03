@@ -49,6 +49,7 @@ export async function releasePersona(input: {expertProfileId:string; actorId:str
       const target=targets[0];
       if(!target) throw new ReviewError(404,"Release not found");
       if(target.manifestHash!==manifestHash(target.manifest) || !sourcePinsEqual(target.manifest.sources,sources)) throw new ReviewError(409,"Rollback evidence is no longer current; create a new release");
+      if(target.manifest.config.ragEnabled !== expert.ragEnabled) throw new ReviewError(409,"Rollback cannot change current RAG permission");
       chosen=target.manifest.config;
       await tx.expertProfile.update({where:{id:expert.id},data:{...chosen,personalityProfile:chosen.personalityProfile===null?Prisma.DbNull:chosen.personalityProfile}});
     }

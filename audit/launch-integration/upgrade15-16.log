@@ -1,0 +1,23 @@
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Loaded Prisma config from prisma.config.ts.
+
+warn The Prisma config file in prisma.config.ts overrides the deprecated `package.json#prisma` property in package.json.
+  For more information, see: https://pris.ly/prisma-config
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "integration_upgrade15", schema "public" at "127.0.0.1:55447"
+
+16 migrations found in prisma/migrations
+
+Applying migration `20261003110000_reviewed_persona_releases`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261003110000_reviewed_persona_releases/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
