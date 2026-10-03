@@ -1,3 +1,6 @@
+import { retrieveLocalEvaluationEvidence } from "./dialogue/structured/local-retrieval";
+import { runStructuredDialogue } from "./dialogue/structured/pipeline";
+import type { GeneratorAdapter,VerifierAdapter,TurnResult } from "./dialogue/structured/contracts";
 import { runFrozenChatEngine } from "./chat-engine-baseline";
 import { localDialogueEvaluationEnabled } from "./dialogue/local-evaluation";
 import { revalidateDialogueEvidence } from "./dialogue/revalidate";
@@ -37,6 +40,8 @@ interface ChatEngineOptions {
   chatHistory: ChatMessage[];
   enableWebSearch?: boolean;
   temporalQuery?: TemporalQuery;
+  /** Server-injected local test adapters; never accepted from request JSON. */
+  structuredEvaluationAdapters?: {generator:GeneratorAdapter;verifier:VerifierAdapter};
 }
 
 interface ChatEngineResult {
@@ -48,7 +53,8 @@ interface ChatEngineResult {
   evidenceBundle: EvidenceBundle;
   dialogueState: DialogueState;
   groundedStyle: GroundedStyle;
-  verification: VerificationResult;
+  verification?: VerificationResult;
+  structuredEvaluation?: TurnResult;
 }
 
 type PublicChatResult = Omit<ChatEngineResult,"dialogueState" | "groundedStyle" | "verification"> & Partial<Pick<ChatEngineResult,"dialogueState" | "groundedStyle" | "verification">>;
@@ -79,7 +85,10 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   let retrievalResults: RetrievalResult[] = [];
   let contextTexts: string[] = [];
 
-  const evidenceBundle = await retrieveIntentEvidence(ragEnabled ? scope : {...scope, allowedVectorIds: []}, query, temporalQuery);
+  const effectiveScope=ragEnabled?scope:{...scope,allowedVectorIds:[]};
+  const evidenceBundle = options.structuredEvaluationAdapters
+    ? await retrieveLocalEvaluationEvidence(effectiveScope,query,temporalQuery)
+    : await retrieveIntentEvidence(effectiveScope,query,temporalQuery);
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
     retrievalResults = evidenceBundle.sources.map(result => ({...result,metadata:{...result.metadata,generationAudience:scope.isOwner ? "owner" : "viewer"}}));
@@ -96,6 +105,27 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   }
 
   const graphContext = [evidenceBundle.prompt, ...evidenceBundle.gaps.map(gap => `Evidence gap: ${gap}`)];
+
+  if (options.structuredEvaluationAdapters) {
+    let audience: "owner" | "viewer" = scope.isOwner ? "owner" : "viewer";
+    const structuredEvaluation = await runStructuredDialogue({expertId:expert.userId,query,
+      history:authorizedHistory(chatHistory,scope),bundle:evidenceBundle,
+      adapters:{...options.structuredEvaluationAdapters,evidence:{revalidate:async(original,signal)=>{
+        if(signal.aborted)throw new Error("evaluation aborted");
+        const current=await prisma.expertProfile.findUnique({where:{userId:expertId}});
+        if(!current||current.id!==expert.id||current.userId!==expert.userId||current.vectorNamespace!==expert.vectorNamespace)throw new Error("Expert identity changed");
+        const currentScope=await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
+        audience=currentScope.isOwner?"owner":"viewer";
+        return revalidateDialogueEvidence(current.ragEnabled===false?{...currentScope,allowedVectorIds:[]}:currentScope,original);
+      }}},
+    });
+    const release=structuredEvaluation.releaseBundle||evidenceBundle;
+    const {sources,evidenceTrace,temporalTrace}=acceptedEvidence(release,structuredEvaluation.decision.acceptedSpanIds,audience);
+    const stream=new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:structuredEvaluation.text}}]})}\n\ndata: [DONE]\n\n`));controller.close();}});
+    return {stream,sources,thinkingSteps:[...thinkingSteps,"Structured synthetic evaluation; semantic behavior is unvalidated"],evidenceTrace,temporalTrace,
+      evidenceBundle:{...release,sources,evidenceTrace,temporalTrace,prompt:JSON.stringify({evidenceTrace,temporalTrace})},
+      dialogueState:buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),release),groundedStyle:groundedStyle(release,expert.userId),structuredEvaluation};
+  }
 
   // Step 3: Retrieve subscriber memories
   let memories: { fact: string; category: string }[] = [];

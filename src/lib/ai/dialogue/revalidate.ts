@@ -46,5 +46,5 @@ export async function revalidateDialogueEvidence(scope: RetrievalScope, original
     if (!item) return [];
     return [{...source,content:supported.map(r=>r.text).join("\n"),metadata:{vectorId,expertProfileId:scope.expertProfileId,title:item.title,knowledgeItemId:item.id,sourceType:item.sourceType,sourceId:item.sourceId,sourceVersion:item.sourceVersion}}];
   });
-  return {...original,sources,evidenceTrace,temporalTrace,trace:{...original.trace,failures}};
+  return {...original,sources,evidenceTrace,temporalTrace,trace:{...original.trace,failures:Array.from(new Set(failures))}};
 }
