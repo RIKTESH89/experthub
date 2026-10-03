@@ -1,0 +1,13 @@
+# Independent column-grant acceptance
+
+Reviewed 2b8152d2460eb73fea4e8ef0dd21fe4331696371, integrated onto d38a7bb as d8213b6. Source conflicts absent; three generated-log conflicts resolved with incoming evidence before independently rerunning tests. Local integration only, no hosted grant, migration, PUBLIC revoke or installation.
+
+permission-grants.sql contains only explicit CONNECT/USAGE and column-level positive GRANTs. Receiver INSERT(digest,raw_body)/SELECT(digest); worker User SELECT(id,name); profile UPDATE(totalSubscribers,updatedAt); subscription ten managed UPDATE fields; inbox six mutable lifecycle fields. Explicit full current scalar SELECT projections on profile/subscription are necessary because unchanged Prisma update RETURNING reads them all. Sensitive User fields and unrelated updates remain inaccessible. Notification/receipt default INSERT fields are deliberately permitted because Prisma emits them explicitly. No table-level SELECT/INSERT/UPDATE granted. Grants are additive, not a cleanup tool: existing inherited/broad rights must be rejected separately.
+
+permission-audit.sql is read-only catalog/has_* inspection. Reports PUBLIC database/schema/table/column ACLs, default ACLs, roles/memberships, ownership, RLS/policies, user-defined SECURITY DEFINER routines and effective public-schema rights. It is a human-reviewed report, not an automatic fail-closed gate: missing role rows do not make SQL exit nonzero. It does not provide exhaustive effective privilege matrices for other schemas or routine EXECUTE/SET ROLE paths; hosted preflight must extend inspection wherever non-public objects or memberships exist. No approval to change shared PUBLIC defaults is implied.
+
+Native tests use actual grant specification with fixed synthetic identifiers. Coverage includes replay races/cancellation/lease expiry, sensitive column denial, removal of each required default INSERT grant with atomic rollback, inherited PUBLIC email leak detection and temporary RLS deny with zero domain effects. All privilege/RLS mutations run only in disposable owned local PG18 and cleanup removes cluster.
+
+Focused rerun evidence: audit/staging-webhook/tests.log, tests.json, permission-audit.log/json, package-smoke.log. Final full-tree types run after this report exists: permissions-final-types.log. Existing ZIPs remain source-matching because followup changes no bundled runtime source, schema or application reducer.
+
+PG16/Linux/actual hosted role capability remain unverified and installation approval pending. Fresh hosted non-owner roles, exact staging identity, effective ACL/RLS review and separately approved scope are mandatory before grants. See staging-webhook/PERMISSIONS.md for exact proposed contract.

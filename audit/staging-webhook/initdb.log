@@ -7,7 +7,7 @@ The default text search configuration will be set to "english".
 
 Data page checksums are enabled.
 
-creating directory /tmp/experthub-webhook.JOYNWG/pgdata ... ok
+creating directory /tmp/experthub-webhook.xiJQ4u/pgdata ... ok
 creating subdirectories ... ok
 selecting dynamic shared memory implementation ... posix
 selecting default "max_connections" ... 100
@@ -20,5 +20,5 @@ syncing data to disk ... ok
 
 Success. You can now start the database server using:
 
-    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/experthub-webhook.JOYNWG/pgdata -l logfile start
+    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/experthub-webhook.xiJQ4u/pgdata -l logfile start
 
