@@ -1,0 +1,10 @@
+PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp14/retrieval.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        0.199 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp14|__tests__\/phase0\/chat-engine.test.ts/i.
+Test results written to: audit/exp14/sql/offline-jest.json

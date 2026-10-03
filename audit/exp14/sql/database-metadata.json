@@ -1,0 +1,12 @@
+[
+  {
+    "facts": {
+      "database": "experthub_exp14_test",
+      "port": 55438,
+      "role": "exp14synthetic",
+      "postgresVersion": "PostgreSQL 18.6 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit",
+      "pgvectorVersion": "0.8.6",
+      "appliedMigrations": 15
+    }
+  }
+]

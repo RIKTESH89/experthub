@@ -1,5 +1,7 @@
 # EXP14 local retrieval handoff
 
+Native SQL and prompt-budget follow-up: see `audit/exp14/sql/report.md`. The original remaining-native-validation gap below describes the initial commit; the follow-up documents real SQL coverage and the preserved negative-projection limitation.
+
 Base `c83bf907898d8a1ffc257888f5800f27a210e1d2`; branch `codex/exp14-retrieval-task4-20261003`; worktree `/Users/rikteshs20/Documents/Codex/2026-10-03/task-4/exp14`.
 
 Implemented a bounded, source-backed read path and wired actual chat evidence assembly to it. No schema, source publisher/extractor, permission policy, generated client, dependencies, release manifest or other lane changed. Parent approved chat-engine and its Phase0 test ownership. Existing installed dependencies are accessed through a read-only-use node_modules symlink; no install, setup, generation, remote/provider requests, database mutations, deployment, push or Linear state change occurred.
