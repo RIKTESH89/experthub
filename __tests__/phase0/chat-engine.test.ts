@@ -6,8 +6,15 @@ jest.mock("@/lib/prisma",()=>({__esModule:true,default:prisma}));
 jest.mock("@/lib/retrieval/retrieve",()=>({retrieveIntentEvidence:retrieve}));
 jest.mock("@/lib/ai/memory-manager",()=>({getMemories:memories}));
 jest.mock("@/lib/graph/graph-retriever",()=>({graphEnhancedRetrieval:graph}));
-import {runChatEngine} from "@/lib/ai/chat-engine";
+import {runChatEngine as runGatedChatEngine} from "@/lib/ai/chat-engine";
+const runChatEngine = async (options: Parameters<typeof runGatedChatEngine>[0]) => {
+ const result = await runGatedChatEngine(options);
+ if (!result.verification) throw new Error("Expected local evaluation mode");
+ return result as Required<typeof result>;
+};
+afterAll(()=>{delete process.env.EXP15_EXP17_LOCAL_EVALUATION;});
 beforeEach(()=>{
+ process.env.EXP15_EXP17_LOCAL_EVALUATION="1";
  revalidate.mockReset().mockImplementation((_scope:unknown,bundle:unknown)=>Promise.resolve(bundle));
  resetAllMocks();retrieve.mockReset();memories.mockReset();graph.mockReset();prisma.expertProfile.findUnique.mockResolvedValue({id:"ada",userId:"ada-owner",displayName:"Ada",vectorNamespace:"ada-ns",ragEnabled:true,personalityProfile:{tone:"PRIVATE_STYLE_SENTINEL"}});
  prisma.knowledgeItem.findMany.mockResolvedValue([]);prisma.expertSubscription.findUnique.mockResolvedValue(null);retrieve.mockResolvedValue({sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},prompt:"authorized evidence",gaps:[]});memories.mockResolvedValue([]);

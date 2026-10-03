@@ -1,3 +1,5 @@
+import { runFrozenChatEngine } from "./chat-engine-baseline";
+import { localDialogueEvaluationEnabled } from "./dialogue/local-evaluation";
 import { revalidateDialogueEvidence } from "./dialogue/revalidate";
 import { acceptedEvidence } from "./dialogue/citations";
 import { buildDialogueState, dialoguePrompt, type DialogueState } from "./dialogue/state";
@@ -49,7 +51,12 @@ interface ChatEngineResult {
   verification: VerificationResult;
 }
 
-export async function runChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
+type PublicChatResult = Omit<ChatEngineResult,"dialogueState" | "groundedStyle" | "verification"> & Partial<Pick<ChatEngineResult,"dialogueState" | "groundedStyle" | "verification">>;
+export async function runChatEngine(options: ChatEngineOptions): Promise<PublicChatResult> {
+  if (!localDialogueEvaluationEnabled()) return runFrozenChatEngine(options);
+  return runExperimentalChatEngine(options);
+}
+async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
   assertExternalServiceAllowed();
   const { expertId, subscriberId, query, chatHistory, enableWebSearch = false } = options;
 

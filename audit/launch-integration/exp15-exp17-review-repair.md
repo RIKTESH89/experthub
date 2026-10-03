@@ -1,5 +1,7 @@
 # EXP15 / EXP17 independent-review repair
 
+Current authoritative status: exp15-exp17-local-evaluation-gate.md. Default chat is restored; the verifier is explicitly opt-in for local evaluation. Earlier sections below are retained as history.
+
 This report supersedes the finite informational catalogue design in exp15-exp17-local.md. The lane is still **not ready for product acceptance/integration as natural expert discussion**. Security/temporal/citation defects identified by review are repaired; broad semantic release remains blocked.
 
 Checkout: /Users/rikteshs20/Documents/Codex/2026-10-03/task-8/experthub-exp15-exp17.

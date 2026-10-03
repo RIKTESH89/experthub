@@ -8,7 +8,7 @@ const fallback = "I’m an AI representation, not the actual person. I don’t h
 /** Fail closed: no free-form attributed paraphrases. Render only exact explicit claims selected by EXP14. */
 export function verifyPersonResponse(raw: string, state: DialogueState, bundle: EvidenceBundle, style?: GroundedStyle): VerificationResult {
   const abstain = (reason: string): VerificationResult => ({ version: "person-verification-v1", status: "abstained", text: fallback + (state.risk === "medical" ? " Medical information needs context and qualified assessment. Discuss symptoms, duration and treatment questions with a clinician; seek urgent local care for emergencies." : state.risk === "investment" ? " An informational investment discussion can examine diversification, time horizon, fees, liquidity and the possibility of loss. No return is guaranteed; suitability requires individual assessment." : state.risk === "research" ? " For research, distinguish the question, methods, data, uncertainty and study limitations. Provide a source to examine what its results support." : ""), acceptedSpanIds: [], reasons: [reason] });
-  if (state.version !== "dialogue-v1" || bundle.version !== "intent-evidence-v1" || bundle.trace?.failures.some(f => f !== "semantic-unavailable; lexical fallback")) return abstain("invalid-or-failed-contract");
+  if (state.version !== "dialogue-v1" || bundle.version !== "intent-evidence-v1" || bundle.trace?.failures.some(f => f !== "semantic-unavailable; lexical fallback" && f !== "release-temporal-coverage-unavailable")) return abstain("invalid-or-failed-contract");
   if (raw.length > 24000) return abstain("oversized-output");
   let value: unknown;
   try { value = JSON.parse(raw); } catch { return abstain("invalid-output"); }
@@ -29,6 +29,7 @@ export function verifyPersonResponse(raw: string, state: DialogueState, bundle: 
     if (!text) return abstain("unsupported-segment");
     parts.push(text);
   }
+  if ((object.spanIds.length || paraphraseIds.length) && bundle.trace.failures.includes("release-temporal-coverage-unavailable")) return abstain("release-temporal-coverage-unavailable");
   const rows = [...bundle.evidenceTrace, ...bundle.temporalTrace.stances];
   const selected: typeof rows = [];
   for (const id of [...object.spanIds as string[], ...paraphraseIds]) {

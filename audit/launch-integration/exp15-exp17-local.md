@@ -1,5 +1,7 @@
 # EXP15 / EXP17 local implementation handoff
 
+Current authoritative status: exp15-exp17-local-evaluation-gate.md. Default chat is restored; the verifier is explicitly opt-in for local evaluation. Earlier sections below are retained as history.
+
 Latest status/design: see exp15-exp17-review-repair.md. The finite general-information catalogue described below was removed after independent review; semantic free-form release remains blocked. Earlier sections are retained as implementation history, not current acceptance claims.
 
 Base: d8c4eb3acc2ee8a8595f3bc5bea67da763d48203.
