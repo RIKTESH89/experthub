@@ -3,14 +3,16 @@ import { randomUUID } from "crypto";
 import type { ProvisioningIntent, ProvisioningStore } from "./provisioning";
 import { hasSubscriptionAccess } from "./access";
 type StoredIntent = ProvisioningIntent & { subscriberId: string; expertProfileId: string; subscriptionId: string; expectedVersion: number; tier: "STANDARD" | "PREMIUM"; price: number };
-export async function beginProvisioning(subscriberId: string, expertProfileId: string, tier: "STANDARD" | "PREMIUM", price: number) {
+class RetryPairRead extends Error {}
+async function beginProvisioningOnce(subscriberId: string, expertProfileId: string, tier: "STANDARD" | "PREMIUM", price: number) {
   return prisma.$transaction(async tx => {
-    // Lock subscription before expert (same global order as payment state). For an absent row,
-    // unique pair insertion serializes creators; losing transaction retries without provider I/O.
+    // Existing rows always lock subscription before expert. If the absent-row read
+    // becomes stale while waiting on expert, rollback and retry in that same order.
     await tx.$queryRaw`SELECT "id" FROM "ExpertSubscription" WHERE "subscriberId"=${subscriberId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
     const existing = await tx.expertSubscription.findUnique({ where: { subscriberId_expertProfileId: { subscriberId, expertProfileId } } });
     if (hasSubscriptionAccess(existing)) throw new Error("Existing subscription has access");
     await tx.$queryRaw`SELECT "id" FROM "ExpertProfile" WHERE "id"=${expertProfileId} FOR UPDATE`;
+    if (!existing && await tx.expertSubscription.findUnique({ where: { subscriberId_expertProfileId: { subscriberId, expertProfileId } } })) throw new RetryPairRead();
     const open = await tx.$queryRaw<StoredIntent[]>`SELECT * FROM "BillingProvisioning" WHERE "subscriberId"=${subscriberId} AND "expertProfileId"=${expertProfileId} AND "state"<>'ATTACHED'`;
     if (open.length) {
       if (open[0].tier !== tier || open[0].price !== price) throw new Error("Unresolved provisioning differs; review required");
@@ -28,13 +30,20 @@ export async function beginProvisioning(subscriberId: string, expertProfileId: s
     return rows[0];
   });
 }
+export async function beginProvisioning(subscriberId: string, expertProfileId: string, tier: "STANDARD" | "PREMIUM", price: number) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try { return await beginProvisioningOnce(subscriberId, expertProfileId, tier, price); }
+    catch (error) { if (!(error instanceof RetryPairRead) || attempt === 2) throw error; }
+  }
+  throw new Error("Subscription changed; retry");
+}
 export const provisioningStore: ProvisioningStore = {
   claim: async (id, version) => {
     const rows = await prisma.$queryRaw<StoredIntent[]>`UPDATE "BillingProvisioning" SET "state"='IN_FLIGHT', "version"="version"+1 WHERE "id"=${id} AND "version"=${version} AND "state"='READY' RETURNING *`;
     return rows[0] || null;
   },
   save: async (id, version, patch) => {
-    const rows = await prisma.$queryRaw<StoredIntent[]>`UPDATE "BillingProvisioning" SET "state"=COALESCE(${patch.state || null},"state"), "planId"=COALESCE(${patch.planId || null},"planId"), "providerId"=COALESCE(${patch.providerId || null},"providerId"), "version"="version"+1 WHERE "id"=${id} AND "version"=${version} AND "state" IN ('IN_FLIGHT','UNKNOWN') RETURNING *`;
+    const rows = await prisma.$queryRaw<StoredIntent[]>`UPDATE "BillingProvisioning" SET "state"=COALESCE(${patch.state || null},"state"), "planId"=COALESCE(${patch.planId || null},"planId"), "providerId"=COALESCE(${patch.providerId || null},"providerId"), "version"="version"+1 WHERE "id"=${id} AND "version"=${version} AND "state" IN ('IN_FLIGHT','UNKNOWN') AND (${patch.providerId || null}::text IS NULL OR "providerId" IS NULL OR "providerId"=${patch.providerId || null}) RETURNING *`;
     if (!rows.length) throw new Error("Provisioning version conflict");
     return rows[0];
   },
@@ -42,6 +51,7 @@ export const provisioningStore: ProvisioningStore = {
     const rows = await tx.$queryRaw<StoredIntent[]>`SELECT * FROM "BillingProvisioning" WHERE "id"=${intent.id}`;
     const current = rows[0];
     if (!current || current.version !== intent.version || !intent.providerId || !['IN_FLIGHT','UNKNOWN'].includes(current.state)) throw new Error("Provisioning version conflict");
+    if (current.providerId && current.providerId !== intent.providerId) throw new Error("Provider identity mismatch");
     await tx.$queryRaw`SELECT "id" FROM "ExpertSubscription" WHERE "id"=${current.subscriptionId} FOR UPDATE`;
     const sub = await tx.expertSubscription.findUniqueOrThrow({ where: { id: current.subscriptionId } });
     if (hasSubscriptionAccess(sub)) throw new Error("Paid access changed during provisioning");
