@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path'),os=require('os'),net=require('net'),crypto=require('crypto');
 const {spawnSync}=require('child_process');
 const root=path.resolve(__dirname,'../..');process.chdir(root);
-const output=path.join(root,'audit/next-wave-local'),bin='/opt/homebrew/opt/postgresql@18/bin';
+const output=path.join(root,'audit/continuations-local'),bin='/opt/homebrew/opt/postgresql@18/bin';
 const owned=fs.mkdtempSync(path.join(os.tmpdir(),'experthub-next-wave-'));const data=path.join(owned,'pgdata');
 const baseEnv={LC_ALL:'C',LANG:'C',PATH:process.env.PATH,HOME:process.env.HOME,DOTENV_CONFIG_PATH:'/dev/null',NEXT_TELEMETRY_DISABLED:'1'};
 const url='postgresql://integration_synthetic@127.0.0.1:55447/integration_fresh';
@@ -24,10 +24,10 @@ async function freePort(){await new Promise((resolve,reject)=>{const s=net.creat
  const guard=require('../staging/build.cjs'),{PrismaClient}=require('@prisma/client');const client=new PrismaClient({datasources:{db:{url}}});
  try{await guard.verify(client,guard.migrations().slice(0,-1));console.log('PASS native-verified16');run(process.execPath,['node_modules/prisma/build/index.js','migrate','deploy'],'native-upgrade17');await guard.verify(client,guard.migrations());
  const ledger=await client.$queryRawUnsafe('SELECT migration_name,checksum,finished_at,rolled_back_at FROM _prisma_migrations ORDER BY migration_name');fs.writeFileSync(path.join(output,'migration-ledger.json'),JSON.stringify(ledger,null,2));console.log('PASS native-verified17');}finally{await client.$disconnect();}
- run(process.execPath,['node_modules/jest/bin/jest.js','--config','scripts/launch-integration/jest.exp16.cjs','--runInBand','--json','--outputFile','audit/next-wave-local/native16.json'],'native16');
+ run(process.execPath,['node_modules/jest/bin/jest.js','--config','scripts/launch-integration/jest.exp16.cjs','--runInBand','--json','--outputFile','audit/continuations-local/native16.json'],'native16');
  pg('createdb',['-h','127.0.0.1','-p','55447','-U','integration_synthetic','integration_exp14'],'native-exp14-createdb');
  const exp14URL=url.replace('integration_fresh','integration_exp14');run(process.execPath,['node_modules/prisma/build/index.js','migrate','deploy'],'native-exp14-migrations',{...env,DATABASE_URL:exp14URL,DIRECT_URL:exp14URL});
- run(process.execPath,['node_modules/jest/bin/jest.js','--config','scripts/launch-integration/jest.exp14.cjs','--runInBand','--json','--outputFile','audit/next-wave-local/native14.json'],'native14');
+ run(process.execPath,['node_modules/jest/bin/jest.js','--config','scripts/launch-integration/jest.exp14.cjs','--runInBand','--json','--outputFile','audit/continuations-local/native14.json'],'native14');
  const buildEnv={...env,VERCEL_ENV:'production',AUTH_SECRET:'synthetic-integration-only',AUTH_TRUST_HOST:'true',AUTH_URL:'http://127.0.0.1:3357',NEXT_PUBLIC_APP_URL:'https://experthub.co.in',GOOGLE_CLIENT_ID:'123456-synthetic.apps.googleusercontent.com',GOOGLE_CLIENT_SECRET:'synthetic-only',NEXT_FONT_GOOGLE_MOCKED_RESPONSES:path.join(root,'scripts/exp25-26/font-mock.cjs'),NODE_OPTIONS:'--require='+path.join(root,'scripts/exp25-26/network-guard.cjs')};
  run(process.execPath,['scripts/staging/build.cjs'],'production-build',buildEnv);
  run(process.execPath,['scripts/launch-integration/production-browser.cjs'],'production-browser',baseEnv);

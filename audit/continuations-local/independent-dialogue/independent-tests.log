@@ -1,0 +1,27 @@
+PASS __tests__/api/thinking-chat-enhanced.test.ts
+PASS __tests__/exp15/structured-pipeline.test.ts
+PASS __tests__/exp15/structured-review-regressions.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/api/chat.test.ts
+PASS __tests__/exp15/revalidation-citations.test.ts
+PASS __tests__/exp15/structured-chat-integration.test.ts
+PASS __tests__/exp14/retrieval.test.ts
+PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp15/review-regressions.test.ts
+PASS __tests__/exp15/response-policy.test.ts
+PASS __tests__/exp15/default-path-parity.test.ts
+PASS __tests__/exp15/independent-review.test.ts
+PASS __tests__/exp15/dialogue-verification.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/exp26/chat-access.test.ts
+PASS __tests__/exp15/structured-local-retrieval.test.ts
+PASS __tests__/exp15/claim-gate.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+
+Test Suites: 20 passed, 20 total
+Tests:       252 passed, 252 total
+Snapshots:   0 total
+Time:        4.696 s
+Ran all test suites matching /__tests__\/exp15|__tests__\/phase0\/chat-engine.test.ts|__tests__\/exp14|__tests__\/phase0\/retrieval.test.ts|__tests__\/api\/chat.test.ts|__tests__\/api\/thinking-chat-enhanced.test.ts|__tests__\/exp26\/chat-access.test.ts|__tests__\/phase0\/shared-access.test.ts|__tests__\/phase0\/post-access.test.ts/i.
+Test results written to: independent-tests.json

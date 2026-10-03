@@ -1,0 +1,101 @@
+FAIL scripts/exp32-34-continuation/review-body.test.ts
+  ● revoked ADMIN is rejected before reading any untrusted body bytes
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: called with 0 arguments
+
+      11 | test('revoked ADMIN is rejected before reading any untrusted body bytes',async()=>{
+      12 |  mockRole='SUBSCRIBER';const req=request(new ReadableStream({start(c){c.enqueue(new TextEncoder().encode('{}'));c.close();}}));const text=jest.spyOn(req,'text');const reader=jest.spyOn(req.body!,'getReader');
+    > 13 |  expect((await POST(req)).status).toBe(403);expect(text).not.toHaveBeenCalled();expect(reader).not.toHaveBeenCalled();
+         |                                                              ^
+      14 | });
+      15 | test('unauthenticated body is not consumed',async()=>{
+      16 |  mockSession=null;const req=request(new ReadableStream({start(c){c.enqueue(new TextEncoder().encode('{}'));c.close();}}));const text=jest.spyOn(req,'text');expect((await POST(req)).status).toBe(401);expect(text).not.toHaveBeenCalled();
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/review-body.test.ts:13:62)
+
+  ● unauthenticated body is not consumed
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: called with 0 arguments
+
+      14 | });
+      15 | test('unauthenticated body is not consumed',async()=>{
+    > 16 |  mockSession=null;const req=request(new ReadableStream({start(c){c.enqueue(new TextEncoder().encode('{}'));c.close();}}));const text=jest.spyOn(req,'text');expect((await POST(req)).status).toBe(401);expect(text).not.toHaveBeenCalled();
+         |                                                                                                                                                                                                                         ^
+      17 | });
+      18 | test('chunked oversized body cancels at byte cap instead of reading the full body',async()=>{
+      19 |  let pulls=0;const cancel=jest.fn();const req=request(new ReadableStream({pull(c){pulls++;c.enqueue(new Uint8Array(20000));if(pulls===5)c.close();},cancel},{highWaterMark:0}));
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/review-body.test.ts:16:217)
+
+  ● chunked oversized body cancels at byte cap instead of reading the full body
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 2
+    Received:    5
+
+      18 | test('chunked oversized body cancels at byte cap instead of reading the full body',async()=>{
+      19 |  let pulls=0;const cancel=jest.fn();const req=request(new ReadableStream({pull(c){pulls++;c.enqueue(new Uint8Array(20000));if(pulls===5)c.close();},cancel},{highWaterMark:0}));
+    > 20 |  expect((await POST(req)).status).toBe(413);expect(pulls).toBeLessThanOrEqual(2);expect(cancel).toHaveBeenCalled();
+         |                                                           ^
+      21 | });
+      22 | test('request abort cancels body read safely',async()=>{
+      23 |  const controller=new AbortController(),cancel=jest.fn();const req=request(new ReadableStream({cancel},{highWaterMark:0}),controller.signal);
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/review-body.test.ts:20:59)
+
+  ● request abort cancels body read safely
+
+    thrown: "Exceeded timeout of 1000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      20 |  expect((await POST(req)).status).toBe(413);expect(pulls).toBeLessThanOrEqual(2);expect(cancel).toHaveBeenCalled();
+      21 | });
+    > 22 | test('request abort cancels body read safely',async()=>{
+         | ^
+      23 |  const controller=new AbortController(),cancel=jest.fn();const req=request(new ReadableStream({cancel},{highWaterMark:0}),controller.signal);
+      24 |  const pending=POST(req);setTimeout(()=>controller.abort(),10);expect((await pending).status).toBe(400);expect(cancel).toHaveBeenCalled();
+      25 | },1000);
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/review-body.test.ts:22:1)
+
+FAIL scripts/exp32-34-continuation/review-freshness.test.ts
+  ● apply rechecks provider evidence after a refund during the review window
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"outcome": "applied"}
+
+       7 |  const planned:any=await reviewBilling({action:'plan',kind:'reconcile',id:'sub',paymentId:'paid'},env.NEXT_PUBLIC_APP_URL!,deps);
+       8 |  refunded=true;
+    >  9 |  await expect(reviewBilling({action:'apply',token:planned.token,reviewedDigest:planned.reviewedDigest},env.NEXT_PUBLIC_APP_URL!,deps)).rejects.toThrow();
+         |        ^
+      10 |  expect(apply).not.toHaveBeenCalled();
+      11 | });
+      12 |
+
+      at expect (../../../2026-10-01/task-2/experthub-next-wave-integration/node_modules/@jest/expect/node_modules/expect/build/index.js:113:15)
+      at Object.<anonymous> (scripts/exp32-34-continuation/review-freshness.test.ts:9:8)
+
+PASS scripts/exp32-34-continuation/payments-regression.test.ts
+PASS scripts/exp32-34-continuation/database.test.ts
+PASS scripts/exp32-34-continuation/adapters.test.ts
+PASS scripts/exp32-34/contracts.test.ts
+
+Test Suites: 2 failed, 4 passed, 6 total
+Tests:       5 failed, 54 passed, 59 total
+Snapshots:   0 total
+Time:        2.483 s
+Ran all test suites.
+Test results written to: audit/exp32-34-continuation/tests.json

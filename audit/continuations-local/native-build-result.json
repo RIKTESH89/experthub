@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "ownedCluster": "/var/folders/ft/53mtqdys19sgzwlht8kvvg8r0000gn/T/experthub-next-wave-SAqdH0",
+  "predecessorMigrations": 16,
+  "currentMigrations": 17,
+  "applicationTables": 49,
+  "experimentalDialogueDefault": false,
+  "hostedChanges": false
+}
