@@ -1,3 +1,4 @@
+import { boundedMultipart, verifiedMedia } from "@/lib/upload/validation";
 import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -5,7 +6,7 @@ import { randomUUID } from "crypto";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const ALLOWED_TYPES: Record<string, string[]> = {
-  image: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
+  image: ["image/jpeg", "image/png", "image/gif", "image/webp"],
   video: ["video/mp4", "video/webm", "video/ogg"],
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/webm"],
 };
@@ -50,10 +51,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const formData = await request.formData();
+    if (process.env.NODE_ENV !== "development" && (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_S3_BUCKET)) {
+      return NextResponse.json({ error: "Upload storage is not configured" }, { status: 503 });
+    }
+    let formData: FormData;
+    try { formData = await boundedMultipart(request); }
+    catch { return NextResponse.json({ error: "Invalid or oversized upload request" }, { status: 413 }); }
     const file = formData.get("file") as File | null;
 
-    if (!file) {
+    if (!file || typeof file === "string" || typeof file.arrayBuffer !== "function") {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
@@ -80,11 +86,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ext = file.name.split(".").pop() || "bin";
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const verified = verifiedMedia(buffer, mimeType);
+    if (!verified || verified.category !== category || buffer.length !== file.size) {
+      return NextResponse.json({ error: "File content does not match a supported media type" }, { status: 400 });
+    }
+    const ext = verified.ext;
     const uniqueName = `${randomUUID()}.${ext}`;
     const s3Key = `${category}/${uniqueName}`;
-
-    const buffer = Buffer.from(await file.arrayBuffer());
 
     const client = getS3Client();
     const bucket = process.env.AWS_S3_BUCKET || "experthub-uploads";
@@ -116,7 +125,8 @@ export async function POST(request: NextRequest) {
         Bucket: bucket,
         Key: s3Key,
         Body: buffer,
-        ContentType: mimeType,
+        ContentType: verified.mime,
+        ContentDisposition: "attachment",
       })
     );
 
@@ -134,8 +144,8 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Upload error:", error);
+  } catch {
+    console.error("Upload failed");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { publicHttpsUrl } from "@/lib/import/safe-fetch";
 import { scrapeBlogContent } from "@/lib/import/blog-scraper";
 
 import { syncKnowledgeItem } from "@/lib/knowledge/lifecycle";
 
 const blogImportSchema = z.object({
   urls: z
-    .array(z.string().url("Each entry must be a valid URL"))
+    .array(z.string().url("Each entry must be a valid URL").refine((value) => {
+      try { publicHttpsUrl(value); return true; } catch { return false; }
+    }, "Each entry must be a public HTTPS URL without credentials"))
     .min(1, "At least one URL is required")
     .max(20, "Maximum 20 URLs per import"),
 });
@@ -113,8 +116,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(results);
-  } catch (error) {
-    console.error("Blog import error:", error);
+  } catch {
+    console.error("Blog import failed");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

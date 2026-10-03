@@ -9,11 +9,12 @@ export async function POST(request: NextRequest) {
   try {
     // Existing production dispatch configuration; Preview is rejected above.
     const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret) {
-      const apiKey = request.headers.get("x-api-key");
-      if (apiKey !== cronSecret) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
+    if (!cronSecret?.trim()) {
+      return NextResponse.json({ error: "Digest dispatch is not configured" }, { status: 503 });
+    }
+    const apiKey = request.headers.get("x-api-key");
+    if (apiKey !== cronSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json().catch(() => ({}));
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
 
     let sent = 0;
     let skipped = 0;
+    let failed = 0;
 
     for (const expert of experts) {
       if (!expert.email || !expert.expertProfile) {
@@ -89,13 +91,13 @@ export async function POST(request: NextRequest) {
 
       const subject = `Your ${period === "daily" ? "Daily" : "Weekly"} ExpertHub Digest`;
 
-      await sendEmail({ to: expert.email, subject, html });
-      sent++;
+      if (await sendEmail({ to: expert.email, subject, html })) sent++;
+      else failed++;
     }
 
-    return NextResponse.json({ sent, skipped });
-  } catch (error) {
-    console.error("Digest email error:", error);
+    return NextResponse.json({ sent, skipped, failed });
+  } catch {
+    console.error("Digest email dispatch failed");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

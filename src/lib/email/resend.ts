@@ -23,20 +23,20 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
   if (isPreviewIsolated()) return false;
   const resend = getResend();
   if (!resend) {
-    console.log("[Email] No RESEND_API_KEY — would have sent:", options.subject, "to", options.to);
+    console.log("[Email] Delivery disabled: missing configuration");
     return false;
   }
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: FROM,
       to: options.to,
       subject: options.subject,
       html: options.html,
     });
-    return true;
-  } catch (error) {
-    console.error("[Email] Failed to send:", error);
+    return !result.error;
+  } catch {
+    console.error("[Email] Delivery failed");
     return false;
   }
 }

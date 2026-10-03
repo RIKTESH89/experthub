@@ -1,0 +1,11 @@
+jest.mock('resend', () => ({ Resend: jest.fn().mockImplementation(() => ({ emails: { send: mockSend } })) }));
+const mockSend = jest.fn();
+import { sendEmail } from '@/lib/email/resend';
+const env = { ...process.env };
+const options = { to: 'private-recipient@example.invalid', subject: 'Private subject', html: '<p>private content</p>' };
+beforeEach(() => { process.env = { ...env }; delete process.env.RESEND_API_KEY; delete process.env.VERCEL_ENV; delete process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED; mockSend.mockReset(); });
+afterAll(() => { process.env = env; });
+it('missing configuration never logs recipient, subject or content', async () => { const log = jest.spyOn(console, 'log').mockImplementation(() => {}); expect(await sendEmail(options)).toBe(false); expect(JSON.stringify(log.mock.calls)).not.toMatch(/private|example.invalid/i); log.mockRestore(); });
+it('provider exception details are redacted', async () => { process.env.RESEND_API_KEY = 'synthetic'; mockSend.mockRejectedValue(new Error(JSON.stringify(options))); const log = jest.spyOn(console, 'error').mockImplementation(() => {}); expect(await sendEmail(options)).toBe(false); expect(JSON.stringify(log.mock.calls)).not.toMatch(/private|example.invalid/i); log.mockRestore(); });
+it('SDK returned error is counted as failure', async () => { process.env.RESEND_API_KEY = 'synthetic'; mockSend.mockResolvedValue({ error: { message: 'rejected' }, data: null }); expect(await sendEmail(options)).toBe(false); });
+it('SDK success remains true', async () => { process.env.RESEND_API_KEY = 'synthetic'; mockSend.mockResolvedValue({ error: null, data: { id: 'synthetic' } }); expect(await sendEmail(options)).toBe(true); });
