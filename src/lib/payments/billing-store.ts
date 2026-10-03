@@ -8,10 +8,13 @@ export async function enqueueBilling(tx: Prisma.TransactionClient, id: string, p
   await tx.$executeRaw`INSERT INTO "BillingOutbox" ("id", "payload") VALUES (${id}, ${JSON.stringify(payload)}::jsonb) ON CONFLICT ("id") DO NOTHING`;
 }
 export const billingOutboxStore: BillingOutboxStore = {
-  claim: (now, until, limit) => prisma.$transaction(async tx => {
+  claim: (now, until, limit, maxAttempts = 5) => prisma.$transaction(async tx => {
+    if (!Number.isSafeInteger(maxAttempts) || maxAttempts < 1 || !Number.isSafeInteger(limit) || limit < 1 || until <= now) throw new Error("Invalid lease policy");
+    await tx.$executeRaw`UPDATE "BillingOutbox" SET "state"='FAILED', "lastError"='attempt-limit-exhausted', "leaseToken"=NULL, "leaseUntil"=NULL WHERE "attempts">=${maxAttempts} AND ("state"='READY' OR ("state"='LEASED' AND "leaseUntil"<=${now}))`;
     const token = randomUUID();
-    return tx.$queryRaw<BillingDelivery[]>`WITH due AS (SELECT "id" FROM "BillingOutbox" WHERE ("state"='READY' AND "nextAttemptAt"<=${now}) OR ("state"='LEASED' AND "leaseUntil"<=${now}) ORDER BY "nextAttemptAt", "id" FOR UPDATE SKIP LOCKED LIMIT ${limit}) UPDATE "BillingOutbox" b SET "state"='LEASED', "leaseToken"=${token}, "leaseUntil"=${until}, "attempts"=b."attempts"+1 FROM due WHERE b."id"=due."id" RETURNING b."id", b."payload", b."leaseToken", b."attempts"`;
+    return tx.$queryRaw<BillingDelivery[]>`WITH due AS (SELECT "id" FROM "BillingOutbox" WHERE "attempts"<${maxAttempts} AND (("state"='READY' AND "nextAttemptAt"<=${now}) OR ("state"='LEASED' AND "leaseUntil"<=${now})) ORDER BY "nextAttemptAt", "id" FOR UPDATE SKIP LOCKED LIMIT ${limit}) UPDATE "BillingOutbox" b SET "state"='LEASED', "leaseToken"=${token}, "leaseUntil"=${until}, "attempts"=b."attempts"+1 FROM due WHERE b."id"=due."id" RETURNING b."id", b."payload", b."leaseToken", b."attempts"`;
   }),
+  owns: async (id, token, now) => (await prisma.$queryRaw<{ id: string }[]>`SELECT "id" FROM "BillingOutbox" WHERE "id"=${id} AND "state"='LEASED' AND "leaseToken"=${token} AND "leaseUntil">${now}`).length === 1,
   settle: async (id, token, result) => (await prisma.$executeRaw`UPDATE "BillingOutbox" SET "state"=${result.state === "RETRY" ? "READY" : result.state}, "nextAttemptAt"=${result.nextAttemptAt || new Date()}, "lastError"=${result.error || null}, "leaseToken"=NULL, "leaseUntil"=NULL WHERE "id"=${id} AND "state"='LEASED' AND "leaseToken"=${token}`) === 1,
 };
 export const reconciliationStore: ReconciliationStore = {
