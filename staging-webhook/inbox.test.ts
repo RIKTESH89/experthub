@@ -89,3 +89,13 @@ test('runtime factories default disabled before opening any pool',async()=>{
  const {publicReceiver,privateWorker}=await import('./runtime');const connect=jest.fn();
  expect(()=>publicReceiver(connect,{NODE_ENV:'test'})).toThrow('disabled');await expect(privateWorker(connect,{NODE_ENV:'test'})).rejects.toThrow('disabled');expect(connect).not.toHaveBeenCalled();
 });
+test('different serialization increments billingVersion and invalidates earlier review CAS',async()=>{
+ const {reconciliationStore}=await import('../src/lib/payments/billing-store');const {planReconciliation}=await import('../src/lib/payments/reconciliation');
+ await receiver(db,secret)(req(body()));await drainOne(db,applyPaymentSnapshot);
+ const first=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});
+ const plan=planReconciliation({id:first.id,version:first.billingVersion,providerId:'synthetic-rzp',cancelled:false},{providerId:'synthetic-rzp',paymentId:'synthetic-pay',captured:true,start:new Date((time-60)*1000),end:new Date((time+3600)*1000)});
+ await receiver(db,secret)(req(body()+' '));await drainOne(db,applyPaymentSnapshot);
+ const after=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'sub'}});expect(after.billingVersion).toBe(first.billingVersion+1);
+ expect(await prisma.expertSubscription.count({where:{id:'sub',billingVersion:plan.row.version}})).toBe(0);
+ expect(await reconciliationStore.apply(plan)).toBe(false);expect(await prisma.billingReconciliation.count()).toBe(0);
+});

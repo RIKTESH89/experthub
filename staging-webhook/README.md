@@ -10,7 +10,7 @@ Public receiver verifies HMAC on original Buffer before any JSON parse. SHA256 r
 
 Restricted worker claims using one UPDATE with SKIP LOCKED, two-minute lease, random UUID fencing token, bounded exponential retries capped at 30 minutes, default eight attempts. Expired final attempt leases become dead. Stale owners cannot acknowledge or reschedule replacement leases. Shared applyPaymentSnapshot owns atomic PaymentEvent, entitlement, counter, notification and billing-outbox effects; no reducer copy or protected Vercel relay. Crash between reducer commit and inbox acknowledgement replays the digest receipt. Shared supportedPaymentEvent/providerDate helpers are reused.
 
-Different serializations produce different receipts. Current shared reducer retains entitlement/counter/notification/outbox idempotency but increments billingVersion for each accepted distinct charge receipt. This is existing shared behavior, not claimed as exactly-once processing. Tests check this boundary. No automatic dead-letter replay, deletion or retention job; operators must review and approve recovery. Raw bodies may contain payment/customer metadata; plan access and retention before hosted use.
+Different serializations produce different receipts. Current shared reducer retains entitlement/counter/notification/outbox idempotency but increments billingVersion for each accepted distinct charge receipt. This is existing shared behavior, not claimed as exactly-once processing. Tests check this boundary and confirm that the second serialization invalidates the prior review CAS version (store rejects the stale plan; no reconciliation audit created). It can require a fresh admin review even without a changed paid interval. No automatic dead-letter replay, deletion or retention job; operators must review and approve recovery. Raw bodies may contain payment/customer metadata; plan access and retention before hosted use.
 
 ## Runtime boundaries
 
@@ -26,7 +26,7 @@ Run `bash staging-webhook/run-local.sh`: own mktemp cluster, loopback 55447, syn
 
 ## Next exact setup approvals
 
-1. Resolve hosting compatibility first: installed Neon Functions skill says beta availability only us-east-2, incompatible with approved Singapore staging project. Official docs fetch failed; no account/provider capability call made. Confirm availability through authorized read-only provider evidence, or approve a revised host/region architecture. Do not silently create another project.
+1. Confirm actual Function capabilities and usage limits on the existing approved staging project before deployment. Current official docs (https://neon.com/docs/compute/functions/overview, read 2026-10-03) support Singapore and all plans, subject to usage limits. The installed skill beta/us-east-2 statement is stale and superseded. No account/provider capability call made here. No hosting-region change is proposed.
 2. Approve parent integration of migration 18/model and migration wrapper count 17→18, then applying it only to exact verified staging identity.
 3. Approve creation and scoped grants of the two named roles and injection of distinct restricted pooled/direct URLs, Test webhook secret and worker auth secret; pin actual database name/metadata from verified staging evidence. Create nothing before approval.
 4. Approve host adapters/dependency packaging and deploying one public receiver plus restricted worker; no protected Vercel relay. Verify timeouts and platform post-response wake lifecycle, retaining recovery sweep as correctness mechanism.
