@@ -2,14 +2,16 @@ import { createHash, createHmac, timingSafeEqual, randomUUID } from 'node:crypto
 import type { PaymentSnapshot } from '../src/lib/payments/state';
 export interface Database { query(sql:string, values?:unknown[]):Promise<{rows:any[]}> }
 export const stagingIdentity = { project:'steep-wildflower-10013234', branch:'br-steep-pond-b3xfo61k', endpoint:'ep-quiet-bread-b3rqji3g' } as const;
-export function credentials(env:NodeJS.ProcessEnv) {
- for(const [key,value] of Object.entries(stagingIdentity)) if(env[`STAGING_${key.toUpperCase()}_ID`]!==value) throw new Error('Staging identity mismatch');
- const pooled=env.WEBHOOK_DATABASE_URL, direct=env.WEBHOOK_DIRECT_URL;
- for(const url of [pooled,direct]) {
+export const stagingHosts={direct:'ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech',pooled:'ep-quiet-bread-b3rqji3g-pooler.c-4.ap-southeast-1.aws.neon.tech'};
+export function credentials(env:NodeJS.ProcessEnv,role='staging_webhook_worker') {
+ for(const [key,value] of Object.entries(stagingIdentity))if(env[`STAGING_${key.toUpperCase()}_ID`]!==value)throw new Error('Staging identity mismatch');
+ if(!['staging_webhook_receiver','staging_webhook_worker'].includes(role))throw new Error('Restricted role required');
+ const pooled=env.WEBHOOK_DATABASE_URL,direct=env.WEBHOOK_DIRECT_URL;
+ for(const [url,host] of [[pooled,stagingHosts.pooled],[direct,stagingHosts.direct]]){
   if(!url)throw new Error('Explicit database override required');
-  const u=new URL(url); if(!['postgres:','postgresql:'].includes(u.protocol)||u.pathname.length<2||![`${stagingIdentity.endpoint}.`,`${stagingIdentity.endpoint}-pooler.`].some(p=>u.hostname.startsWith(p)) || !u.hostname.endsWith('.neon.tech') || u.searchParams.get('sslmode')!=='require')throw new Error('Database endpoint mismatch');
+  const u=new URL(url);
+  if(!['postgres:','postgresql:'].includes(u.protocol)||u.hostname!==host||u.pathname!=='/neondb'||decodeURIComponent(u.username)!==role||!u.password||u.hash||(u.port&&u.port!=='5432')||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='require'||Array.from(u.searchParams.keys()).some(k=>k!=='sslmode'))throw new Error('Database routing mismatch');
  }
- // Always replace BOTH credentials injected by the function platform before importing Prisma.
  return {DATABASE_URL:pooled!,DIRECT_URL:direct!,DATABASE_URL_UNPOOLED:direct!};
 }
 const digestOf=(body:Buffer)=>createHash('sha256').update(body).digest('hex');
