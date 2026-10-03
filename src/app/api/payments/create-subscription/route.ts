@@ -1,3 +1,5 @@
+import { beginProvisioning, provisioningStore } from "@/lib/payments/provisioning-store";
+import { provision } from "@/lib/payments/provisioning";
 import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { cancelSubscription } from "@/lib/payments/cancel";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { expertId, tier } = body;
 
-    if (!expertId || !tier) {
+    if (typeof expertId !== "string" || !["FREE", "STANDARD", "PREMIUM"].includes(tier)) {
       return NextResponse.json(
         { error: "expertId and tier are required" },
         { status: 400 }
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
     // If there's a PENDING subscription, cancel the old Razorpay subscription first
-    if (existing && existing.razorpaySubscriptionId) {
+    if (existing && existing.razorpaySubscriptionId && existing.status !== "PENDING") {
       try {
         await cancelSubscription(existing.id, session.user.id);
       } catch {
@@ -95,77 +97,14 @@ export async function POST(request: NextRequest) {
 
     const razorpay = getRazorpay();
 
-    // Create a Razorpay plan (each subscription gets its own plan to handle price changes)
-    const plan = await razorpay.plans.create({
-      period: "monthly",
-      interval: 1,
-      item: {
-        name: `${expertProfile.displayName} - ${tier} Plan`,
-        amount: amountInPaise,
-        currency: "INR",
-        description: `Monthly subscription to ${expertProfile.displayName}`,
-      },
+    const intent = await beginProvisioning(session.user.id, expertProfile.id, tier, pricingTier.price);
+    const result = await provision(intent, provisioningStore, {
+      createPlan: async () => (await razorpay.plans.create({ period: "monthly", interval: 1, item: { name: `${expertProfile.displayName} - ${tier} Plan`, amount: amountInPaise, currency: "INR" } })).id,
+      createSubscription: async (planId, intentId) => (await razorpay.subscriptions.create({ plan_id: planId, total_count: 120, quantity: 1, notes: { provisioningIntentId: intentId, subscriberId: session.user.id, expertProfileId: expertProfile.id, tier } })).id,
     });
-
-    // Create Razorpay subscription
-    const subscription = await razorpay.subscriptions.create({
-      plan_id: plan.id,
-      total_count: 120, // Max 10 years
-      quantity: 1,
-      notes: {
-        subscriberId: session.user.id,
-        expertProfileId: expertProfile.id,
-        tier,
-        expertName: expertProfile.displayName,
-      },
-    });
-
-    // Create a PENDING subscription in our DB
-    // If DB write fails, cancel the Razorpay subscription to avoid orphans
-    try {
-      if (existing) {
-        await prisma.expertSubscription.update({
-          where: { id: existing.id },
-          data: {
-            status: "PENDING",
-            tier: tier as "FREE" | "STANDARD" | "PREMIUM",
-            price: pricingTier.price,
-            razorpaySubscriptionId: subscription.id,
-            startDate: new Date(),
-            endDate: null,
-            currentPeriodEnd: null,
-            paidPeriodStart: null,
-            renewalCancelledAt: null,
-            razorpayPaymentId: null,
-            lastPaymentEventAt: null,
-            lastPaymentEventRank: 0,
-          },
-        });
-      } else {
-        await prisma.expertSubscription.create({
-          data: {
-            subscriberId: session.user.id,
-            expertProfileId: expertProfile.id,
-            status: "PENDING",
-            price: pricingTier.price,
-            tier: tier as "FREE" | "STANDARD" | "PREMIUM",
-            razorpaySubscriptionId: subscription.id,
-          },
-        });
-      }
-    } catch (dbError) {
-      // DB write failed — cancel the Razorpay subscription to prevent orphan
-      console.error("DB write failed after Razorpay subscription created, cancelling:", dbError);
-      try {
-        await razorpay.subscriptions.cancel(subscription.id);
-      } catch {
-        console.error("Failed to cancel orphaned Razorpay subscription:", subscription.id);
-      }
-      throw dbError; // Re-throw to hit outer catch and return 500
-    }
-
+    if (result.outcome !== "attached" || !result.providerId) return NextResponse.json({ error: "Payment provisioning requires recovery review", intentId: intent.id, code: "PROVISIONING_REVIEW_REQUIRED" }, { status: 503 });
     return NextResponse.json({
-      subscriptionId: subscription.id,
+      subscriptionId: result.providerId,
       razorpayKeyId: process.env.RAZORPAY_KEY_ID,
       amount: amountInPaise,
       currency: "INR",

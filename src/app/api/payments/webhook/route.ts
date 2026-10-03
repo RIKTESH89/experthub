@@ -1,5 +1,4 @@
 import { isPreviewIsolated } from "@/lib/preview-isolation";
-import { sendNotificationEmail } from "@/lib/email/send-notification-email";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { applyPaymentSnapshot, PaymentError, providerDate, supportedPaymentEvent } from "@/lib/payments/state";
@@ -27,9 +26,6 @@ export async function POST(request: NextRequest) {
       paymentConfirmed: event.payload?.payment?.entity?.status === "captured",
       currentStart: providerDate(entity.current_start), currentEnd: providerDate(entity.current_end),
     });
-    if ("notification" in result && result.notification) {
-      sendNotificationEmail({ type: "new_subscriber", recipientUserId: result.notification.recipientUserId, data: { subscriberName: result.notification.subscriberName } }).catch(() => {});
-    }
     return NextResponse.json({ received: true, outcome: result.outcome });
   } catch (error) {
     const status = error instanceof PaymentError ? error.status : error instanceof SyntaxError ? 400 : 500;

@@ -1,3 +1,4 @@
+import { changeExistingFree } from "@/lib/payments/free-transition";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { cancelSubscription } from "@/lib/payments/cancel";
 import { PaymentError } from "@/lib/payments/state";
@@ -52,8 +53,7 @@ export async function POST(
       if (existingSubscription.razorpaySubscriptionId) {
         await cancelSubscription(existingSubscription.id, session.user.id);
       } else {
-        await prisma.expertSubscription.update({ where: { id: existingSubscription.id }, data: { status: "CANCELLED", endDate: new Date() } });
-        await prisma.expertProfile.update({ where: { id: expertProfile.id }, data: { totalSubscribers: { decrement: 1 } } });
+        await changeExistingFree(existingSubscription.id, session.user.id, "cancel");
       }
 
       isSubscribed = existingSubscription.razorpaySubscriptionId ? hasSubscriptionAccess(await prisma.expertSubscription.findUnique({ where: { id: existingSubscription.id } })) : false;
@@ -73,33 +73,7 @@ export async function POST(
         await cancelSubscription(existingSubscription.id, session.user.id);
       }
 
-      const wasPreviouslyActive = existingSubscription.status === "ACTIVE";
-
-      await prisma.expertSubscription.update({
-        where: { id: existingSubscription.id },
-        data: {
-          status: "ACTIVE",
-          tier: "FREE",
-          price: 0,
-          startDate: new Date(),
-          endDate: null,
-          razorpaySubscriptionId: null,
-          razorpayPaymentId: null,
-          currentPeriodEnd: null,
-          paidPeriodStart: null,
-          renewalCancelledAt: null,
-          lastPaymentEventAt: null,
-          lastPaymentEventRank: 0,
-        },
-      });
-
-      // Only increment if wasn't already active
-      if (!wasPreviouslyActive) {
-        await prisma.expertProfile.update({
-          where: { id: expertProfile.id },
-          data: { totalSubscribers: { increment: 1 } },
-        });
-      }
+      await changeExistingFree(existingSubscription.id, session.user.id, "activate");
 
       isSubscribed = true;
     } else {

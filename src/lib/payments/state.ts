@@ -1,3 +1,4 @@
+import { enqueueBilling } from "./billing-store";
 import prisma from "@/lib/prisma";
 import type { ExpertSubscription, Prisma, SubscriptionStatus } from "@prisma/client";
 import { hasSubscriptionAccess, subscriptionAccessWhere } from "./access";
@@ -78,6 +79,7 @@ async function transition(tx: Prisma.TransactionClient, sub: ExpertSubscription,
     data.status = status;
   }
   await tx.expertSubscription.update({ where: { id: sub.id }, data });
+  await tx.$executeRaw`UPDATE "ExpertSubscription" SET "billingVersion"="billingVersion"+1 WHERE "id"=${sub.id}`;
   await updateCounter(tx, sub.expertProfileId);
   let notification: { recipientUserId: string; subscriberName: string } | undefined;
   const notificationId = `payment-activation-${sub.id}-${input.providerSubscriptionId}`;
@@ -87,7 +89,8 @@ async function transition(tx: Prisma.TransactionClient, sub: ExpertSubscription,
     notification = { recipientUserId: expert.userId, subscriberName: subscriber?.name || "Someone" };
     await tx.notification.create({ data: { id: notificationId, userId: expert.userId, title: "New Subscriber", message: `${notification.subscriberName} subscribed to your ${sub.tier} plan!`, link: "/expert/subscribers" } });
   }
-  return { status, outcome, notification };
+  if (notification) await enqueueBilling(tx, notificationId, { type: "new_subscriber", ...notification });
+  return { status, outcome };
 }
 export async function applyPaymentSnapshot(input: PaymentSnapshot) {
   return prisma.$transaction(async tx => {
@@ -121,6 +124,7 @@ export async function completeCancellation(id: string, subscriberId: string, pro
     if (sub.status !== "CANCELLED") {
       await tx.$queryRaw`SELECT "id" FROM "ExpertProfile" WHERE "id"=${sub.expertProfileId} FOR UPDATE`;
       await tx.expertSubscription.update({ where: { id }, data: { status: "CANCELLED", renewalCancelledAt: new Date(), endDate: sub.currentPeriodEnd || new Date() } });
+      await tx.$executeRaw`UPDATE "ExpertSubscription" SET "billingVersion"="billingVersion"+1 WHERE "id"=${sub.id}`;
       await updateCounter(tx, sub.expertProfileId);
     }
     const current = await tx.expertSubscription.findUniqueOrThrow({ where: { id } });

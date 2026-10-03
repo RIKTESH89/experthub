@@ -269,6 +269,7 @@ model KnowledgeItem {
 }
 
 model ExpertSubscription {
+  billingVersion          Int                @default(0)
   id                      String             @id @default(cuid())
   subscriberId            String
   expertProfileId         String
@@ -831,4 +832,40 @@ model PersonaReleaseHead {
   expertProfileId String @id
   releaseId String
   generation Int @default(1)
+}
+
+model BillingOutbox {
+  id String @id
+  payload Json
+  state String @default("READY")
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now())
+  leaseToken String?
+  leaseUntil DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  @@index([state, nextAttemptAt])
+}
+model BillingProvisioning {
+  id String @id
+  subscriberId String
+  expertProfileId String
+  subscriptionId String?
+  expectedVersion Int
+  tier String
+  price Float
+  state String @default("READY")
+  version Int @default(0)
+  planId String?
+  providerId String? @unique
+  createdAt DateTime @default(now())
+  // Open-pair partial uniqueness is enforced by the additive SQL migration.
+}
+model BillingReconciliation {
+  id String @id
+  subscriptionId String
+  reviewedDigest String @unique
+  previousVersion Int
+  evidence Json
+  createdAt DateTime @default(now())
 }
