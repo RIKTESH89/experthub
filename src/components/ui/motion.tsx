@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type HTMLMotionProps, type Variants, AnimatePresence } from "motion/react";
+import { motion, type HTMLMotionProps, type Variants, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
@@ -125,8 +125,14 @@ export function AnimatedCounter({
   const [displayValue, setDisplayValue] = useState(0);
   const prevValue = useRef(0);
   const frameRef = useRef<number>(0);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion || duration <= 0) {
+      prevValue.current = value;
+      setDisplayValue(value);
+      return;
+    }
     const startValue = prevValue.current;
     const endValue = value;
     const startTime = performance.now();
@@ -149,7 +155,7 @@ export function AnimatedCounter({
     prevValue.current = value;
 
     return () => cancelAnimationFrame(frameRef.current);
-  }, [value, duration]);
+  }, [value, duration, reduceMotion]);
 
   return (
     <span className={cn("tabular-nums", className)}>

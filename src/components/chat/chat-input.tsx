@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useId } from "react";
 import { Send } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
@@ -19,6 +18,7 @@ export function ChatInput({
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const helpId = useId();
 
   const handleSend = useCallback(() => {
     const trimmed = value.trim();
@@ -32,7 +32,7 @@ export function ChatInput({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
+      if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
         e.preventDefault();
         handleSend();
       }
@@ -56,7 +56,7 @@ export function ChatInput({
         className={cn(
           "relative flex items-end gap-2 rounded-xl border bg-card transition-all duration-200",
           isFocused
-            ? "border-blue-700/40 ring-1 ring-blue-700/20"
+            ? "border-primary ring-1 ring-primary/30"
             : "border-border/60 hover:border-border"
         )}
       >
@@ -64,6 +64,7 @@ export function ChatInput({
           <textarea
             ref={textareaRef}
             aria-label="Message to Digital Twin"
+            aria-describedby={helpId}
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
@@ -76,7 +77,7 @@ export function ChatInput({
             disabled={isDisabled}
             rows={1}
             className={cn(
-              "w-full resize-none bg-transparent px-4 py-3 text-sm font-sans leading-relaxed",
+              "w-full resize-none bg-transparent px-4 py-3 text-base font-sans leading-relaxed",
               "placeholder:text-muted-foreground focus:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "scrollbar-none"
@@ -86,9 +87,7 @@ export function ChatInput({
         </div>
 
         <div className="flex items-center gap-1 p-2">
-          <AnimatePresence mode="wait">
-            <motion.button
-              key={hasContent ? "active" : "inactive"}
+            <button
               type="button"
               aria-label="Send message"
               onClick={handleSend}
@@ -99,23 +98,16 @@ export function ChatInput({
                   ? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              whileHover={hasContent && !isDisabled ? { scale: 1.05 } : {}}
-              whileTap={hasContent && !isDisabled ? { scale: 0.92 } : {}}
-              transition={{ duration: 0.2 }}
             >
               <Send className="h-4 w-4" />
-            </motion.button>
-          </AnimatePresence>
+            </button>
         </div>
       </div>
 
-      <p className="mt-2 text-center text-[10px] font-sans text-muted-foreground">
+      <p id={helpId} className="mt-2 text-center text-xs font-sans text-muted-foreground">
         AI responses are generated from the expert&apos;s knowledge base
         <span className="mx-1.5 inline-block h-0.5 w-0.5 rounded-full bg-muted-foreground align-middle" />
-        <kbd className="rounded-md border border-border/50 bg-card px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
+        <kbd className="rounded-md border border-border/50 bg-card px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
           Shift+Enter
         </kbd>{" "}
         for new line

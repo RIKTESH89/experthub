@@ -67,7 +67,7 @@ export function ChatInterface({
 
   const scrollToBottom = useCallback(() => {
     if (!userScrolledUp.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }
   }, []);
 
@@ -506,7 +506,7 @@ export function ChatInterface({
   const handleForceScrollToBottom = useCallback(() => {
     userScrolledUp.current = false;
     setShowScrollButton(false);
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }, []);
 
   return (
