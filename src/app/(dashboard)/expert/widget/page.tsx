@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import {
   Code,
@@ -56,9 +58,10 @@ interface WidgetConfig {
   embedCode: string;
 }
 
-export default function ExpertWidgetPage() {
+function ExpertWidgetPageContent() {
   const [config, setConfig] = useState<WidgetConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [domainInput, setDomainInput] = useState("");
@@ -75,6 +78,7 @@ export default function ExpertWidgetPage() {
     async function fetchConfig() {
       try {
         const res = await fetch("/api/expert/widget");
+        if (!res.ok) throw new Error("Saved widget unavailable");
         if (res.ok) {
           const data: WidgetConfig = await res.json();
           setConfig(data);
@@ -86,7 +90,7 @@ export default function ExpertWidgetPage() {
           setAllowedDomains(data.allowedDomains || []);
         }
       } catch {
-        // Failed to load config
+        setLoadError(true);
       } finally {
         setIsLoading(false);
       }
@@ -140,6 +144,8 @@ export default function ExpertWidgetPage() {
     }
   }
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Widget configuration unavailable</h1><p className="text-muted-foreground">We could not load your saved information. Refresh before making changes.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -154,16 +160,16 @@ export default function ExpertWidgetPage() {
       <div className="space-y-8">
         {/* Header */}
         <FadeIn delay={0.05}>
-          <div className="relative overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-blue-50/80 to-blue-50/60 px-6 py-6 sm:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-primary/60 bg-gradient-to-br from-primary via-primary/80 to-primary/60 px-6 py-6 sm:px-8">
             <div className="relative flex items-center gap-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
-                <Code className="h-6 w-6 text-white" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary ">
+                <Code className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
                   Embed Widget
-                </h2>
-                <p className="mt-0.5 text-sm text-blue-700/70">
+                </h1>
+                <p className="mt-0.5 text-sm text-primary/70">
                   Add your AI Twin to any website with a single code snippet
                 </p>
               </div>
@@ -176,7 +182,7 @@ export default function ExpertWidgetPage() {
             {/* Status Toggle */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
@@ -199,15 +205,15 @@ export default function ExpertWidgetPage() {
                       className={`
                         relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full
                         transition-colors duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2
-                        focus-visible:ring-blue-600 focus-visible:ring-offset-2
-                        ${isEnabled ? "bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-inner" : "bg-gray-200"}
+                        focus-visible:ring-primary focus-visible:ring-offset-2
+                        ${isEnabled ? "bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-inner" : "bg-muted"}
                       `}
                     >
                       <motion.span
                         layout
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                         className={`
-                          pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
+                          pointer-events-none inline-block h-5 w-5 rounded-full bg-card shadow-lg ring-0
                           ${isEnabled ? "translate-x-6" : "translate-x-1"}
                         `}
                       />
@@ -217,10 +223,10 @@ export default function ExpertWidgetPage() {
                         className={`h-2 w-2 rounded-full ${
                           isEnabled
                             ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
-                            : "bg-gray-300"
+                            : "bg-muted"
                         }`}
                       />
-                      <Label className={`text-sm font-medium ${isEnabled ? "text-emerald-700" : "text-gray-500"}`}>
+                      <Label className={`text-sm font-medium ${isEnabled ? "text-emerald-700" : "text-muted-foreground"}`}>
                         {isEnabled ? "Live" : "Disabled"}
                       </Label>
                     </div>
@@ -232,11 +238,11 @@ export default function ExpertWidgetPage() {
             {/* Appearance */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-                      <Palette className="h-4 w-4 text-blue-700" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                      <Palette className="h-4 w-4 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-base">Appearance</CardTitle>
@@ -258,7 +264,7 @@ export default function ExpertWidgetPage() {
                           type="color"
                           value={primaryColor}
                           onChange={(e) => setPrimaryColor(e.target.value)}
-                          className="h-10 w-14 cursor-pointer rounded-lg border-2 border-gray-200 p-1 transition-all hover:border-blue-300"
+                          className="h-10 w-14 cursor-pointer rounded-lg border-2 border-border p-1 transition-all hover:border-primary"
                         />
                       </div>
                       <Input
@@ -295,7 +301,7 @@ export default function ExpertWidgetPage() {
             {/* Greeting */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
@@ -315,7 +321,7 @@ export default function ExpertWidgetPage() {
                     onChange={(e) => setGreeting(e.target.value)}
                     placeholder="Hello! Ask me anything about my expertise."
                     rows={3}
-                    className="resize-none transition-all focus:ring-2 focus:ring-blue-600/20"
+                    className="resize-none transition-all focus:ring-2 focus:ring-primary/20"
                   />
                 </CardContent>
               </Card>
@@ -324,11 +330,11 @@ export default function ExpertWidgetPage() {
             {/* Free Questions */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-                      <MessageSquare className="h-4 w-4 text-blue-600" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                      <MessageSquare className="h-4 w-4 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-base">Free Questions</CardTitle>
@@ -362,7 +368,7 @@ export default function ExpertWidgetPage() {
             {/* Allowed Domains */}
             <StaggerItem>
               <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50">
@@ -398,7 +404,7 @@ export default function ExpertWidgetPage() {
                       type="button"
                       variant="outline"
                       onClick={handleAddDomain}
-                      className="cursor-pointer gap-1.5 border-blue-200 text-blue-800 hover:bg-blue-50 transition-all duration-200"
+                      className="cursor-pointer gap-1.5 border-primary text-primary hover:bg-primary transition-all duration-200"
                     >
                       <Plus className="h-4 w-4" />
                       Add
@@ -422,13 +428,13 @@ export default function ExpertWidgetPage() {
                           >
                             <Badge
                               variant="secondary"
-                              className="gap-1.5 rounded-full border border-blue-200/60 bg-blue-50 px-3 py-1 text-blue-800 hover:bg-blue-100"
+                              className="gap-1.5 rounded-full border border-primary/60 bg-primary/10 px-3 py-1 text-primary hover:bg-primary"
                             >
                               <Globe className="h-3 w-3" />
                               {domain}
                               <button
                                 onClick={() => handleRemoveDomain(domain)}
-                                className="ml-0.5 rounded-full p-0.5 cursor-pointer transition-colors duration-200 hover:bg-blue-200 hover:text-blue-900"
+                                className="ml-0.5 rounded-full p-0.5 cursor-pointer transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                               >
                                 <X className="h-3 w-3" />
                               </button>
@@ -467,7 +473,7 @@ export default function ExpertWidgetPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="group relative">
-                      <pre className="rounded-xl border border-gray-200/80 bg-gradient-to-br from-gray-50 to-gray-100/80 p-4 text-sm leading-relaxed overflow-x-auto font-mono text-gray-700">
+                      <pre className="rounded-xl border border-border/80 bg-gradient-to-br from-gray-50 to-gray-100/80 p-4 text-sm leading-relaxed overflow-x-auto font-mono text-muted-foreground">
                         <code>{config.embedCode}</code>
                       </pre>
                       <motion.div
@@ -481,7 +487,7 @@ export default function ExpertWidgetPage() {
                           className={`gap-1.5 transition-all duration-300 ${
                             copied
                               ? "border-emerald-300 bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-500/10"
-                              : "border-gray-200 bg-white/80  hover:border-blue-300 hover:bg-blue-50"
+                              : "border-border bg-card/80  hover:border-primary hover:bg-primary"
                           }`}
                         >
                           <AnimatePresence mode="wait">
@@ -526,7 +532,7 @@ export default function ExpertWidgetPage() {
                   <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="cursor-pointer w-full bg-[#1E40AF] py-5 text-sm font-semibold shadow-lg shadow-blue-700/25 transition-all duration-200 hover:bg-[#1e3a8a] hover:shadow-xl sm:w-auto sm:px-8"
+                    className="cursor-pointer w-full bg-primary py-5 text-sm font-semibold  transition-all duration-200 hover:bg-primary/90  sm:w-auto sm:px-8"
                   >
                     {isSaving ? (
                       <span className="flex items-center gap-2">
@@ -555,10 +561,10 @@ export default function ExpertWidgetPage() {
             <FadeIn delay={0.2} direction="right">
               <div className="sticky top-6">
                 <Card className="overflow-hidden border-0 shadow-lg ring-1 ring-gray-200/60">
-                  <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-gray-50/50 pb-3">
+                  <CardHeader className="border-b border-border bg-gradient-to-r from-gray-50 to-gray-50/50 pb-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
-                        <Eye className="h-4 w-4 text-blue-700" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                        <Eye className="h-4 w-4 text-primary" />
                       </div>
                       <div>
                         <CardTitle className="text-base">Live Preview</CardTitle>
@@ -570,16 +576,16 @@ export default function ExpertWidgetPage() {
                   </CardHeader>
                   <CardContent className="p-4">
                     {/* Glassmorphism preview container */}
-                    <div className="relative rounded-xl border border-white/20 bg-gradient-to-br from-slate-100/80 via-white/50 to-blue-50/40 p-1 shadow-inner ">
-                      <div className="relative h-72 overflow-hidden rounded-lg bg-white/60">
+                    <div className="relative rounded-xl border border-white/20 bg-gradient-to-br from-slate-100/80 via-white/50 to-primary/40 p-1 shadow-inner ">
+                      <div className="relative h-72 overflow-hidden rounded-lg bg-card/60">
                         {/* Simulated page background */}
                         <div className="p-4 space-y-2.5 opacity-40">
-                          <div className="h-3 w-3/4 rounded-full bg-gray-300/60" />
-                          <div className="h-3 w-1/2 rounded-full bg-gray-300/60" />
-                          <div className="h-3 w-2/3 rounded-full bg-gray-300/60" />
-                          <div className="h-14 w-full rounded-lg bg-gray-200/40 mt-3" />
-                          <div className="h-3 w-3/4 rounded-full bg-gray-300/60" />
-                          <div className="h-3 w-1/2 rounded-full bg-gray-300/60" />
+                          <div className="h-3 w-3/4 rounded-full bg-muted/60" />
+                          <div className="h-3 w-1/2 rounded-full bg-muted/60" />
+                          <div className="h-3 w-2/3 rounded-full bg-muted/60" />
+                          <div className="h-14 w-full rounded-lg bg-muted/40 mt-3" />
+                          <div className="h-3 w-3/4 rounded-full bg-muted/60" />
+                          <div className="h-3 w-1/2 rounded-full bg-muted/60" />
                         </div>
 
                         {/* Widget bubble */}
@@ -600,15 +606,15 @@ export default function ExpertWidgetPage() {
                               "12px",
                           }}
                         >
-                          <MessageSquare className="h-5 w-5 text-white" />
+                          <MessageSquare className="h-5 w-5 text-primary-foreground" />
                         </motion.div>
                       </div>
                     </div>
 
                     {/* Mini chat preview */}
-                    <div className="mt-4 overflow-hidden rounded-xl border border-gray-200/80 shadow-sm">
+                    <div className="mt-4 overflow-hidden rounded-xl border border-border/80 shadow-sm">
                       <div
-                        className="flex items-center gap-2 px-3 py-2.5 text-white text-xs font-medium"
+                        className="flex items-center gap-2 px-3 py-2.5 text-primary-foreground text-xs font-medium"
                         style={{
                           background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`,
                         }}
@@ -616,7 +622,7 @@ export default function ExpertWidgetPage() {
                         <MessageSquare className="h-3.5 w-3.5" />
                         AI Twin Chat
                       </div>
-                      <div className="bg-white/80 p-3 ">
+                      <div className="bg-card/80 p-3 ">
                         <div className="flex gap-2">
                           <div
                             className="h-6 w-6 shrink-0 rounded-full flex items-center justify-center"
@@ -627,7 +633,7 @@ export default function ExpertWidgetPage() {
                               style={{ color: primaryColor }}
                             />
                           </div>
-                          <div className="rounded-lg rounded-tl-none bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                          <div className="rounded-lg rounded-tl-none bg-muted px-3 py-2 text-xs text-muted-foreground">
                             {greeting ||
                               "Hello! Ask me anything about my expertise."}
                           </div>
@@ -643,4 +649,8 @@ export default function ExpertWidgetPage() {
       </div>
     </PageTransition>
   );
+}
+
+export default function ExpertWidgetPage() {
+  return <ExpertStudio section="widget"><ExpertWidgetPageContent /></ExpertStudio>;
 }

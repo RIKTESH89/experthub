@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useCallback, useEffect, useState } from "react";
 import { Users, UserCheck, DollarSign, MessageSquare, BarChart3, Activity, Sparkles } from "lucide-react";
 import {
@@ -96,21 +98,25 @@ function LoadingSkeleton() {
   );
 }
 
-export default function ExpertAnalyticsPage() {
+function ExpertAnalyticsPageContent() {
   const [period, setPeriod] = useState("30d");
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [questions, setQuestions] = useState<QuestionsData | null>(null);
   const [topicGaps, setTopicGaps] = useState<TopicGapsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const fetchData = useCallback(async (p: string) => {
     setLoading(true);
+    setLoadError(false);
     try {
       const [analyticsRes, questionsRes, gapsRes] = await Promise.all([
         fetch(`/api/expert/analytics?period=${p}`),
         fetch(`/api/expert/analytics/questions?period=${p}&limit=20`),
         fetch(`/api/expert/analytics/topic-gaps?period=${p}`),
       ]);
+
+      if (!analyticsRes.ok || !questionsRes.ok || !gapsRes.ok) throw new Error("Analytics unavailable");
 
       if (analyticsRes.ok) {
         setAnalytics(await analyticsRes.json());
@@ -123,6 +129,7 @@ export default function ExpertAnalyticsPage() {
         setTopicGaps(await gapsRes.json());
       }
     } catch (err) {
+      setLoadError(true);
       console.error("Failed to fetch analytics:", err);
     } finally {
       setLoading(false);
@@ -137,14 +144,16 @@ export default function ExpertAnalyticsPage() {
     setPeriod(newPeriod);
   };
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Analytics unavailable</h1><p className="text-muted-foreground">We could not load the activity for this period. Missing data does not mean zero activity or no knowledge gaps.</p><button className="underline" onClick={() => fetchData(period)}>Retry analytics</button></div>;
+
   if (loading) {
     return (
       <div className="space-y-8 p-6 lg:p-8">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-600/20 ring-1 ring-blue-600/20">
-              <BarChart3 className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/20 ring-1 ring-primary/20">
+              <BarChart3 className="h-6 w-6 text-primary dark:text-primary" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Analytics</h1>
@@ -168,8 +177,8 @@ export default function ExpertAnalyticsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <FadeIn direction="left">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-600/20 ring-1 ring-blue-600/20 shadow-lg shadow-blue-600/5">
-              <BarChart3 className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/20 ring-1 ring-primary/20 shadow-lg shadow-primary/5">
+              <BarChart3 className="h-6 w-6 text-primary dark:text-primary" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Analytics</h1>
@@ -221,7 +230,7 @@ export default function ExpertAnalyticsPage() {
       {/* Row 2: Subscriber Growth + Revenue Charts */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <FadeIn delay={0.2} direction="up">
-          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md">
+          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow ">
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.02] to-transparent pointer-events-none" />
             <div className="relative">
               <SubscriberGrowthChart data={analytics?.subscriberGrowth ?? []} />
@@ -229,8 +238,8 @@ export default function ExpertAnalyticsPage() {
           </div>
         </FadeIn>
         <FadeIn delay={0.3} direction="up">
-          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent pointer-events-none" />
+          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow ">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent pointer-events-none" />
             <div className="relative">
               <RevenueChart data={analytics?.revenueOverTime ?? []} />
             </div>
@@ -240,14 +249,14 @@ export default function ExpertAnalyticsPage() {
 
       {/* Row 3: Twin Usage Line Chart */}
       <FadeIn delay={0.35} direction="up">
-        <Card className="relative overflow-hidden border-border/60 shadow-sm transition-shadow hover:shadow-md">
+        <Card className="relative overflow-hidden border-border/60 shadow-sm transition-shadow ">
           {/* Subtle top accent */}
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent pointer-events-none" />
           <CardHeader className="relative pb-2">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600/10 ring-1 ring-blue-600/20">
-                <Activity className="h-4.5 w-4.5 text-blue-700 dark:text-blue-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                <Activity className="h-4.5 w-4.5 text-primary dark:text-primary" />
               </div>
               <div>
                 <CardTitle className="text-base font-semibold">Twin Usage</CardTitle>
@@ -315,7 +324,7 @@ export default function ExpertAnalyticsPage() {
 
       {/* Row 4: Content Performance */}
       <FadeIn delay={0.4} direction="up">
-        <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md">
+        <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow ">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.015] to-transparent pointer-events-none" />
           <div className="relative">
@@ -327,16 +336,16 @@ export default function ExpertAnalyticsPage() {
       {/* Row 5: Questions + Topic Gaps */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <FadeIn delay={0.45} direction="up">
-          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md h-full">
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.015] to-transparent pointer-events-none" />
+          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow  h-full">
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.015] to-transparent pointer-events-none" />
             <div className="relative h-full">
               <PopularQuestionsList questions={questions?.questions ?? []} />
             </div>
           </div>
         </FadeIn>
         <FadeIn delay={0.5} direction="up">
-          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md h-full">
+          <div className="relative rounded-xl border border-border/60 bg-card shadow-sm overflow-hidden transition-shadow  h-full">
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-rose-500/30 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-br from-rose-500/[0.015] to-transparent pointer-events-none" />
             <div className="relative h-full">
@@ -347,4 +356,8 @@ export default function ExpertAnalyticsPage() {
       </div>
     </PageTransition>
   );
+}
+
+export default function ExpertAnalyticsPage() {
+  return <ExpertStudio section="analytics"><ExpertAnalyticsPageContent /></ExpertStudio>;
 }

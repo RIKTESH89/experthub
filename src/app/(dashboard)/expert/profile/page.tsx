@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
@@ -68,10 +70,11 @@ interface ExpertProfileData {
   } | null;
 }
 
-export default function ExpertProfilePage() {
+function ExpertProfilePageContent() {
   useSession();
   const [profile, setProfile] = useState<ExpertProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [specInput, setSpecInput] = useState("");
@@ -105,6 +108,7 @@ export default function ExpertProfilePage() {
           websiteUrl: data.socialLinks?.website ?? "",
         });
       } catch {
+        setLoadError(true);
         toast.error("Failed to load profile");
       } finally {
         setIsLoading(false);
@@ -166,6 +170,8 @@ export default function ExpertProfilePage() {
     }
   };
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Profile unavailable</h1><p className="text-muted-foreground">We could not load your saved information. Refresh before making changes.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-2xl space-y-6">
@@ -180,18 +186,18 @@ export default function ExpertProfilePage() {
       <div className="mx-auto max-w-2xl space-y-8">
         {/* Premium Profile Header */}
         <FadeIn delay={0.05}>
-          <div className="relative overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-blue-50/80 to-blue-50/60">
+          <div className="relative overflow-hidden rounded-2xl border border-primary/60 bg-gradient-to-br from-primary via-primary/80 to-primary/60">
             <div className="px-6 py-6 sm:px-8 sm:py-8">
               <div className="flex items-center gap-5">
                 {/* Avatar with upload overlay */}
                 <div className="group relative shrink-0">
-                  <div className="rounded-full bg-[#1E40AF] p-[3px] shadow-lg shadow-blue-700/25">
+                  <div className="rounded-full bg-primary p-[3px] ">
                     <Avatar className="h-20 w-20 border-[3px] border-white">
                       <AvatarImage
                         src={avatarPreview ?? undefined}
                         alt={profile?.name ?? ""}
                       />
-                      <AvatarFallback className="bg-blue-100 text-xl font-semibold text-blue-800">
+                      <AvatarFallback className="bg-primary/10 text-xl font-semibold text-primary">
                         {getInitials(profile?.name ?? "E")}
                       </AvatarFallback>
                     </Avatar>
@@ -203,10 +209,10 @@ export default function ExpertProfilePage() {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.5 }}
                       whileHover={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                      className="flex flex-col items-center gap-0.5 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100"
                     >
-                      <Camera className="h-5 w-5 text-white drop-shadow-md" />
-                      <span className="text-[10px] font-medium text-white drop-shadow-md">
+                      <Camera className="h-5 w-5 text-primary-foreground drop-shadow-md" />
+                      <span className="text-[10px] font-medium text-primary-foreground drop-shadow-md">
                         Edit
                       </span>
                     </motion.div>
@@ -233,14 +239,14 @@ export default function ExpertProfilePage() {
                 </div>
 
                 <div className="min-w-0">
-                  <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground">
                     Expert Profile
-                  </h2>
-                  <p className="mt-0.5 text-sm text-blue-700/70">
+                  </h1>
+                  <p className="mt-0.5 text-sm text-primary/70">
                     Your public presence -- how subscribers see you
                   </p>
                   {profile?.email && (
-                    <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-500">
+                    <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Mail className="h-3 w-3" />
                       {profile.email}
                     </div>
@@ -255,11 +261,11 @@ export default function ExpertProfilePage() {
           {/* Profile Info */}
           <FadeIn delay={0.1}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-                    <User className="h-4 w-4 text-blue-700" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                    <User className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <CardTitle>Profile Information</CardTitle>
@@ -278,7 +284,7 @@ export default function ExpertProfilePage() {
                     <Input
                       id="name"
                       {...register("name", { required: true })}
-                      className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div className="space-y-2">
@@ -288,7 +294,7 @@ export default function ExpertProfilePage() {
                     <Input
                       id="displayName"
                       {...register("displayName", { required: true })}
-                      className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="transition-all focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
@@ -301,7 +307,7 @@ export default function ExpertProfilePage() {
                     id="headline"
                     placeholder="e.g., AI Researcher & Machine Learning Expert"
                     {...register("headline")}
-                    className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                    className="transition-all focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -312,7 +318,7 @@ export default function ExpertProfilePage() {
                   <Textarea
                     id="bio"
                     placeholder="Tell subscribers about your expertise..."
-                    className="min-h-[120px] resize-y transition-all focus:ring-2 focus:ring-blue-600/20"
+                    className="min-h-[120px] resize-y transition-all focus:ring-2 focus:ring-primary/20"
                     {...register("bio")}
                   />
                 </div>
@@ -323,7 +329,7 @@ export default function ExpertProfilePage() {
                   <Input
                     value={profile?.email ?? ""}
                     disabled
-                    className="bg-gray-50/80 text-gray-500"
+                    className="bg-muted/80 text-muted-foreground"
                   />
                   <p className="text-xs text-muted-foreground">
                     Email cannot be changed
@@ -368,9 +374,9 @@ export default function ExpertProfilePage() {
                         >
                           <Badge
                             variant="secondary"
-                            className="group/tag gap-1.5 rounded-full border border-blue-200/60 bg-blue-50 px-3 py-1.5 text-sm text-blue-800 transition-all hover:bg-blue-100 hover:shadow-sm"
+                            className="group/tag gap-1.5 rounded-full border border-primary/60 bg-primary/10 px-3 py-1.5 text-sm text-primary transition-all hover:bg-primary hover:shadow-sm"
                           >
-                            <Sparkles className="h-3 w-3 text-blue-400" />
+                            <Sparkles className="h-3 w-3 text-primary" />
                             {spec}
                             <button
                               type="button"
@@ -379,7 +385,7 @@ export default function ExpertProfilePage() {
                                   prev.filter((s) => s !== spec)
                                 )
                               }
-                              className="ml-0.5 rounded-full p-0.5 text-blue-400 cursor-pointer transition-colors duration-200 hover:bg-blue-200 hover:text-blue-800"
+                              className="ml-0.5 rounded-full p-0.5 text-primary cursor-pointer transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                             >
                               <X className="h-3 w-3" />
                             </button>
@@ -395,7 +401,7 @@ export default function ExpertProfilePage() {
                     value={specInput}
                     onChange={(e) => setSpecInput(e.target.value)}
                     onKeyDown={addSpecialty}
-                    className="transition-all focus:ring-2 focus:ring-blue-600/20"
+                    className="transition-all focus:ring-2 focus:ring-primary/20"
                   />
                   {specialties.length > 0 && (
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -430,7 +436,7 @@ export default function ExpertProfilePage() {
                     Monthly Price
                   </Label>
                   <div className="relative max-w-xs">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-400">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
                       $
                     </span>
                     <Input
@@ -438,7 +444,7 @@ export default function ExpertProfilePage() {
                       type="number"
                       step="0.01"
                       min="0"
-                      className="pl-7 font-medium transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="pl-7 font-medium transition-all focus:ring-2 focus:ring-primary/20"
                       {...register("monthlyPrice", { required: true })}
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -457,11 +463,11 @@ export default function ExpertProfilePage() {
           {/* Social Links */}
           <FadeIn delay={0.25}>
             <Card className="relative overflow-hidden border-0 shadow-sm ring-1 ring-gray-200/60">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-                    <Link2 className="h-4 w-4 text-blue-600" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                    <Link2 className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <CardTitle>Social Links</CardTitle>
@@ -477,11 +483,11 @@ export default function ExpertProfilePage() {
                     Twitter / X
                   </Label>
                   <div className="relative">
-                    <Twitter className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Twitter className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="twitterUrl"
                       placeholder="https://twitter.com/username"
-                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-primary/20"
                       {...register("twitterUrl")}
                     />
                   </div>
@@ -491,11 +497,11 @@ export default function ExpertProfilePage() {
                     LinkedIn
                   </Label>
                   <div className="relative">
-                    <Linkedin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Linkedin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="linkedinUrl"
                       placeholder="https://linkedin.com/in/username"
-                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-primary/20"
                       {...register("linkedinUrl")}
                     />
                   </div>
@@ -505,22 +511,22 @@ export default function ExpertProfilePage() {
                     Website
                   </Label>
                   <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="websiteUrl"
                       placeholder="https://yourwebsite.com"
-                      className="pl-9 transition-all focus:ring-2 focus:ring-blue-600/20"
+                      className="pl-9 transition-all focus:ring-2 focus:ring-primary/20"
                       {...register("websiteUrl")}
                     />
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-end border-t border-gray-100 bg-gray-50/30 px-6 py-4">
+              <CardFooter className="flex justify-end border-t border-border bg-muted/30 px-6 py-4">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="cursor-pointer gap-2 bg-[#1E40AF] px-6 shadow-lg shadow-blue-700/25 transition-all duration-200 hover:bg-[#1e3a8a] hover:shadow-xl"
+                    className="cursor-pointer gap-2 bg-primary px-6  transition-all duration-200 hover:bg-primary/90 "
                   >
                     {isSubmitting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -537,4 +543,8 @@ export default function ExpertProfilePage() {
       </div>
     </PageTransition>
   );
+}
+
+export default function ExpertProfilePage() {
+  return <ExpertStudio section="profile"><ExpertProfilePageContent /></ExpertStudio>;
 }

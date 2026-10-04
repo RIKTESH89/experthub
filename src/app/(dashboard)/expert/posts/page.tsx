@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import {
@@ -85,9 +87,10 @@ const statusConfig = {
   },
 };
 
-export default function ExpertPostsPage() {
+function ExpertPostsPageContent() {
   const [posts, setPosts] = useState<ExpertPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -100,6 +103,7 @@ export default function ExpertPostsPage() {
         const data = await res.json();
         setPosts(data.posts ?? data);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load posts");
       } finally {
         setIsLoading(false);
@@ -167,6 +171,8 @@ export default function ExpertPostsPage() {
     [posts]
   );
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Posts unavailable</h1><p className="text-muted-foreground">We could not load your posts. Refresh to try again.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -188,14 +194,14 @@ export default function ExpertPostsPage() {
     <PageTransition className="space-y-6">
       {/* Header */}
       <FadeIn delay={0.05}>
-        <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-blue-500/5 via-background to-blue-500/5 p-6">
+        <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-primary/5 via-background to-primary/5 p-6">
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
-                <FileText className="h-6 w-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary ">
+                <FileText className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold tracking-tight">My Posts</h2>
+                <h1 className="text-2xl font-bold tracking-tight">My Posts</h1>
                 <p className="mt-0.5 text-sm text-muted-foreground">
                   Manage and track your published content
                 </p>
@@ -203,7 +209,7 @@ export default function ExpertPostsPage() {
             </div>
             <Button
               asChild
-              className="cursor-pointer bg-[#1E40AF] text-white shadow-lg shadow-blue-700/25 hover:bg-[#1e3a8a] transition-all duration-200"
+              className="cursor-pointer bg-primary text-primary-foreground  hover:bg-primary/90 transition-all duration-200"
             >
               <Link href="/expert/posts/new">
                 <Plus className="mr-2 h-4 w-4" />
@@ -218,12 +224,12 @@ export default function ExpertPostsPage() {
       <FadeIn delay={0.1}>
         <div className="relative group">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200 group-focus-within:text-blue-700" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200 group-focus-within:text-primary" />
             <Input
               placeholder="Search your posts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 rounded-xl border-border/60 bg-background pl-11 transition-all duration-200 focus-visible:border-blue-600/50 focus-visible:ring-blue-600/20"
+              className="h-11 rounded-xl border-border/60 bg-background pl-11 transition-all duration-200 focus-visible:border-primary/50 focus-visible:ring-primary/20"
             />
           </div>
         </div>
@@ -293,16 +299,16 @@ export default function ExpertPostsPage() {
                   const status = statusConfig[post.status];
                   return (
                     <StaggerItem key={post.id}>
-                      <Card className="group relative overflow-hidden rounded-xl border-border/60 bg-background transition-all duration-200 hover:border-blue-600/30 hover:shadow-lg hover:-translate-y-0.5">
+                      <Card className="group relative overflow-hidden rounded-xl border-border/60 bg-background transition-all duration-200 hover:border-primary/30  ">
                         {/* Subtle top accent line */}
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none" />
 
                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1">
                               <Link
                                 href={`/expert/posts/${post.id}`}
-                                className="cursor-pointer text-base font-semibold leading-tight transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-400"
+                                className="cursor-pointer text-base font-semibold leading-tight transition-colors duration-200 hover:text-primary dark:hover:text-primary"
                               >
                                 {post.title || "Untitled Post"}
                               </Link>
@@ -374,7 +380,7 @@ export default function ExpertPostsPage() {
                             {post.isRagEnabled && (
                               <Badge
                                 variant="outline"
-                                className="gap-1 rounded-full border-blue-500/20 bg-blue-500/10 text-[10px] font-medium text-blue-600 hover:bg-blue-500/15 dark:text-blue-400"
+                                className="gap-1 rounded-full border-primary/20 bg-primary/10 text-[10px] font-medium text-primary hover:bg-primary/15 dark:text-primary"
                               >
                                 <Sparkles className="h-2.5 w-2.5" />
                                 RAG
@@ -402,7 +408,7 @@ export default function ExpertPostsPage() {
                               <Heart className="h-3.5 w-3.5" />
                               {post._count.likes}
                             </span>
-                            <span className="flex items-center gap-1.5 transition-colors hover:text-blue-500">
+                            <span className="flex items-center gap-1.5 transition-colors hover:text-primary">
                               <MessageCircle className="h-3.5 w-3.5" />
                               {post._count.comments}
                             </span>
@@ -419,4 +425,8 @@ export default function ExpertPostsPage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertPostsPage() {
+  return <ExpertStudio section="posts"><ExpertPostsPageContent /></ExpertStudio>;
 }

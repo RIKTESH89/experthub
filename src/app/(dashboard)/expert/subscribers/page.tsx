@@ -1,4 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
+
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
 
 import { useState, useEffect, useMemo } from "react";
 import { Users, Search, CreditCard, TrendingUp } from "lucide-react";
@@ -47,9 +50,10 @@ interface SubscriberStats {
   revenueTrend: { direction: "up" | "down" | "neutral"; percentage: number };
 }
 
-export default function ExpertSubscribersPage() {
+function ExpertSubscribersPageContent() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -60,6 +64,7 @@ export default function ExpertSubscribersPage() {
         const data = await res.json();
         setSubscribers(data.subscribers ?? data);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load subscribers");
       } finally {
         setIsLoading(false);
@@ -123,6 +128,8 @@ export default function ExpertSubscribersPage() {
     };
   }, [subscribers]);
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Subscribers unavailable</h1><p className="text-muted-foreground">We could not load your subscribers. Refresh to try again.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -144,35 +151,35 @@ export default function ExpertSubscribersPage() {
         <div className="flex items-center gap-4">
           <svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
             {/* Central user */}
-            <circle cx="80" cy="40" r="14" fill="#dbeafe" stroke="#1E40AF" strokeWidth="2"/>
-            <circle cx="80" cy="35" r="5.5" fill="#bfdbfe" stroke="#1E40AF" strokeWidth="1.5"/>
-            <path d="M72 47a8 8 0 0116 0" stroke="#1E40AF" strokeWidth="1.5" fill="#bfdbfe"/>
+            <circle cx="80" cy="40" r="14" fill="currentColor" stroke="currentColor" strokeWidth="2"/>
+            <circle cx="80" cy="35" r="5.5" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M72 47a8 8 0 0116 0" stroke="currentColor" strokeWidth="1.5" fill="currentColor"/>
             {/* Top-left user */}
-            <circle cx="32" cy="24" r="10" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.5"/>
-            <circle cx="32" cy="20" r="4" fill="#93c5fd" stroke="#2563eb" strokeWidth="1"/>
-            <path d="M26 28a6 6 0 0112 0" stroke="#2563eb" strokeWidth="1" fill="#dbeafe"/>
+            <circle cx="32" cy="24" r="10" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="32" cy="20" r="4" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+            <path d="M26 28a6 6 0 0112 0" stroke="currentColor" strokeWidth="1" fill="currentColor"/>
             {/* Top-right user */}
-            <circle cx="128" cy="24" r="10" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.5"/>
-            <circle cx="128" cy="20" r="4" fill="#93c5fd" stroke="#2563eb" strokeWidth="1"/>
-            <path d="M122 28a6 6 0 0112 0" stroke="#2563eb" strokeWidth="1" fill="#dbeafe"/>
+            <circle cx="128" cy="24" r="10" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="128" cy="20" r="4" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+            <path d="M122 28a6 6 0 0112 0" stroke="currentColor" strokeWidth="1" fill="currentColor"/>
             {/* Bottom-left user */}
-            <circle cx="40" cy="78" r="10" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.5"/>
-            <circle cx="40" cy="74" r="4" fill="#93c5fd" stroke="#2563eb" strokeWidth="1"/>
-            <path d="M34 82a6 6 0 0112 0" stroke="#2563eb" strokeWidth="1" fill="#dbeafe"/>
+            <circle cx="40" cy="78" r="10" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="40" cy="74" r="4" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+            <path d="M34 82a6 6 0 0112 0" stroke="currentColor" strokeWidth="1" fill="currentColor"/>
             {/* Bottom-right user */}
-            <circle cx="120" cy="78" r="10" fill="#eff6ff" stroke="#2563eb" strokeWidth="1.5"/>
-            <circle cx="120" cy="74" r="4" fill="#93c5fd" stroke="#2563eb" strokeWidth="1"/>
-            <path d="M114 82a6 6 0 0112 0" stroke="#2563eb" strokeWidth="1" fill="#dbeafe"/>
+            <circle cx="120" cy="78" r="10" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="120" cy="74" r="4" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+            <path d="M114 82a6 6 0 0112 0" stroke="currentColor" strokeWidth="1" fill="currentColor"/>
             {/* Connection lines */}
             <line x1="44" y1="30" x2="66" y2="36" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
             <line x1="116" y1="30" x2="94" y2="36" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
             <line x1="50" y1="72" x2="68" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
             <line x1="110" y1="72" x2="92" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
             {/* Sparkle */}
-            <path d="M80 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#1E40AF" opacity="0.5"/>
+            <path d="M80 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="currentColor" opacity="0.5"/>
           </svg>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Subscribers</h2>
+            <h1 className="text-2xl font-bold tracking-tight">Subscribers</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Track and manage your audience
             </p>
@@ -214,12 +221,12 @@ export default function ExpertSubscribersPage() {
       <FadeIn direction="up" delay={0.2}>
         <div className="relative group">
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-600 transition-colors duration-200" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
             <Input
               placeholder="Search subscribers by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 border-border/60 bg-background focus-visible:border-blue-600/40 focus-visible:ring-blue-600/20 transition-all duration-200"
+              className="pl-10 h-11 border-border/60 bg-background focus-visible:border-primary/40 focus-visible:ring-primary/20 transition-all duration-200"
             />
             {searchQuery && (
               <motion.button
@@ -248,8 +255,8 @@ export default function ExpertSubscribersPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex flex-col items-center text-center"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/15 to-blue-500/15 ring-1 ring-blue-600/20 mb-4">
-                  <Users className="h-8 w-8 text-blue-600" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/15 ring-1 ring-primary/20 mb-4">
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold mb-1.5">No subscribers yet</h3>
                 <p className="text-sm text-muted-foreground max-w-sm">
@@ -261,7 +268,7 @@ export default function ExpertSubscribersPage() {
         ) : (
           <Card className="relative overflow-hidden border-border/50">
             {/* Top accent */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/40 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
             <CardContent className="overflow-x-auto p-0">
               <Table>
                 <TableHeader>
@@ -296,7 +303,7 @@ export default function ExpertSubscribersPage() {
                           delay: Math.min(index * 0.03, 0.5),
                           ease: [0.25, 0.4, 0.25, 1],
                         }}
-                        className="group border-b border-border/40 hover:bg-gradient-to-r hover:from-blue-600/[0.03] hover:to-transparent transition-colors duration-200"
+                        className="group border-b border-border/40 hover:bg-gradient-to-r hover:from-primary/[0.03] hover:to-transparent transition-colors duration-200"
                       >
                         <TableCell className="py-3">
                           <div className="flex items-center gap-3">
@@ -304,9 +311,9 @@ export default function ExpertSubscribersPage() {
                               whileHover={{ scale: 1.08 }}
                               transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             >
-                              <Avatar className="h-9 w-9 ring-2 ring-background shadow-sm group-hover:ring-blue-600/10 transition-all duration-200">
+                              <Avatar className="h-9 w-9 ring-2 ring-background shadow-sm group-hover:ring-primary/10 transition-all duration-200">
                                 <AvatarImage src={sub.image ?? undefined} />
-                                <AvatarFallback className="text-xs font-semibold bg-gradient-to-br from-blue-600/15 to-blue-500/15 text-blue-800 dark:text-blue-300">
+                                <AvatarFallback className="text-xs font-semibold bg-gradient-to-br from-primary/15 to-primary/15 text-primary dark:text-primary">
                                   {getInitials(sub.name)}
                                 </AvatarFallback>
                               </Avatar>
@@ -326,7 +333,7 @@ export default function ExpertSubscribersPage() {
                               sub.status === "ACTIVE"
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium text-[11px]"
                                 : sub.status === "CANCELLED"
-                                  ? "bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20 font-medium text-[11px]"
+                                  ? "bg-muted/10 text-muted-foreground dark:text-muted-foreground border border-border/20 font-medium text-[11px]"
                                   : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-medium text-[11px]"
                             }
                           >
@@ -362,7 +369,7 @@ export default function ExpertSubscribersPage() {
           {searchQuery && filteredSubscribers.length !== subscribers.length && (
             <button
               onClick={() => setSearchQuery("")}
-              className="cursor-pointer text-xs text-blue-700 dark:text-blue-400 hover:underline underline-offset-2"
+              className="cursor-pointer text-xs text-primary dark:text-primary hover:underline underline-offset-2"
             >
               Clear filter
             </button>
@@ -371,4 +378,8 @@ export default function ExpertSubscribersPage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertSubscribersPage() {
+  return <ExpertStudio section="subscribers"><ExpertSubscribersPageContent /></ExpertStudio>;
 }

@@ -1,9 +1,11 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
@@ -73,24 +75,6 @@ interface KnowledgeStatus {
   indexed: number;
 }
 
-// ─── Utility: generate sparkline data ────────────────────────────────
-
-function generateViewsData(totalViews: number) {
-  const days = [];
-  const now = new Date();
-  const dailyBase = totalViews > 0 ? Math.max(1, Math.floor(totalViews / 7)) : 0;
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const variation = totalViews > 0 ? Math.round(dailyBase * (0.7 + (((i * 37) % 10) / 10) * 0.6)) : 0;
-    days.push({
-      date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      views: variation,
-    });
-  }
-  return days;
-}
-
 // ─── Sub-components ──────────────────────────────────────────────────
 
 function MiniTrendIcon({ direction }: { direction: "up" | "down" | "neutral" }) {
@@ -105,40 +89,6 @@ function trendColor(direction: "up" | "down" | "neutral") {
   return "text-muted-foreground";
 }
 
-function SparklineChart({ data }: { data: { views: number }[] }) {
-  const values = data.map((d) => d.views);
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const range = max - min || 1;
-  const width = 200;
-  const height = 60;
-  const padding = 2;
-
-  const points = values.map((v, i) => ({
-    x: padding + (i / (values.length - 1)) * (width - padding * 2),
-    y: padding + (1 - (v - min) / range) * (height - padding * 2),
-  }));
-
-  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
-  const areaPath = `${linePath} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`;
-
-  return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="sparkGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-      <path d={areaPath} fill="url(#sparkGradient)" />
-      <path d={linePath} fill="none" stroke="hsl(var(--primary))" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      {/* Glow dot on last point */}
-      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="3" fill="hsl(var(--primary))" />
-      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="6" fill="hsl(var(--primary))" opacity="0.2" />
-    </svg>
-  );
-}
-
 function CircularProgress({ percentage }: { percentage: number }) {
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
@@ -149,7 +99,7 @@ function CircularProgress({ percentage }: { percentage: number }) {
       <defs>
         <linearGradient id="circleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="hsl(var(--primary))" />
-          <stop offset="100%" stopColor="#3b82f6" />
+          <stop offset="100%" stopColor="currentColor" />
         </linearGradient>
       </defs>
       <circle
@@ -180,21 +130,22 @@ function CircularProgress({ percentage }: { percentage: number }) {
 // ─── Stat card gradient configs ──────────────────────────────────────
 
 const statCardStyles = [
-  { gradient: "from-blue-500/10 to-cyan-500/5", iconBg: "bg-blue-500/10", iconColor: "text-blue-600 dark:text-blue-400", ring: "group-hover:ring-blue-500/20" },
-  { gradient: "from-blue-600/10 to-blue-500/5", iconBg: "bg-blue-600/10", iconColor: "text-blue-700 dark:text-blue-400", ring: "group-hover:ring-blue-600/20" },
+  { gradient: "from-primary/10 to-cyan-500/5", iconBg: "bg-primary/10", iconColor: "text-primary dark:text-primary", ring: "group-hover:ring-primary/20" },
+  { gradient: "from-primary/10 to-primary/5", iconBg: "bg-primary/10", iconColor: "text-primary dark:text-primary", ring: "group-hover:ring-primary/20" },
   { gradient: "from-amber-500/10 to-orange-500/5", iconBg: "bg-amber-500/10", iconColor: "text-amber-600 dark:text-amber-400", ring: "group-hover:ring-amber-500/20" },
   { gradient: "from-emerald-500/10 to-teal-500/5", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600 dark:text-emerald-400", ring: "group-hover:ring-emerald-500/20" },
 ];
 
 // ─── Main Page ───────────────────────────────────────────────────────
 
-export default function ExpertDashboardPage() {
+function ExpertDashboardPageContent() {
   const { data: session } = useSession();
   const [stats, setStats] = useState<ExpertStats | null>(null);
   const [recentSubscribers, setRecentSubscribers] = useState<RecentSubscriber[]>([]);
   const [accuracyScore, setAccuracyScore] = useState<AccuracyScore | null>(null);
   const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus>({ total: 0, indexed: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -205,6 +156,8 @@ export default function ExpertDashboardPage() {
           fetch("/api/expert/accuracy-score"),
           fetch("/api/knowledge/stats"),
         ]);
+
+        if (!statsRes.ok || !subsRes.ok || !accuracyRes.ok || !knowledgeRes.ok) throw new Error("Studio data unavailable");
 
         if (statsRes.ok) {
           const statsData = await statsRes.json();
@@ -239,6 +192,7 @@ export default function ExpertDashboardPage() {
           setKnowledgeStatus(kbData);
         }
       } catch {
+        setLoadError(true);
         setStats({
           totalSubscribers: 0,
           totalPosts: 0,
@@ -259,7 +213,6 @@ export default function ExpertDashboardPage() {
   }, []);
 
   const totalViews = stats?.totalViews ?? 0;
-  const viewsData = useMemo(() => generateViewsData(totalViews), [totalViews]);
   const displayedSubs = recentSubscribers.slice(0, 3);
   const remainingSubs = recentSubscribers.length - 3;
   const kbProgress = knowledgeStatus.total > 0
@@ -267,6 +220,8 @@ export default function ExpertDashboardPage() {
     : 0;
 
   // ─── Loading skeleton ────────────────────────────────────────────
+
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Studio overview unavailable</h1><p className="text-muted-foreground">We could not load your studio activity. Refresh to try again; unavailable counts are not zero.</p><button className="underline" onClick={() => window.location.reload()}>Refresh overview</button></div>;
 
   if (isLoading) {
     return (
@@ -323,15 +278,15 @@ export default function ExpertDashboardPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 opacity-[0.15] pointer-events-none hidden sm:block"
                 aria-hidden="true"
               >
-                <path d="M4 52 L20 38 L32 42 L48 22 L60 28 L76 8" stroke="#1E40AF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 52 L20 38 L32 42 L48 22 L60 28 L76 8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M4 52 L20 38 L32 42 L48 22 L60 28 L76 8 L76 60 L4 60 Z" fill="url(#heroGrowthGrad)" />
-                <circle cx="76" cy="8" r="4" fill="#2563eb" />
-                <circle cx="48" cy="22" r="3" fill="#1E40AF" />
-                <circle cx="20" cy="38" r="3" fill="#1E40AF" />
+                <circle cx="76" cy="8" r="4" fill="currentColor" />
+                <circle cx="48" cy="22" r="3" fill="currentColor" />
+                <circle cx="20" cy="38" r="3" fill="currentColor" />
                 <defs>
                   <linearGradient id="heroGrowthGrad" x1="40" y1="8" x2="40" y2="60" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563eb" stopOpacity="0.3" />
-                    <stop offset="1" stopColor="#1E40AF" stopOpacity="0.02" />
+                    <stop stopColor="currentColor" stopOpacity="0.3" />
+                    <stop offset="1" stopColor="currentColor" stopOpacity="0.02" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -346,7 +301,7 @@ export default function ExpertDashboardPage() {
                 return (
                   <StaggerItem key={s.label}>
                     <div
-                      className={`group relative rounded-2xl border border-border/40 bg-gradient-to-br ${style.gradient} p-4 shadow-sm ring-1 ring-transparent transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${style.ring} min-w-0`}
+                      className={`group relative rounded-2xl border border-border/40 bg-gradient-to-br ${style.gradient} p-4 shadow-sm ring-1 ring-transparent transition-all duration-200   ${style.ring} min-w-0`}
                     >
                       <div className="flex items-center gap-2 mb-2 min-w-0">
                         <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${style.iconBg}`}>
@@ -380,8 +335,8 @@ export default function ExpertDashboardPage() {
           {/* Create Post CTA */}
           <FadeIn delay={0.2} direction="up" className="sm:col-span-1 lg:col-span-3">
             <Link href="/expert/posts/new" className="block h-full">
-              <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40 hover:scale-[1.01] rounded-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-blue-500/5 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              <Card className="group relative h-full cursor-pointer overflow-hidden border-primary/20 shadow-sm transition-all duration-200  hover:shadow-primary/5 hover:border-primary/40 hover:scale-[1.01] rounded-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
                 {/* Subtle shimmer line on hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                   <div className="absolute top-0 left-[-100%] h-full w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-200" />
@@ -392,18 +347,18 @@ export default function ExpertDashboardPage() {
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
-                  <rect x="15%" y="12%" width="18" height="22" rx="2" fill="#1E40AF" opacity="0.1" transform="rotate(-12, 30, 23)" />
-                  <rect x="18%" y="14%" width="10" height="1.5" rx="0.75" fill="#2563eb" opacity="0.12" />
-                  <rect x="18%" y="18%" width="8" height="1.5" rx="0.75" fill="#2563eb" opacity="0.1" />
-                  <rect x="70%" y="65%" width="16" height="20" rx="2" fill="#2563eb" opacity="0.08" transform="rotate(8, 75, 75)" />
-                  <line x1="72%" y1="68%" x2="82%" y2="68%" stroke="#1E40AF" strokeWidth="1.2" opacity="0.1" />
-                  <line x1="72%" y1="73%" x2="79%" y2="73%" stroke="#1E40AF" strokeWidth="1.2" opacity="0.08" />
-                  <path d="M85 15 L89 11 L91 13 L87 17 Z" fill="#1E40AF" opacity="0.12" />
-                  <line x1="84" y1="18" x2="88" y2="18" stroke="#2563eb" strokeWidth="1" opacity="0.1" />
+                  <rect x="15%" y="12%" width="18" height="22" rx="2" fill="currentColor" opacity="0.1" transform="rotate(-12, 30, 23)" />
+                  <rect x="18%" y="14%" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.12" />
+                  <rect x="18%" y="18%" width="8" height="1.5" rx="0.75" fill="currentColor" opacity="0.1" />
+                  <rect x="70%" y="65%" width="16" height="20" rx="2" fill="currentColor" opacity="0.08" transform="rotate(8, 75, 75)" />
+                  <line x1="72%" y1="68%" x2="82%" y2="68%" stroke="currentColor" strokeWidth="1.2" opacity="0.1" />
+                  <line x1="72%" y1="73%" x2="79%" y2="73%" stroke="currentColor" strokeWidth="1.2" opacity="0.08" />
+                  <path d="M85 15 L89 11 L91 13 L87 17 Z" fill="currentColor" opacity="0.12" />
+                  <line x1="84" y1="18" x2="88" y2="18" stroke="currentColor" strokeWidth="1" opacity="0.1" />
                 </svg>
                 <CardContent className="relative flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-blue-700 shadow-lg shadow-primary/25 transition-all duration-200 group-hover:scale-110 group-hover:shadow-primary/40">
-                    <Plus className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary  transition-all duration-200 group-hover:scale-110 group-hover:shadow-primary/40">
+                    <Plus className="h-7 w-7 text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-base tracking-tight">Create Post</h3>
@@ -421,7 +376,7 @@ export default function ExpertDashboardPage() {
 
           {/* Twin Accuracy Score */}
           <FadeIn delay={0.3} direction="up" className="sm:col-span-1 lg:col-span-2">
-            <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden">
+            <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm  rounded-2xl overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
               <CardContent className="relative flex h-full flex-col items-center justify-center gap-3 p-5 text-center">
                 {accuracyScore && accuracyScore.overallScore > 0 ? (
@@ -469,7 +424,7 @@ export default function ExpertDashboardPage() {
 
         {/* Post Views Sparkline */}
         <StaggerItem className="md:col-span-1 lg:col-span-4">
-          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
+          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm  rounded-2xl overflow-hidden flex flex-col">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center justify-between mb-3">
@@ -479,10 +434,10 @@ export default function ExpertDashboardPage() {
                   </div>
                   <span className="text-sm font-semibold text-foreground">Post Views</span>
                 </div>
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">7d trend</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Recorded total</span>
               </div>
               <div className="flex-1 min-h-[100px] w-full">
-                <SparklineChart data={viewsData} />
+                <p className="py-8 text-sm leading-relaxed text-muted-foreground">Daily view history is not available in this overview. Open analytics to review the activity recorded for a selected period.</p>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-2xl font-bold tracking-tight">
@@ -496,12 +451,12 @@ export default function ExpertDashboardPage() {
 
         {/* Recent Subscribers */}
         <StaggerItem className="md:col-span-1 lg:col-span-3">
-          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-600/40 to-transparent pointer-events-none" />
+          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm  rounded-2xl overflow-hidden flex flex-col">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/10">
-                  <Users className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                  <Users className="h-3.5 w-3.5 text-primary dark:text-primary" />
                 </div>
                 <span className="text-sm font-semibold text-foreground">Recent Subscribers</span>
               </div>
@@ -533,7 +488,7 @@ export default function ExpertDashboardPage() {
                   {displayedSubs.map((sub) => (
                     <div key={sub.id} className="flex items-center gap-3 rounded-xl p-2 -mx-2 transition-colors hover:bg-muted">
                       <Avatar className="h-9 w-9 ring-2 ring-background shadow-sm">
-                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-blue-600/20 text-primary text-[10px] font-bold">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/20 text-primary text-[10px] font-bold">
                           {sub.name
                             .split(" ")
                             .map((n) => n[0])
@@ -567,7 +522,7 @@ export default function ExpertDashboardPage() {
 
         {/* Knowledge Base Status */}
         <StaggerItem className="md:col-span-2 lg:col-span-5">
-          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
+          <Card className="group h-full border-border/40 hover:border-primary/30 transition-all duration-200 shadow-sm  rounded-2xl overflow-hidden flex flex-col">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent pointer-events-none" />
             <CardContent className="p-5 flex flex-col flex-1">
               <div className="flex items-center gap-2">
@@ -585,15 +540,15 @@ export default function ExpertDashboardPage() {
                   className="opacity-25 ml-auto"
                   aria-hidden="true"
                 >
-                  <circle cx="12" cy="20" r="4" fill="#1E40AF" opacity="0.6" />
-                  <circle cx="30" cy="10" r="5" fill="#2563eb" opacity="0.5" />
-                  <circle cx="30" cy="30" r="3.5" fill="#1E40AF" opacity="0.5" />
-                  <circle cx="48" cy="18" r="4.5" fill="#2563eb" opacity="0.6" />
-                  <line x1="16" y1="19" x2="25" y2="12" stroke="#1E40AF" strokeWidth="1.2" opacity="0.4" />
-                  <line x1="16" y1="21" x2="26" y2="28" stroke="#1E40AF" strokeWidth="1.2" opacity="0.4" />
-                  <line x1="35" y1="11" x2="44" y2="17" stroke="#2563eb" strokeWidth="1.2" opacity="0.4" />
-                  <line x1="33" y1="28" x2="44" y2="20" stroke="#2563eb" strokeWidth="1.2" opacity="0.4" />
-                  <line x1="30" y1="15" x2="30" y2="26" stroke="#1E40AF" strokeWidth="1" opacity="0.3" />
+                  <circle cx="12" cy="20" r="4" fill="currentColor" opacity="0.6" />
+                  <circle cx="30" cy="10" r="5" fill="currentColor" opacity="0.5" />
+                  <circle cx="30" cy="30" r="3.5" fill="currentColor" opacity="0.5" />
+                  <circle cx="48" cy="18" r="4.5" fill="currentColor" opacity="0.6" />
+                  <line x1="16" y1="19" x2="25" y2="12" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                  <line x1="16" y1="21" x2="26" y2="28" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                  <line x1="35" y1="11" x2="44" y2="17" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                  <line x1="33" y1="28" x2="44" y2="20" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+                  <line x1="30" y1="15" x2="30" y2="26" stroke="currentColor" strokeWidth="1" opacity="0.3" />
                 </svg>
               </div>
 
@@ -666,7 +621,7 @@ export default function ExpertDashboardPage() {
             <Link
               key={action.label}
               href={action.href}
-              className="group inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-card px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm hover:shadow-primary/5 hover:-translate-y-0.5"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-card px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm hover:shadow-primary/5 "
             >
               <action.icon className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110" />
               {action.label}
@@ -705,7 +660,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
     {
       id: "post",
       label: "Social Media Post",
-      value: `I built an AI version of myself. It knows everything I've published. Ask it anything, 24/7.\n\nTry it free → ${profileUrl}`,
+      value: `I built an AI version of myself. It can answer questions using the content I provide. AI answers may be incomplete or incorrect.\n\nTry it free → ${profileUrl}`,
       description: "Share as a post on LinkedIn, Twitter, etc.",
     },
     {
@@ -726,7 +681,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
   if (!userId) return null;
 
   return (
-    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl hover:shadow-md transition-all duration-200">
+    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl  transition-all duration-200">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none" />
       <CardContent className="p-4 sm:p-5">
         <div className="flex items-center gap-2.5 mb-4">
@@ -759,6 +714,7 @@ function ShareProfileCard({ userId }: { userId: string }) {
                 <button
                   onClick={() => handleCopy(snippet.id, snippet.value)}
                   className="cursor-pointer shrink-0 rounded-lg border border-border p-1.5 text-muted-foreground transition-all duration-200 hover:bg-primary/5 hover:border-primary/30 hover:text-primary"
+                  aria-label={`Copy ${snippet.label}`}
                   title="Copy to clipboard"
                 >
                   {copied === snippet.id ? (
@@ -777,4 +733,8 @@ function ShareProfileCard({ userId }: { userId: string }) {
       </CardContent>
     </Card>
   );
+}
+
+export default function ExpertDashboardPage() {
+  return <ExpertStudio section="overview"><ExpertDashboardPageContent /></ExpertStudio>;
 }

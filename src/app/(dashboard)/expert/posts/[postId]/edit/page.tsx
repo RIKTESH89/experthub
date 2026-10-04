@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -75,13 +77,14 @@ interface PostData {
   media: ExistingMedia[];
 }
 
-export default function ExpertEditPostPage() {
+function ExpertEditPostPageContent() {
   const params = useParams();
   const router = useRouter();
   const postId = params.postId as string;
 
   const [post, setPost] = useState<PostData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -102,6 +105,7 @@ export default function ExpertEditPostPage() {
     async function fetchPost() {
       try {
         const res = await fetch(`/api/posts/${postId}`);
+        if (res.status === 404) { setPost(null); return; }
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setPost(data);
@@ -125,6 +129,7 @@ export default function ExpertEditPostPage() {
           }));
         setMediaItems(existing);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load post");
       } finally {
         setIsLoading(false);
@@ -248,6 +253,8 @@ export default function ExpertEditPostPage() {
     }
   };
 
+  if (loadError) return <section role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Post unavailable</h1><p className="text-muted-foreground">We could not load this post. Refresh to try again.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh post</Button><Link className="ml-4 underline" href="/expert/posts">Back to posts</Link></section>;
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-3xl space-y-6">
@@ -260,7 +267,7 @@ export default function ExpertEditPostPage() {
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <h2 className="text-lg font-semibold">Post Not Found</h2>
+        <h1 className="text-lg font-semibold">Post Not Found</h1>
         <Button className="mt-4" asChild>
           <Link href="/expert/posts">Back to Posts</Link>
         </Button>
@@ -277,7 +284,7 @@ export default function ExpertEditPostPage() {
           </Link>
         </Button>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Edit Post</h2>
+          <h1 className="text-2xl font-bold tracking-tight">Edit Post</h1>
           <p className="text-sm text-muted-foreground">
             Update your post content, media, and settings
           </p>
@@ -337,10 +344,11 @@ export default function ExpertEditPostPage() {
                       </span>
 
                       {/* Controls overlay */}
-                      <div className="absolute right-1 top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                      <div className="absolute right-1 top-1 flex gap-0.5 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100">
                         {index > 0 && (
                           <button
                             type="button"
+                            aria-label="Move media earlier"
                             onClick={() => moveMedia(index, index - 1)}
                             className="rounded bg-black/60 p-0.5 text-white hover:bg-black/80"
                           >
@@ -350,6 +358,7 @@ export default function ExpertEditPostPage() {
                         {index < mediaItems.length - 1 && (
                           <button
                             type="button"
+                            aria-label="Move media later"
                             onClick={() => moveMedia(index, index + 1)}
                             className="rounded bg-black/60 p-0.5 text-white hover:bg-black/80"
                           >
@@ -358,6 +367,7 @@ export default function ExpertEditPostPage() {
                         )}
                         <button
                           type="button"
+                          aria-label="Remove media"
                           onClick={() => removeMedia(item.id)}
                           className="rounded bg-black/60 p-0.5 text-white hover:bg-red-600"
                         >
@@ -486,4 +496,8 @@ export default function ExpertEditPostPage() {
       </Card>
     </div>
   );
+}
+
+export default function ExpertEditPostPage() {
+  return <ExpertStudio section="posts/[postId]/edit"><ExpertEditPostPageContent /></ExpertStudio>;
 }

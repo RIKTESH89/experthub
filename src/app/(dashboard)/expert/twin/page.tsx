@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import { Bot, CheckCircle, Circle, Database, FileText, MessageSquare, Sparkles, Zap } from "lucide-react";
 import {
@@ -61,7 +63,7 @@ function PremiumStatCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0.4, 0.25, 1] }}
     >
-      <Card className="group relative overflow-hidden border-border/50 hover:border-border hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 transition-all duration-200 hover:-translate-y-0.5">
+      <Card className="group relative overflow-hidden border-border/50 hover:border-border  hover:shadow-black/5 dark:hover:shadow-black/20 transition-all duration-200 ">
         {/* Gradient accent top bar */}
         <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`} />
         {/* Hover glow */}
@@ -72,7 +74,7 @@ function PremiumStatCard({
             whileHover={{ scale: 1.08, rotate: 3 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            <Icon className="h-5 w-5 text-white" />
+            <Icon className="h-5 w-5 text-primary-foreground" />
           </motion.div>
           <div className="min-w-0">
             {isText ? (
@@ -101,11 +103,12 @@ function PremiumStatCard({
   );
 }
 
-export default function ExpertTwinPage() {
+function ExpertTwinPageContent() {
   const [twinConfig, setTwinConfig] = useState<TwinData | null>(null);
   const [stats, setStats] = useState<TwinStats | null>(null);
   const [personalityProfile, setPersonalityProfile] = useState<PersonalityProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -120,7 +123,7 @@ export default function ExpertTwinPage() {
           const configData = await configRes.json();
           setTwinConfig(configData);
         } else {
-          setTwinConfig({});
+          setLoadError(true);
         }
 
         if (statsRes.ok) {
@@ -135,7 +138,7 @@ export default function ExpertTwinPage() {
           setPersonalityProfile(personalityData.personalityProfile ?? null);
         }
       } catch {
-        setTwinConfig({});
+        setLoadError(true);
         setStats({ totalKnowledgeItems: 0, indexedDocuments: 0, totalChats: 0 });
       } finally {
         setIsLoading(false);
@@ -143,6 +146,8 @@ export default function ExpertTwinPage() {
     }
     fetchData();
   }, []);
+
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Twin configuration unavailable</h1><p className="text-muted-foreground">We could not load your saved settings. Refresh before making changes.</p><button className="underline" onClick={() => window.location.reload()}>Refresh configuration</button></div>;
 
   if (isLoading) {
     return (
@@ -167,30 +172,30 @@ export default function ExpertTwinPage() {
         <div className="flex items-center gap-4">
           <svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block h-16 w-auto shrink-0">
             {/* Human avatar */}
-            <circle cx="40" cy="38" r="16" fill="#dbeafe" stroke="#1E40AF" strokeWidth="2"/>
-            <circle cx="40" cy="32" r="7" fill="#bfdbfe" stroke="#1E40AF" strokeWidth="1.5"/>
-            <path d="M28 50a12 12 0 0124 0" stroke="#1E40AF" strokeWidth="1.5" fill="#bfdbfe"/>
+            <circle cx="40" cy="38" r="16" fill="currentColor" stroke="currentColor" strokeWidth="2"/>
+            <circle cx="40" cy="32" r="7" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M28 50a12 12 0 0124 0" stroke="currentColor" strokeWidth="1.5" fill="currentColor"/>
             {/* Connection lines with signal pulses */}
-            <line x1="60" y1="38" x2="100" y2="38" stroke="#2563eb" strokeWidth="1.5" strokeDasharray="4 3"/>
-            <circle cx="72" cy="38" r="3" fill="#2563eb" opacity="0.5"/>
-            <circle cx="80" cy="38" r="2.5" fill="#1E40AF" opacity="0.7"/>
-            <circle cx="88" cy="38" r="3" fill="#2563eb" opacity="0.5"/>
+            <line x1="60" y1="38" x2="100" y2="38" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3"/>
+            <circle cx="72" cy="38" r="3" fill="currentColor" opacity="0.5"/>
+            <circle cx="80" cy="38" r="2.5" fill="currentColor" opacity="0.7"/>
+            <circle cx="88" cy="38" r="3" fill="currentColor" opacity="0.5"/>
             {/* AI avatar */}
-            <circle cx="120" cy="38" r="16" fill="#dbeafe" stroke="#2563eb" strokeWidth="2"/>
-            <rect x="112" y="30" width="16" height="16" rx="3" fill="#93c5fd" stroke="#2563eb" strokeWidth="1.5"/>
-            <circle cx="117" cy="37" r="1.5" fill="#1E40AF"/>
-            <circle cx="123" cy="37" r="1.5" fill="#1E40AF"/>
-            <path d="M115 42c0 0 2.5 3 5 3s5-3 5-3" stroke="#1E40AF" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+            <circle cx="120" cy="38" r="16" fill="currentColor" stroke="currentColor" strokeWidth="2"/>
+            <rect x="112" y="30" width="16" height="16" rx="3" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="117" cy="37" r="1.5" fill="currentColor"/>
+            <circle cx="123" cy="37" r="1.5" fill="currentColor"/>
+            <path d="M115 42c0 0 2.5 3 5 3s5-3 5-3" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
             {/* Signal waves from AI */}
-            <path d="M140 30c4 4 4 12 0 16" stroke="#2563eb" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.5"/>
-            <path d="M146 26c6 6 6 20 0 26" stroke="#2563eb" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.3"/>
+            <path d="M140 30c4 4 4 12 0 16" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.5"/>
+            <path d="M146 26c6 6 6 20 0 26" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.3"/>
             {/* Sparkle */}
-            <path d="M80 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#1E40AF" opacity="0.6"/>
+            <path d="M80 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="currentColor" opacity="0.6"/>
           </svg>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               Digital Twin Configuration
-            </h2>
+            </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Configure your AI-powered Twin
             </p>
@@ -206,8 +211,8 @@ export default function ExpertTwinPage() {
               icon={Database}
               value={stats.totalKnowledgeItems}
               label="Knowledge Items"
-              gradient="from-blue-700 to-blue-600"
-              iconColor="bg-gradient-to-br from-blue-700 to-blue-600"
+              gradient="from-primary to-primary"
+              iconColor="bg-gradient-to-br from-primary to-primary"
               delay={0}
             />
           </StaggerItem>
@@ -226,8 +231,8 @@ export default function ExpertTwinPage() {
               icon={MessageSquare}
               value={stats.totalChats}
               label="Total Chats"
-              gradient="from-blue-500 to-cyan-600"
-              iconColor="bg-gradient-to-br from-blue-500 to-cyan-600"
+              gradient="from-primary to-cyan-600"
+              iconColor="bg-gradient-to-br from-primary to-cyan-600"
               delay={0.16}
             />
           </StaggerItem>
@@ -265,11 +270,11 @@ export default function ExpertTwinPage() {
             >
               <Card className="relative overflow-hidden border-border/50">
                 {/* Premium accent */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/60 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent pointer-events-none" />
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600/15 to-blue-500/15 ring-1 ring-blue-600/20">
-                      <Sparkles className="h-4 w-4 text-blue-600" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-primary/15 ring-1 ring-primary/20">
+                      <Sparkles className="h-4 w-4 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-base">Twin Configuration</CardTitle>
@@ -298,13 +303,13 @@ export default function ExpertTwinPage() {
             >
               <Card className="relative overflow-hidden border-border/50 group">
                 {/* Premium accent */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/60 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent pointer-events-none" />
                 {/* Subtle background pattern */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,64,175,0.04),transparent_60%)] pointer-events-none" />
                 <CardHeader>
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500/15 to-cyan-500/15 ring-1 ring-blue-500/20">
-                      <Zap className="h-4 w-4 text-blue-500" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-cyan-500/15 ring-1 ring-primary/20">
+                      <Zap className="h-4 w-4 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-base">Chat Preview</CardTitle>
@@ -324,8 +329,8 @@ export default function ExpertTwinPage() {
                       transition={{ delay: 0.5 }}
                     >
                       <div className="relative">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600/20 to-blue-500/20 ring-2 ring-blue-600/20">
-                          <Bot className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/20 ring-2 ring-primary/20">
+                          <Bot className="h-5 w-5 text-primary dark:text-primary" />
                         </div>
                         <motion.div
                           className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-background"
@@ -352,8 +357,8 @@ export default function ExpertTwinPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6, duration: 0.4 }}
                     >
-                      <Avatar className="h-8 w-8 shrink-0 ring-2 ring-blue-600/10">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-600/20 to-blue-500/20 text-xs font-bold text-blue-700 dark:text-blue-400">
+                      <Avatar className="h-8 w-8 shrink-0 ring-2 ring-primary/10">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/20 text-xs font-bold text-primary dark:text-primary">
                           AI
                         </AvatarFallback>
                       </Avatar>
@@ -369,7 +374,7 @@ export default function ExpertTwinPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.75, duration: 0.4 }}
                     >
-                      <div className="rounded-xl rounded-tr-sm bg-gradient-to-br from-blue-600/15 to-blue-500/10 border border-blue-600/10 p-3 max-w-[85%]">
+                      <div className="rounded-xl rounded-tr-sm bg-gradient-to-br from-primary/15 to-primary/10 border border-primary/10 p-3 max-w-[85%]">
                         <p className="text-sm">
                           What can you help me with?
                         </p>
@@ -386,8 +391,8 @@ export default function ExpertTwinPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.9, duration: 0.4 }}
                     >
-                      <Avatar className="h-8 w-8 shrink-0 ring-2 ring-blue-600/10">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-600/20 to-blue-500/20 text-xs font-bold text-blue-700 dark:text-blue-400">
+                      <Avatar className="h-8 w-8 shrink-0 ring-2 ring-primary/10">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/20 text-xs font-bold text-primary dark:text-primary">
                           AI
                         </AvatarFallback>
                       </Avatar>
@@ -408,4 +413,8 @@ export default function ExpertTwinPage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertTwinPage() {
+  return <ExpertStudio section="twin"><ExpertTwinPageContent /></ExpertStudio>;
 }

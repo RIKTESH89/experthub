@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,10 +27,11 @@ interface KnowledgeStats {
   pending: number;
 }
 
-export default function ExpertKnowledgePage() {
+function ExpertKnowledgePageContent() {
   const router = useRouter();
   const [stats, setStats] = useState<KnowledgeStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -38,7 +41,7 @@ export default function ExpertKnowledgePage() {
         const data = await res.json();
         setStats(data);
       } catch {
-        setStats({ total: 0, indexed: 0, pending: 0 });
+        setLoadError(true);
       } finally {
         setIsLoading(false);
       }
@@ -52,13 +55,13 @@ export default function ExpertKnowledgePage() {
       <FadeIn direction="up" duration={0.5}>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-5">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
-              <Database className="h-7 w-7 text-white" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary ">
+              <Database className="h-7 w-7 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">
+              <h1 className="text-3xl font-bold tracking-tight">
                 Knowledge Base
-              </h2>
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 Power your AI Twin with expert content and insights
               </p>
@@ -68,7 +71,7 @@ export default function ExpertKnowledgePage() {
           <div className="flex gap-3">
             <Button
               variant="outline"
-              className="cursor-pointer border-border/60 shadow-sm transition-all duration-200 hover:border-blue-600/30 hover:bg-blue-50/50 hover:shadow-md dark:hover:bg-blue-500/5"
+              className="cursor-pointer border-border/60 shadow-sm transition-all duration-200 hover:border-primary/30 hover:bg-primary/50  dark:hover:bg-primary/5"
               asChild
             >
               <Link href="/expert/knowledge/import">
@@ -77,7 +80,7 @@ export default function ExpertKnowledgePage() {
               </Link>
             </Button>
             <Button
-              className="cursor-pointer bg-[#1E40AF] shadow-lg shadow-blue-700/25 transition-all duration-200 hover:bg-[#1e3a8a] hover:shadow-xl"
+              className="cursor-pointer bg-primary  transition-all duration-200 hover:bg-primary/90 "
               asChild
             >
               <Link href="/expert/knowledge/new">
@@ -89,6 +92,7 @@ export default function ExpertKnowledgePage() {
         </div>
       </FadeIn>
 
+      {loadError ? <p role="alert" className="rounded-lg border border-border bg-muted p-4">Knowledge counts could not be loaded. Refresh to try again; these counts are unavailable, not zero.</p> : null}
       {/* Stats Cards */}
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-3">
@@ -101,10 +105,10 @@ export default function ExpertKnowledgePage() {
           <StaggerContainer className="grid gap-4 sm:grid-cols-3">
             {/* Total Items */}
             <StaggerItem>
-              <Card className="group relative overflow-hidden border-border/50 transition-all duration-200 hover:border-blue-600/30 hover:shadow-lg hover:-translate-y-0.5">
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-200 hover:border-primary/30  ">
                 <CardContent className="relative flex items-center gap-4 p-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 ring-1 ring-blue-500/10 transition-all duration-200 group-hover:ring-blue-500/20">
-                    <Database className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10 transition-all duration-200 group-hover:ring-primary/20">
+                    <Database className="h-5 w-5 text-primary dark:text-primary" />
                   </div>
                   <div>
                     <p className="text-3xl font-bold tracking-tight">
@@ -120,10 +124,10 @@ export default function ExpertKnowledgePage() {
 
             {/* Indexed */}
             <StaggerItem>
-              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/5 hover:-translate-y-0.5">
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-emerald-500/30  hover:shadow-emerald-500/5 ">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.03] to-green-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
                 <CardContent className="relative flex items-center gap-4 p-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 ring-1 ring-emerald-500/10 transition-all duration-300 group-hover:ring-emerald-500/20 group-hover:shadow-md group-hover:shadow-emerald-500/10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 ring-1 ring-emerald-500/10 transition-all duration-300 group-hover:ring-emerald-500/20 group- group-hover:shadow-emerald-500/10">
                     <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div>
@@ -140,10 +144,10 @@ export default function ExpertKnowledgePage() {
 
             {/* Pending */}
             <StaggerItem>
-              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5">
+              <Card className="group relative overflow-hidden border-border/50 transition-all duration-300 hover:border-amber-500/30  hover:shadow-amber-500/5 ">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] to-yellow-500/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
                 <CardContent className="relative flex items-center gap-4 p-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 ring-1 ring-amber-500/10 transition-all duration-300 group-hover:ring-amber-500/20 group-hover:shadow-md group-hover:shadow-amber-500/10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 ring-1 ring-amber-500/10 transition-all duration-300 group-hover:ring-amber-500/20 group- group-hover:shadow-amber-500/10">
                     <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
@@ -169,4 +173,8 @@ export default function ExpertKnowledgePage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertKnowledgePage() {
+  return <ExpertStudio section="knowledge"><ExpertKnowledgePageContent /></ExpertStudio>;
 }

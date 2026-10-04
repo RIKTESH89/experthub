@@ -48,14 +48,14 @@ const sourceTypeConfig: Record<
   manual: {
     icon: FileText,
     label: "Manual",
-    color: "text-blue-700 dark:text-blue-400",
-    bg: "bg-blue-700/10",
+    color: "text-primary dark:text-primary",
+    bg: "bg-primary/10",
   },
   document: {
     icon: Upload,
     label: "Document",
-    color: "text-purple-500",
-    bg: "bg-purple-500/10",
+    color: "text-primary",
+    bg: "bg-primary/10",
   },
   post: {
     icon: MessageSquare,
@@ -80,6 +80,7 @@ const sourceTypeConfig: Record<
 export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
   const [items, setItems] = useState<KnowledgeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -90,6 +91,7 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
         const data = await res.json();
         setItems(data.items ?? data);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load knowledge items");
       } finally {
         setIsLoading(false);
@@ -111,6 +113,8 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
       setDeletingId(null);
     }
   }, []);
+
+  if (loadError) return <section role="alert" className="space-y-3 rounded-lg border bg-card p-6"><h2 className="text-xl font-medium">Source library unavailable</h2><p className="text-sm text-muted-foreground">We could not load your knowledge items. Refresh to try again.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh library</Button></section>;
 
   if (isLoading) {
     return (
@@ -194,7 +198,7 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
                   className="group border-b border-border/20 transition-colors duration-200 last:border-0 hover:bg-muted"
                 >
                   <TableCell className="font-medium font-sans">
-                    <span className="transition-colors duration-200 group-hover:text-blue-700 dark:group-hover:text-blue-400">
+                    <span className="transition-colors duration-200 group-hover:text-primary dark:group-hover:text-primary">
                       {item.title}
                     </span>
                   </TableCell>
@@ -236,7 +240,7 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                         onClick={() => onEdit?.(item)}
                       >
                         <Pencil className="h-3.5 w-3.5" />

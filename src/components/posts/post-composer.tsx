@@ -235,7 +235,7 @@ export function PostComposer({
     >
       <Card className={cn(
         "overflow-hidden border-border/50 bg-card transition-all duration-200",
-        isFocused && "border-blue-700/20 ring-1 ring-blue-700/10"
+        isFocused && "border-primary/20 ring-1 ring-primary/10"
       )}>
         <form>
           <CardContent className="space-y-4 p-5">
@@ -243,18 +243,20 @@ export function PostComposer({
             <div className="flex items-start gap-3">
               <Avatar className="mt-1 h-10 w-10 ring-1 ring-border">
                 <AvatarImage src={authorImage ?? undefined} alt={authorName} />
-                <AvatarFallback className="bg-blue-50 text-sm font-semibold font-sans text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                <AvatarFallback className="bg-primary/10 text-sm font-semibold font-sans text-primary">
                   {getInitials(authorName)}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1 space-y-2">
                 <Input
+                  aria-label="Post title (optional)"
                   placeholder="Title (optional)"
                   className="h-auto border-0 bg-transparent px-0 py-1 text-lg font-semibold font-sans tracking-tight placeholder:text-muted-foreground focus-visible:ring-0"
                   {...register("title")}
                   onFocus={() => setIsFocused(true)}
                 />
                 <textarea
+                  aria-label="Post content"
                   placeholder="Share your thoughts, insights, or expertise..."
                   className="w-full resize-none border-0 bg-transparent text-sm font-sans leading-relaxed placeholder:text-muted-foreground focus:outline-none"
                   style={{ minHeight: "120px" }}
@@ -316,10 +318,11 @@ export function PostComposer({
                           </span>
                         </div>
                         {/* Controls overlay */}
-                        <div className="absolute right-1.5 top-1.5 flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                        <div className="absolute right-1.5 top-1.5 flex items-center gap-1 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100">
                           <button
                             type="button"
                             disabled={index === 0}
+                            aria-label="Move media earlier"
                             onClick={() => moveMedia(index, index - 1)}
                             className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-colors duration-200 hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -328,6 +331,7 @@ export function PostComposer({
                           <button
                             type="button"
                             disabled={index === mediaFiles.length - 1}
+                            aria-label="Move media later"
                             onClick={() => moveMedia(index, index + 1)}
                             className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-colors duration-200 hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -335,6 +339,7 @@ export function PostComposer({
                           </button>
                           <button
                             type="button"
+                            aria-label="Remove media"
                             onClick={() => removeMedia(mf.id)}
                             className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-red-500/80 text-white transition-colors duration-200 hover:bg-red-500"
                           >
@@ -347,7 +352,7 @@ export function PostComposer({
                   <div className="flex items-center gap-2">
                     <div className="h-1 flex-1 rounded-full bg-muted">
                       <div
-                        className="h-full rounded-full bg-blue-700 transition-all duration-300"
+                        className="h-full rounded-full bg-primary transition-all duration-300"
                         style={{ width: `${(mediaFiles.length / 5) * 100}%` }}
                       />
                     </div>
@@ -378,13 +383,14 @@ export function PostComposer({
                     >
                       <Badge
                         variant="secondary"
-                        className="gap-1 rounded-full border-transparent bg-blue-700/[0.06] pr-1.5 text-xs font-normal font-sans text-blue-700/80 transition-colors duration-200 hover:bg-blue-700/10 dark:bg-blue-500/10 dark:text-blue-400"
+                        className="gap-1 rounded-full border-transparent bg-primary/[0.06] pr-1.5 text-xs font-normal font-sans text-primary/80 transition-colors duration-200 hover:bg-primary/10 dark:bg-primary/10 dark:text-primary"
                       >
                         #{tag}
                         <button
                           type="button"
+                          aria-label={`Remove tag ${tag}`}
                           onClick={() => removeTag(tag)}
-                          className="ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors duration-200 hover:bg-blue-700/20"
+                          className="ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors duration-200 hover:bg-primary/20"
                         >
                           <X className="h-2.5 w-2.5" />
                         </button>
@@ -399,6 +405,7 @@ export function PostComposer({
             <div className="relative">
               <Hash className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                aria-label="Post tags"
                 placeholder="Add tags (press Enter)..."
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -415,7 +422,7 @@ export function PostComposer({
               <div
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors duration-200",
-                  isRagEnabled ? "bg-blue-700/[0.06]" : "hover:bg-muted"
+                  isRagEnabled ? "bg-primary/[0.06]" : "hover:bg-muted"
                 )}
               >
                 <Label
@@ -424,11 +431,11 @@ export function PostComposer({
                 >
                   <div className={cn(
                     "flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-200",
-                    isRagEnabled ? "bg-blue-700/15 text-blue-700 dark:text-blue-400" : "bg-muted text-muted-foreground"
+                    isRagEnabled ? "bg-primary/15 text-primary dark:text-primary" : "bg-muted text-muted-foreground"
                   )}>
                     <Brain className="h-3.5 w-3.5" />
                   </div>
-                  <span className={cn(isRagEnabled && "font-medium text-blue-700 dark:text-blue-400")}>Knowledge Base</span>
+                  <span className={cn(isRagEnabled && "font-medium text-primary dark:text-primary")}>Knowledge Base</span>
                 </Label>
                 <Switch
                   id="rag-toggle"
@@ -550,8 +557,9 @@ export function PostComposer({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                       disabled={mediaFiles.length >= 5}
+                      aria-label="Add images"
                       onClick={() => imageInputRef.current?.click()}
                     >
                       <ImagePlus className="h-4 w-4" />
@@ -566,8 +574,9 @@ export function PostComposer({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                       disabled={mediaFiles.length >= 5}
+                      aria-label="Add video"
                       onClick={() => videoInputRef.current?.click()}
                     >
                       <Video className="h-4 w-4" />
@@ -582,8 +591,9 @@ export function PostComposer({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700"
+                      className="h-9 w-9 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                       disabled={mediaFiles.length >= 5}
+                      aria-label="Add audio"
                       onClick={() => audioInputRef.current?.click()}
                     >
                       <Music className="h-4 w-4" />
@@ -611,7 +621,7 @@ export function PostComposer({
                 size="sm"
                 disabled={isSubmitting || (!content.trim() && mediaFiles.length === 0)}
                 onClick={handleSubmit((data) => onSubmit(data, "PUBLISHED"))}
-                className="cursor-pointer rounded-lg bg-blue-700 text-white transition-colors duration-200 hover:bg-blue-800 disabled:opacity-50"
+                className="cursor-pointer rounded-lg bg-primary text-primary-foreground transition-colors duration-200 hover:bg-primary disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />

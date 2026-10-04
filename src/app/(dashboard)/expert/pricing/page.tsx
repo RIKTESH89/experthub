@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import { Loader2, Save, DollarSign, Crown, Gift, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,23 +51,23 @@ const tierConfig = {
   },
   STANDARD: {
     icon: DollarSign,
-    gradient: "from-blue-500/20 via-blue-600/10 to-blue-600/20",
-    borderGradient: "from-blue-400/40 via-blue-400/60 to-blue-400/40",
-    iconBg: "bg-blue-500/10 ring-blue-500/20",
-    iconColor: "text-blue-600 dark:text-blue-400",
+    gradient: "from-primary/20 via-primary/10 to-primary/20",
+    borderGradient: "from-primary/40 via-primary/60 to-primary/40",
+    iconBg: "bg-primary/10 ring-primary/20",
+    iconColor: "text-primary dark:text-primary",
     accentColor: "blue",
     badge: null,
-    headerGradient: "from-blue-500/[0.04] to-transparent",
+    headerGradient: "from-primary/[0.04] to-transparent",
   },
   PREMIUM: {
     icon: Crown,
-    gradient: "from-blue-600/20 via-blue-500/10 to-blue-500/20",
-    borderGradient: "from-blue-400/50 via-blue-400/70 to-blue-400/50",
-    iconBg: "bg-blue-600/10 ring-blue-600/20",
-    iconColor: "text-blue-700 dark:text-blue-400",
+    gradient: "from-primary/20 via-primary/10 to-primary/20",
+    borderGradient: "from-primary/50 via-primary/70 to-primary/50",
+    iconBg: "bg-primary/10 ring-primary/20",
+    iconColor: "text-primary dark:text-primary",
     accentColor: "blue",
     badge: "Popular",
-    headerGradient: "from-blue-600/[0.06] to-transparent",
+    headerGradient: "from-primary/[0.06] to-transparent",
   },
 };
 
@@ -104,10 +106,11 @@ function FeaturePreview({ features }: { features: string }) {
   );
 }
 
-export default function ExpertPricingPage() {
+function ExpertPricingPageContent() {
   const [tiers, setTiers] = useState<PricingTier[]>([]);
   const [formValues, setFormValues] = useState<Record<string, TierFormValues>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -132,6 +135,7 @@ export default function ExpertPricingPage() {
       }
       setFormValues(values);
     } catch {
+      setLoadError(true);
       toast.error("Failed to load pricing");
     } finally {
       setIsLoading(false);
@@ -192,12 +196,14 @@ export default function ExpertPricingPage() {
     }
   };
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Pricing unavailable</h1><p className="text-muted-foreground">We could not load your saved information. Refresh before making changes.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   if (isLoading) {
     return (
       <div className="space-y-8 p-6 lg:p-8">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-600/20 ring-1 ring-blue-600/20">
-            <DollarSign className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/20 ring-1 ring-primary/20">
+            <DollarSign className="h-6 w-6 text-primary dark:text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Pricing</h1>
@@ -225,8 +231,8 @@ export default function ExpertPricingPage() {
       {/* Header */}
       <FadeIn direction="left">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-600/20 ring-1 ring-blue-600/20 shadow-lg shadow-blue-600/5">
-            <DollarSign className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/20 ring-1 ring-primary/20 shadow-lg shadow-primary/5">
+            <DollarSign className="h-6 w-6 text-primary dark:text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Pricing</h1>
@@ -252,10 +258,10 @@ export default function ExpertPricingPage() {
               <Card
                 className={cn(
                   "relative overflow-hidden transition-all duration-200",
-                  "hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/20",
-                  "hover:-translate-y-0.5",
+                  " hover:shadow-black/5 dark:hover:shadow-black/20",
+                  "",
                   "border-0",
-                  isPremium && "ring-2 ring-blue-600/30"
+                  isPremium && "ring-2 ring-primary/30"
                 )}
               >
                 {/* Gradient border effect */}
@@ -287,7 +293,7 @@ export default function ExpertPricingPage() {
                     transition={{ delay: 0.4, duration: 0.3 }}
                     className="absolute top-4 right-4 z-10"
                   >
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#1E40AF] px-3 py-1 text-[11px] font-semibold text-white shadow-lg shadow-blue-700/25">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground ">
                       <Sparkles className="h-3 w-3" />
                       {config.badge}
                     </span>
@@ -382,8 +388,8 @@ export default function ExpertPricingPage() {
                         Monthly Twin Questions
                       </Label>
                       {isPremium ? (
-                        <div className="flex h-11 items-center rounded-lg border border-border/60 bg-gradient-to-r from-blue-600/5 to-blue-500/5 px-3">
-                          <span className="text-sm font-medium text-blue-700 dark:text-blue-400 flex items-center gap-1.5">
+                        <div className="flex h-11 items-center rounded-lg border border-border/60 bg-gradient-to-r from-primary/5 to-primary/5 px-3">
+                          <span className="text-sm font-medium text-primary dark:text-primary flex items-center gap-1.5">
                             <Sparkles className="h-3.5 w-3.5" />
                             Unlimited
                           </span>
@@ -454,8 +460,8 @@ export default function ExpertPricingPage() {
               size="lg"
               className={cn("cursor-pointer",
                 "relative overflow-hidden rounded-xl px-8 h-12 font-semibold",
-                "bg-[#1E40AF] hover:bg-[#1e3a8a]",
-                "shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30",
+                "bg-primary hover:bg-primary/90",
+                "shadow-lg shadow-primary/20 hover:shadow-primary/30",
                 "text-white transition-all duration-200",
                 "disabled:opacity-60 disabled:shadow-none"
               )}
@@ -476,4 +482,8 @@ export default function ExpertPricingPage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertPricingPage() {
+  return <ExpertStudio section="pricing"><ExpertPricingPageContent /></ExpertStudio>;
 }

@@ -130,7 +130,7 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
               <div>
                 <Label>Personality Replication</Label>
                 <p className="text-xs text-muted-foreground">
-                  Analyze your writing style to help your AI twin replicate your personality
+                  Analyze supplied writing to inform your AI twin’s voice settings
                 </p>
               </div>
               <Button
@@ -242,7 +242,7 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
             />
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
-                Your strong opinions and hot takes. Your twin will express these confidently instead of giving generic balanced answers.
+                Record your opinions and stances. Responses still depend on available evidence and may be incomplete or incorrect.
               </p>
               <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinOpinions") || "").length}/2000</span>
             </div>
@@ -262,7 +262,7 @@ export function TwinConfigForm({ initialData, personalityProfile, onSuccess }: T
             />
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
-                How you approach problems step by step. Your twin will walk through this same reasoning process when answering complex questions.
+                Describe how you approach problems. These instructions guide responses; they do not guarantee the same reasoning or judgment.
               </p>
               <span className="shrink-0 text-[10px] text-muted-foreground/60">{(watch("twinFramework") || "").length}/2000</span>
             </div>

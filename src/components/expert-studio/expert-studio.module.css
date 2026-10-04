@@ -1,0 +1,58 @@
+.studio { max-width:1200px; margin-inline:auto; color:hsl(var(--foreground)); min-width:0; }
+.chapter { display:grid; grid-template-columns:1fr 1fr; gap:32px; padding:8px 0 24px; margin-bottom:32px; border-bottom:1px solid hsl(var(--border)); }
+.chapter p:first-child { font-size:12px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+.chapter span { color:hsl(var(--primary)); margin-right:16px; font-variant-numeric:tabular-nums; }
+.context { color:hsl(var(--muted-foreground)); font-size:14px; line-height:1.6; max-width:460px; justify-self:end; }
+.deskNav { display:flex; flex-wrap:wrap; gap:12px 28px; margin-top:-16px; margin-bottom:32px; font-size:14px; }
+.deskNav a { min-height:44px; display:inline-flex; align-items:center; border-bottom:2px solid transparent; }
+.deskNav a[aria-current=page] { color:hsl(var(--primary)); border-color:hsl(var(--primary)); font-weight:600; }
+.deskNav a:hover { color:hsl(var(--primary)); }
+.content { min-width:0; }
+.content h1 { font-size:clamp(30px,3.5vw,44px); font-weight:500; line-height:1.15; letter-spacing:-.045em; }
+.content h2 { letter-spacing:-.025em; }
+.content :global(.shadow-lg), .content :global(.shadow-sm) { box-shadow:none; }
+.content :global(.bg-gradient-to-br), .content :global(.bg-gradient-to-r) { background-image:none; }
+.content :global(.rounded-2xl) { border-radius:10px; }
+.content :global(.border-border\/40), .content :global(.border-border\/50), .content :global(.border-border\/60) { border-color:hsl(var(--border)); }
+.content :global(.p-6.lg\:p-8) { padding:0; }
+.content button:not([role=switch]) { min-height:44px; }
+.content button[role=switch] { position:relative; }
+.content button[role=switch]::before { content:""; position:absolute; inset:-10px 0; }
+.content input:not([type=checkbox]):not([type=radio]), .content textarea, .content select { font-size:16px; }
+.content table { font-size:14px; }
+.content th { font-size:11px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; padding-block:16px; }
+.content td { padding-block:20px; }
+
+.content :global(.bg-primary) { background-color:hsl(var(--primary)); }
+.content :global(.text-xs) { line-height:1.6; }
+.content :global(.text-\[10px\]), .content :global(.text-\[11px\]) { font-size:12px; line-height:1.6; }
+.editor { max-width:900px; }
+.editor .content > div { max-width:100%; }
+.editor .content form { line-height:1.6; }
+.editor .content textarea { min-height:180px; line-height:1.75; }
+.knowledge .content :global(.sm\:grid-cols-3) { gap:0; border-block:1px solid hsl(var(--border)); padding-block:20px; }
+.knowledge .content :global(.sm\:grid-cols-3) :global(.rounded-xl) { border:0; background:transparent; }
+.reviews .content > div > section { padding-top:32px; border-top:1px solid hsl(var(--border)); }
+.reviews .content article { background:hsl(var(--card)); border-radius:8px; }
+.reviews .content [role=alert] { padding:16px; border-left:3px solid hsl(var(--destructive)); background:hsl(var(--muted)); }
+.profile .content, .settings .content, .widget .content { max-width:1000px; }
+.content pre { max-width:100%; overflow:auto; }
+@media (max-width:640px) {
+ .chapter { grid-template-columns:1fr; gap:12px; margin-bottom:24px; }
+ .context { justify-self:start; }
+ .content h1 { font-size:32px; }
+ .deskNav { gap:8px 20px; }
+ .content :global(.p-8) { padding:20px; }
+ .content :global(.grid-cols-3) { grid-template-columns:1fr; }
+ .content :global(.flex.gap-3) { flex-wrap:wrap; }
+ .content textarea { min-width:0; }
+}
+@media (prefers-reduced-motion:no-preference) { .chapter { animation:arrive 380ms ease-out both; } }
+@keyframes arrive { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+.content :global(.bg-gradient-to-r):not(:global(.absolute)) { background-color:hsl(var(--primary)); }
+/* Keep actionable error copy readable while preserving the shared destructive token. */
+.studio { --expert-error:0 62% 38%; }
+:global(.dark) .studio { --expert-error:0 78% 77%; }
+.content :global(.text-destructive), .content [role=alert] { color:hsl(var(--expert-error)); }
+.content :global(.border-destructive\/50) { border-color:hsl(var(--expert-error)/.7); }

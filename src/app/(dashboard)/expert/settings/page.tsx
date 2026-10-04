@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -45,7 +47,7 @@ function SectionIcon({
     <div
       className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${color} ring-1 ring-black/5 dark:ring-white/5 shadow-sm`}
     >
-      <Icon className="h-5 w-5 text-white" />
+      <Icon className="h-5 w-5 text-primary-foreground" />
     </div>
   );
 }
@@ -147,10 +149,11 @@ function DigestOption({
   );
 }
 
-export default function ExpertSettingsPage() {
+function ExpertSettingsPageContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const { watch, setValue, handleSubmit, reset } = useForm<SettingsValues>({
     defaultValues: {
@@ -165,6 +168,7 @@ export default function ExpertSettingsPage() {
     async function loadSettings() {
       try {
         const res = await fetch("/api/expert/settings");
+        if (!res.ok) throw new Error("Saved settings unavailable");
         if (res.ok) {
           const data = await res.json();
           reset({
@@ -175,7 +179,7 @@ export default function ExpertSettingsPage() {
           });
         }
       } catch {
-        // Use defaults on error
+        setLoadError(true);
       } finally {
         setIsLoading(false);
       }
@@ -203,6 +207,8 @@ export default function ExpertSettingsPage() {
     }
   };
 
+  if (loadError) return <div role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Settings unavailable</h1><p className="text-muted-foreground">We could not load your saved information. Refresh before making changes.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh</Button></div>;
+
   return (
     <PageTransition>
       <div className="mx-auto max-w-2xl space-y-8">
@@ -213,7 +219,7 @@ export default function ExpertSettingsPage() {
               <Settings2 className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+              <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
               <p className="text-sm text-muted-foreground">
                 Manage your notification preferences and account settings
               </p>
@@ -240,16 +246,16 @@ export default function ExpertSettingsPage() {
         >
           {/* Notifications Card */}
           <FadeIn delay={0.05}>
-            <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm hover:shadow-md transition-all duration-200 ease-out hover:border-border/60">
+            <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm  transition-all duration-200 ease-out hover:border-border/60">
               {/* Top accent line */}
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-600/0 via-blue-600/40 to-blue-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-primary/0 via-primary/40 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
               <CardHeader className="relative pb-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.02] to-transparent rounded-t-xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent rounded-t-xl pointer-events-none" />
                 <div className="relative flex items-center gap-3.5">
                   <SectionIcon
                     icon={Bell}
-                    color="from-blue-600 to-blue-700"
+                    color="from-primary to-primary"
                   />
                   <div>
                     <CardTitle className="text-base font-semibold tracking-tight">
@@ -290,7 +296,7 @@ export default function ExpertSettingsPage() {
 
           {/* Email Digest Card */}
           <FadeIn delay={0.1}>
-            <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm hover:shadow-md transition-all duration-200 ease-out hover:border-border/60">
+            <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-b from-card to-card/80 shadow-sm  transition-all duration-200 ease-out hover:border-border/60">
               {/* Top accent line */}
               <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-sky-500/0 via-sky-500/40 to-sky-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
@@ -299,7 +305,7 @@ export default function ExpertSettingsPage() {
                 <div className="relative flex items-center gap-3.5">
                   <SectionIcon
                     icon={Mail}
-                    color="from-sky-500 to-blue-600"
+                    color="from-sky-500 to-primary"
                   />
                   <div>
                     <CardTitle className="text-base font-semibold tracking-tight">
@@ -358,7 +364,7 @@ export default function ExpertSettingsPage() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="cursor-pointer relative min-w-[160px] bg-gradient-to-r from-primary to-primary/90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow duration-200"
+                      className="cursor-pointer relative min-w-[160px] bg-gradient-to-r from-primary to-primary/90 shadow-md shadow-primary/20  hover:shadow-primary/30 transition-shadow duration-200"
                     >
                       {isSubmitting ? (
                         <motion.span
@@ -398,4 +404,8 @@ export default function ExpertSettingsPage() {
       </div>
     </PageTransition>
   );
+}
+
+export default function ExpertSettingsPage() {
+  return <ExpertStudio section="settings"><ExpertSettingsPageContent /></ExpertStudio>;
 }

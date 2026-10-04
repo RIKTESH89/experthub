@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +10,7 @@ import { PostComposer } from "@/components/posts/post-composer";
 import { Button } from "@/components/ui/button";
 import { PageTransition, FadeIn } from "@/components/ui/motion";
 
-export default function ExpertNewPostPage() {
+function ExpertNewPostPageContent() {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -16,25 +18,25 @@ export default function ExpertNewPostPage() {
     <PageTransition className="mx-auto max-w-3xl space-y-6">
       {/* Header */}
       <FadeIn delay={0.05}>
-        <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-blue-500/5 via-background to-blue-500/5 p-6">
+        <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-primary/5 via-background to-primary/5 p-6">
           <div className="relative flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               asChild
-              className="cursor-pointer h-10 w-10 shrink-0 rounded-xl border border-border/60 bg-background transition-all duration-200 hover:border-blue-600/30 hover:bg-blue-500/5"
+              className="cursor-pointer h-10 w-10 shrink-0 rounded-xl border border-border/60 bg-background transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
             >
-              <Link href="/expert/posts">
+              <Link href="/expert/posts" aria-label="Back to posts">
                 <ArrowLeft className="h-4 w-4" />
               </Link>
             </Button>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
-              <PenLine className="h-6 w-6 text-white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary ">
+              <PenLine className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">
+              <h1 className="text-2xl font-bold tracking-tight">
                 Create New Post
-              </h2>
+              </h1>
               <p className="mt-0.5 text-sm text-muted-foreground">
                 Share your expertise with your subscribers
               </p>
@@ -57,4 +59,8 @@ export default function ExpertNewPostPage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertNewPostPage() {
+  return <ExpertStudio section="posts/new"><ExpertNewPostPageContent /></ExpertStudio>;
 }

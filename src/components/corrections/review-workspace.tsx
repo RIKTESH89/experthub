@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +16,13 @@ const settingNames:Record<string,string>={twinPersonality:"Personality instructi
 function settingValue(value:unknown):string {return value===null?"Not set":typeof value==="boolean"?(value?"Enabled":"Disabled"):typeof value==="string"?value:JSON.stringify(value,null,2);}
 type Decision={review:Review;action:"ACCEPT"|"REJECT"|"REVISE"};
 class RequestFailure extends Error {constructor(public status:number,message:string){super(message);}}
-async function read<T>(url:string,body?:unknown,method="POST"):Promise<T> {
- const response=await fetch(url,{cache:"no-store",...(body===undefined?{}:{method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})});
+async function readRequest<T>(url:string,body:unknown,method:string,transport:typeof fetch):Promise<T> {
+ const response=await transport(url,{cache:"no-store",...(body===undefined?{}:{method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})});
  const result=await response.json();if(!response.ok)throw new RequestFailure(response.status,result.error||"Request failed");return result;
 }
-export function ReviewWorkspace() {
+export function ReviewWorkspace({transport=fetch}:{transport?:typeof fetch}={}) {
+ // A fixture may supply an in-memory transport; product routes use authenticated fetch.
+ const read=useCallback(<T,>(url:string,body?:unknown,method="POST")=>readRequest<T>(url,body,method,transport),[transport]);
  const [data,setData]=useState<Workspace|null>(null),[error,setError]=useState(""),[notice,setNotice]=useState(""),[busy,setBusy]=useState(false);
  const [decision,setDecision]=useState<Decision|null>(null),[draft,setDraft]=useState<Proposal>({feedback:""}),[reason,setReason]=useState("");
  const [preview,setPreview]=useState<Preview|null>(null),[releaseConfirm,setReleaseConfirm]=useState(false),[blocked,setBlocked]=useState(false);
@@ -39,7 +41,7 @@ export function ReviewWorkspace() {
   .then(([queue,versions,context])=>{if(active)setData({...queue,...context,releases:versions.releases,head:versions.heads[0]?.releaseId||null});})
   .catch(e=>{if(active)setError(e instanceof RequestFailure&&[401,403].includes(e.status)?"Expert owner access required. Sign in with the owning expert account.":"Unable to load reviews. Refresh to try again.");});
   return ()=>{active=false;};
- },[]);
+ },[read]);
  useEffect(()=>{if(decision||preview||releaseConfirm)editor.current?.focus();},[decision,preview,releaseConfirm]);
  async function perform(work:()=>Promise<void>) {
   if(lock.current)return;lock.current=true;setBusy(true);setError("");setNotice("");

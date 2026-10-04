@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -72,23 +74,26 @@ interface PostDetail {
   }>;
 }
 
-export default function ExpertPostDetailPage() {
+function ExpertPostDetailPageContent() {
   const params = useParams();
   const router = useRouter();
   const postId = params.postId as string;
 
   const [post, setPost] = useState<PostDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     async function fetchPost() {
       try {
         const res = await fetch(`/api/posts/${postId}`);
+        if (res.status === 404) { setPost(null); return; }
         if (!res.ok) throw new Error("Failed to fetch post");
         const data = await res.json();
         setPost(data);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load post");
       } finally {
         setIsLoading(false);
@@ -110,6 +115,8 @@ export default function ExpertPostDetailPage() {
     }
   };
 
+  if (loadError) return <section role="alert" className="space-y-4 rounded-lg border bg-card p-6"><h1>Post unavailable</h1><p className="text-muted-foreground">We could not load this post. Refresh to try again.</p><Button variant="outline" onClick={() => window.location.reload()}>Refresh post</Button><Link className="ml-4 underline" href="/expert/posts">Back to posts</Link></section>;
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-3xl space-y-6">
@@ -123,7 +130,7 @@ export default function ExpertPostDetailPage() {
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <h2 className="text-lg font-semibold">Post Not Found</h2>
+        <h1 className="text-lg font-semibold">Post Not Found</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           The post you are looking for does not exist.
         </p>
@@ -145,9 +152,9 @@ export default function ExpertPostDetailPage() {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               {post.title || "Untitled Post"}
-            </h2>
+            </h1>
             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-3.5 w-3.5" />
               {formatDate(post.createdAt)}
@@ -213,7 +220,7 @@ export default function ExpertPostDetailPage() {
         {post.isRagEnabled && (
           <Badge
             variant="secondary"
-            className="gap-1 bg-blue-500/10 text-blue-600"
+            className="gap-1 bg-primary/10 text-primary"
           >
             <Brain className="h-3 w-3" />
             RAG Enabled
@@ -253,7 +260,7 @@ export default function ExpertPostDetailPage() {
         </Card>
         <Card>
           <CardContent className="flex items-center gap-2 p-3">
-            <MessageCircle className="h-4 w-4 text-blue-500" />
+            <MessageCircle className="h-4 w-4 text-primary" />
             <div>
               <p className="text-lg font-bold">{post._count.comments}</p>
               <p className="text-xs text-muted-foreground">Comments</p>
@@ -353,4 +360,8 @@ export default function ExpertPostDetailPage() {
       </Card>
     </div>
   );
+}
+
+export default function ExpertPostDetailPage() {
+  return <ExpertStudio section="posts/[postId]"><ExpertPostDetailPageContent /></ExpertStudio>;
 }

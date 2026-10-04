@@ -1,3 +1,5 @@
+// Keep the owner-guard test focused on rendered content; Jest does not load CSS modules.
+jest.mock("@/components/expert-studio/expert-studio.module.css", () => ({__esModule:true,default:{studio:"expert-studio",chapter:"expert-chapter",context:"expert-context",deskNav:"expert-desk-nav",content:"expert-content",reviews:"expert-reviews"}}));
 import { renderToStaticMarkup } from "react-dom/server";
 import page from "@/app/(dashboard)/expert/reviews/page";
 import { auth } from "@/lib/auth";

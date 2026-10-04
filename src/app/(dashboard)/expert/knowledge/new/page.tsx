@@ -1,5 +1,7 @@
 "use client";
 
+import { ExpertStudio } from "@/components/expert-studio/expert-studio";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, PenSquare } from "lucide-react";
@@ -10,7 +12,7 @@ import {
   FadeIn,
 } from "@/components/ui/motion";
 
-export default function ExpertNewKnowledgePage() {
+function ExpertNewKnowledgePageContent() {
   const router = useRouter();
 
   return (
@@ -21,22 +23,22 @@ export default function ExpertNewKnowledgePage() {
           <Button
             variant="ghost"
             size="icon"
-            className="cursor-pointer h-10 w-10 shrink-0 rounded-xl border border-border/50 shadow-sm transition-all duration-200 hover:border-blue-600/30 hover:bg-blue-50/50 hover:shadow-md dark:hover:bg-blue-500/5"
+            className="cursor-pointer h-10 w-10 shrink-0 rounded-xl border border-border/50 shadow-sm transition-all duration-200 hover:border-primary/30 hover:bg-primary/50  dark:hover:bg-primary/5"
             asChild
           >
-            <Link href="/expert/knowledge">
+            <Link href="/expert/knowledge" aria-label="Back to knowledge library">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
 
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1E40AF] shadow-lg shadow-blue-700/25">
-              <PenSquare className="h-5 w-5 text-white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary ">
+              <PenSquare className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">
+              <h1 className="text-2xl font-bold tracking-tight">
                 Add Knowledge Item
-              </h2>
+              </h1>
               <p className="text-sm text-muted-foreground">
                 Add content to your knowledge base to power your Digital Twin
               </p>
@@ -52,14 +54,14 @@ export default function ExpertNewKnowledgePage() {
             <div className="w-full border-t border-border/40" />
           </div>
           <div className="relative flex justify-center">
-            <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-blue-600/40 via-blue-500/40 to-blue-400/40" />
+            <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-primary/40 via-primary/40 to-primary/40" />
           </div>
         </div>
       </FadeIn>
 
       {/* Form */}
       <FadeIn delay={0.25} direction="up">
-        <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all duration-200 hover:border-border/80 hover:shadow-md sm:p-8">
+        <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all duration-200 hover:border-border/80  sm:p-8">
           <KnowledgeForm
             onSuccess={() => router.push("/expert/knowledge")}
             onCancel={() => router.push("/expert/knowledge")}
@@ -68,4 +70,8 @@ export default function ExpertNewKnowledgePage() {
       </FadeIn>
     </PageTransition>
   );
+}
+
+export default function ExpertNewKnowledgePage() {
+  return <ExpertStudio section="knowledge/new"><ExpertNewKnowledgePageContent /></ExpertStudio>;
 }

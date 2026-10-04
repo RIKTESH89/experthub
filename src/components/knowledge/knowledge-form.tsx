@@ -43,8 +43,8 @@ interface KnowledgeFormProps {
 }
 
 const sourceTypeOptions = [
-  { value: "manual", label: "Manual Entry", icon: FileText, color: "text-blue-700 dark:text-blue-400" },
-  { value: "document", label: "Document Upload", icon: Upload, color: "text-purple-500" },
+  { value: "manual", label: "Manual Entry", icon: FileText, color: "text-primary dark:text-primary" },
+  { value: "document", label: "Document Upload", icon: Upload, color: "text-primary" },
   { value: "post", label: "From Post", icon: MessageSquare, color: "text-green-500" },
 ];
 
@@ -108,12 +108,12 @@ export function KnowledgeForm({
     >
       <Card className="overflow-hidden border-border/50">
         {/* Header accent line */}
-        <div className="h-1 bg-blue-700" />
+        <div className="h-1 bg-primary" />
 
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-700/10">
-              <FileText className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <FileText className="h-5 w-5 text-primary dark:text-primary" />
             </div>
             <div>
               <CardTitle className="text-lg font-semibold font-sans tracking-tight">
@@ -149,7 +149,7 @@ export function KnowledgeForm({
                 className={cn(
                   "h-11 rounded-lg border-border/50 bg-card px-4 font-sans transition-all duration-200",
                   "placeholder:text-muted-foreground",
-                  "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
+                  "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10",
                   errors.title && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
                 {...register("title", { required: "Title is required" })}
@@ -187,7 +187,7 @@ export function KnowledgeForm({
                 <SelectTrigger
                   className={cn(
                     "h-11 cursor-pointer rounded-lg border-border/50 bg-card font-sans transition-all duration-200",
-                    "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10"
+                    "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10"
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ export function KnowledgeForm({
                 className={cn(
                   "min-h-[200px] resize-y rounded-lg border-border/50 bg-card px-4 py-3 font-sans transition-all duration-200",
                   "placeholder:text-muted-foreground",
-                  "focus:border-blue-700/50 focus:bg-background focus:ring-2 focus:ring-blue-700/10",
+                  "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10",
                   errors.content && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
                 {...register("content", { required: "Content is required" })}
@@ -267,7 +267,7 @@ export function KnowledgeForm({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="cursor-pointer rounded-lg bg-blue-700 px-6 font-sans text-white transition-colors duration-200 hover:bg-blue-800"
+              className="cursor-pointer rounded-lg bg-primary px-6 font-sans text-primary-foreground transition-colors duration-200 hover:bg-primary"
             >
               {isSubmitting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

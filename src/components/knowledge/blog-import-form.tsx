@@ -116,9 +116,10 @@ export function BlogImportForm() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Single URL input */}
+        <label htmlFor="blog-import-url" className="block text-sm font-medium">Article URL</label>
         <div className="flex gap-2">
           <Input
+            id="blog-import-url"
             placeholder="https://example.com/article"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
@@ -132,6 +133,7 @@ export function BlogImportForm() {
           />
           <Button
             variant="outline"
+            aria-label="Add article URL"
             onClick={addUrl}
             disabled={isImporting || !urlInput.trim()}
           >
@@ -139,9 +141,10 @@ export function BlogImportForm() {
           </Button>
         </div>
 
-        {/* Bulk URL input */}
+        <label htmlFor="blog-import-urls" className="block text-sm font-medium">Multiple article URLs</label>
         <div className="space-y-2">
           <Textarea
+            id="blog-import-urls"
             placeholder="Paste multiple URLs (one per line)..."
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
@@ -166,6 +169,7 @@ export function BlogImportForm() {
                 <Badge key={url} variant="secondary" className="max-w-full">
                   <span className="truncate max-w-[300px]">{url}</span>
                   <button
+                    aria-label={`Remove ${url}`}
                     onClick={() => removeUrl(url)}
                     className="ml-1 hover:text-destructive"
                     disabled={isImporting}

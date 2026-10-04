@@ -97,14 +97,14 @@ export function PdfImportForm() {
       <CardContent className="space-y-4">
         {/* Dropzone */}
         <div
-          {...getRootProps()}
+          {...getRootProps({role:"button", "aria-label":"Choose a PDF document"})}
           className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
             isDragActive
               ? "border-primary bg-primary/5"
               : "border-muted-foreground/25 hover:border-primary/50"
           } ${isUploading ? "pointer-events-none opacity-50" : ""}`}
         >
-          <input {...getInputProps()} />
+          <input {...getInputProps({"aria-label":"PDF document"})} />
           <Upload className="mb-3 h-8 w-8 text-muted-foreground" />
           {isDragActive ? (
             <p className="text-sm text-primary">Drop the PDF here...</p>
