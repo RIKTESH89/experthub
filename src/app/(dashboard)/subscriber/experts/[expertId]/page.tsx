@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/subscriber/subscriber-studio.module.css";
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -67,21 +69,15 @@ const tierLabels = {
   PREMIUM: "Premium",
 };
 
-const tierGradients = {
-  FREE: "from-slate-500/10 to-slate-300/5",
-  STANDARD: "from-[#1E40AF]/10 to-blue-300/5",
-  PREMIUM: "from-amber-500/10 to-yellow-300/5",
-};
-
 const tierBorderColors = {
   FREE: "border-border dark:border-border",
-  STANDARD: "border-[#1E40AF]/20 dark:border-blue-800",
-  PREMIUM: "border-amber-300 dark:border-amber-700",
+  STANDARD: "border-border",
+  PREMIUM: "border-border",
 };
 
 const tierIconColors = {
   FREE: "text-muted-foreground",
-  STANDARD: "text-[#1E40AF]",
+  STANDARD: "text-primary",
   PREMIUM: "text-amber-500",
 };
 
@@ -173,7 +169,7 @@ export default function SubscriberExpertProfilePage() {
         </div>
         <h2 className="text-lg font-semibold">Expert Not Found</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          This expert profile does not exist.
+          This profile is unavailable or could not be loaded. Return to the hub to browse experts.
         </p>
         <Button className="mt-4 cursor-pointer" asChild>
           <Link href="/subscriber/hub">Browse Experts</Link>
@@ -183,7 +179,8 @@ export default function SubscriberExpertProfilePage() {
   }
 
   return (
-    <PageTransition className="space-y-6 font-sans">
+    <PageTransition className={`${styles.page} space-y-6 font-sans`}>
+      <div className={styles.eyebrow}><Link href="/subscriber/hub">Knowledge hub</Link> / Expert profile</div>
       {/* Profile Header */}
       <FadeIn delay={0.05}>
         <ExpertProfileHeader
@@ -193,7 +190,7 @@ export default function SubscriberExpertProfilePage() {
       </FadeIn>
 
       {/* Floating Chat Button */}
-      <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
+      <div className="flex justify-start pb-2">
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -202,7 +199,7 @@ export default function SubscriberExpertProfilePage() {
           {expert.isSubscribed ? (
             <Button
               size="lg"
-              className="gap-2 rounded-full shadow-lg text-sm sm:text-base bg-[#1E40AF] hover:bg-[#1E40AF]/90 text-white border-0 cursor-pointer"
+              className="gap-2 rounded-full shadow-lg text-sm sm:text-base bg-primary hover:bg-primary/90 text-primary-foreground border-0 cursor-pointer"
               asChild
             >
               <Link href={`/subscriber/experts/${expertId}/chat`}>
@@ -214,12 +211,12 @@ export default function SubscriberExpertProfilePage() {
             <Button
               size="lg"
               variant="outline"
-              className="gap-2 rounded-full shadow-lg text-sm sm:text-base bg-background border-[#1E40AF]/20 hover:border-[#1E40AF]/40 hover:bg-[#1E40AF]/5 cursor-pointer"
+              className="gap-2 rounded-full shadow-lg text-sm sm:text-base bg-background border-primary/20 hover:border-primary/40 hover:bg-primary/5 cursor-pointer"
               asChild
             >
               <Link href={`/subscriber/experts/${expertId}/chat`}>
-                <Bot className="h-5 w-5 text-[#1E40AF]" />
-                Try Digital Twin Free
+                <Bot className="h-5 w-5 text-primary" />
+                Explore AI conversation
               </Link>
             </Button>
           )}
@@ -232,7 +229,7 @@ export default function SubscriberExpertProfilePage() {
           <TabsList className="w-full justify-start border-b bg-transparent p-0 h-auto rounded-none">
             <TabsTrigger
               value="posts"
-              className="relative rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground transition-all duration-200 data-[state=active]:border-[#1E40AF] data-[state=active]:text-foreground data-[state=active]:shadow-none bg-transparent hover:text-foreground/80 cursor-pointer"
+              className="relative rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground transition-all duration-200 data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none bg-transparent hover:text-foreground/80 cursor-pointer"
             >
               Posts
               <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-[10px] font-semibold">
@@ -241,7 +238,7 @@ export default function SubscriberExpertProfilePage() {
             </TabsTrigger>
             <TabsTrigger
               value="about"
-              className="relative rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground transition-all duration-200 data-[state=active]:border-[#1E40AF] data-[state=active]:text-foreground data-[state=active]:shadow-none bg-transparent hover:text-foreground/80 cursor-pointer"
+              className="relative rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground transition-all duration-200 data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none bg-transparent hover:text-foreground/80 cursor-pointer"
             >
               About
             </TabsTrigger>
@@ -283,7 +280,7 @@ export default function SubscriberExpertProfilePage() {
                         <Badge
                           key={spec}
                           variant="secondary"
-                          className="text-sm px-3 py-1 bg-[#1E40AF]/5 text-[#1E40AF] border border-[#1E40AF]/10 hover:bg-[#1E40AF]/10 transition-colors duration-200"
+                          className="text-sm px-3 py-1 bg-primary/5 text-primary border border-primary/10 hover:bg-primary/10 transition-colors duration-200"
                         >
                           {spec}
                         </Badge>
@@ -307,7 +304,7 @@ export default function SubscriberExpertProfilePage() {
                             href={expert.socialLinks.twitter}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-[#1E40AF]/30 hover:bg-[#1E40AF]/5 hover:text-foreground cursor-pointer"
+                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-foreground cursor-pointer"
                           >
                             <Twitter className="h-4 w-4 text-[#1DA1F2] group-hover:scale-110 transition-transform duration-200" />
                             Twitter / X
@@ -319,7 +316,7 @@ export default function SubscriberExpertProfilePage() {
                             href={expert.socialLinks.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-[#1E40AF]/30 hover:bg-[#1E40AF]/5 hover:text-foreground cursor-pointer"
+                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-foreground cursor-pointer"
                           >
                             <Linkedin className="h-4 w-4 text-[#0A66C2] group-hover:scale-110 transition-transform duration-200" />
                             LinkedIn
@@ -331,7 +328,7 @@ export default function SubscriberExpertProfilePage() {
                             href={expert.socialLinks.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-[#1E40AF]/30 hover:bg-[#1E40AF]/5 hover:text-foreground cursor-pointer"
+                            className="group flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 text-sm text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-foreground cursor-pointer"
                           >
                             <Globe className="h-4 w-4 text-emerald-500 group-hover:scale-110 transition-transform duration-200" />
                             Website
@@ -360,39 +357,23 @@ export default function SubscriberExpertProfilePage() {
                             transition={{ delay: 0.1 * index, duration: 0.3 }}
                             className="relative"
                           >
-                            {/* Border accent for premium */}
-                            {isPremium && (
-                              <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-br from-amber-400 via-orange-500 to-yellow-400 opacity-75 blur-[1px]" />
-                            )}
                             <div
                               className={cn(
                                 "relative rounded-xl border p-5 bg-card transition-shadow duration-200 hover:shadow-md",
                                 isPremium
-                                  ? "border-transparent"
+                                  ? "border-primary"
                                   : tierBorderColors[t.tier]
                               )}
                             >
-                              {/* Tier background */}
-                              <div
-                                className={cn(
-                                  "absolute inset-0 rounded-xl bg-gradient-to-br opacity-50 pointer-events-none",
-                                  tierGradients[t.tier]
-                                )}
-                              />
-
                               <div className="relative">
-                                {isPremium && (
-                                  <Badge className="absolute -top-8 left-1/2 -translate-x-1/2 bg-amber-500 text-white border-0 text-[10px] shadow-md">
-                                    Most Popular
-                                  </Badge>
-                                )}
+
 
                                 <div className="flex items-center gap-2.5 mb-3">
                                   <div
                                     className={cn(
                                       "flex h-9 w-9 items-center justify-center rounded-lg",
                                       t.tier === "FREE" && "bg-muted dark:bg-slate-800",
-                                      t.tier === "STANDARD" && "bg-[#1E40AF]/10 dark:bg-blue-900/30",
+                                      t.tier === "STANDARD" && "bg-primary/10 dark:bg-blue-900/30",
                                       t.tier === "PREMIUM" && "bg-amber-100 dark:bg-amber-900/30"
                                     )}
                                   >
@@ -431,7 +412,7 @@ export default function SubscriberExpertProfilePage() {
                                           className={cn(
                                             "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
                                             t.tier === "FREE" && "bg-muted dark:bg-slate-800",
-                                            t.tier === "STANDARD" && "bg-[#1E40AF]/10 dark:bg-blue-900/30",
+                                            t.tier === "STANDARD" && "bg-primary/10 dark:bg-blue-900/30",
                                             t.tier === "PREMIUM" && "bg-amber-100 dark:bg-amber-900/30"
                                           )}
                                         >

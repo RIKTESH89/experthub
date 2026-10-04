@@ -1,5 +1,8 @@
 "use client";
 
+import { SubscriberHeading } from "@/components/subscriber/page-heading";
+import styles from "@/components/subscriber/subscriber-studio.module.css";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -37,12 +40,7 @@ function ShimmerBlock({ className }: { className?: string }) {
   return (
     <div
       className={`rounded-lg bg-muted ${className ?? ""}`}
-      style={{
-        backgroundImage:
-          "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)",
-        backgroundSize: "400% 100%",
-        animation: "shimmer 2s infinite linear",
-      }}
+
     />
   );
 }
@@ -103,7 +101,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
   const scroll = (dir: "left" | "right") => {
     scrollRef.current?.scrollBy({
       left: dir === "left" ? -200 : 200,
-      behavior: "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
     });
   };
 
@@ -123,6 +121,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
             >
               <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent pointer-events-none" />
               <button
+                aria-label="Previous experts"
                 onClick={() => scroll("left")}
                 className="relative -ml-2 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border/60 shadow-md hover:bg-accent transition-colors duration-200 cursor-pointer"
               >
@@ -143,6 +142,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
             >
               <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
               <button
+                aria-label="Next experts"
                 onClick={() => scroll("right")}
                 className="relative -mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border/60 shadow-md hover:bg-accent transition-colors duration-200 cursor-pointer"
               >
@@ -170,7 +170,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
               >
                 <div className="relative">
                   {/* Ring */}
-                  <div className="rounded-full p-[2.5px] bg-gradient-to-br from-[#1E40AF] to-blue-400 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                  <div className="rounded-full p-[2.5px] bg-accent border border-border group-hover:shadow-md transition-shadow duration-200">
                     <div className="rounded-full bg-background p-[2px]">
                       <Avatar className="h-[56px] w-[56px] transition-transform duration-200 group-hover:scale-105">
                         <AvatarImage
@@ -183,8 +183,7 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
                       </Avatar>
                     </div>
                   </div>
-                  {/* Online dot */}
-                  <span className="absolute -bottom-0.5 right-0 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500" />
+
                 </div>
                 <span className="max-w-[76px] truncate text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
                   {expert.displayName.split(" ")[0]}
@@ -203,8 +202,8 @@ function ExpertStoryRow({ experts }: { experts: SubscribedExpert[] }) {
               href="/subscriber/hub"
               className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer"
             >
-              <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary transition-all duration-200 group-hover:border-[#1E40AF]/50 group-hover:bg-[#1E40AF]/5 group-hover:scale-105">
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-[#1E40AF] transition-colors duration-200" />
+              <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-dashed border-border bg-secondary transition-all duration-200 group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:scale-105">
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-200" />
               </div>
               <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
                 Discover
@@ -231,8 +230,8 @@ function EmptyFeedState() {
           transition={{ delay: 0.3, duration: 0.3 }}
           className="relative mb-6"
         >
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#1E40AF]/10 border border-[#1E40AF]/10">
-            <FileText className="h-9 w-9 text-[#1E40AF]/70" />
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/10">
+            <FileText className="h-9 w-9 text-primary/70" />
           </div>
         </motion.div>
 
@@ -260,7 +259,7 @@ function EmptyFeedState() {
           className="mt-6"
         >
           <Button
-            className="gap-2 rounded-full px-6 bg-[#1E40AF] hover:bg-[#1E40AF]/90 text-white cursor-pointer"
+            className="gap-2 rounded-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
             asChild
           >
             <Link href="/subscriber/hub">
@@ -308,41 +307,6 @@ function AllCaughtUp() {
    ANIMATED GREETING
    ================================================================ */
 
-function Greeting({ name }: { name?: string | null }) {
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    return "Good evening";
-  };
-
-  const firstName = name?.split(" ")[0];
-
-  return (
-    <FadeIn delay={0.05} direction="up" className="mb-6">
-      <div className="flex items-end justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-[1.7rem] font-sans">
-            {firstName ? (
-              <>
-                {getGreeting()},{" "}
-                <span className="text-foreground">
-                  {firstName}
-                </span>
-              </>
-            ) : (
-              "Your Feed"
-            )}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Latest from the experts you follow
-          </p>
-        </div>
-      </div>
-    </FadeIn>
-  );
-}
-
 /* ================================================================
    MAIN FEED PAGE
    ================================================================ */
@@ -353,6 +317,7 @@ export default function SubscriberFeedPage() {
   const [subscribedExperts, setSubscribedExperts] = useState<SubscribedExpert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -386,6 +351,7 @@ export default function SubscriberFeedPage() {
       try {
         if (append) setIsLoadingMore(true);
         else setIsLoading(true);
+        setLoadError(false);
 
         const res = await fetch(`/api/subscriber/feed?page=${pageNum}&limit=10`);
         if (!res.ok) throw new Error("Failed to fetch posts");
@@ -393,10 +359,11 @@ export default function SubscriberFeedPage() {
         const data = await res.json();
         const newPosts: Post[] = data.posts ?? data;
 
-        if (newPosts.length < 10) setHasMore(false);
+        setHasMore(newPosts.length >= 10);
 
         setPosts((prev) => (append ? [...prev, ...newPosts] : newPosts));
       } catch {
+        setLoadError(true);
         setHasMore(false);
       } finally {
         setIsLoading(false);
@@ -434,9 +401,9 @@ export default function SubscriberFeedPage() {
   }, [hasMore, isLoadingMore, page, fetchPosts]);
 
   return (
-    <PageTransition className="mx-auto w-full max-w-2xl px-1 font-sans">
+    <PageTransition className={`${styles.page} mx-auto w-full max-w-2xl px-1 font-sans`}>
       {/* Greeting */}
-      <Greeting name={session?.user?.name} />
+      <SubscriberHeading section="Your library / Reading" title={session?.user?.name ? `${session.user.name.split(" ")[0]}’s feed` : "Your feed"} description="The latest posts from the experts you subscribe to." />
 
       {/* Expert story row */}
       <div className="mb-6">
@@ -454,6 +421,7 @@ export default function SubscriberFeedPage() {
         </div>
       </FadeIn>
 
+      {loadError && <div className={styles.notice} role="alert"><strong>Your feed could not be loaded</strong><p>Try again to see the latest posts from your subscriptions.</p><Button disabled={isLoading || isLoadingMore} onClick={() => fetchPosts(page, page > 1)}>Try again</Button></div>}
       {/* Feed content */}
       {isLoading ? (
         <StaggerContainer className="space-y-4">
@@ -463,7 +431,7 @@ export default function SubscriberFeedPage() {
             </StaggerItem>
           ))}
         </StaggerContainer>
-      ) : posts.length === 0 ? (
+      ) : loadError && posts.length === 0 ? null : posts.length === 0 ? (
         <EmptyFeedState />
       ) : (
         <StaggerContainer className="space-y-5">

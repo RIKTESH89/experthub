@@ -1,10 +1,13 @@
 "use client";
 
+import { SubscriberHeading } from "@/components/subscriber/page-heading";
+import styles from "@/components/subscriber/subscriber-studio.module.css";
+
 import { useState, useEffect } from "react";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { PageTransition, FadeIn } from "@/components/ui/motion";
+import { PageTransition } from "@/components/ui/motion";
 
 interface ProfileData {
   name: string;
@@ -70,7 +73,7 @@ export default function SubscriberProfilePage() {
 
   if (!profile) {
     return (
-      <PageTransition>
+      <PageTransition className={styles.page}>
         <div className="flex flex-col items-center justify-center py-20 font-sans">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
@@ -82,7 +85,7 @@ export default function SubscriberProfilePage() {
           <p className="mt-4 text-sm font-medium text-muted-foreground">Failed to load profile</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-3 text-sm font-medium text-[#1E40AF] hover:text-[#1E40AF]/80 transition-colors duration-200 cursor-pointer"
+            className="mt-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-200 cursor-pointer"
           >
             Try again
           </button>
@@ -92,38 +95,11 @@ export default function SubscriberProfilePage() {
   }
 
   return (
-    <PageTransition>
-      <div className="mx-auto max-w-2xl space-y-6 font-sans">
-        {/* Header */}
-        <FadeIn delay={0}>
-          <div className="relative overflow-hidden rounded-2xl border bg-card px-6 py-6">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
-
-            <div className="relative flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF] text-white">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight font-sans">
-                  My Profile
-                </h2>
-                <p className="mt-0.5 text-sm text-muted-foreground">
-                  Manage your personal information and public presence
-                </p>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Form card */}
-        <FadeIn delay={0.1}>
-          <div className="rounded-2xl border bg-card p-5">
-            <ProfileForm initialData={profile} />
-          </div>
-        </FadeIn>
+    <PageTransition className={styles.page}>
+      <SubscriberHeading section="Account / Identity" title="My profile" description="Keep your personal information and profile up to date." />
+      <div className={styles.formLayout}>
+        <aside><h2>Your details</h2><p className={styles.note}>Your name, photo, headline and bio help people recognize you across ExpertHub.</p><p className={styles.note}>Your email is linked to your sign-in account.</p></aside>
+        <div className={styles.formSurface}><ProfileForm initialData={profile} /></div>
       </div>
     </PageTransition>
   );

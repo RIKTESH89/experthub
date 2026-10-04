@@ -1,0 +1,11 @@
+.form { border:1px solid hsl(var(--border)); border-radius:10px; background:hsl(var(--card)); box-shadow:none!important; }
+.form :global(h1), .form :global(h3) { font-size:28px; font-weight:500; letter-spacing:-.04em; line-height:1.2; }
+.form :global(.text-center) { text-align:left; }
+.form :global(.mx-auto) { margin-left:0; }
+.form :global(input) { min-height:48px; font-size:16px; }
+.form :global(label) { font-size:14px; }
+.form :global(button), .form :global(a) { min-height:44px; }
+.form :global(p) { line-height:1.7; }
+.form :global(.px-10) { padding-left:28px; padding-right:28px; }
+.form :global(.text-xs) { font-size:13px; }
+@media(max-width:640px) { .form :global(.px-10) { padding-left:24px; padding-right:24px; } }

@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "../auth-forms.module.css";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -15,7 +17,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 const forgotPasswordSchema = z.object({
@@ -40,6 +41,7 @@ export default function ForgotPasswordPage() {
   });
 
   async function onSubmit(data: ForgotPasswordInput) {
+    if (isLoading) return;
     setIsLoading(true);
     try {
       await fetch("/api/auth/forgot-password", {
@@ -58,12 +60,12 @@ export default function ForgotPasswordPage() {
 
   if (isSubmitted) {
     return (
-      <Card className="border-border/50 shadow-lg">
+      <Card className={styles.form}>
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <Mail className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-xl">Check your email</CardTitle>
+          <h1 className="text-xl">Check your email</h1>
           <CardDescription>
             If an account exists with that email, we&apos;ve sent password reset
             instructions.
@@ -82,9 +84,9 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="border-border/50 shadow-lg">
+    <Card className={styles.form}>
       <CardHeader className="space-y-3 text-center">
-        <CardTitle className="text-xl">Forgot your password?</CardTitle>
+        <h1 className="text-xl">Forgot your password?</h1>
         <CardDescription>
           Enter your email address and we&apos;ll send you instructions to reset
           your password.
@@ -100,10 +102,12 @@ export default function ForgotPasswordPage() {
               placeholder="you@example.com"
               autoComplete="email"
               disabled={isLoading}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive">
+              <p id="email-error" role="alert" className="text-sm text-destructive">
                 {errors.email.message}
               </p>
             )}

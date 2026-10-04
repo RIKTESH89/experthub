@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import styles from "@/components/subscriber/subscriber-studio.module.css";
 import { CreditCard } from "lucide-react";
 import { SubscriptionCard } from "./subscription-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,6 +29,7 @@ interface Subscription {
 
 export function SubscriptionList() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [loadError, setLoadError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +40,7 @@ export function SubscriptionList() {
         const data = await res.json();
         setSubscriptions(data.subscriptions ?? data);
       } catch {
+        setLoadError(true);
         toast.error("Failed to load subscriptions");
       } finally {
         setIsLoading(false);
@@ -89,13 +94,15 @@ export function SubscriptionList() {
     );
   }
 
+  if (loadError) return <div className={styles.notice} role="alert"><strong>Subscriptions could not be loaded</strong><p>Reload to review your plans and access.</p><Button variant="outline" onClick={() => window.location.reload()}>Try again</Button></div>;
+
   if (subscriptions.length === 0) {
     return (
-      <EmptyState
+      <div><EmptyState
         icon={CreditCard}
         title="No subscriptions yet"
         description="Subscribe to experts to access their AI twins and exclusive content."
-      />
+      /><div className="flex justify-center pb-8"><Button variant="outline" asChild><Link href="/subscriber/hub">Discover experts</Link></Button></div></div>
     );
   }
 

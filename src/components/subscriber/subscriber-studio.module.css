@@ -1,0 +1,39 @@
+.page { width:100%; min-width:0; max-width:1160px; margin:0 auto; color:hsl(var(--foreground)); }
+.heading { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; padding:8px 0 32px; margin-bottom:32px; border-bottom:1px solid hsl(var(--border)); }
+.eyebrow { color:hsl(var(--primary)); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.14em; margin-bottom:14px; }
+.heading h1 { font-size:clamp(32px,4vw,46px)!important; font-weight:500!important; letter-spacing:-.05em; line-height:1.12; }
+.description { color:hsl(var(--muted-foreground)); font-size:16px; line-height:1.7; max-width:620px; margin-top:14px; }
+.headingActions { flex-shrink:0; display:flex; gap:8px; align-items:center; }
+.summary { display:grid; grid-template-columns:1fr 1fr; gap:32px; padding-bottom:32px; }
+.summary > div { border-bottom:1px solid hsl(var(--border)); padding-bottom:24px; }
+.summary p { font-size:13px; color:hsl(var(--muted-foreground)); margin-bottom:10px; }
+.summary strong { font-size:36px; font-weight:500; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+.summary small { font-size:14px; color:hsl(var(--muted-foreground)); margin-left:8px; }
+.section { padding:28px 0; border-top:1px solid hsl(var(--border)); }
+.section h2 { font-size:24px; font-weight:500; letter-spacing:-.035em; }
+.note { color:hsl(var(--muted-foreground)); font-size:14px; line-height:1.7; margin:12px 0 24px; max-width:680px; }
+.formLayout { display:grid; grid-template-columns: minmax(180px,.65fr) minmax(0,1.35fr); gap:56px; align-items:start; }
+.formLayout > aside { position:sticky; top:100px; }
+.formLayout > aside h2 { font-size:24px; font-weight:500; }
+.formSurface { background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:10px; padding:24px; min-width:0; }
+.formSurface > div { border:0; box-shadow:none; }
+.notice { padding:24px; border:1px solid hsl(var(--border)); border-radius:10px; background:hsl(var(--card)); font-size:15px; line-height:1.7; }
+.notice p { color:hsl(var(--muted-foreground)); margin:8px 0 18px; }
+.expertGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+.expertGrid > div { min-width:0; width:auto; }
+.page :global(button), .page :global(a[role=button]) { min-height:44px; }
+.page :global(input), .page :global(textarea) { font-size:16px; }
+.page :global(.shadow-md), .page :global(.shadow-lg) { box-shadow:none; }
+.page :global(.rounded-2xl) { border-radius:10px; }
+.page :global(.text-xs) { font-size:13px; line-height:1.6; }
+.page :global(.text-\[10px\]), .page :global(.text-\[11px\]) { font-size:12px; }
+.subscription { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:20px; align-items:center; padding:24px 0; border-bottom:1px solid hsl(var(--border)); }
+.subscriptionName { font-size:18px; font-weight:550; letter-spacing:-.02em; overflow-wrap:anywhere; }
+.subscriptionMeta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:13px; color:hsl(var(--muted-foreground)); margin-top:6px; }
+.subscriptionActions { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.price { text-align:right; font-size:24px; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.price small { display:block; font-size:13px; font-weight:400; color:hsl(var(--muted-foreground)); margin-top:4px; }
+@media(max-width:900px) { .expertGrid { grid-template-columns:repeat(2,minmax(0,1fr)); } .formLayout { gap:28px; grid-template-columns:1fr; } .formLayout > aside { position:static; } }
+@media(max-width:640px) { .heading { align-items:start; flex-direction:column; padding-bottom:24px; margin-bottom:24px; gap:20px; } .headingActions { flex-wrap:wrap; width:100%; } .expertGrid { grid-template-columns:1fr; } .summary { gap:20px; } .summary strong { font-size:30px; } .formSurface { padding:16px; } .subscription { grid-template-columns:auto minmax(0,1fr); gap:14px; } .price { grid-column:2; text-align:left; font-size:20px; } .price small { display:inline; margin-left:6px; } }
+@media(prefers-reduced-motion:no-preference) { .heading { animation:arrive 350ms ease-out both; } }
+@keyframes arrive { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }

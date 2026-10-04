@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "../auth-forms.module.css";
+
 import { useState } from "react";
 import { isGoogleSignInEnabled } from "@/lib/google-sign-in";
 import { signIn } from "next-auth/react";
@@ -11,6 +13,7 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   async function handleGoogleSignIn() {
+    if (isGoogleLoading || !isGoogleSignInEnabled()) return;
     setIsGoogleLoading(true);
     try {
       await signIn("google", { callbackUrl: "/" });
@@ -27,7 +30,7 @@ export default function LoginPage() {
       transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
     >
       {/* Card */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className={`${styles.form} overflow-hidden`}>
         {/* Header */}
         <div className="px-10 pt-10 pb-2 text-center space-y-3">
           <motion.h1

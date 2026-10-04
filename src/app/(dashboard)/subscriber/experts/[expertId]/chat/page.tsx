@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/subscriber/subscriber-studio.module.css";
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -117,11 +119,11 @@ export default function SubscriberChatPage() {
   const hasAccess = expert.isSubscribed || trialStatus?.hasTrialAccess;
   if (!hasAccess) {
     return (
-      <PageTransition className="flex flex-col items-center justify-center py-12 px-4 font-sans">
+      <PageTransition className={`${styles.page} flex flex-col items-center justify-center py-12 px-4 font-sans`}>
         <div className="relative mx-auto max-w-md w-full">
-          <Card className="relative overflow-hidden border-[#1E40AF]/10">
+          <Card className="relative overflow-hidden border-primary/10">
             {/* Top accent bar */}
-            <div className="h-1 bg-[#1E40AF]" />
+            <div className="h-1 bg-primary" />
 
             <CardHeader className="text-center pb-2 pt-8">
               {/* Lock icon */}
@@ -131,8 +133,8 @@ export default function SubscriberChatPage() {
                 transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
                 className="mx-auto mb-4"
               >
-                <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#1E40AF]/10 border border-[#1E40AF]/20">
-                  <Lock className="h-9 w-9 text-[#1E40AF]" />
+                <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
+                  <Lock className="h-9 w-9 text-primary" />
                 </div>
               </motion.div>
 
@@ -154,20 +156,20 @@ export default function SubscriberChatPage() {
               <FadeIn delay={0.45}>
                 <div className="flex items-center gap-3 rounded-xl border border-border bg-secondary p-4">
                   <div className="relative">
-                    <Avatar className="h-14 w-14 ring-2 ring-[#1E40AF]/20 ring-offset-2 ring-offset-background">
-                      <AvatarImage src={expert.image ?? undefined} />
-                      <AvatarFallback className="text-lg font-semibold bg-[#1E40AF]/10">
+                    <Avatar className="h-14 w-14 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                      <AvatarImage src={expert.image ?? undefined} alt={expert.displayName} />
+                      <AvatarFallback className="text-lg font-semibold bg-primary/10">
                         {expert.displayName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#1E40AF] shadow-sm">
-                      <MessageCircle className="h-2.5 w-2.5 text-white" />
+                    <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary shadow-sm">
+                      <MessageCircle className="h-2.5 w-2.5 text-primary-foreground" />
                     </div>
                   </div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-sm">{expert.displayName}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Plans from Free
+                      Review available plans
                     </p>
                   </div>
                 </div>
@@ -178,12 +180,12 @@ export default function SubscriberChatPage() {
                 <div className="space-y-2.5 px-1">
                   {[
                     { icon: Zap, text: "AI-powered expert knowledge" },
-                    { icon: MessageCircle, text: "Ask unlimited questions" },
-                    { icon: Shield, text: "Priority response quality" },
+                    { icon: MessageCircle, text: "Question allowance depends on your plan" },
+                    { icon: Shield, text: "Review sources and AI limitations" },
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-2.5 text-xs text-muted-foreground">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#1E40AF]/10">
-                        <feature.icon className="h-3 w-3 text-[#1E40AF]" />
+                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                        <feature.icon className="h-3 w-3 text-primary" />
                       </div>
                       {feature.text}
                     </div>
@@ -195,7 +197,7 @@ export default function SubscriberChatPage() {
               <FadeIn delay={0.55}>
                 <div className="space-y-2.5 pt-1">
                   <Button
-                    className="w-full h-11 bg-[#1E40AF] hover:bg-[#1E40AF]/90 text-white font-semibold text-sm cursor-pointer"
+                    className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm cursor-pointer"
                     asChild
                   >
                     <Link href={`/subscriber/experts/${expertId}`}>
@@ -205,7 +207,7 @@ export default function SubscriberChatPage() {
                   </Button>
                   <Button
                     variant="outline"
-                    className="w-full h-10 text-sm border-[#1E40AF]/20 hover:bg-[#1E40AF]/5 cursor-pointer"
+                    className="w-full h-10 text-sm border-primary/20 hover:bg-primary/5 cursor-pointer"
                     asChild
                   >
                     <Link href={`/subscriber/experts/${expertId}`}>
@@ -227,20 +229,19 @@ export default function SubscriberChatPage() {
       <FadeIn>
         <div className="mb-2 flex items-center gap-3 rounded-xl border bg-card px-3 py-2.5">
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 cursor-pointer" asChild>
-            <Link href={`/subscriber/experts/${expertId}`}>
+            <Link aria-label="Back to expert profile" href={`/subscriber/experts/${expertId}`}>
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
 
           <div className="relative">
-            <Avatar className="h-9 w-9 ring-2 ring-[#1E40AF]/15 ring-offset-1 ring-offset-background">
-              <AvatarImage src={expert.image ?? undefined} />
+            <Avatar className="h-9 w-9 ring-2 ring-primary/15 ring-offset-1 ring-offset-background">
+              <AvatarImage src={expert.image ?? undefined} alt={expert.displayName} />
               <AvatarFallback className="text-xs font-semibold">
                 {expert.displayName.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            {/* Online indicator */}
-            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
+
           </div>
 
           <div className="min-w-0 flex-1">
@@ -248,9 +249,9 @@ export default function SubscriberChatPage() {
               {expert.displayName}&apos;s Digital Twin
             </h2>
             <div className="flex items-center gap-1.5">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+
               <p className="text-xs text-muted-foreground">
-                AI-powered assistant &middot; Online
+                AI representation of expert-provided knowledge
               </p>
             </div>
           </div>

@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { TrendingUp, ChevronLeft, ChevronRight, Flame } from "lucide-react";
+import { SubscriberHeading } from "@/components/subscriber/page-heading";
+import styles from "@/components/subscriber/subscriber-studio.module.css";
+
+import { useState, useEffect } from "react";
+import { TrendingUp, Flame } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { SearchBar } from "@/components/hub/search-bar";
 import { ExpertCard, type Expert } from "@/components/experts/expert-card";
@@ -33,11 +36,8 @@ interface TrendingPost {
 export default function SubscriberHubPage() {
   const [featuredExperts, setFeaturedExperts] = useState<Expert[]>([]);
   const [trendingPosts, setTrendingPosts] = useState<TrendingPost[]>([]);
+  const [expertsError, setExpertsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
   useEffect(() => {
     async function fetchExperts() {
       try {
@@ -65,7 +65,7 @@ export default function SubscriberHubPage() {
           })
         );
       } catch {
-        // Silently fail
+        setExpertsError(true);
       } finally {
         setIsLoading(false);
       }
@@ -98,80 +98,20 @@ export default function SubscriberHubPage() {
     fetchTrending();
   }, []);
 
-  function updateScrollButtons() {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
-  }
-
-  function scrollCarousel(direction: "left" | "right") {
-    const el = scrollRef.current;
-    if (!el) return;
-    const amount = direction === "left" ? -280 : 280;
-    el.scrollBy({ left: amount, behavior: "smooth" });
-    setTimeout(updateScrollButtons, 350);
-  }
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    updateScrollButtons();
-    el.addEventListener("scroll", updateScrollButtons, { passive: true });
-    return () => el.removeEventListener("scroll", updateScrollButtons);
-  }, [isLoading, featuredExperts]);
 
   return (
-    <PageTransition>
+    <PageTransition className={styles.page}>
       <div className="space-y-10 font-sans">
-        {/* ─── Hero Search Banner ─── */}
-        <FadeIn delay={0.05} direction="up">
-          <div className="relative isolate rounded-2xl border border-border/40 bg-card p-6 sm:p-8 lg:p-10">
-            {/* Subtle grid pattern */}
-            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-              <svg className="absolute inset-0 h-full w-full opacity-[0.03]" aria-hidden="true">
-                <defs>
-                  <pattern id="hub-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-                    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#hub-grid)" />
-              </svg>
-            </div>
-
-            <div className="relative z-10 max-w-2xl">
-              <FadeIn delay={0.15} direction="up">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#1E40AF]/20 bg-[#1E40AF]/5 px-3 py-1 text-xs font-medium text-[#1E40AF] mb-3">
-                  Your Knowledge Hub
-                </div>
-              </FadeIn>
-              <FadeIn delay={0.2} direction="up">
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl font-sans">
-                  Discover &amp; Explore
-                </h1>
-              </FadeIn>
-              <FadeIn delay={0.25} direction="up">
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  Find experts, trending topics, and content that matters to you.
-                </p>
-              </FadeIn>
-              <FadeIn delay={0.3} direction="up">
-                <div className="relative mt-5 w-full">
-                  <SearchBar className="w-full" />
-                </div>
-              </FadeIn>
-            </div>
-          </div>
-        </FadeIn>
-
+        <SubscriberHeading section="Explore / Knowledge hub" title="Find your next perspective" description="Discover expert profiles and explore their published ideas." />
+        <div className="max-w-2xl"><SearchBar className="w-full" /></div>
         {/* ─── Featured Experts ─── */}
         <FadeIn delay={0.15} direction="up">
           <div className="space-y-4">
             {/* Section header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#1E40AF]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
                     <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -183,43 +123,24 @@ export default function SubscriberHubPage() {
                     Featured Experts
                   </h2>
                   <p className="text-xs text-muted-foreground hidden sm:block">
-                    Top minds curated for you
+                    Explore featured expert profiles
                   </p>
                 </div>
               </div>
-              {/* Carousel navigation */}
-              {!isLoading && featuredExperts.length > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => scrollCarousel("left")}
-                    disabled={!canScrollLeft}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border/60 bg-background text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                    aria-label="Scroll left"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => scrollCarousel("right")}
-                    disabled={!canScrollRight}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border/60 bg-background text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground hover:border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                    aria-label="Scroll right"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
             </div>
 
-            {/* Expert cards carousel */}
+            {expertsError && <div className={styles.notice} role="alert"><strong>Expert profiles could not be loaded</strong><p>Reload to try again. You can still browse the posts below.</p><button onClick={() => window.location.reload()} className="text-primary underline">Try again</button></div>}
+            {!isLoading && !expertsError && featuredExperts.length === 0 && <p className={styles.note}>No featured experts are available yet.</p>}
+            {/* Expert cards */}
             {isLoading ? (
               <div
-                className="-mx-4 px-4 flex gap-3.5 overflow-x-auto scroll-smooth pb-3"
+                className={styles.expertGrid}
                 style={{ scrollbarWidth: "none" }}
               >
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className="w-52 sm:w-56 shrink-0 space-y-3 rounded-xl border border-border/60 bg-card p-5"
+                    className="min-w-0 space-y-3 rounded-xl border border-border bg-card p-5"
                   >
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <Skeleton className="h-4 w-24" />
@@ -231,14 +152,13 @@ export default function SubscriberHubPage() {
               </div>
             ) : (
               <StaggerContainer
-                ref={scrollRef}
-                className="-mx-4 px-4 flex gap-3.5 overflow-x-auto scroll-smooth pb-3 items-stretch snap-x snap-mandatory"
+                className={styles.expertGrid}
                 style={{ scrollbarWidth: "none" }}
               >
                 {featuredExperts.map((expert) => (
                   <StaggerItem
                     key={expert.id}
-                    className="w-52 sm:w-56 shrink-0 snap-start transition-transform duration-200 hover:scale-[1.02] hover:-translate-y-0.5"
+                    className="min-w-0"
                   >
                     <ExpertCard expert={expert} />
                   </StaggerItem>
@@ -296,7 +216,7 @@ export default function SubscriberHubPage() {
                           <span
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold mt-0.5 transition-transform duration-200 group-hover:scale-110 ${
                               index === 0
-                                ? "bg-orange-500 text-white"
+                                ? "bg-orange-500 text-primary-foreground"
                                 : index === 1
                                 ? "bg-orange-400/20 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/15"
                                 : index === 2
@@ -307,7 +227,7 @@ export default function SubscriberHubPage() {
                             {index + 1}
                           </span>
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-[#1E40AF] transition-colors duration-200">
+                            <p className="text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-200">
                               {displayTitle}
                             </p>
                             <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
@@ -334,8 +254,8 @@ export default function SubscriberHubPage() {
         <FadeIn delay={0.25} direction="up">
           <section id="latest-posts" className="space-y-4 scroll-mt-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10">
-                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="text-[#1E40AF]" aria-hidden="true">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="text-primary" aria-hidden="true">
                   <rect x="2" y="1" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
                   <line x1="5" y1="5.5" x2="13" y2="5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
                   <line x1="5" y1="8.5" x2="11" y2="8.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
@@ -347,7 +267,7 @@ export default function SubscriberHubPage() {
                   Latest Posts
                 </h2>
                 <p className="text-xs text-muted-foreground hidden sm:block">
-                  Fresh content from your network
+                  Recent posts from experts
                 </p>
               </div>
             </div>

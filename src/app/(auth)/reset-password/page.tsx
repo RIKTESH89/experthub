@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "../auth-forms.module.css";
+
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +18,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 const resetPasswordSchema = z
@@ -61,12 +62,12 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <Card className="border-border/50 shadow-lg">
+      <Card className={styles.form}>
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
             <Lock className="h-6 w-6 text-destructive" />
           </div>
-          <CardTitle className="text-xl">Invalid reset link</CardTitle>
+          <h1 className="text-xl">Invalid reset link</h1>
           <CardDescription>
             This password reset link is invalid or has expired. Please request a
             new one.
@@ -83,12 +84,12 @@ function ResetPasswordForm() {
 
   if (isSuccess) {
     return (
-      <Card className="border-border/50 shadow-lg">
+      <Card className={styles.form}>
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle className="h-6 w-6 text-green-600" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+            <CheckCircle className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-xl">Password reset successfully!</CardTitle>
+          <h1 className="text-xl">Password reset successfully!</h1>
           <CardDescription>
             Your password has been changed. You can now sign in with your new
             password.
@@ -104,6 +105,7 @@ function ResetPasswordForm() {
   }
 
   async function onSubmit(data: ResetPasswordInput) {
+    if (isLoading) return;
     setIsLoading(true);
     setError(null);
 
@@ -130,18 +132,18 @@ function ResetPasswordForm() {
   }
 
   return (
-    <Card className="border-border/50 shadow-lg">
+    <Card className={styles.form}>
       <CardHeader className="space-y-3 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
           <Lock className="h-6 w-6 text-primary" />
         </div>
-        <CardTitle className="text-xl">Reset your password</CardTitle>
+        <h1 className="text-xl">Reset your password</h1>
         <CardDescription>Enter your new password below.</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
               {error}
             </div>
           )}
@@ -153,10 +155,12 @@ function ResetPasswordForm() {
               placeholder="Enter your new password"
               autoComplete="new-password"
               disabled={isLoading}
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={errors.password ? "password-error" : undefined}
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">
+              <p id="password-error" role="alert" className="text-sm text-destructive">
                 {errors.password.message}
               </p>
             )}
@@ -169,10 +173,12 @@ function ResetPasswordForm() {
               placeholder="Confirm your new password"
               autoComplete="new-password"
               disabled={isLoading}
+              aria-invalid={Boolean(errors.confirmPassword)}
+              aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p className="text-sm text-destructive">
+              <p id="confirmPassword-error" role="alert" className="text-sm text-destructive">
                 {errors.confirmPassword.message}
               </p>
             )}
