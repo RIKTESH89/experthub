@@ -23,3 +23,15 @@ export function validateManifest(m, ids) { if (m.version !== 1 || !['concept', '
             throw Error('Invalid timeline'); });
     } });
 } return m; }
+
+// Geometry shared by runtime and regression tests. A full-viewport sticky panel
+// begins departure one viewport before its containing chapter's bottom.
+export function chapterProgress(scroll, top, height, viewport) {
+    const pinnedDistance = Math.max(1, height - viewport);
+    const distance = scroll - top;
+    return {
+        phase: Math.max(0, Math.min(1, distance / pinnedDistance)),
+        exit: Math.max(0, Math.min(1, (distance - pinnedDistance) / Math.max(1, viewport))),
+        pinnedDistance,
+    };
+}

@@ -59,3 +59,21 @@ test("a missing manifest leaves semantic story readable and reports fallback", a
   expect(root.querySelector<HTMLButtonElement>("#motion")?.hidden).toBe(true);
   cleanup();
 });
+
+
+test("a delayed manifest body cannot revive an unmounted renderer or overwrite its remount", async () => {
+  const root = fixture(); const mount = loadRuntime(); const cleanup = mount(root);
+  let resolveBody!: (value: unknown) => void;
+  const body = new Promise(resolve => { resolveBody = resolve; });
+  pending[0].resolve({ ok: true, json: () => body }); await settle();
+  cleanup();
+  const cleanupCurrent = mount(root);
+  root.querySelector("#runtime-status")!.textContent = "Current renderer awaiting its own response";
+  const before = root.innerHTML;
+  resolveBody(JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/cinematic/frame-manifest.json"), "utf8")));
+  await settle();
+  expect(root.dataset.cinematic).toBeUndefined();
+  expect(root.innerHTML).toBe(before);
+  expect(raf).not.toHaveBeenCalled();
+  cleanupCurrent(); pending[1].resolve({ ok: false }); await settle();
+});

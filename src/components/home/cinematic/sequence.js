@@ -1,4 +1,4 @@
-import { frameAt, textOpacity, validateManifest } from './timeline.js';
+import { frameAt, textOpacity, validateManifest, chapterProgress } from './timeline.js';
 export function mountSequence(root) {
     const lifecycle = new AbortController(), manifestController = new AbortController();
     let manifestTimer;
@@ -47,7 +47,14 @@ export function mountSequence(root) {
             if ((chapters[i].getBoundingClientRect().top + scrollY) <= y + 2)
                 active = i;
         }
-        local = Math.min(1, Math.max(0, (y - (chapters[active].getBoundingClientRect().top + scrollY)) / chapters[active].offsetHeight));
+        // The panel stays pinned for chapter height minus its viewport-sized height.
+        // Run every authored hold and its text exit while that panel is still pinned.
+        // The remaining viewport is an explicit departure interval: hold the final
+        // camera pose with outgoing copy already faded, until the next anchor.
+        const panelHeight = chapters[active].querySelector('.panel')?.getBoundingClientRect().height || innerHeight;
+        const progress = chapterProgress(y, chapters[active].getBoundingClientRect().top + scrollY, chapters[active].offsetHeight, panelHeight);
+        local = progress.phase;
+        canvas.dataset.exit = progress.exit.toFixed(4);
         chapters.forEach((el, i) => { el.style.setProperty('--text-opacity', String(cinematic ? (i === active ? textOpacity(local) : 0) : 1)); el.dataset.beat = String(Math.min(3, Math.floor((i === active ? local : 0) * 4))); });
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current'));
         const beat = Math.min(3, Math.floor(local * 4));
@@ -234,7 +241,10 @@ export function mountSequence(root) {
                 throw Error('Manifest unavailable');
             if (disposed)
                 return;
-            manifest = validateManifest(await response.json(), chapters.map(s => s.id));
+            const parsed = await response.json();
+            if (disposed)
+                return;
+            manifest = validateManifest(parsed, chapters.map(s => s.id));
             if (manifest.contractOnly)
                 throw Error('Unrendered contract is not a runnable manifest');
             if (manifest.variants.desktop.chapters.every(c => c.scrollRange)) {

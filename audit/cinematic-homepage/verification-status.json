@@ -5,13 +5,20 @@
   "lint": "pass",
   "productionCompile": "pass, isolated synthetic Preview environment with external network blocked",
   "fullTests": {
-    "suites": 89,
-    "tests": 1327,
+    "suites": 90,
+    "tests": 1332,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
   "nativeBrowser": "pending human Mac unlock",
   "protectedStaging": "not pushed or deployed",
   "production": "unchanged",
-  "database": "no migration/seed/write performed"
+  "database": "no migration/seed/write performed",
+  "independentReviewCorrections": {
+    "lateManifestBodyGuard": true,
+    "renderedPanelPinnedInterval": true,
+    "explicitDepartureInterval": true,
+    "focusedRegressionTests": 8,
+    "nativeVerification": "pending unlock"
+  }
 }

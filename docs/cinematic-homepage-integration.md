@@ -14,7 +14,7 @@ Cinematic artwork maintains the authored dark studio contrast in either app them
 
 - Reused installed dependencies via a checkout-local symlink. No package installs, Prisma generation or shared dependency edits.
 - Type check and lint pass.
-- Full Jest suite: 89 suites, 1327 tests pass. Three new lifecycle tests verify cancellation, cleanup/remount and missing manifest behavior.
+- Full Jest suite: 90 suites, 1332 tests pass. Four lifecycle tests verify cancellation, cleanup/remount, missing manifest behavior and delayed-body disposal; four geometry regressions verify visible held poses and panel departure.
 - Next production build passes with synthetic loopback database URLs, synthetic auth secret, Preview mode and the existing network guard blocking external networking. This compile did not run the staging migration engine or access a live database. Build warnings from the inherited auth Edge dependency remain.
 - Browser validation pending Mac unlock. No browser bypass or alternate executor used.
 
@@ -27,3 +27,9 @@ Cinematic artwork maintains the authored dark studio contrast in either app them
 5. Migration history and schema stay at the inherited 18 migrations. Do not trigger database migration, seed, reset, application submission, checkout/payment or provider calls as part of this frontend validation. Authenticated writes and paid-provider journeys require their separate existing authorization and evidence.
 6. After authorized protected staging publication, verify the actual hosted app homepage and public journeys on desktop/phone, source disclosures, Back/Forward, repeated scrolling and theme/static modes. Parent handles any owner sign-in needed for full dashboard journeys.
 7. Production promotion is a separate final approval against the exact protected staging candidate and completed evidence. No production application change has occurred here.
+
+## Independent review corrections
+
+A delayed manifest JSON body now receives a second disposal check after decoding and before validation or any DOM mutation. Regression coverage pauses body decoding, disposes the old renderer, mounts its replacement, then releases the old valid manifest and verifies no overwrite.
+
+Timeline phase now uses the actual pinned interval: chapter height minus rendered panel height, measured rather than assuming browser viewport height equals `100svh`. All authored keyframes, quarter reading holds and the text fade complete while the panel is pinned. The remaining panel-height interval is an explicit departure phase; it holds the last camera pose with outgoing text faded. Native chapter anchors still start at phase zero. Geometry regressions cover all seven chapters and both variants at desktop/phone heights, including the short closing chapter. Native geometry validation remains pending unlock.
