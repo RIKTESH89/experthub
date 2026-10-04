@@ -1,0 +1,2187 @@
+{
+  "results": [
+    {
+      "capture": "smoke",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "subscriptions-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "bookmarks-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "profile-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "settings-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "feed-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "hub-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "expert-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "access-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "subscriptions-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "bookmarks-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "profile-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "settings-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "feed-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "hub-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "expert-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "access-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "subscriptions-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "bookmarks-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "profile-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "feed-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "hub-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "expert-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "access-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "subscriptions-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "bookmarks-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "profile-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "feed-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "hub-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "expert-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "access-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-save-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "check": "settings validation/save error/success/repeated-click",
+      "pass": true
+    },
+    {
+      "check": "profile validation/save",
+      "pass": true
+    },
+    {
+      "check": "bookmark repeated sort",
+      "pass": true
+    },
+    {
+      "capture": "subscriptions-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "feed-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "hub-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "profile-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "bookmarks-empty",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "subscriptions-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "feed-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "hub-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "profile-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "bookmarks-error",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "subscriptions-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "feed-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "hub-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "profile-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "settings-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "bookmarks-loading",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "login-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "forgot-password-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "reset-password-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "reset-form-light-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "login-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "forgot-password-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "reset-password-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "reset-form-dark-1440",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "capture": "login-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "forgot-password-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "reset-password-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "reset-form-light-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "login-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "forgot-password-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "reset-password-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "reset-form-dark-390",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "capture": "reset-success",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "check": "auth validation/error/success/repeated-click/back",
+      "pass": true
+    },
+    {
+      "check": "register redirect/Google preview gate",
+      "pass": true
+    },
+    {
+      "check": "real protected route redirects without session",
+      "pass": true
+    },
+    {
+      "capture": "feed-reduced-motion",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "check": "reduced-motion fixture",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "calls": [
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/pricing",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "PATCH",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "PATCH",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "PATCH",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "empty"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "error"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/featured",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/posts/trending",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/users/me",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/settings",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/experts/synthetic-expert/trial-status",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/bookmarks",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/reset-password",
+      "method": "POST",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/reset-password",
+      "method": "POST",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/forgot-password",
+      "method": "POST",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriptions",
+      "method": "GET",
+      "mode": "ready"
+    },
+    {
+      "path": "/api/subscriber/feed",
+      "method": "GET",
+      "mode": "ready"
+    }
+  ],
+  "fixture": true,
+  "authenticatedRuntime": false
+}

@@ -2,7 +2,7 @@
 
 import styles from "../auth-forms.module.css";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
+  const submittingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -41,7 +42,8 @@ export default function ForgotPasswordPage() {
   });
 
   async function onSubmit(data: ForgotPasswordInput) {
-    if (isLoading) return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setIsLoading(true);
     try {
       await fetch("/api/auth/forgot-password", {
@@ -54,6 +56,7 @@ export default function ForgotPasswordPage() {
     } catch {
       setIsSubmitted(true);
     } finally {
+      submittingRef.current = false;
       setIsLoading(false);
     }
   }

@@ -146,7 +146,7 @@ export default function SubscriberChatPage() {
               <FadeIn delay={0.4}>
                 <CardDescription className="text-sm leading-relaxed mt-2">
                   Subscribe to {expert.displayName} to access their AI Digital Twin
-                  and ask unlimited questions.
+                  with question allowances determined by your plan.
                 </CardDescription>
               </FadeIn>
             </CardHeader>

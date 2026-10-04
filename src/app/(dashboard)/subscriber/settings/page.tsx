@@ -3,7 +3,7 @@
 import { SubscriberHeading } from "@/components/subscriber/page-heading";
 import styles from "@/components/subscriber/subscriber-studio.module.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, Bell, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ interface SettingsValues {
 }
 
 export default function SubscriberSettingsPage() {
+  const submittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -62,6 +63,8 @@ export default function SubscriberSettingsPage() {
   }, [reset]);
 
   const onSubmit = async (data: SettingsValues) => {
+    if (submittingRef.current || loadError) return;
+    submittingRef.current = true;
     setIsSubmitting(true);
     setSaveSuccess(false);
     setSaveError(false);
@@ -79,6 +82,7 @@ export default function SubscriberSettingsPage() {
       setSaveError(true);
       toast.error("Failed to save settings");
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };

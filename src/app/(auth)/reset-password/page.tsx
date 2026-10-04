@@ -2,7 +2,7 @@
 
 import styles from "../auth-forms.module.css";
 
-import { useState, Suspense } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -44,6 +44,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const submittingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +106,8 @@ function ResetPasswordForm() {
   }
 
   async function onSubmit(data: ResetPasswordInput) {
-    if (isLoading) return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setIsLoading(true);
     setError(null);
 
@@ -127,6 +129,7 @@ function ResetPasswordForm() {
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
+      submittingRef.current = false;
       setIsLoading(false);
     }
   }
