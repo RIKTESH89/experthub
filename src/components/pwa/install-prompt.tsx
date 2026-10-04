@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Download, X, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -10,253 +11,84 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstallPrompt() {
-  const [installPrompt, setInstallPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
-  const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
+  const installingRef = useRef(false);
+  const installButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // Check if already installed
     if (window.matchMedia("(display-mode: standalone)").matches) return;
-
-    // Check if dismissed recently
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) {
-      const dismissedAt = parseInt(dismissed, 10);
-      if (Date.now() - dismissedAt < 7 * 24 * 60 * 60 * 1000) return; // 7 days
-    }
-
-    // Detect iOS
-    const ua = navigator.userAgent;
-    const isiOS =
-      /iPad|iPhone|iPod/.test(ua) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    setIsIOS(isiOS);
-
-    if (isiOS) {
-      // iOS doesn't fire beforeinstallprompt, show manual guide after delay
-      const timer = setTimeout(() => setShowBanner(true), 5000);
-      return () => clearTimeout(timer);
-    }
-
-    // Android/desktop: listen for native install prompt
-    let nativePromptFired = false;
-    const handler = (e: Event) => {
-      e.preventDefault();
-      nativePromptFired = true;
-      setInstallPrompt(e as BeforeInstallPromptEvent);
+    try {
+      const dismissed = localStorage.getItem("pwa-install-dismissed");
+      if (dismissed && Date.now() - Number(dismissed) < 7 * 24 * 60 * 60 * 1000) return;
+    } catch { /* Storage restrictions do not block the page. */ }
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+    const handler = (event: Event) => {
+      event.preventDefault();
+      clearTimeout(timer);
+      setInstallPrompt(event as BeforeInstallPromptEvent);
       setShowBanner(true);
     };
-
     window.addEventListener("beforeinstallprompt", handler);
-
-    // Fallback: if native prompt doesn't fire within 5s (e.g. incognito,
-    // unsupported browser, already installed via different path), show
-    // the banner anyway so users can still be guided to install.
-    const fallbackTimer = setTimeout(() => {
-      if (!nativePromptFired) {
-        setShowBanner(true);
-      }
-    }, 5000);
-
+    const timer = setTimeout(() => setShowBanner(true), 5000);
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
-      clearTimeout(fallbackTimer);
+      clearTimeout(timer);
     };
   }, []);
 
-  const [showManualGuide, setShowManualGuide] = useState(false);
-
   const handleInstall = useCallback(async () => {
-    if (installPrompt) {
-      // Native install prompt available (Chrome/Edge on Android/Desktop)
+    if (installingRef.current) return;
+    if (!installPrompt) { setShowGuide(true); return; }
+    installingRef.current = true;
+    setIsInstalling(true);
+    try {
       await installPrompt.prompt();
-      const { outcome } = await installPrompt.userChoice;
-      if (outcome === "accepted") {
-        setShowBanner(false);
-      }
+      if ((await installPrompt.userChoice).outcome === "accepted") setShowBanner(false);
+    } catch { setShowGuide(true); }
+    finally {
       setInstallPrompt(null);
-      return;
+      installingRef.current = false;
+      setIsInstalling(false);
     }
-
-    // No native prompt — show platform-specific manual guide
-    if (isIOS) {
-      setShowIOSGuide(true);
-    } else {
-      setShowManualGuide(true);
-    }
-  }, [installPrompt, isIOS]);
+  }, [installPrompt]);
 
   const handleDismiss = useCallback(() => {
     setShowBanner(false);
-    setShowIOSGuide(false);
-    setShowManualGuide(false);
-    localStorage.setItem("pwa-install-dismissed", Date.now().toString());
+    setShowGuide(false);
+    try { localStorage.setItem("pwa-install-dismissed", Date.now().toString()); } catch { /* Optional preference. */ }
   }, []);
 
   if (!showBanner) return null;
 
-  return (
-    <>
-      {/* Install Banner */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 animate-slide-up border-t border-border bg-card/95 px-4 py-3 shadow-warm-lg backdrop-blur-xl sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm sm:rounded-xl sm:border">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
-            <Smartphone className="h-5 w-5 text-white" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold">Install ExpertHub</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Add to your home screen for a faster, app-like experience
-            </p>
-            <div className="mt-2.5 flex items-center gap-2">
-              <Button
-                size="sm"
-                className="h-8 gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-600 text-xs hover:opacity-90"
-                onClick={handleInstall}
-              >
-                <Download className="h-3.5 w-3.5" />
-                Install App
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 text-xs text-muted-foreground"
-                onClick={handleDismiss}
-              >
-                Not now
-              </Button>
-            </div>
-          </div>
-          <button
-            onClick={handleDismiss}
-            className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
+  return <>
+    {/* In normal document flow, so it cannot cover mobile save/navigation controls. */}
+    <aside aria-label="Install ExpertHub" className="relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true"><Smartphone size={20}/></span>
+      <div className="min-w-0 flex-1">
+        <p className="font-medium">Keep ExpertHub close</p>
+        <p className="mt-1 text-sm text-muted-foreground">Add ExpertHub to your home screen. Installation options depend on your browser.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button ref={installButtonRef} className="min-h-11 gap-2" disabled={isInstalling} onClick={handleInstall}><Download size={16}/>{isInstalling ? "Opening installer…" : "Install App"}</Button>
+          <Button variant="ghost" className="min-h-11" onClick={handleDismiss}>Not now</Button>
         </div>
       </div>
-
-      {/* iOS Manual Install Guide */}
-      {showIOSGuide && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center">
-          <div className="w-full max-w-sm animate-slide-up rounded-t-2xl bg-card p-6 sm:rounded-2xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Install on iOS</h3>
-              <button
-                onClick={() => setShowIOSGuide(false)}
-                className="rounded-md p-1 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="mt-4 space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  1
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Tap the{" "}
-                  <span className="font-medium text-foreground">Share</span>{" "}
-                  button in Safari&apos;s toolbar
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  2
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Scroll down and tap{" "}
-                  <span className="font-medium text-foreground">
-                    &quot;Add to Home Screen&quot;
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  3
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Tap{" "}
-                  <span className="font-medium text-foreground">
-                    &quot;Add&quot;
-                  </span>{" "}
-                  to install ExpertHub
-                </p>
-              </div>
-            </div>
-            <Button
-              className="mt-6 w-full rounded-xl"
-              onClick={() => setShowIOSGuide(false)}
-            >
-              Got it
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Android/Desktop Manual Install Guide */}
-      {showManualGuide && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center">
-          <div className="w-full max-w-sm animate-slide-up rounded-t-2xl bg-card p-6 sm:rounded-2xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Install ExpertHub</h3>
-              <button
-                onClick={() => setShowManualGuide(false)}
-                className="rounded-md p-1 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="mt-4 space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  1
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Tap the{" "}
-                  <span className="font-medium text-foreground">menu</span>{" "}
-                  button (three dots) in your browser
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  2
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Tap{" "}
-                  <span className="font-medium text-foreground">
-                    &quot;Install app&quot;
-                  </span>{" "}
-                  or{" "}
-                  <span className="font-medium text-foreground">
-                    &quot;Add to Home Screen&quot;
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                  3
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  Tap{" "}
-                  <span className="font-medium text-foreground">
-                    &quot;Install&quot;
-                  </span>{" "}
-                  to confirm
-                </p>
-              </div>
-            </div>
-            <Button
-              className="mt-6 w-full rounded-xl"
-              onClick={() => setShowManualGuide(false)}
-            >
-              Got it
-            </Button>
-          </div>
-        </div>
-      )}
-    </>
-  );
+      <button type="button" aria-label="Dismiss install suggestion" onClick={handleDismiss} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"><X size={18}/></button>
+    </aside>
+    <Dialog open={showGuide} onOpenChange={setShowGuide}>
+      <DialogContent onCloseAutoFocus={event => { event.preventDefault(); installButtonRef.current?.focus(); }} className="max-h-[85svh] w-[calc(100%-2rem)] overflow-y-auto rounded-xl [&>button:last-child]:grid [&>button:last-child]:h-11 [&>button:last-child]:w-11 [&>button:last-child]:place-items-center">
+        <DialogTitle>{isIOS ? "Install on iOS" : "Install ExpertHub"}</DialogTitle>
+        <DialogDescription>{isIOS ? "Use Safari’s Share menu to add ExpertHub to your home screen." : "Open your browser menu and look for Install app or Add to Home Screen. If neither option is available, your browser may not support installation."}</DialogDescription>
+        <ol className="list-decimal space-y-3 pl-5 text-sm text-muted-foreground">
+          <li>{isIOS ? "Open the Share menu in Safari." : "Open your browser’s main menu."}</li>
+          <li>{isIOS ? "Choose Add to Home Screen." : "Choose Install app or Add to Home Screen, if available."}</li>
+          <li>Review and confirm the installation in your browser.</li>
+        </ol>
+        <Button className="min-h-11" onClick={() => setShowGuide(false)}>Got it</Button>
+      </DialogContent>
+    </Dialog>
+  </>;
 }

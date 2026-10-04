@@ -6,6 +6,7 @@ import { FileText } from "lucide-react";
 import { PostCard, type Post } from "./post-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { Button } from "@/components/ui/button";
 
 interface PostFeedProps {
   endpoint?: string;
@@ -56,60 +57,69 @@ export function PostFeed({
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const [failedPage, setFailedPage] = useState<number | null>(null);
+  const pageRef = useRef(0);
+  const activeRequest = useRef<AbortController | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const fetchPosts = useCallback(
-    async (pageNum: number, append = false) => {
-      try {
-        if (append) setIsLoadingMore(true);
-        else setIsLoading(true);
-
-        const res = await fetch(`${endpoint}?page=${pageNum}&limit=10`);
-        if (!res.ok) throw new Error("Failed to fetch posts");
-
-        const data = await res.json();
-        const newPosts: Post[] = data.posts ?? data;
-
-        if (newPosts.length < 10) setHasMore(false);
-
-        setPosts((prev) => (append ? [...prev, ...newPosts] : newPosts));
-      } catch {
-        setHasMore(false);
-      } finally {
+  const fetchPosts = useCallback(async (pageNum: number, append = false) => {
+    if (activeRequest.current) return;
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    setFailedPage(null);
+    if (append) setIsLoadingMore(true);
+    else setIsLoading(true);
+    try {
+      const separator = endpoint.includes("?") ? "&" : "?";
+      const res = await fetch(`${endpoint}${separator}page=${pageNum}&limit=10`, { signal: controller.signal });
+      if (!res.ok) throw new Error("Failed to fetch posts");
+      const data = await res.json();
+      const newPosts: Post[] = data.posts ?? data;
+      if (!Array.isArray(newPosts)) throw new Error("Invalid post response");
+      if (controller.signal.aborted || activeRequest.current !== controller) return;
+      setHasMore(newPosts.length >= 10);
+      pageRef.current = pageNum;
+      setPosts(prev => append ? [...prev, ...newPosts.filter(post => !prev.some(existing => existing.id === post.id))] : newPosts);
+    } catch {
+      if (!controller.signal.aborted && activeRequest.current === controller) setFailedPage(pageNum);
+    } finally {
+      if (activeRequest.current === controller) {
+        activeRequest.current = null;
         setIsLoading(false);
         setIsLoadingMore(false);
       }
-    },
-    [endpoint]
-  );
+    }
+  }, [endpoint]);
 
   useEffect(() => {
-    fetchPosts(1);
+    pageRef.current = 0;
+    setPosts([]);
+    setHasMore(true);
+    setFailedPage(null);
+    void fetchPosts(1);
+    return () => {
+      activeRequest.current?.abort();
+      activeRequest.current = null;
+    };
   }, [fetchPosts]);
 
   useEffect(() => {
-    if (!hasMore || isLoadingMore) return;
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
-          const nextPage = page + 1;
-          setPage(nextPage);
-          fetchPosts(nextPage, true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
+    if (!hasMore || isLoading || isLoadingMore || failedPage || !posts.length) return;
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0]?.isIntersecting) void fetchPosts(pageRef.current + 1, true);
+    }, { threshold: 0.1 });
     const el = loadMoreRef.current;
-    if (el) observerRef.current.observe(el);
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMore, isLoading, isLoadingMore, failedPage, posts.length, fetchPosts]);
 
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, [hasMore, isLoadingMore, page, fetchPosts]);
+  const errorNotice = failedPage !== null ? (
+    <div role="alert" className="space-y-3 rounded-xl border border-border bg-card p-5">
+      <h3 className="text-base font-medium">{failedPage === 1 ? "Posts could not be loaded" : "More posts could not be loaded"}</h3>
+      <p className="text-sm text-muted-foreground">Try again. Your existing posts will stay here.</p>
+      <Button variant="outline" className="min-h-11" onClick={() => void fetchPosts(failedPage, failedPage > 1)}>Retry loading posts</Button>
+    </div>
+  ) : null;
 
   if (isLoading) {
     return (
@@ -127,6 +137,8 @@ export function PostFeed({
       </div>
     );
   }
+
+  if (posts.length === 0 && errorNotice) return errorNotice;
 
   if (posts.length === 0) {
     return (
@@ -165,9 +177,10 @@ export function PostFeed({
         </motion.div>
       )}
 
-      {hasMore && <div ref={loadMoreRef} className="h-4" />}
+      {errorNotice}
+      {hasMore && failedPage === null && <div ref={loadMoreRef} className="h-4" />}
 
-      {!hasMore && posts.length > 0 && (
+      {!hasMore && failedPage === null && posts.length > 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
