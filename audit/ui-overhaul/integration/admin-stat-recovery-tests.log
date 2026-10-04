@@ -1,0 +1,8 @@
+PASS __tests__/admin-stat-recovery.test.ts
+  ✓ shows failed statistics as unavailable and replaces them with real DTO values after retry (46 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.586 s
+Ran all test suites matching /__tests__\/admin-stat-recovery.test.ts/i.

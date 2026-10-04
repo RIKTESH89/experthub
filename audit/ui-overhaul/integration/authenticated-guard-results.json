@@ -1,0 +1,88 @@
+{
+  "identity": [
+    {
+      "name": "fixture",
+      "user": "fixture"
+    }
+  ],
+  "results": [
+    {
+      "role": "anonymous",
+      "path": "/api/experts",
+      "status": 401,
+      "location": null,
+      "body": "{\"error\":\"Unauthorized\"}"
+    },
+    {
+      "role": "subscriber",
+      "path": "/api/experts",
+      "status": 200,
+      "location": null,
+      "body": "{\"experts\":[{\"id\":\"uiqa-expert\",\"name\":\"Synthetic QA expert\",\"image\":null,\"bio\":null,\"headline\":null,\"expertProfile\":{\"i"
+    },
+    {
+      "role": "subscriber",
+      "path": "/api/expert/pricing",
+      "status": 403,
+      "location": null,
+      "body": "{\"error\":\"Only experts can access this resource\"}"
+    },
+    {
+      "role": "subscriber",
+      "path": "/api/admin/users",
+      "status": 403,
+      "location": null,
+      "body": "{\"error\":\"Admin access required\"}"
+    },
+    {
+      "role": "expert",
+      "path": "/api/expert/pricing",
+      "status": 200,
+      "location": null,
+      "body": "{\"tiers\":[{\"id\":\"cmutdvm0l0001xynmybh6wwpw\",\"expertProfileId\":\"uiqa-profile\",\"tier\":\"FREE\",\"price\":0,\"monthlyQuestions\":"
+    },
+    {
+      "role": "expert",
+      "path": "/api/admin/users",
+      "status": 403,
+      "location": null,
+      "body": "{\"error\":\"Admin access required\"}"
+    },
+    {
+      "role": "admin",
+      "path": "/api/admin/users",
+      "status": 200,
+      "location": null,
+      "body": "{\"users\":[{\"id\":\"uiqa-banned\",\"name\":\"Synthetic QA banned\",\"email\":\"banned@example.invalid\",\"image\":null,\"role\":\"SUBSCRI"
+    },
+    {
+      "role": "forged",
+      "path": "/api/admin/users",
+      "status": 403,
+      "location": null,
+      "body": "{\"error\":\"Admin access required\"}"
+    },
+    {
+      "role": "banned",
+      "path": "/api/experts",
+      "status": 401,
+      "location": null,
+      "body": "{\"error\":\"Unauthorized\"}"
+    },
+    {
+      "role": "inactive",
+      "path": "/api/experts",
+      "status": 401,
+      "location": null,
+      "body": "{\"error\":\"Unauthorized\"}"
+    },
+    {
+      "role": "missing",
+      "path": "/api/experts",
+      "status": 401,
+      "location": null,
+      "body": "{\"error\":\"Unauthorized\"}"
+    }
+  ],
+  "passed": true
+}

@@ -34,3 +34,16 @@ it("disposes active geometry when reduced motion is requested",async()=>{
   expect(mockScene.dispose).toHaveBeenCalledTimes(1);
   expect(screen.queryByRole("button",{name:/Replay knowledge/})).toBeNull();
 });
+it("keeps the poster when WebGL2 is unavailable",async()=>{
+  (HTMLCanvasElement.prototype.getContext as jest.Mock).mockReturnValue(null);
+  render(React.createElement(EvidenceSculpture));await act(async()=>{});
+  expect(screen.queryByRole("button",{name:/Replay knowledge/})).toBeNull();
+});
+it("returns to the poster and releases the controller on context loss",async()=>{
+  const view=render(React.createElement(EvidenceSculpture));await act(async()=>{});
+  const event=new Event("webglcontextlost",{cancelable:true});
+  act(()=>view.container.querySelector("canvas")!.dispatchEvent(event));
+  expect(event.defaultPrevented).toBe(true);
+  expect(mockScene.dispose).toHaveBeenCalledTimes(1);
+  expect(screen.queryByRole("button",{name:/Replay knowledge/})).toBeNull();
+});

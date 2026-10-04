@@ -93,35 +93,29 @@ function StatCardSkeleton({ index }: { index: number }) {
 
 export function AdminStatCards() {
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchStats() {
+      setIsLoading(true);
+      setError(false);
       try {
         const res = await fetch("/api/admin/analytics");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setStats(data);
+        if (!cancelled) setStats(data);
       } catch {
-        // Use fallback data if API fails
-        setStats({
-          totalUsers: 0,
-          activeExperts: 0,
-          activeSubscriptions: 0,
-          totalPosts: 0,
-          trends: {
-            users: { direction: "neutral", percentage: 0 },
-            experts: { direction: "neutral", percentage: 0 },
-            subscriptions: { direction: "neutral", percentage: 0 },
-            posts: { direction: "neutral", percentage: 0 },
-          },
-        });
+        if (!cancelled) { setStats(null); setError(true); }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
     fetchStats();
-  }, []);
+    return () => { cancelled = true; };
+  }, [attempt]);
 
   if (isLoading) {
     return (
@@ -133,6 +127,7 @@ export function AdminStatCards() {
     );
   }
 
+  if (error) return <div role="alert" className="rounded-xl border border-border bg-card p-6 text-sm"><p>Platform statistics are unavailable.</p><button type="button" className="mt-3 min-h-11 rounded-md border border-border px-4" onClick={() => setAttempt(value => value + 1)}>Retry statistics</button></div>;
   if (!stats) return null;
 
   return (

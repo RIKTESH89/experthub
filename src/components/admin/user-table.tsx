@@ -1,4 +1,5 @@
 "use client";
+import { userRowStatus } from "./user-row-state";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -53,7 +54,9 @@ interface UserRow {
   email: string;
   image?: string | null;
   role: "SUBSCRIBER" | "USER" | "EXPERT" | "ADMIN";
-  status: "active" | "banned";
+  status: "active" | "banned" | "inactive" | "unknown";
+  isActive?: boolean;
+  isBanned?: boolean;
   createdAt: string;
 }
 
@@ -156,7 +159,9 @@ export function UserTable() {
         const res = await fetch("/api/admin/users");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setUsers(data.users ?? data);
+        const rows = data.users ?? data;
+        if (!Array.isArray(rows)) throw new Error("Invalid users response");
+        setUsers(rows.map((user: UserRow) => ({ ...user, name: user.name || user.email, status: userRowStatus(user) })));
       } catch {
         toast.error("Failed to load users");
       } finally {
@@ -177,11 +182,11 @@ export function UserTable() {
     });
   }, [users, searchQuery, roleFilter]);
 
-  const handleBanToggle = useCallback(async (userId: string, currentStatus: string) => {
+  const handleBanToggle = useCallback(async (userId: string, currentlyBanned: boolean) => {
     setActionLoading(userId);
     try {
-      const action = currentStatus === "active" ? "ban" : "unban";
-      const isBanned = currentStatus === "active";
+      const action = currentlyBanned ? "unban" : "ban";
+      const isBanned = !currentlyBanned;
       const res = await fetch(`/api/admin/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -192,7 +197,7 @@ export function UserTable() {
       setUsers((prev) =>
         prev.map((u) =>
           u.id === userId
-            ? { ...u, status: currentStatus === "active" ? "banned" as const : "active" as const }
+            ? { ...u, isBanned, status: userRowStatus({ ...u, isBanned }) }
             : u
         )
       );
@@ -415,7 +420,7 @@ export function UserTable() {
                           ) : (
                             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-500 dark:text-red-400 font-sans">
                               <XCircle className="h-3.5 w-3.5" />
-                              Banned
+                              {user.status === "banned" ? "Banned" : user.status === "inactive" ? "Inactive" : "Status unavailable"}
                             </span>
                           )}
                         </div>
@@ -464,16 +469,15 @@ export function UserTable() {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator className="my-1.5 bg-muted" />
                             <DropdownMenuItem
+                              disabled={typeof user.isBanned !== "boolean"}
                               onClick={() =>
-                                handleBanToggle(user.id, user.status)
+                                handleBanToggle(user.id, !!user.isBanned)
                               }
                               className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm focus:bg-secondary"
                             >
                               <Ban className="h-4 w-4 text-amber-500" />
                               <span>
-                                {user.status === "active"
-                                  ? "Ban User"
-                                  : "Unban User"}
+                                {user.isBanned ? "Unban User" : "Ban User"}
                               </span>
                             </DropdownMenuItem>
                             <DropdownMenuItem

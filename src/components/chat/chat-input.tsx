@@ -5,7 +5,8 @@ import { Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
-  onSend: (message: string) => void;
+  onSend: (message: string) => void | boolean | Promise<void | boolean>;
+  isSendDisabled?: boolean;
   isDisabled?: boolean;
   placeholder?: string;
 }
@@ -13,6 +14,7 @@ interface ChatInputProps {
 export function ChatInput({
   onSend,
   isDisabled = false,
+  isSendDisabled = false,
   placeholder = "Ask a question…",
 }: ChatInputProps) {
   const [value, setValue] = useState("");
@@ -20,15 +22,20 @@ export function ChatInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const helpId = useId();
 
-  const handleSend = useCallback(() => {
+  const sending = useRef(false);
+  const handleSend = useCallback(async () => {
     const trimmed = value.trim();
-    if (!trimmed || isDisabled) return;
-    onSend(trimmed);
-    setValue("");
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-  }, [value, isDisabled, onSend]);
+    if (!trimmed || isDisabled || isSendDisabled || sending.current) return;
+    sending.current = true;
+    try {
+      const result = onSend(trimmed);
+      const accepted = result instanceof Promise ? await result : result;
+      if (accepted === false) return; // Keep the draft on transport, quota or session failure.
+      setValue("");
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
+    } catch { /* The parent reports failures; preserve the draft if its transport rejects. */ }
+    finally { sending.current = false; }
+  }, [value, isDisabled, isSendDisabled, onSend]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -91,10 +98,10 @@ export function ChatInput({
               type="button"
               aria-label="Send message"
               onClick={handleSend}
-              disabled={isDisabled || !hasContent}
+              disabled={isDisabled || isSendDisabled || !hasContent}
               className={cn(
                 "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors duration-200",
-                hasContent && !isDisabled
+                hasContent && !isDisabled && !isSendDisabled
                   ? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}

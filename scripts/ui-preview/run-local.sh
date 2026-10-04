@@ -3,6 +3,9 @@
 set -eu
 cd "$(dirname "$0")/../.."
 ui_port="${1:-3417}"
+ui_db_port="${2:-59999}"
+case "$ui_db_port" in *[!0-9]*|'') echo 'Expected numeric fixture DB port' >&2; exit 1;; esac
+if [ "$ui_db_port" -lt 1024 ] || [ "$ui_db_port" -gt 65535 ]; then echo 'Expected unprivileged fixture DB port' >&2; exit 1; fi
 case "$ui_port" in *[!0-9]*|'') echo 'Expected numeric local port' >&2; exit 1;; esac
 if [ "$ui_port" -lt 1024 ] || [ "$ui_port" -gt 65535 ]; then echo 'Expected unprivileged local port' >&2; exit 1; fi
 for ui_env_file in .env .env.local .env.development .env.development.local; do
@@ -13,8 +16,8 @@ exec env -i PATH="$PATH" HOME="$HOME" NODE_ENV=development \
   EXPERTHUB_LOCAL_UI_ORIGIN="http://127.0.0.1:$ui_port" \
   AUTH_URL="http://127.0.0.1:$ui_port" NEXTAUTH_URL="http://127.0.0.1:$ui_port" \
   NEXT_PUBLIC_APP_URL="http://127.0.0.1:$ui_port" AUTH_SECRET=synthetic-local-ui-only \
-  DATABASE_URL=postgresql://fixture:fixture@127.0.0.1:59999/fixture \
-  DIRECT_URL=postgresql://fixture:fixture@127.0.0.1:59999/fixture \
+  DATABASE_URL="postgresql://fixture:fixture@127.0.0.1:$ui_db_port/fixture" \
+  DIRECT_URL="postgresql://fixture:fixture@127.0.0.1:$ui_db_port/fixture" \
   DOTENV_CONFIG_PATH=/dev/null NEXT_TELEMETRY_DISABLED=1 \
   NODE_OPTIONS="--require=$PWD/scripts/ui-preview/network-guard.cjs" \
   ./node_modules/.bin/next dev -H 127.0.0.1 -p "$ui_port"

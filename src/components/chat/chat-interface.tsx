@@ -1,6 +1,6 @@
 "use client";
 
-import { createSSEDecoder } from "@/lib/ai/sse";
+import { readChatResponse } from "./read-chat-response";
 import { toMessageSources } from "@/lib/ai/citations";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -36,6 +36,12 @@ export function ChatInterface({
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sendFailure, setSendFailure] = useState<{ kind: "before-response" | "interrupted" | "cancelled" | "session" | "deadline"; sessionId: string | null; assistantId?: string } | null>(null);
+  const [isRecovering, setIsRecovering] = useState(false);
+  const [recoveryFailed, setRecoveryFailed] = useState(false);
+  const requestRef = useRef<AbortController | null>(null);
+  const recoveryRef = useRef(false);
+  useEffect(() => () => { const request = requestRef.current; requestRef.current = null; request?.abort(); }, [expertId]);
   const [isTyping, setIsTyping] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -251,6 +257,7 @@ export function ChatInterface({
 
   // Start a new chat session (used by the "New Chat" button)
   const handleNewChat = useCallback(async () => {
+    setSendFailure(null);
     setMessages([]);
     setSessionId(null);
     setIsLoading(true);
@@ -277,6 +284,7 @@ export function ChatInterface({
 
   // Switch to an existing session
   const handleSwitchSession = useCallback(async (targetSessionId: string) => {
+    setSendFailure(null);
     if (targetSessionId === sessionId) {
       setShowHistory(false);
       return;
@@ -312,6 +320,10 @@ export function ChatInterface({
 
   const handleSend = useCallback(
     async (content: string) => {
+      if (requestRef.current || sendFailure) return false;
+      const request = new AbortController();
+      requestRef.current = request;
+      setIsStreaming(true);
       setThinkingSteps([]);
       setIsThinkingComplete(false);
 
@@ -320,10 +332,20 @@ export function ChatInterface({
       if (!activeSessionId) {
         activeSessionId = await createSession();
         if (!activeSessionId) {
-          return; // Cannot send without a session
+          setSendFailure({ kind: "session", sessionId: null });
+          requestRef.current = null;
+          setIsStreaming(false);
+          return false;
         }
       }
 
+      if (requestRef.current !== request) return false;
+      if (request.signal.aborted) {
+        setSendFailure({ kind: "cancelled", sessionId: activeSessionId });
+        requestRef.current = null;
+        setIsStreaming(false);
+        return false;
+      }
       const userMessage: Message = {
         id: crypto.randomUUID(),
         role: "user",
@@ -344,14 +366,19 @@ export function ChatInterface({
         sources: [],
       };
 
+      let receivedResponse = false;
+      let beforeResponseKind: "before-response" | "cancelled" | "deadline" = "before-response";
       try {
         const res = await fetch(`/api/chat/sessions/${activeSessionId}/messages`, {
+          signal: request.signal,
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content }),
         });
 
         if (!res.ok) {
+          if (res.status === 504) beforeResponseKind = "deadline";
+          if (res.status === 499) beforeResponseKind = "cancelled";
           // Check if this is a trial exhaustion error
           if (res.status === 403) {
             try {
@@ -368,7 +395,7 @@ export function ChatInterface({
                 setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
                 setIsTyping(false);
                 setIsStreaming(false);
-                return;
+                return false;
               }
               if (errorData.code === "QUOTA_EXHAUSTED") {
                 setTrialStatus((prev) => ({
@@ -383,7 +410,7 @@ export function ChatInterface({
                 setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
                 setIsTyping(false);
                 setIsStreaming(false);
-                return;
+                return false;
               }
             } catch {
               // Fall through to generic error
@@ -398,88 +425,78 @@ export function ChatInterface({
         const reader = res.body?.getReader();
         if (!reader) throw new Error("No response stream");
 
-        const decoder = createSSEDecoder();
+        receivedResponse = true;
         let fullContent = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          for (const data of decoder.push(value, done)) {
-            if (data === "[DONE]") continue;
-
-            try {
-              const parsed = JSON.parse(data);
-
-              if (parsed.thinking) {
-                setThinkingSteps(prev => [...prev, parsed.thinking]);
-                continue;
-              }
-
-              if (parsed.content) {
-                if (fullContent === "") {
-                  setIsThinkingComplete(true);
-                }
-                fullContent += parsed.content;
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantId ? { ...m, content: fullContent } : m
-                  )
-                );
-              }
-
-              if (parsed.done && parsed.sources) {
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantId
-                      ? { ...m, id: typeof parsed.messageId === "string" ? parsed.messageId : m.id, sources: toMessageSources(parsed.sources) }
-                      : m
-                  )
-                );
-              }
-            } catch {
-              // Skip malformed chunks
-            }
+        await readChatResponse(reader, (event) => {
+          if (requestRef.current !== request) return;
+          if (event.thinking) setThinkingSteps(prev => [...prev, event.thinking!]);
+          if (event.content) {
+            setIsThinkingComplete(true);
+            fullContent += event.content;
+            setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: fullContent } : m));
           }
-          if (done) break;
-        }
+          if (event.messageId) setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, id: event.messageId!, sources: toMessageSources(event.sources) } : m));
+        });
         // Background refetch of memory count after streaming completes
         fetch(`/api/chat/sessions/${activeSessionId}/memories`)
           .then(r => r.json())
           .then(d => setMemoryCount(d.count))
           .catch(() => {});
 
-        // Update usage counter after successful send
-        if (trialStatus && !trialStatus.isUnlimited) {
-          setTrialStatus((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  questionsUsed: prev.questionsUsed + 1,
-                  hasTrialAccess: prev.questionsAllowed === -1 ||
-                    prev.questionsUsed + 1 < prev.questionsAllowed,
-                }
-              : prev
-          );
-        }
+        // Account usage belongs to the server, including interrupted/failed requests.
+        try {
+          const usage = await fetch(`/api/experts/${encodeURIComponent(expertId)}/trial-status`, { signal: request.signal });
+          if (requestRef.current === request) setTrialStatus(usage.ok ? await usage.json() : null);
+        } catch { if (requestRef.current === request) setTrialStatus(null); }
+        return true;
       } catch {
-        setIsTyping(false);
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantId
-              ? {
-                  ...m,
-                  content:
-                    m.content ||
-                    "Sorry, I encountered an error. Please try again.",
-                }
-              : m
-          )
-        );
+        if (requestRef.current === request) {
+          setTrialStatus(null);
+          setSendFailure({ kind: request.signal.aborted ? "cancelled" : receivedResponse ? "interrupted" : beforeResponseKind, sessionId: activeSessionId, assistantId });
+          // Empty assistant placeholders are not answers; partial text remains visible.
+          setMessages(prev => prev.filter(m => m.id !== assistantId || !!m.content));
+        }
+        return false;
       } finally {
-        setIsStreaming(false);
+        if (requestRef.current === request) {
+          requestRef.current = null;
+          setIsTyping(false);
+          setIsStreaming(false);
+        }
       }
     },
-    [sessionId, createSession, trialStatus]
+    [sessionId, createSession, sendFailure, expertId]
   );
+
+  const retryConnection = useCallback(async () => {
+    if (recoveryRef.current || !sendFailure) return;
+    recoveryRef.current = true;
+    setIsRecovering(true);
+    setRecoveryFailed(false);
+    try {
+      let target = sendFailure.sessionId;
+      if (!target) {
+        const list = await fetch(`/api/chat/sessions?expertId=${encodeURIComponent(expertId)}`);
+        if (!list.ok) throw new Error("Cannot check sessions");
+        const sessions = await list.json();
+        if (!Array.isArray(sessions)) throw new Error("Invalid sessions");
+        target = sessions[0]?.id ?? null;
+      }
+      if (target) {
+        const response = await fetch(`/api/chat/sessions/${target}`);
+        if (!response.ok) throw new Error("Cannot check conversation");
+        const session = await response.json();
+        if (!Array.isArray(session.messages)) throw new Error("Invalid conversation");
+        setSessionId(target);
+        setMessages(session.messages.map((message: Message) => ({ ...message, sources: toMessageSources(message.sources) })));
+      }
+      const usage = await fetch(`/api/experts/${encodeURIComponent(expertId)}/trial-status`);
+      if (!usage.ok) throw new Error("Cannot check usage");
+      setTrialStatus(await usage.json());
+      setSendFailure(null);
+    } catch { setRecoveryFailed(true); }
+    finally { recoveryRef.current = false; setIsRecovering(false); }
+  }, [sendFailure, expertId]);
 
   const handleRate = useCallback(
     async (messageId: string, rating: 1 | -1) => {
@@ -657,7 +674,7 @@ export function ChatInterface({
               size="sm"
               className="h-8 cursor-pointer gap-1.5 rounded-lg border border-border/40 bg-card text-xs hover:bg-muted hover:border-border"
               onClick={handleNewChat}
-              disabled={isStreaming || isLoading}
+              disabled={isStreaming || isLoading || isRecovering}
             >
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">New Chat</span>
@@ -723,7 +740,7 @@ export function ChatInterface({
                 expertImage={expertImage}
                 userName={currentUserName}
                 userImage={currentUserImage}
-                onRate={handleRate}
+                onRate={message.id === sendFailure?.assistantId ? undefined : handleRate}
               />
             ))}
           </div>
@@ -786,8 +803,15 @@ export function ChatInterface({
           )}
         </AnimatePresence>
 
+        {isStreaming && <div className="border-t border-border px-4 py-2"><Button type="button" variant="outline" className="min-h-11" onClick={() => requestRef.current?.abort()}>Stop response</Button></div>}
+        {sendFailure && <div role={sendFailure.kind === "cancelled" ? "status" : "alert"} className="border-t border-border bg-muted/30 p-4 text-sm">
+          <p className="font-medium">{sendFailure.kind === "cancelled" ? "Response stopped." : sendFailure.kind === "interrupted" ? "The response was interrupted. The partial answer may be incomplete." : sendFailure.kind === "deadline" ? "The response timed out before it started." : sendFailure.kind === "session" ? "We couldn’t open the conversation." : "We couldn’t receive a response."}</p>
+          <p className="mt-1 text-muted-foreground">Your draft is preserved. The question may already be saved or counted. Retry connection checks the saved conversation and usage without sending it again.</p>
+          {recoveryFailed && <p className="mt-2 text-destructive">Connection still unavailable. Your draft is preserved.</p>}
+          <Button type="button" variant="outline" className="mt-3 min-h-11" disabled={isRecovering} onClick={retryConnection}>{isRecovering ? "Checking conversation…" : "Retry connection"}</Button>
+        </div>}
         {/* Input */}
-        <ChatInput onSend={handleSend} isDisabled={isStreaming || isLoading} />
+        <ChatInput onSend={handleSend} isDisabled={isStreaming || isLoading || isRecovering} isSendDisabled={!!sendFailure} />
       </div>
 
       {/* Trial Paywall Dialog */}
