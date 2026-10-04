@@ -1,6 +1,6 @@
 # Homepage Three.js enhancement — prepared contract
 
-Status: requested by user; dependency absent; no package installed. Awaiting parent dependency approval and researched visual references. Current shipping homepage remains unchanged.
+Status: requested by user; dependency absent; no package installed. Original renderer source prepared in `knowledge-orbit-scene.mjs`, not imported or executed. Awaiting parent dependency approval. Current shipping homepage remains unchanged.
 
 ## Narrow dependency request
 
@@ -8,7 +8,7 @@ Add `three` (official Three.js project) as a runtime dependency and matching `@t
 
 ## Intended composition
 
-Keep the readable left hero and existing evidence panel dimensions. Enhance only the 230px orbit viewport: three thin spatial rings around a small forest/mint core, with three knowledge/source markers. Rotation briefly makes the relationship of these elements legible; pointer tilt offers depth without shifting the layout. Keep icons and all explanatory text in HTML. This is a conceptual illustration, not a live retrieval trace or product capability claim. No particle field, fullscreen takeover, scroll hijacking, bloom or expensive glass material.
+Keep the readable left hero and existing evidence panel dimensions. Enhance only the 230px orbit viewport: ivory source sheets around a small forest/mint core. The short sequence settles the sheets into an ordered stack; ordinary scroll can accelerate settling. Pointer tilt offers depth without shifting the layout. Keep all explanatory text in HTML. This is a conceptual illustration, not a live retrieval trace or product capability claim. No particle field, fullscreen takeover, scroll hijacking, bloom or expensive glass material. Mobile uses three sheets and a lower-segment core.
 
 ## Integration boundary and ownership
 
@@ -26,4 +26,6 @@ Run one <=5-second sequence then settle; avoid perpetual auto-motion. A visible 
 
 Verify light/dark at 390/768/1024/1440, keyboard replay/focus, reduced-motion initial and live toggle, save-data/low-end eligibility, blocked WebGL/context loss, repeated navigation, offscreen/background pause, resize and StrictMode cleanup. Record renderer counts and frame-time samples on local fixture configuration; mobile emulation is not evidence of actual low-end GPU performance. Compare LCP/CLS against static baseline before acceptance.
 
-Official technical reference: https://threejs.org/docs/pages/WebGLRenderer.html — WebGL2 support, renderer resource disposal, pixel-ratio controls and renderer statistics. Visual inspiration will be added from the parent's research, without copying unlicensed assets or code.
+Official technical reference: https://threejs.org/docs/pages/WebGLRenderer.html — WebGL2 support, renderer resource disposal, pixel-ratio controls and renderer statistics.
+
+Research-informed direction: Lusion's https://lusion.co/projects/oryzo_ai/ explicitly describes a fictional satirical campaign; borrow its focus on one crafted object, not its product claims or assets. The author's 35mm breakdown https://tympanus.net/codrops/2025/05/30/deconstructing-the-35mm-website-a-look-at-the-process-and-technical-details/ explains model-part highlighting, shaders and render targets; adopt the idea of drawing attention to meaningful source parts, but keep our own primitive geometry and one-pass rendering. These sources were read directly; their live animation performance was not independently measured here.
