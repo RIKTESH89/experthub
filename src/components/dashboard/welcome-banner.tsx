@@ -23,7 +23,7 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
-      className="relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-r from-[#1E40AF]/[0.06] via-transparent to-[#1E40AF]/[0.03] p-5 sm:p-6"
+      className="studio-welcome relative overflow-hidden p-5 sm:p-6"
     >
       {/* Subtle top-edge accent */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1E40AF]/20 to-transparent pointer-events-none" />
@@ -45,7 +45,7 @@ export function WelcomeBanner({ userName, role }: WelcomeBannerProps) {
           transition={{ duration: 0.3, delay: 0.15, ease: [0.25, 0.4, 0.25, 1] }}
         >
           Welcome back,{" "}
-          <span className="text-[#1E40AF]">{userName}</span>
+          <span className="text-primary">{userName}</span>
         </motion.h1>
 
         <motion.p

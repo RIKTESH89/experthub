@@ -22,36 +22,19 @@ export default function LoginPage() {
 
   return (
     <motion.div
-      initial={{ scale: 0.95, opacity: 0, filter: "blur(8px)" }}
-      animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
     >
       {/* Card */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-lg shadow-slate-200/50 overflow-hidden">
-        {/* Animated gradient top border */}
-        <div
-          className="h-[2px]"
-          style={{
-            background:
-              "linear-gradient(90deg, #2563EB, #10B981, #2563EB)",
-            backgroundSize: "200% 100%",
-            animation: "gradientShift 4s ease-in-out infinite",
-          }}
-        />
-        <style>{`
-          @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
-        `}</style>
-
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         {/* Header */}
         <div className="px-10 pt-10 pb-2 text-center space-y-3">
           <motion.h1
-            initial={{ y: 10, opacity: 0, filter: "blur(4px)" }}
-            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.25 }}
-            className="text-2xl font-bold tracking-tight text-slate-900"
+            className="text-2xl font-bold tracking-tight text-foreground"
           >
             Welcome to ExpertHub
           </motion.h1>
@@ -59,7 +42,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.35 }}
-            className="text-slate-500 text-sm leading-relaxed"
+            className="text-muted-foreground text-sm leading-relaxed"
           >
             Sign in with your Google account to continue
           </motion.p>
@@ -75,7 +58,7 @@ export default function LoginPage() {
             <button
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading || !isGoogleSignInEnabled()}
-              className="w-full flex items-center justify-center gap-3 h-12 px-5 rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] text-slate-700 font-medium text-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:shadow-sm disabled:hover:translate-y-0 cursor-pointer"
+              className="w-full flex items-center justify-center gap-3 h-12 px-5 rounded-lg border border-border bg-card shadow-sm hover:shadow-md hover:-translate-y-[1px] text-foreground font-medium text-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:shadow-sm disabled:hover:translate-y-0 cursor-pointer"
             >
               <div className="relative h-5 w-5 shrink-0">
                 <motion.div
@@ -107,7 +90,7 @@ export default function LoginPage() {
                   transition={{ duration: 0.2 }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                 </motion.div>
               </div>
               <span>{!isGoogleSignInEnabled() ? "Google sign-in disabled in Preview" : "Continue with Google"}</span>
@@ -119,28 +102,28 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.55 }}
-            className="flex items-center justify-center gap-1.5 text-slate-400"
+            className="flex items-center justify-center gap-1.5 text-muted-foreground"
           >
             <ShieldCheck className="h-3.5 w-3.5" />
             <span className="text-xs font-medium">Secured by Google</span>
           </motion.div>
 
           {/* Divider */}
-          <div className="border-t border-slate-100" />
+          <div className="border-t border-border" />
 
           {/* Helper text */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.6 }}
-            className="text-center text-xs text-slate-400 leading-relaxed tracking-wide"
+            className="text-center text-xs text-muted-foreground leading-relaxed tracking-wide"
           >
             New users are automatically registered as subscribers.
             <br />
             Want to become an expert?{" "}
             <a
               href="/#apply-expert"
-              className="font-semibold text-blue-600 hover:text-blue-700 transition-colors hover:underline underline-offset-2"
+              className="font-semibold text-primary hover:text-primary/80 transition-colors hover:underline underline-offset-2"
             >
               Apply here
             </a>

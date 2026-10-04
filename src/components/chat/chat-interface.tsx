@@ -510,7 +510,7 @@ export function ChatInterface({
   }, []);
 
   return (
-    <div className="flex h-full min-h-0 overflow-hidden rounded-xl border border-border/50 bg-card shadow-lg shadow-black/5">
+    <div className="studio-chat flex h-full min-h-0 overflow-hidden rounded-xl border border-border/50 bg-card shadow-lg shadow-black/5">
       {/* Session History Panel -- desktop: side panel, mobile: overlay */}
       <AnimatePresence>
         {showHistory && (
@@ -610,6 +610,8 @@ export function ChatInterface({
             )}
             onClick={() => setShowHistory(!showHistory)}
             title="Chat history"
+            aria-label="Chat history"
+            aria-expanded={showHistory}
           >
             <History className="h-4 w-4" />
           </Button>

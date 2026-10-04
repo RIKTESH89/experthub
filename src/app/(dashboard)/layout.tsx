@@ -19,7 +19,7 @@ export default async function DashboardLayout({
   const navItems = navByRole[role] ?? navByRole.SUBSCRIBER;
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="studio-workspace flex h-screen overflow-hidden">
       {/* Sidebar */}
       <Sidebar navItems={navItems} />
 
@@ -29,7 +29,7 @@ export default async function DashboardLayout({
         <Navbar navItems={navItems} />
 
         {/* Page content */}
-        <main className="relative z-0 flex-1 overflow-y-auto bg-dot-pattern">
+        <main className="relative z-0 flex-1 overflow-y-auto studio-workspace-main">
           {/* Top gradient overlay */}
           <div
             className="pointer-events-none absolute inset-x-0 top-0 h-[200px] bg-gradient-to-b from-primary/[0.04] to-transparent"

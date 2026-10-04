@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "@/components/auth/session-provider";
 import { Toaster } from "sonner";
@@ -8,12 +8,10 @@ import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import * as Sentry from "@sentry/nextjs";
 import "./globals.css";
 import "./public-launch.css";
+import "./studio.css";
+import { StudioMotionProvider } from "@/components/studio/motion-provider";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-sans",
-});
+const dmSans = localFont({ src: "./fonts/GeistVF.woff", variable: "--font-sans", display: "swap" });
 
 export function generateMetadata(): Metadata {
   return {
@@ -42,8 +40,8 @@ export function generateMetadata(): Metadata {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f0d17" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f6f2" },
+    { media: "(prefers-color-scheme: dark)", color: "#141a17" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -66,7 +64,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <StudioMotionProvider>{children}</StudioMotionProvider>
             <Toaster richColors position="top-right" />
             <PWAInstallPrompt />
             <ServiceWorkerRegister />

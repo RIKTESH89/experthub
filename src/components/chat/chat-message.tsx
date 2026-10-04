@@ -56,7 +56,7 @@ export function ChatMessage({
           />
           <AvatarFallback className={cn(
             "text-xs font-medium font-sans",
-            !isUser && "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+            !isUser && "bg-primary/10 text-primary",
             isUser && "bg-muted text-muted-foreground"
           )}>
             {getInitials(isUser ? userName : expertName)}
@@ -75,7 +75,7 @@ export function ChatMessage({
           className={cn(
             "rounded-2xl px-4 py-3",
             isUser
-              ? "rounded-tr-md bg-blue-700 text-white"
+              ? "rounded-tr-md bg-primary text-primary-foreground"
               : "rounded-tl-md border border-border bg-card"
           )}
         >

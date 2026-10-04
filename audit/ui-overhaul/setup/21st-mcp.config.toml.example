@@ -1,0 +1,9 @@
+# Inactive example only. Never paste a real key into this repository.
+[mcp_servers.twenty_first]
+url = "https://21st.dev/api/mcp"
+enabled = false
+required = false
+http_headers = { "x-api-key" = "" }
+# Recommended owner activation: replace http_headers with the line below and
+# provide the variable privately in the environment inherited by Codex.
+# env_http_headers = { "x-api-key" = "API_KEY_21ST" }

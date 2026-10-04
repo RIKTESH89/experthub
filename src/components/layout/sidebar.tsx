@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -159,7 +159,7 @@ interface SidebarProps {
 
 export function Sidebar({ navItems, className }: SidebarProps) {
   const pathname = usePathname();
-  const [expanded, setExpanded] = useState(false);
+
   const { data: session } = useSession();
   const groups = groupNavItems(navItems);
 
@@ -172,21 +172,19 @@ export function Sidebar({ navItems, className }: SidebarProps) {
     .join("")
     .slice(0, 2);
 
-  const isOpen = expanded;
+  const isOpen = true;
 
   return (
     <motion.aside
       variants={sidebarVariants}
       animate={isOpen ? "open" : "closed"}
-      initial="closed"
+      initial={false}
       transition={transitionProps}
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
       className={cn(
         "hidden md:flex flex-col border-r border-border/40 relative overflow-hidden",
         "bg-background/95 dark:bg-background/80",
         "backdrop-blur-xl",
-        "font-['DM_Sans',sans-serif]",
+        "font-sans",
         className
       )}
     >

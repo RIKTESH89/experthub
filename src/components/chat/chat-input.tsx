@@ -14,7 +14,7 @@ interface ChatInputProps {
 export function ChatInput({
   onSend,
   isDisabled = false,
-  placeholder = "Ask anything...",
+  placeholder = "Ask a question…",
 }: ChatInputProps) {
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -63,6 +63,7 @@ export function ChatInput({
         <div className="relative min-w-0 flex-1">
           <textarea
             ref={textareaRef}
+            aria-label="Message to Digital Twin"
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
@@ -89,12 +90,13 @@ export function ChatInput({
             <motion.button
               key={hasContent ? "active" : "inactive"}
               type="button"
+              aria-label="Send message"
               onClick={handleSend}
               disabled={isDisabled || !hasContent}
               className={cn(
-                "relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-200",
+                "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors duration-200",
                 hasContent && !isDisabled
-                  ? "cursor-pointer bg-blue-700 text-white hover:bg-blue-800"
+                  ? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
               initial={{ scale: 0.8, opacity: 0 }}
