@@ -1,3 +1,4 @@
+import { checkSignal } from "./request-lifecycle";
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import { retrieveIntentEvidence } from "@/lib/retrieval/retrieve";
@@ -30,6 +31,7 @@ interface ChatEngineOptions {
   query: string;
   chatHistory: ChatMessage[];
   enableWebSearch?: boolean;
+  signal?: AbortSignal;
   temporalQuery?: TemporalQuery;
 }
 
@@ -43,6 +45,7 @@ interface ChatEngineResult {
 }
 
 export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
+  checkSignal(options.signal);
   assertExternalServiceAllowed();
   const { expertId, subscriberId, query, chatHistory, enableWebSearch = false } = options;
 
@@ -74,7 +77,10 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   let retrievalResults: RetrievalResult[] = [];
   let contextTexts: string[] = [];
 
-  const evidenceBundle = await retrieveIntentEvidence(ragEnabled ? scope : {...scope, allowedVectorIds: []}, query, temporalQuery);
+  const retrievalScope = ragEnabled ? scope : {...scope, allowedVectorIds: []};
+  const evidenceBundle = options.signal
+    ? await retrieveIntentEvidence(retrievalScope, query, temporalQuery, options.signal)
+    : await retrieveIntentEvidence(retrievalScope, query, temporalQuery);
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
     retrievalResults = evidenceBundle.sources.map(result => ({...result,metadata:{...result.metadata,generationAudience:scope.isOwner ? "owner" : "viewer"}}));
@@ -117,7 +123,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   let webResults: string[] = [];
   if (enableWebSearch) {
     thinkingSteps.push("Searching the web for additional context...");
-    webResults = await searchWeb(`${expertName} ${query}`);
+    webResults = await searchWeb(`${expertName} ${query}`, options.signal);
   }
 
   thinkingSteps.push("Formulating response...");
@@ -135,9 +141,11 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   ];
 
   // Stream response from OpenAI
+  checkSignal(options.signal);
   assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: options.signal,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -151,7 +159,9 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
     }),
   });
 
+  if (options.signal?.aborted) { await response.body?.cancel().catch(() => {}); checkSignal(options.signal); }
   if (!response.ok || !response.body) {
+    await response.body?.cancel().catch(() => {});
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 

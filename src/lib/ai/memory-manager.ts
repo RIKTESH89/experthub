@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import { checkSignal } from "./request-lifecycle";
 
 interface MemoryItem {
   fact: string;
@@ -10,8 +11,27 @@ interface MemoryItem {
 export async function saveMemories(
   subscriberId: string,
   expertProfileId: string,
-  memories: MemoryItem[]
+  memories: MemoryItem[],
+  signal?: AbortSignal,
 ): Promise<void> {
+  if (signal) {
+    // Same hash/normalization and no recency updates. Native ON CONFLICT avoids
+    // an emulated upsert race aborting the request-bound transaction.
+    checkSignal(signal);
+    await prisma.$transaction(async tx => {
+      for (const memory of memories) {
+        checkSignal(signal);
+        const fact = memory.fact.trim().replace(/\s+/g, " "), category = memory.category.trim();
+        if (!fact || !category) continue;
+        const memoryKey = createHash("sha256").update(JSON.stringify([subscriberId, expertProfileId, category, fact.toLowerCase()])).digest("hex");
+        await tx.subscriberMemory.createMany({ data: [{ subscriberId, expertProfileId, fact, category, memoryKey }], skipDuplicates: true });
+        checkSignal(signal);
+      }
+      // Cancellation before this callback's commit decision rolls back all rows.
+      checkSignal(signal);
+    });
+    return;
+  }
   for (const memory of memories) {
     const fact = memory.fact.trim().replace(/\s+/g, " ");
     const category = memory.category.trim();

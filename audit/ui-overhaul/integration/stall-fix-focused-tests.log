@@ -1,0 +1,9 @@
+PASS __tests__/api/thinking-chat-enhanced.test.ts
+PASS __tests__/api/chat.test.ts
+PASS __tests__/phase0/conversation.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       34 passed, 34 total
+Snapshots:   0 total
+Time:        4.025 s
+Ran all test suites matching /__tests__\/api\/thinking-chat-enhanced.test.ts|__tests__\/api\/chat.test.ts|__tests__\/phase0\/conversation.test.ts/i.

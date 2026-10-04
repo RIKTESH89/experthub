@@ -18,7 +18,7 @@ beforeEach(()=>{
  revalidate.mockReset().mockImplementation((_scope:unknown,bundle:unknown)=>Promise.resolve(bundle));
  resetAllMocks();retrieve.mockReset();memories.mockReset();graph.mockReset();prisma.expertProfile.findUnique.mockResolvedValue({id:"ada",userId:"ada-owner",displayName:"Ada",vectorNamespace:"ada-ns",ragEnabled:true,personalityProfile:{tone:"PRIVATE_STYLE_SENTINEL"}});
  prisma.knowledgeItem.findMany.mockResolvedValue([]);prisma.expertSubscription.findUnique.mockResolvedValue(null);retrieve.mockResolvedValue({sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},prompt:"authorized evidence",gaps:[]});memories.mockResolvedValue([]);
- global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.close();}})});
+ global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));c.close();}})});
 });
 test("EXP8 public generation never consumes legacy private personality or graph summaries",async()=>{
  await runChatEngine({expertId:"ada-owner",query:"question",chatHistory:[]});expect(graph).not.toHaveBeenCalled();expect(memories).not.toHaveBeenCalled();
@@ -68,7 +68,7 @@ test("EXP17 accepts exact selected owner claims after fragmented SSE and ignores
 });
 test("EXP17 malformed SSE fails closed even when a valid claim precedes it",async()=>{
  const raw='data: malformed\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});
- const result=await runChatEngine({expertId:"ada-owner",query:"view",chatHistory:[]});expect(result.verification.status).toBe("abstained");
+ await expect(runChatEngine({expertId:"ada-owner",query:"view",chatHistory:[]})).rejects.toThrow("Malformed provider JSON");
 });
 test("EXP15 catalogue and unchecked factual prose are unreleased in chat SSE", async()=>{
  retrieve.mockResolvedValue({version:"intent-evidence-v1",plan:{intent:"factual"},sources:[],evidenceTrace:[],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:"bounded",gaps:[]});
@@ -92,3 +92,10 @@ test('review: source revoked during provider generation cannot release previousl
  const row={spanId:'s',text:'I prefer OldDB.',authorId:'ada-owner',speakerId:'ada-owner',speakerRole:'author',kind:'explicit',endorsedByOwner:true,chunkIds:['v']};const original={version:'intent-evidence-v1',plan:{intent:'stance'},sources:[{content:row.text,score:1,metadata:{expertProfileId:'ada',vectorId:'v'}}],evidenceTrace:[row],temporalTrace:{stances:[],supersededStances:[],relations:[]},trace:{failures:[]},prompt:'bounded',gaps:[]};retrieve.mockResolvedValue(original);revalidate.mockResolvedValue({...original,sources:[],evidenceTrace:[]});const raw='data: '+JSON.stringify({choices:[{delta:{content:'{"spanIds":["s"]}'}}]})+'\n\ndata: [DONE]\n\n';global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode(raw));c.close();}})});const result=await runChatEngine({expertId:'ada-owner',query:'preference',chatHistory:[]});expect(result.verification.status).toBe('abstained');expect(result.sources).toEqual([]);expect(result.evidenceBundle.evidenceTrace).toEqual([]);expect(result.evidenceBundle.prompt).not.toContain('OldDB');
 });
 test('review: release permission failure never returns draft citations',async()=>{revalidate.mockRejectedValue(new Error('authorization failed'));const result=await runChatEngine({expertId:'ada-owner',query:'question',chatHistory:[]});expect(result.verification.status).toBe('abstained');expect(result.sources).toEqual([]);});
+
+test.each(['same-chunk','separate-chunks'])('experimental transport rejects trailing data %s',async(mode)=>{
+ const before='data: '+JSON.stringify({choices:[{delta:{content:'before'}}]})+'\n\ndata: [DONE]\n\n';
+ const after='data: '+JSON.stringify({choices:[{delta:{content:'AFTER_TERMINAL'}}]})+'\n\n';
+ global.fetch=jest.fn().mockResolvedValue({ok:true,body:new ReadableStream({start(c){for(const text of mode==='same-chunk'?[before+after]:[before,after])c.enqueue(new TextEncoder().encode(text));c.close();}})});
+ await expect(runChatEngine({expertId:'ada-owner',query:'synthetic',chatHistory:[]})).rejects.toThrow('after DONE');
+});

@@ -1,3 +1,5 @@
+import { createProviderStreamState } from "@/lib/ai/provider-stream";
+import { checkSignal } from "./request-lifecycle";
 import { retrieveLocalEvaluationEvidence } from "./dialogue/structured/local-retrieval";
 import { runStructuredDialogue } from "./dialogue/structured/pipeline";
 import type { GeneratorAdapter,VerifierAdapter,TurnResult } from "./dialogue/structured/contracts";
@@ -39,6 +41,7 @@ interface ChatEngineOptions {
   query: string;
   chatHistory: ChatMessage[];
   enableWebSearch?: boolean;
+  signal?: AbortSignal;
   temporalQuery?: TemporalQuery;
   /** Server-injected local test adapters; never accepted from request JSON. */
   structuredEvaluationAdapters?: {generator:GeneratorAdapter;verifier:VerifierAdapter};
@@ -63,6 +66,7 @@ export async function runChatEngine(options: ChatEngineOptions): Promise<PublicC
   return runExperimentalChatEngine(options);
 }
 async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<ChatEngineResult> {
+  checkSignal(options.signal);
   assertExternalServiceAllowed();
   const { expertId, subscriberId, query, chatHistory, enableWebSearch = false } = options;
 
@@ -88,7 +92,9 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   const effectiveScope=ragEnabled?scope:{...scope,allowedVectorIds:[]};
   const evidenceBundle = options.structuredEvaluationAdapters
     ? await retrieveLocalEvaluationEvidence(effectiveScope,query,temporalQuery)
-    : await retrieveIntentEvidence(effectiveScope,query,temporalQuery);
+    : options.signal
+      ? await retrieveIntentEvidence(effectiveScope,query,temporalQuery, options.signal)
+      : await retrieveIntentEvidence(effectiveScope,query,temporalQuery);
   if (ragEnabled) {
     thinkingSteps.push("Searching knowledge base (hybrid search)...");
     retrievalResults = evidenceBundle.sources.map(result => ({...result,metadata:{...result.metadata,generationAudience:scope.isOwner ? "owner" : "viewer"}}));
@@ -122,6 +128,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     const release=structuredEvaluation.releaseBundle||evidenceBundle;
     const {sources,evidenceTrace,temporalTrace}=acceptedEvidence(release,structuredEvaluation.decision.acceptedSpanIds,audience);
     const stream=new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:structuredEvaluation.text}}]})}\n\ndata: [DONE]\n\n`));controller.close();}});
+    checkSignal(options.signal);
     return {stream,sources,thinkingSteps:[...thinkingSteps,"Structured synthetic evaluation; semantic behavior is unvalidated"],evidenceTrace,temporalTrace,
       evidenceBundle:{...release,sources,evidenceTrace,temporalTrace,prompt:JSON.stringify({evidenceTrace,temporalTrace})},
       dialogueState:buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),release),groundedStyle:groundedStyle(release,expert.userId),structuredEvaluation};
@@ -144,7 +151,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   let webResults: string[] = [];
   if (enableWebSearch) {
     thinkingSteps.push("Searching the web for additional context...");
-    webResults = await searchWeb(`${expertName} ${query}`);
+    webResults = await searchWeb(`${expertName} ${query}`, options.signal);
   }
 
   thinkingSteps.push("Formulating response...");
@@ -164,10 +171,11 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   ];
 
   // Stream response from OpenAI
+  checkSignal(options.signal);
   assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    signal: AbortSignal.timeout(30000),
+    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -181,29 +189,31 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     }),
   });
 
+  if (options.signal?.aborted) { await response.body?.cancel().catch(() => {}); checkSignal(options.signal); }
   if (!response.ok || !response.body) {
+    await response.body?.cancel().catch(() => {});
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
   // Buffer provider SSE privately. No unverified bytes reach the caller.
   const reader = response.body.getReader();
   const decoder = createSSEDecoder();
-  let draft = "", bytes = 0, malformed = false, completed = false;
+  const providerState = createProviderStreamState();
+  let draft = "", bytes = 0, malformed = false;
   try {
     while (true) {
       const {value, done} = await reader.read();
       bytes += value?.byteLength || 0;
-      if (bytes > 128000) { malformed = true; await reader.cancel(); break; }
+      if (bytes > 128000) throw new Error("Provider stream exceeds bounded size");
       for (const data of decoder.push(value, done)) {
-        if (data === "[DONE]") { completed = true; continue; }
-        if (completed) { malformed = true; continue; }
-        try { const event = JSON.parse(data); draft += event.choices?.[0]?.delta?.content || ""; }
-        catch { malformed = true; }
+        draft += providerState.accept(data) || "";
       }
       if (done) break;
     }
-  } catch { malformed = true; }
+  } catch (error) { await reader.cancel().catch(() => {}); checkSignal(options.signal); throw error; }
   finally { reader.releaseLock(); }
+  checkSignal(options.signal);
+  if (!providerState.done) throw new Error("Provider stream ended without DONE");
   let releaseBundle = evidenceBundle;
   let releaseAudience: "owner" | "viewer" = scope.isOwner ? "owner" : "viewer";
   try {
@@ -217,7 +227,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   }
   const releaseState = buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),releaseBundle);
   const releaseStyle = groundedStyle(releaseBundle,expert.userId);
-  const verification = verifyPersonResponse(malformed || !completed ? "" : draft,releaseState,releaseBundle,releaseStyle);
+  const verification = verifyPersonResponse(malformed ? "" : draft,releaseState,releaseBundle,releaseStyle);
   const {sources,evidenceTrace,temporalTrace} = acceptedEvidence(releaseBundle,verification.acceptedSpanIds,releaseAudience);
   const stream = new ReadableStream({ start(controller) {
     controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:verification.text}}]})}\n\ndata: [DONE]\n\n`));

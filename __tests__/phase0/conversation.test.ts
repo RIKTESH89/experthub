@@ -21,7 +21,7 @@ beforeEach(()=>{
  prisma.chatMessage.create.mockResolvedValue({});prisma.monthlyTwinUsage.upsert.mockResolvedValue({});
  prisma.widgetConfig.findUnique.mockResolvedValue({id:"widget-ada",isEnabled:true,freeQuestions:100,expertProfile:{id:"ada",userId:"ada-owner"}});
  prisma.widgetSession.upsert.mockResolvedValue({id:"widget-session-a",questionCount:0});prisma.widgetMessage.findMany.mockImplementation(async(query:{orderBy:unknown;take:number})=>ordered(query));
- engine.mockImplementation(async()=>({stream:new ReadableStream({start(controller){controller.close();}}),sources:[],thinkingSteps:[]}));
+ engine.mockImplementation(async()=>({stream:new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));controller.close();}}),sources:[],thinkingSteps:[]}));
 });
 afterEach(()=>{delete process.env.AUTH_SECRET;});
 test("EXP10 subscriber >50 messages gets latest correction and stable tie ordering",async()=>{

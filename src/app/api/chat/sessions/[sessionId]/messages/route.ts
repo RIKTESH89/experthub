@@ -1,3 +1,5 @@
+import { createProviderStreamState } from "@/lib/ai/provider-stream";
+import { createChatRequestLifecycle, abortableDelay, ChatRequestStopped } from "@/lib/ai/request-lifecycle";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { createSSEDecoder } from "@/lib/ai/sse";
 import { toMessageSources } from "@/lib/ai/citations";
@@ -20,6 +22,8 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ sessionId: string }> }
 ) {
+  const lifecycle = createChatRequestLifecycle(request.signal);
+  let returnedStream = false;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -194,116 +198,122 @@ export async function POST(
       query: content,
       chatHistory,
       enableWebSearch,
+      signal: lifecycle.signal,
     });
 
-    // Create a TransformStream to capture the full response while streaming
-    let fullResponse = "";
+    // Own the provider reader before thinking pacing, so an early disconnect
+    // cancels the body even when no model bytes have been read yet.
+    const reader = stream.getReader();
+    const decoder = createSSEDecoder();
     const encoder = new TextEncoder();
-
-    const streamDecoder = createSSEDecoder();
-    let providerDone = false;
-    let persistedMessageId: string | undefined;
-    const forward = (data: string, controller: TransformStreamDefaultController<Uint8Array>) => {
-            if (data === "[DONE]") {
-              providerDone = true;
-              return;
-            }
-            try {
-              const parsed = JSON.parse(data);
-              const deltaContent = parsed.choices?.[0]?.delta?.content || "";
-              if (deltaContent) {
-                fullResponse += deltaContent;
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({ content: deltaContent })}\n\n`
-                  )
-                );
-              }
-            } catch {
-              // Skip unparseable chunks
-            }
-    }
-    const transformStream = new TransformStream({
-      transform(chunk, controller) {
-        for (const data of streamDecoder.push(chunk)) forward(data, controller);
+    const providerState = createProviderStreamState();
+    let fullResponse = "", thinkingIndex = 0, ended = false;
+    let background: Promise<void> | undefined;
+    let stop: (() => void) | undefined;
+    const finish = () => {
+      if (ended) return false;
+      ended = true;
+      if (stop) lifecycle.signal.removeEventListener("abort", stop);
+      if (!background) lifecycle.dispose();
+      return true;
+    };
+    const cancelReader = () => reader.cancel(lifecycle.signal.reason).catch(() => {}).finally(() => { try { reader.releaseLock(); } catch { /* read cancellation still settling */ } });
+    const parse = (data: string, controller: ReadableStreamDefaultController<Uint8Array>) => {
+      lifecycle.check();
+      const content = providerState.accept(data);
+      if (typeof content === "string" && content) {
+        fullResponse += content;
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
+        return true;
+      }
+      return false;
+    };
+    const thinkingAndContentStream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        stop = () => {
+          void cancelReader();
+          if (finish()) controller.error(lifecycle.signal.reason);
+        };
+        lifecycle.signal.addEventListener("abort", stop, { once: true });
+        if (lifecycle.signal.aborted) stop();
       },
-      async flush(controller) {
-        for (const data of streamDecoder.push(undefined, true)) forward(data, controller);
-        // Save the AI response after streaming completes
-        if (fullResponse) {
-          const savedMessage = await prisma.chatMessage.create({
-            data: {
-              chatSessionId: sessionId,
-              role: "assistant",
-              content: fullResponse,
-              sources: JSON.parse(JSON.stringify(sources)),
-            },
-          });
-
-          persistedMessageId = savedMessage?.id;
-
-          // Update session timestamp
-          await prisma.chatSession.update({
-            where: { id: sessionId },
-            data: { updatedAt: new Date() },
-          });
-
-          // Record twin interaction for analytics (fire-and-forget)
-          const avgScore = sources.length > 0
-            ? sources.reduce((sum: number, s: { score: number }) => sum + (s.score || 0), 0) / sources.length
-            : 0;
-          prisma.twinInteraction.create({
-            data: {
-              expertProfileId: chatSession.expertProfileId,
-              chatSessionId: sessionId,
-              question: content,
-              answerQuality: avgScore,
-              sourcesUsed: sources.length,
-              isFromWidget: false,
-            },
-          }).catch(() => {});
-
-          // Extract and save subscriber memories (fire-and-forget)
-          extractMemories(content, fullResponse)
-            .then((memories) => {
-              if (memories.length > 0) {
-                return saveMemories(
-                  chatSession.subscriberId,
-                  chatSession.expertProfileId,
-                  memories
-                );
-              }
-            })
-            .catch(() => {});
-        }
-        if (providerDone) controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, messageId: persistedMessageId, sources: toMessageSources(sources) })}\n\n`));
-      },
-    });
-
-    // Build combined stream: thinking steps first, then content
-    const thinkingAndContentStream = new ReadableStream({
-      async start(controller) {
-        // Emit thinking steps with pacing
-        for (const step of thinkingSteps) {
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ thinking: step })}\n\n`)
-          );
-          await new Promise((r) => setTimeout(r, 400));
-        }
-
-        // Pipe the OpenAI stream through the transform
-        const reader = stream.pipeThrough(transformStream).getReader();
+      async pull(controller) {
+        if (ended) return;
         try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            controller.enqueue(value);
+          lifecycle.check();
+          if (thinkingIndex < thinkingSteps.length) {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ thinking: thinkingSteps[thinkingIndex++] })}\n\n`));
+            await abortableDelay(400, lifecycle.signal);
+            return;
           }
-        } finally {
-          controller.close();
+          // A split UTF-8/SSE chunk may produce no downstream event. Keep
+          // reading while demand is pending; yield as soon as content enqueues.
+          while (true) {
+          const { done, value } = await reader.read();
+          lifecycle.check();
+          let emitted = false;
+          for (const data of decoder.push(value, done)) emitted = parse(data, controller) || emitted;
+          if (!done) { if (emitted) return; continue; }
+          if (!providerState.done) throw new Error("Provider stream ended without DONE");
+          let messageId: string | undefined;
+          if (fullResponse) {
+            // The synchronous commit decision is the cancellation boundary.
+            // Cancellation during any awaited SQL write rolls this transaction
+            // back. A disconnect after COMMIT starts cannot undo committed data.
+            const saved = await prisma.$transaction(async tx => {
+              lifecycle.check();
+              const message = await tx.chatMessage.create({ data: {
+                chatSessionId: sessionId, role: "assistant", content: fullResponse,
+                sources: JSON.parse(JSON.stringify(sources)),
+              } });
+              lifecycle.check();
+              await tx.chatSession.update({ where: { id: sessionId }, data: { updatedAt: new Date() } });
+              lifecycle.check();
+              lifecycle.decideCommit();
+              return message;
+            });
+            messageId = saved.id;
+            lifecycle.check();
+            // Preserve best-effort analytics/memory policy, but bind both work
+            // and their SQL transactions to the same request/deadline signal.
+            background = (async () => {
+              try {
+                await prisma.$transaction(async tx => {
+                  lifecycle.check();
+                  await tx.twinInteraction.create({ data: {
+                    expertProfileId: chatSession.expertProfileId, chatSessionId: sessionId,
+                    question: content, answerQuality: sources.length ? sources.reduce((sum: number, s: { score: number }) => sum + (s.score || 0), 0) / sources.length : 0,
+                    sourcesUsed: sources.length, isFromWidget: false,
+                  } });
+                  lifecycle.check();
+                  lifecycle.decideCommit();
+                });
+              } catch { lifecycle.check(); /* noncritical analytics failure */ }
+              lifecycle.check();
+              const memories = await extractMemories(content, fullResponse, lifecycle.signal);
+              lifecycle.check();
+              if (memories.length) await saveMemories(chatSession.subscriberId, chatSession.expertProfileId, memories, lifecycle.signal);
+            })().catch(() => {}).finally(() => lifecycle.dispose());
+          }
+          lifecycle.check();
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, messageId, sources: toMessageSources(sources) })}\n\n`));
+          reader.releaseLock();
+          if (finish()) controller.close();
+          return;
+          }
+        } catch (error) {
+          lifecycle.abort(error instanceof Error ? error : new ChatRequestStopped("cancelled"));
+          await cancelReader();
+          if (finish()) controller.error(error);
         }
       },
+      async cancel() {
+        lifecycle.abort();
+        await cancelReader();
+        finish();
+      },
     });
+    returnedStream = true;
 
     return new NextResponse(thinkingAndContentStream, {
       headers: {
@@ -313,10 +323,16 @@ export async function POST(
       },
     });
   } catch (error) {
+    if (lifecycle.signal.aborted) {
+      const reason = lifecycle.signal.reason;
+      return NextResponse.json({ error: reason instanceof ChatRequestStopped && reason.kind === "deadline" ? "Chat request deadline exceeded" : "Chat request cancelled" }, { status: reason instanceof ChatRequestStopped && reason.kind === "deadline" ? 504 : 499 });
+    }
     console.error("Send message error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
+  } finally {
+    if (!returnedStream) lifecycle.dispose();
   }
 }

@@ -279,7 +279,8 @@ describe("Enhanced Message Route - Memory Extraction", () => {
 
     expect(mockExtractMemories).toHaveBeenCalledWith(
       "I love studying AI",
-      expect.any(String)
+      expect.any(String),
+      expect.any(AbortSignal)
     );
   });
 
@@ -504,6 +505,7 @@ describe("Enhanced Message Route - Chat Engine Integration", () => {
       query: "What is machine learning?",
       chatHistory: [],
       enableWebSearch: true,
+      signal: expect.any(AbortSignal),
     });
   });
 

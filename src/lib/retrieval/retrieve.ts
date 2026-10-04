@@ -7,15 +7,18 @@ import { retrieveTemporalEvidence } from "@/lib/graph/temporal/retriever";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import { assembleBundle, tokenUpperBound } from "./bundle";
 import { planQuestion, RETRIEVAL_BUDGET } from "./intent";
+import { checkSignal } from "@/lib/ai/request-lifecycle";
 /** v1 reads EXP12/13 only. Store authorization errors propagate; search failure is observable. */
-export async function retrieveIntentEvidence(scope: RetrievalScope, question: string, temporal?: TemporalQuery) {
+export async function retrieveIntentEvidence(scope: RetrievalScope, question: string, temporal?: TemporalQuery, signal?: AbortSignal) {
+  checkSignal(signal);
   if (!scope.namespace || !scope.expertProfileId) throw new Error("Retrieval requires tenant namespace");
   const started = performance.now(), plan = planQuestion(question,temporal), failures: string[] = [];
   const search = plan.terms.join(" ");
   const [semantic,keyword] = plan.intent === "conversation" || !search || !scope.allowedVectorIds.length ? [[],[]] : await Promise.all([
-    generateEmbedding(question).then(v=>vectorStore.query(scope.namespace,v,15,scope)).catch(()=>{failures.push("semantic-unavailable; lexical fallback");return [];}),
+    generateEmbedding(question, signal).then(v=>{checkSignal(signal);return vectorStore.query(scope.namespace,v,15,scope);}).catch(()=>{checkSignal(signal);failures.push("semantic-unavailable; lexical fallback");return [];}),
     vectorStore.keywordSearch(scope.namespace,search,15,scope).catch(()=>{failures.push("keyword-unavailable");return [];})
   ]);
+  checkSignal(signal);
   const chunks: RetrievalResult[] = [], seen = new Set<string>(), allowed = new Set(scope.allowedVectorIds);
   for (let i=0;i<15;i++) for (const row of [keyword[i],semantic[i]]) {
     if (!row || seen.has(row.id) || !allowed.has(row.id) || row.metadata.expertProfileId!==scope.expertProfileId) continue;
@@ -28,6 +31,7 @@ export async function retrieveIntentEvidence(scope: RetrievalScope, question: st
     if (!seen.has(id)) {seen.add(id);chunks.push({content:"",score:0,metadata:{vectorId:id,expertProfileId:scope.expertProfileId,source:"authorized-temporal-neighbor"}});}
   }
   const [assertions,timeline] = await Promise.all([retrieveEvidenceTrace(scope,chunks),retrieveTemporalEvidence(scope,chunks,plan.temporal)]);
+  checkSignal(signal);
   const bundle = assembleBundle(scope,plan,chunks,assertions,timeline);
   bundle.trace.retrievalMs = performance.now()-started;
   bundle.trace.failures = failures.sort();

@@ -1,0 +1,55 @@
+{
+  "source_commit": "e2a9eb2fb8a5ace695f0297363465d0c5728281c",
+  "base_commit": "7e7c5b256846a447caf940379c6023a77957fef1",
+  "files": [
+    {
+      "path": "__tests__/phase0/chat-engine.test.ts",
+      "git_blob": "04b3d8517a615cf5f29a792ef2367604251506cc"
+    },
+    {
+      "path": "src/app/api/chat/sessions/[sessionId]/messages/route.ts",
+      "git_blob": "52f6fdb3d5f0b53a55769b60d5c6c457210ac384"
+    },
+    {
+      "path": "src/lib/ai/chat-engine-baseline.ts",
+      "git_blob": "e38fb5db85f4b4a660d2ad48cf4446d576c4397f"
+    },
+    {
+      "path": "src/lib/ai/chat-engine.ts",
+      "git_blob": "491bf2f8d9ade2775fdf0362b45b5035bb3e4aa9"
+    },
+    {
+      "path": "src/lib/ai/memory-extractor.ts",
+      "git_blob": "5ebbc027e136e9d352ff665e319d247c84d7b18d"
+    },
+    {
+      "path": "src/lib/ai/memory-manager.ts",
+      "git_blob": "93e278e64c2f750ac99413e5d1baa357b8919b98"
+    },
+    {
+      "path": "src/lib/ai/openai.ts",
+      "git_blob": "e5f30bc58fa4c4aa018da10488d83e8bfa438be9"
+    },
+    {
+      "path": "src/lib/ai/provider-stream.ts",
+      "git_blob": "078730b766b6b29a60230d648a01b947e10bbcc7"
+    },
+    {
+      "path": "src/lib/ai/request-lifecycle.ts",
+      "git_blob": "42c42647391f64dbfca77bba3f1e955fc8651f11"
+    },
+    {
+      "path": "src/lib/ai/web-search.ts",
+      "git_blob": "a1502effdc2a27519011916b34fe2474c38dc7ad"
+    },
+    {
+      "path": "src/lib/retrieval/retrieve.ts",
+      "git_blob": "3152ed2fc60495cbbbcf770541d6779527c52ce5"
+    },
+    {
+      "path": "src/lib/vector/embeddings.ts",
+      "git_blob": "8bb1f9f1a2a50fe5d13efe6db9d60a6b522ccf89"
+    }
+  ],
+  "all_exact": true
+}

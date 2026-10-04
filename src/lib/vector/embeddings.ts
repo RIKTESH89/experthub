@@ -1,4 +1,5 @@
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
+import { checkSignal } from "@/lib/ai/request-lifecycle";
 export const EMBEDDING_DIMENSIONS = 1536;
 export const EMBEDDING_MODEL = "text-embedding-3-small";
 
@@ -10,17 +11,28 @@ export function validateEmbedding(values: unknown): asserts values is number[] {
   }
 }
 
-export async function generateEmbedding(text: string): Promise<number[]> {
+export async function generateEmbedding(text: string, signal?: AbortSignal): Promise<number[]> {
+  checkSignal(signal);
   if (!process.env.OPENAI_API_KEY) throw new Error("Embedding provider is not configured");
   assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/embeddings", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
     body: JSON.stringify({ input: text, model: EMBEDDING_MODEL, dimensions: EMBEDDING_DIMENSIONS }),
-    signal: AbortSignal.timeout(15000),
+    signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000),
   });
-  if (!response.ok) throw new Error(`Embedding provider failed: ${response.status}`);
-  const data = await response.json();
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error(`Embedding provider failed: ${response.status}`);
+  }
+  let data;
+  try { data = await response.json(); }
+  catch (error) {
+    await response.body?.cancel().catch(() => {});
+    checkSignal(signal);
+    throw error;
+  }
+  checkSignal(signal);
   if (data.model !== EMBEDDING_MODEL) throw new Error("Embedding model mismatch");
   const values: unknown = data.data?.[0]?.embedding;
   validateEmbedding(values);

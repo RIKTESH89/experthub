@@ -257,6 +257,7 @@ describe("Chat Sessions API", () => {
     (runChatEngine as jest.Mock).mockResolvedValue({
       stream: mockStream,
       sources: [],
+      thinkingSteps: [],
     });
 
     // Also mock the post-stream saves
@@ -270,6 +271,9 @@ describe("Chat Sessions API", () => {
     // Should return a streaming response
     expect(res.status).toBe(200);
     expect(res.headers.get("Content-Type")).toBe("text/event-stream");
+
+    const body = await res.text();
+    expect(body).toContain('"done":true');
 
     // Verify user message was saved
     expect(mockPrisma.chatMessage.create).toHaveBeenCalledWith({
@@ -286,8 +290,9 @@ describe("Chat Sessions API", () => {
       expertId: "expert-id-1",
       subscriberId: "subscriber-id-1",
       query: "Tell me about AI",
-      chatHistory: [{ role: "assistant", content: "Hello!" }],
+      chatHistory: [{ role: "assistant", content: "Hello!", sources: undefined }],
       enableWebSearch: false,
+      signal: expect.any(AbortSignal),
     });
   });
 });

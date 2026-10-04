@@ -1,4 +1,5 @@
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
+import { checkSignal } from "./request-lifecycle";
 /**
  * Shared OpenAI helper for non-streaming JSON extraction calls.
  * Used by personality-analyzer, memory-extractor, entity-extractor.
@@ -14,9 +15,11 @@ interface CallOpenAIOptions {
   temperature?: number;
   maxTokens?: number;
   model?: string;
+  signal?: AbortSignal;
 }
 
 export async function callOpenAI(options: CallOpenAIOptions): Promise<string> {
+  checkSignal(options.signal);
   const {
     messages,
     temperature = 0.3,
@@ -27,6 +30,7 @@ export async function callOpenAI(options: CallOpenAIOptions): Promise<string> {
   assertExternalServiceAllowed();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: options.signal,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -41,10 +45,18 @@ export async function callOpenAI(options: CallOpenAIOptions): Promise<string> {
   });
 
   if (!response.ok) {
+    await response.body?.cancel().catch(() => {});
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
-  const data = await response.json();
+  let data;
+  try { data = await response.json(); }
+  catch (error) {
+    await response.body?.cancel().catch(() => {});
+    checkSignal(options.signal);
+    throw error;
+  }
+  checkSignal(options.signal);
   return data.choices?.[0]?.message?.content || "{}";
 }
 

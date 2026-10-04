@@ -1,0 +1,897 @@
+FAIL __tests__/api/thinking-chat-enhanced.test.ts (65.252 s)
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › emits thinking steps before content events
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      144 |
+      145 | describe("Enhanced Message Route - Thinking Steps in SSE Stream", () => {
+    > 146 |   it("emits thinking steps before content events", async () => {
+          |   ^
+      147 |     setupAuthenticatedSession();
+      148 |     setupDefaultChatEngine("This is an AI answer", [], [
+      149 |       "Searching knowledge base...",
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:146:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › goes straight to content when thinking steps are empty
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      188 |   });
+      189 |
+    > 190 |   it("goes straight to content when thinking steps are empty", async () => {
+          |   ^
+      191 |     setupAuthenticatedSession();
+      192 |     setupDefaultChatEngine("Direct answer", [], []);
+      193 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:190:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › emits multiple thinking steps in correct order
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      213 |   });
+      214 |
+    > 215 |   it("emits multiple thinking steps in correct order", async () => {
+          |   ^
+      216 |     setupAuthenticatedSession();
+      217 |     const fiveSteps = [
+      218 |       "Step 1: Analyzing query...",
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:215:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Memory Extraction › fires memory extraction after response completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      255 |
+      256 | describe("Enhanced Message Route - Memory Extraction", () => {
+    > 257 |   it("fires memory extraction after response completes", async () => {
+          |   ^
+      258 |     setupAuthenticatedSession();
+      259 |     setupDefaultChatEngine("I remember you like AI", [], []);
+      260 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:257:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:256:1)
+
+  ● Enhanced Message Route - Memory Extraction › passes subscriberId to chat engine
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      284 |   });
+      285 |
+    > 286 |   it("passes subscriberId to chat engine", async () => {
+          |   ^
+      287 |     setupAuthenticatedSession();
+      288 |     setupDefaultChatEngine("response", [], []);
+      289 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:286:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:256:1)
+
+  ● Enhanced Message Route - Response Saving › saves assistant response to database after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      396 |
+      397 | describe("Enhanced Message Route - Response Saving", () => {
+    > 398 |   it("saves assistant response to database after stream completes", async () => {
+          |   ^
+      399 |     setupAuthenticatedSession();
+      400 |     setupDefaultChatEngine("Saved response text", [], []);
+      401 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:398:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:397:1)
+
+  ● Enhanced Message Route - Response Saving › records TwinInteraction analytics after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      444 |   });
+      445 |
+    > 446 |   it("records TwinInteraction analytics after stream completes", async () => {
+          |   ^
+      447 |     const mockSources = [
+      448 |       { content: "source 1", score: 0.9, metadata: {} },
+      449 |       { content: "source 2", score: 0.8, metadata: {} },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:446:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:397:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › passes correct parameters to runChatEngine
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      486 |
+      487 | describe("Enhanced Message Route - Chat Engine Integration", () => {
+    > 488 |   it("passes correct parameters to runChatEngine", async () => {
+          |   ^
+      489 |     setupAuthenticatedSession();
+      490 |     setupDefaultChatEngine("response", [], []);
+      491 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:488:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › passes chat history from existing messages
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      508 |   });
+      509 |
+    > 510 |   it("passes chat history from existing messages", async () => {
+          |   ^
+      511 |     setupAuthenticatedSession({
+      512 |       messages: [
+      513 |         { role: "assistant", content: "Hello!", createdAt: new Date() },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:510:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › increments trial usage for trial sessions
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      535 |   });
+      536 |
+    > 537 |   it("increments trial usage for trial sessions", async () => {
+          |   ^
+      538 |     setupAuthenticatedSession({ isTrial: true });
+      539 |     setupDefaultChatEngine("trial response", [], []);
+      540 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:537:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › does not check trial access for non-trial sessions
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      557 |   });
+      558 |
+    > 559 |   it("does not check trial access for non-trial sessions", async () => {
+          |   ^
+      560 |     setupAuthenticatedSession({ isTrial: false });
+      561 |     setupDefaultChatEngine("paid response", [], []);
+      562 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:559:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › streams sources in the done event
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      589 |   });
+      590 |
+    > 591 |   it("streams sources in the done event", async () => {
+          |   ^
+      592 |     const mockSources = [
+      593 |       { content: "doc about AI", score: 0.95, metadata: { title: "AI Intro" } },
+      594 |       { content: "ML basics", score: 0.88, metadata: { title: "ML Guide" } },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:591:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › updates session timestamp after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      610 |   });
+      611 |
+    > 612 |   it("updates session timestamp after stream completes", async () => {
+          |   ^
+      613 |     setupAuthenticatedSession();
+      614 |     setupDefaultChatEngine("timestamp response", [], []);
+      615 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:612:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+PASS __tests__/api/e2e-workflows.test.ts
+PASS __tests__/local-ui-isolation.test.ts
+PASS __tests__/admin-stat-recovery.test.ts
+PASS __tests__/chat-failure-recovery.test.ts
+PASS __tests__/exp15/structured-pipeline.test.ts
+PASS __tests__/exp26/preview-origin.test.ts
+PASS __tests__/pwa-prompt-accessibility.test.ts
+PASS __tests__/evidence-sculpture.test.ts
+PASS __tests__/admin-user-row-state.test.ts
+PASS __tests__/api/error-handling.test.ts
+PASS __tests__/post-feed-recovery.test.ts
+PASS __tests__/api/experts.test.ts
+PASS __tests__/exp26/staging-build.test.ts
+  ● Console
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: ENGINE_COMPLETED
+
+      at Object.main (scripts/staging/build.cjs:166:11)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: ENGINE_COMPLETED
+
+      at Object.main (scripts/staging/build.cjs:166:11)
+
+    console.log
+      Staging migration verified: 18 completed checksums, expected schema, no seed.
+
+      at Object.main (scripts/staging/build.cjs:170:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+PASS __tests__/api/new-endpoints.test.ts
+PASS __tests__/api/expert-routes.test.ts
+PASS __tests__/api/pages-and-existing-routes.test.ts
+PASS __tests__/exp15/structured-review-regressions.test.ts
+PASS __tests__/exp27/safe-fetch.test.ts
+PASS __tests__/exp26/token-boundary.test.ts
+PASS __tests__/exp26/checkout-pending.test.ts
+PASS __tests__/api/posts.test.ts
+PASS __tests__/exp26/preview-isolation.test.ts
+PASS __tests__/chat-input-accessibility.test.ts
+PASS __tests__/api/graph-accuracy.test.ts
+PASS __tests__/api/feature-edge-cases.test.ts
+PASS __tests__/api/personality-memory.test.ts
+FAIL __tests__/phase0/conversation.test.ts
+  ● EXP10 subscriber >50 messages gets latest correction and stable tie ordering
+
+    Provider stream ended without DONE
+
+      249 |           for (const data of decoder.push(value, done)) parse(data, controller);
+      250 |           if (!done) return;
+    > 251 |           if (!providerState.done) throw new Error("Provider stream ended without DONE");
+          |                                          ^
+      252 |           let messageId: string | undefined;
+      253 |           if (fullResponse) {
+      254 |             // The synchronous commit decision is the cancellation boundary.
+
+      at Object.<anonymous> (src/app/api/chat/sessions/[sessionId]/messages/route.ts:251:42)
+      at fulfilled (src/app/api/chat/sessions/[sessionId]/messages/route.ts:5:58)
+
+PASS __tests__/phase0/chat-engine.test.ts
+PASS __tests__/exp16/page.test.ts
+PASS __tests__/api/search-notifications.test.ts
+PASS __tests__/api/remaining-flows.test.ts
+FAIL __tests__/api/chat.test.ts
+  ● Chat Sessions API › POST /chat/sessions/:id/messages - validates and creates user message
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+        "chatHistory": Array [
+          Object {
+            "content": "Hello!",
+            "role": "assistant",
+    +       "sources": undefined,
+          },
+        ],
+        "enableWebSearch": false,
+        "expertId": "expert-id-1",
+        "query": "Tell me about AI",
+    +   "signal": AbortSignal {
+    +     Symbol(kEvents): Map {
+    +       "abort" => Object {
+    +         "next": undefined,
+    +         "resistStopPropagation": false,
+    +         "size": 0,
+    +       },
+    +     },
+    +     Symbol(events.maxEventTargetListeners): 0,
+    +     Symbol(events.maxEventTargetListenersWarned): false,
+    +     Symbol(kHandlers): undefined,
+    +     Symbol(kAborted): true,
+    +     Symbol(kReason): [TypeError: Cannot read properties of undefined (reading 'length')],
+    +     Symbol(kComposite): false,
+    +   },
+        "subscriberId": "subscriber-id-1",
+      },
+
+    Number of calls: 1
+
+      283 |
+      284 |     // Verify chat engine was called with correct params
+    > 285 |     expect(runChatEngine).toHaveBeenCalledWith({
+          |                           ^
+      286 |       expertId: "expert-id-1",
+      287 |       subscriberId: "subscriber-id-1",
+      288 |       query: "Tell me about AI",
+
+      at __tests__/api/chat.test.ts:285:27
+      at fulfilled (__tests__/api/chat.test.ts:38:58)
+
+PASS __tests__/api/auth.test.ts
+PASS __tests__/api/admin-content.test.ts
+PASS __tests__/api/admin.test.ts
+PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp15/default-path-parity.test.ts
+PASS __tests__/api/tiered-pricing.test.ts
+PASS __tests__/api/knowledge-import.test.ts
+PASS __tests__/exp26/preview-error.test.ts
+PASS __tests__/api/knowledge.test.ts
+PASS __tests__/exp15/structured-chat-integration.test.ts
+PASS __tests__/exp27/routes.test.ts
+PASS __tests__/exp16/routes.test.ts
+PASS __tests__/exp13/temporal.test.ts
+PASS __tests__/exp15/revalidation-citations.test.ts
+PASS __tests__/api/trial-access.test.ts
+PASS __tests__/phase0/baseline-reproductions.test.ts
+PASS __tests__/phase0/outbox.test.ts
+PASS __tests__/exp27/import-boundary.test.ts
+PASS __tests__/exp12/evidence-extractor.test.ts
+PASS __tests__/api/analytics.test.ts
+PASS __tests__/phase0/local-scheduler.test.ts
+PASS __tests__/phase0/access.test.ts
+PASS __tests__/exp14/retrieval.test.ts
+PASS __tests__/phase0/lifecycle.test.ts
+PASS __tests__/exp15/response-policy.test.ts
+PASS __tests__/exp15/dialogue-verification.test.ts
+PASS __tests__/exp25/citations.test.ts
+PASS __tests__/exp12/backfill-route.test.ts
+PASS __tests__/phase0/groq-local.test.ts
+PASS __tests__/exp15/structured-local-retrieval.test.ts
+PASS __tests__/exp26/chat-access.test.ts
+PASS __tests__/api/trial-and-utils.test.ts
+PASS __tests__/api/conversation-sharing.test.ts
+PASS __tests__/phase0/post-access.test.ts
+PASS __tests__/phase0/recovery-route.test.ts
+PASS __tests__/phase0/memory.test.ts
+PASS __tests__/phase0/embeddings.test.ts
+PASS __tests__/exp15/claim-gate.test.ts
+PASS __tests__/exp27/upload-validation.test.ts
+PASS __tests__/exp26/auth.test.ts
+PASS __tests__/api/widget.test.ts
+PASS __tests__/phase0/vector-store.test.ts
+PASS __tests__/exp30/public-metadata.test.ts
+PASS __tests__/phase0/retrieval.test.ts
+PASS __tests__/exp26/staging-google.test.ts
+PASS __tests__/local-ui-runtime-isolation.test.ts
+PASS __tests__/phase0/shared-access.test.ts
+PASS __tests__/phase0/indexer.test.ts
+PASS __tests__/exp15/review-regressions.test.ts
+PASS __tests__/exp27/email-redaction.test.ts
+PASS __tests__/read-chat-response.test.ts
+PASS __tests__/hero-motion-policy.test.ts
+PASS __tests__/exp26/preview-reporting.test.ts
+PASS __tests__/exp26/paid-access.test.ts
+
+Summary of all failing tests
+FAIL __tests__/api/thinking-chat-enhanced.test.ts (65.252 s)
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › emits thinking steps before content events
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      144 |
+      145 | describe("Enhanced Message Route - Thinking Steps in SSE Stream", () => {
+    > 146 |   it("emits thinking steps before content events", async () => {
+          |   ^
+      147 |     setupAuthenticatedSession();
+      148 |     setupDefaultChatEngine("This is an AI answer", [], [
+      149 |       "Searching knowledge base...",
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:146:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › goes straight to content when thinking steps are empty
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      188 |   });
+      189 |
+    > 190 |   it("goes straight to content when thinking steps are empty", async () => {
+          |   ^
+      191 |     setupAuthenticatedSession();
+      192 |     setupDefaultChatEngine("Direct answer", [], []);
+      193 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:190:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Thinking Steps in SSE Stream › emits multiple thinking steps in correct order
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      213 |   });
+      214 |
+    > 215 |   it("emits multiple thinking steps in correct order", async () => {
+          |   ^
+      216 |     setupAuthenticatedSession();
+      217 |     const fiveSteps = [
+      218 |       "Step 1: Analyzing query...",
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:215:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:145:1)
+
+  ● Enhanced Message Route - Memory Extraction › fires memory extraction after response completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      255 |
+      256 | describe("Enhanced Message Route - Memory Extraction", () => {
+    > 257 |   it("fires memory extraction after response completes", async () => {
+          |   ^
+      258 |     setupAuthenticatedSession();
+      259 |     setupDefaultChatEngine("I remember you like AI", [], []);
+      260 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:257:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:256:1)
+
+  ● Enhanced Message Route - Memory Extraction › passes subscriberId to chat engine
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      284 |   });
+      285 |
+    > 286 |   it("passes subscriberId to chat engine", async () => {
+          |   ^
+      287 |     setupAuthenticatedSession();
+      288 |     setupDefaultChatEngine("response", [], []);
+      289 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:286:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:256:1)
+
+  ● Enhanced Message Route - Response Saving › saves assistant response to database after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      396 |
+      397 | describe("Enhanced Message Route - Response Saving", () => {
+    > 398 |   it("saves assistant response to database after stream completes", async () => {
+          |   ^
+      399 |     setupAuthenticatedSession();
+      400 |     setupDefaultChatEngine("Saved response text", [], []);
+      401 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:398:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:397:1)
+
+  ● Enhanced Message Route - Response Saving › records TwinInteraction analytics after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      444 |   });
+      445 |
+    > 446 |   it("records TwinInteraction analytics after stream completes", async () => {
+          |   ^
+      447 |     const mockSources = [
+      448 |       { content: "source 1", score: 0.9, metadata: {} },
+      449 |       { content: "source 2", score: 0.8, metadata: {} },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:446:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:397:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › passes correct parameters to runChatEngine
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      486 |
+      487 | describe("Enhanced Message Route - Chat Engine Integration", () => {
+    > 488 |   it("passes correct parameters to runChatEngine", async () => {
+          |   ^
+      489 |     setupAuthenticatedSession();
+      490 |     setupDefaultChatEngine("response", [], []);
+      491 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:488:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › passes chat history from existing messages
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      508 |   });
+      509 |
+    > 510 |   it("passes chat history from existing messages", async () => {
+          |   ^
+      511 |     setupAuthenticatedSession({
+      512 |       messages: [
+      513 |         { role: "assistant", content: "Hello!", createdAt: new Date() },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:510:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › increments trial usage for trial sessions
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      535 |   });
+      536 |
+    > 537 |   it("increments trial usage for trial sessions", async () => {
+          |   ^
+      538 |     setupAuthenticatedSession({ isTrial: true });
+      539 |     setupDefaultChatEngine("trial response", [], []);
+      540 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:537:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › does not check trial access for non-trial sessions
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      557 |   });
+      558 |
+    > 559 |   it("does not check trial access for non-trial sessions", async () => {
+          |   ^
+      560 |     setupAuthenticatedSession({ isTrial: false });
+      561 |     setupDefaultChatEngine("paid response", [], []);
+      562 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:559:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › streams sources in the done event
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      589 |   });
+      590 |
+    > 591 |   it("streams sources in the done event", async () => {
+          |   ^
+      592 |     const mockSources = [
+      593 |       { content: "doc about AI", score: 0.95, metadata: { title: "AI Intro" } },
+      594 |       { content: "ML basics", score: 0.88, metadata: { title: "ML Guide" } },
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:591:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+  ● Enhanced Message Route - Chat Engine Integration › updates session timestamp after stream completes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      610 |   });
+      611 |
+    > 612 |   it("updates session timestamp after stream completes", async () => {
+          |   ^
+      613 |     setupAuthenticatedSession();
+      614 |     setupDefaultChatEngine("timestamp response", [], []);
+      615 |
+
+      at __tests__/api/thinking-chat-enhanced.test.ts:612:3
+      at Object.<anonymous> (__tests__/api/thinking-chat-enhanced.test.ts:487:1)
+
+FAIL __tests__/phase0/conversation.test.ts
+  ● EXP10 subscriber >50 messages gets latest correction and stable tie ordering
+
+    Provider stream ended without DONE
+
+      249 |           for (const data of decoder.push(value, done)) parse(data, controller);
+      250 |           if (!done) return;
+    > 251 |           if (!providerState.done) throw new Error("Provider stream ended without DONE");
+          |                                          ^
+      252 |           let messageId: string | undefined;
+      253 |           if (fullResponse) {
+      254 |             // The synchronous commit decision is the cancellation boundary.
+
+      at Object.<anonymous> (src/app/api/chat/sessions/[sessionId]/messages/route.ts:251:42)
+      at fulfilled (src/app/api/chat/sessions/[sessionId]/messages/route.ts:5:58)
+
+FAIL __tests__/api/chat.test.ts
+  ● Chat Sessions API › POST /chat/sessions/:id/messages - validates and creates user message
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+        "chatHistory": Array [
+          Object {
+            "content": "Hello!",
+            "role": "assistant",
+    +       "sources": undefined,
+          },
+        ],
+        "enableWebSearch": false,
+        "expertId": "expert-id-1",
+        "query": "Tell me about AI",
+    +   "signal": AbortSignal {
+    +     Symbol(kEvents): Map {
+    +       "abort" => Object {
+    +         "next": undefined,
+    +         "resistStopPropagation": false,
+    +         "size": 0,
+    +       },
+    +     },
+    +     Symbol(events.maxEventTargetListeners): 0,
+    +     Symbol(events.maxEventTargetListenersWarned): false,
+    +     Symbol(kHandlers): undefined,
+    +     Symbol(kAborted): true,
+    +     Symbol(kReason): [TypeError: Cannot read properties of undefined (reading 'length')],
+    +     Symbol(kComposite): false,
+    +   },
+        "subscriberId": "subscriber-id-1",
+      },
+
+    Number of calls: 1
+
+      283 |
+      284 |     // Verify chat engine was called with correct params
+    > 285 |     expect(runChatEngine).toHaveBeenCalledWith({
+          |                           ^
+      286 |       expertId: "expert-id-1",
+      287 |       subscriberId: "subscriber-id-1",
+      288 |       query: "Tell me about AI",
+
+      at __tests__/api/chat.test.ts:285:27
+      at fulfilled (__tests__/api/chat.test.ts:38:58)
+
+
+Test Suites: 3 failed, 84 passed, 87 total
+Tests:       15 failed, 1305 passed, 1320 total
+Snapshots:   0 total
+Time:        69.344 s
+Ran all test suites.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.
