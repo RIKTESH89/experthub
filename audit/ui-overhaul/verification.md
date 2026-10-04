@@ -21,10 +21,12 @@ Authenticated role screens need local mocked role/API integration QA (not a live
 
 Actual home: `home-light.jpg`, `home-dark.jpg`, `home-mobile-light.jpg`. Synthetic component fixture: `dashboard-light.jpg`, `dashboard-dark.jpg`, `chat-light.jpg`, `chat-dark.jpg`, mobile variants and `dashboard-error.jpg`. Pricing/login captures supplement review.
 
-Confirmed Library images (version 0):
-- home-light.jpg: `libfile_3714bd562a788191bf2db4017e2ae44c`, `file_00000000d8ec8208a43da02d1cfe5a37`
-- home-dark.jpg: `libfile_f07ab318c4248191b7f80163b0d58f34`, `file_00000000cd6482088ce5d4ad95816974`
-- chat-light.jpg (synthetic fixture): `libfile_7d3121a0169081918b16b64cc763d03a`, `file_0000000093ec8208b482b579b6ed08a4`
-- chat-dark.jpg (synthetic fixture): `libfile_d68e77ebf4b481919c98735cd8a7a58b`, `file_00000000a54082088d75f9f0bc126162`
+Confirmed Library images (version 1, settled captures):
+- home-light.jpg: `libfile_3714bd562a788191bf2db4017e2ae44c`, `file_0000000041108208b1df23b2d2e9437a`
+- home-dark.jpg: `libfile_f07ab318c4248191b7f80163b0d58f34`, `file_0000000028a082089814339b21c46a3c`
+- chat-light.jpg (synthetic fixture): `libfile_7d3121a0169081918b16b64cc763d03a`, `file_00000000facc8208bf28f579b5a14b33`
+- chat-dark.jpg (synthetic fixture): `libfile_d68e77ebf4b481919c98735cd8a7a58b`, `file_00000000f4688208a9a5d7572edd7677`
 
 Library prepared helper failed before any prepare call because its hosted app tool list did not expose prepare_uploads. Ordered direct-create fallback succeeded for all four; metadata applied to each local file. No signed URLs exposed.
+
+Review correction: first home-light capture was mid-animation. Replaced the same Library item after measuring both hero elements opacity 1 / zero translation. Chat timestamps now derive from the actual local runtime clock minus one minute. All four Library replacements succeeded at version 1 with xattrs persisted. Older mobile/dashboard captures are intermediate QA evidence and should not be presented as the final directional set.

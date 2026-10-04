@@ -734,31 +734,31 @@ to {
    padding-top:88px;
    padding-bottom:80px;
    border-top:0;
-   
+
 }
 .studio-faq details  {
    border-bottom:1px solid hsl(var(--border));
    padding:20px 0;
-   
+
 }
 .studio-faq summary  {
    cursor:pointer;
    font-size:17px;
    font-weight:550;
    min-height:44px;
-   
+
 }
 .studio-faq p  {
    font-size:15px;
    line-height:1.8;
    color:hsl(var(--muted-foreground));
    padding:12px 0 8px;
-   
+
 }
 .studio-auth  {
    min-height:100vh;
    background:hsl(var(--background));
-   
+
 }
 .studio-auth>header  {
    display:flex;
@@ -766,7 +766,7 @@ to {
    justify-content:space-between;
    padding:24px 5%;
    border-bottom:1px solid hsl(var(--border));
-   
+
 }
 .studio-auth>main  {
    max-width:1300px;
@@ -777,67 +777,67 @@ to {
    gap:10%;
    min-height:calc(100vh - 90px);
    padding:64px 5%;
-   
+
 }
 .studio-auth-story .studio-auth-display  {
    font-size:clamp(38px,4.5vw,64px);
    line-height:1.1;
    font-weight:500;
    letter-spacing:-.05em;
-   
+
 }
 .studio-auth-story em  {
    font-family:Georgia,serif;
    color:hsl(var(--primary));
    font-weight:400;
-   
+
 }
 .studio-auth-story>p:not(.studio-eyebrow):not(.studio-auth-display)  {
    margin-top:28px;
    color:hsl(var(--muted-foreground));
    line-height:1.7;
-   
+
 }
 .studio-auth-rule  {
    height:1px;
    background:hsl(var(--border));
    margin-top:48px;
-   
+
 }
 .studio-auth-form  {
    max-width:420px;
    width:100%;
-   
+
 }
 .studio-auth-form>div  {
    background:hsl(var(--card));
    border-color:hsl(var(--border));
    box-shadow:none;
-   
+
 }
 .studio-auth-form .bg-white  {
    background:hsl(var(--card));
-   
+
 }
 .studio-auth-form .text-slate-900,.studio-auth-form .text-gray-900  {
    color:hsl(var(--foreground));
-   
+
 }
 .studio-auth-form .text-slate-500,.studio-auth-form .text-gray-500  {
    color:hsl(var(--muted-foreground));
-   
+
 }
 .studio-auth-form button  {
    min-height:44px;
-   
+
 }
 .dark  {
    color-scheme:dark;
-   
+
 }
 :root  {
    color-scheme:light;
-   
+
 }
 
 @media(max-width:640px) {
@@ -864,4 +864,3 @@ to {
 }
 
 }
-
