@@ -1,0 +1,17 @@
+{
+  "base": "64ced9adfb7ba57c58772cf65d094edc653ba6f9",
+  "branch": "integration/cinematic-homepage",
+  "types": "pass",
+  "lint": "pass",
+  "productionCompile": "pass, isolated synthetic Preview environment with external network blocked",
+  "fullTests": {
+    "suites": 89,
+    "tests": 1327,
+    "passed": true
+  },
+  "assetHashVerification": "387 copied files including384frames match standalone candidate",
+  "nativeBrowser": "pending human Mac unlock",
+  "protectedStaging": "not pushed or deployed",
+  "production": "unchanged",
+  "database": "no migration/seed/write performed"
+}

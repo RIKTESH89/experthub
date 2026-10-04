@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { publicPageMetadata } from "@/lib/public-metadata";
-import { StudioHome } from "@/components/studio/home";
+import { CinematicHome } from "@/components/home/cinematic/home";
 export function generateMetadata() { return publicPageMetadata("/", "ExpertHub — Expert knowledge, AI conversations"); }
 export default async function LandingPage() {
   const session = await auth();
@@ -11,5 +11,5 @@ export default async function LandingPage() {
     if (role === "EXPERT") redirect("/expert");
     redirect("/subscriber/feed");
   }
-  return <StudioHome />;
+  return <CinematicHome />;
 }
