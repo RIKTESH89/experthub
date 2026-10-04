@@ -1,6 +1,6 @@
 # Combined UI verification — pending final lane QA and integration
 
-Reviewed checkpoint diffs only: subscriber `55cc2c5`, expert `ed80095`, public/admin `0245fea`. These are not final approved integration SHAs. Public/admin has ongoing profile fixture edits. Do not cherry-pick until each owner supplies final status and QA evidence.
+Reviewed checkpoint diffs only: subscriber `55cc2c5`, expert `ed80095`, public/admin `0245fea` plus runtime follow-up `930ab96`. These are not final approved integration SHAs. Do not cherry-pick until each owner supplies final status and QA evidence.
 
 ## Contract review findings
 
@@ -29,3 +29,13 @@ If exact installed Prisma engines or dependencies are unavailable, report the co
 6. Capture settled full viewport screenshots, read computed motion state before capturing, inspect images rather than relying solely on DOM. Upload final review artifacts through supported Library workflow only when authorized; avoid uploading proprietary source to unrelated services.
 
 Release report must distinguish implemented, visually verified, fixture-only, authenticated-unverified and blocked routes. A clean UI-only typecheck or a handful of screens cannot establish the requested complete overhaul.
+
+## Public/admin follow-up evidence and local origin constraint
+
+Read `930ab96` report and independently viewed profile-dark-mobile, transcript-light-mobile and admin-dark-mobile screenshots. Profile and transcript use actual extracted presentation components with labeled synthetic content, readable mobile measures and semantic theme surfaces. Admin screenshot is a scoped-CSS sample, not the production admin page/components or authorized operations. No evidence establishes actual admin/post actions or all state coverage.
+
+Normal sandbox escalation permitted the local server; earlier EPERM was not an approval-review denial. Later browser navigation to the synthetic external Vercel canonical origin was explicitly rejected by auto-review. Do not retry that external target or claim auth/back QA passed.
+
+Config review: next.config.mjs derives Preview from VERCEL_ENV and overrides AUTH_URL/NEXTAUTH_URL/NEXT_PUBLIC_APP_URL to the validated VERCEL_BRANCH_URL origin. preview-environment.cjs accepts only a Vercel hostname; localhost cannot be substituted. Outside Preview, instrumentation-client.ts and sentry.*.config.ts initialize a checked-in DSN with replay/PII configuration. Therefore simply removing VERCEL_ENV to obtain localhost redirects is not a safe no-telemetry workaround. Current fixtures work under Preview because they use public diagnostic paths; protected unauthenticated redirects remain blocked by this origin constraint.
+
+Before full local redirect/auth/build-runtime acceptance, coordinate a supported local-only test configuration or explicit outbound network containment with the parent. Keep hosted Preview validation and role middleware intact. This plan has not introduced a new local-mode exception, altered security guards or executed the denied navigation. Build step 3 must retain Preview isolation and synthetic Vercel metadata until this constraint is resolved; do not fall back to non-Preview solely to make redirects local.
