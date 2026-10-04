@@ -25,14 +25,14 @@ const cardMeta = [
     trendKey: "users" as const,
     title: "Total Users",
     icon: Users,
-    bgAccent: "bg-[#1E40AF]/5 dark:bg-[#1E40AF]/10",
+    bgAccent: "bg-primary/5 dark:bg-primary/10",
   },
   {
     key: "activeExperts" as const,
     trendKey: "experts" as const,
     title: "Active Experts",
     icon: Shield,
-    bgAccent: "bg-[#1E40AF]/5 dark:bg-[#1E40AF]/10",
+    bgAccent: "bg-primary/5 dark:bg-primary/10",
   },
   {
     key: "activeSubscriptions" as const,

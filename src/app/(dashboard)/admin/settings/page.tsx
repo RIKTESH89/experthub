@@ -113,7 +113,7 @@ function SettingsCard({
     <FadeIn delay={delay}>
       <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-border/60">
         {/* Top accent line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         <CardHeader className="relative pb-4">
           <div className="relative flex items-center gap-3.5">
@@ -165,7 +165,7 @@ function PremiumInput({
       <Input
         id={id}
         type={type}
-        className="border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+        className="border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
         {...register(id as keyof PlatformSettings)}
         {...props}
       />
@@ -238,11 +238,11 @@ export default function AdminSettingsPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
-              <Settings2 className="h-5 w-5 text-[#1E40AF]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10">
+              <Settings2 className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight font-sans">
+              <h2 className="text-3xl font-medium tracking-tight font-sans">
                 Platform Settings
               </h2>
               <p className="text-sm text-muted-foreground font-sans">
@@ -256,7 +256,7 @@ export default function AdminSettingsPage() {
           {/* General */}
           <SettingsCard
             icon={Globe}
-            iconColor="bg-[#1E40AF]"
+            iconColor="bg-primary"
             title="General Settings"
             description="Basic platform configuration"
             delay={0.05}
@@ -271,7 +271,7 @@ export default function AdminSettingsPage() {
               </Label>
               <Textarea
                 id="siteDescription"
-                className="resize-none border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40 min-h-[80px]"
+                className="resize-none border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 min-h-[80px]"
                 {...register("siteDescription")}
               />
             </div>
@@ -307,7 +307,7 @@ export default function AdminSettingsPage() {
                     id="defaultExpertRate"
                     type="number"
                     step="0.01"
-                    className="pl-7 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    className="pl-7 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                     {...register("defaultExpertRate")}
                   />
                 </div>
@@ -323,7 +323,7 @@ export default function AdminSettingsPage() {
                   <Input
                     id="platformFeePercent"
                     type="number"
-                    className="pr-8 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40"
+                    className="pr-8 border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                     {...register("platformFeePercent")}
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
@@ -337,7 +337,7 @@ export default function AdminSettingsPage() {
           {/* Security */}
           <SettingsCard
             icon={Shield}
-            iconColor="bg-[#1E40AF]"
+            iconColor="bg-primary"
             title="Security & Access"
             description="Control platform access and moderation"
             delay={0.15}
@@ -371,7 +371,7 @@ export default function AdminSettingsPage() {
                 value={watch("contentModeration")}
                 onValueChange={(v) => setValue("contentModeration", v)}
               >
-                <SelectTrigger className="cursor-pointer border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/40">
+                <SelectTrigger className="cursor-pointer border-border/50 bg-card focus:bg-background transition-colors duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -387,7 +387,7 @@ export default function AdminSettingsPage() {
           {/* Notifications */}
           <SettingsCard
             icon={Bell}
-            iconColor="bg-[#1E40AF]"
+            iconColor="bg-primary"
             title="Notifications"
             description="Email and notification settings"
             delay={0.2}
@@ -396,7 +396,7 @@ export default function AdminSettingsPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="cursor-pointer relative min-w-[160px] bg-[#1E40AF] hover:bg-[#1E40AF]/90 shadow-[0_2px_8px_rgba(30,64,175,0.2)] hover:shadow-[0_4px_12px_rgba(30,64,175,0.3)] transition-all duration-200"
+                  className="cursor-pointer relative min-w-[160px] bg-primary hover:bg-primary/90 shadow-[0_2px_8px_rgba(30,64,175,0.2)] hover:shadow-[0_4px_12px_rgba(30,64,175,0.3)] transition-all duration-200"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">

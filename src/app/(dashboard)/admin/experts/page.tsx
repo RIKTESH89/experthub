@@ -73,9 +73,9 @@ const statCards = [
     key: "total",
     label: "Total Experts",
     icon: Users,
-    iconBg: "bg-[#1E40AF]/10",
-    iconColor: "text-[#1E40AF] dark:text-blue-400",
-    borderAccent: "border-l-[#1E40AF]",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary dark:text-primary",
+    borderAccent: "border-l-primary",
   },
   {
     key: "verified",
@@ -187,11 +187,11 @@ export default function AdminExpertsPage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/20">
-            <ShieldCheck className="h-4.5 w-4.5 text-[#1E40AF] dark:text-blue-400" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
+            <ShieldCheck className="h-4.5 w-4.5 text-primary dark:text-primary" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight font-sans">
+            <h2 className="text-3xl font-medium tracking-tight font-sans">
               Expert Verification
             </h2>
             <p className="text-sm text-muted-foreground font-sans">
@@ -208,7 +208,7 @@ export default function AdminExpertsPage() {
           return (
             <StaggerItem key={card.key}>
               <Card className={cn(
-                "relative overflow-hidden border-l-4 transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:-translate-y-0.5",
+                "relative overflow-hidden border-l-4 transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] ",
                 card.borderAccent
               )}>
                 <CardContent className="relative flex items-center gap-4 p-5">
@@ -260,7 +260,7 @@ export default function AdminExpertsPage() {
                 <span className={cn(
                   "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold transition-colors duration-200",
                   activeTab === tab.value
-                    ? "bg-[#1E40AF]/10 text-[#1E40AF]"
+                    ? "bg-primary/10 text-primary"
                     : "bg-muted text-muted-foreground"
                 )}>
                   {tab.count}
@@ -326,7 +326,7 @@ export default function AdminExpertsPage() {
                                 <AvatarImage
                                   src={expert.image ?? undefined}
                                 />
-                                <AvatarFallback className="text-xs bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-300 font-semibold">
+                                <AvatarFallback className="text-xs bg-primary/10 text-primary dark:text-primary font-semibold">
                                   {getInitials(expert.displayName)}
                                 </AvatarFallback>
                               </Avatar>
@@ -342,7 +342,7 @@ export default function AdminExpertsPage() {
                               )}
                             </div>
                             <div>
-                              <p className="text-sm font-semibold group-hover:text-[#1E40AF] transition-colors duration-200 font-sans">
+                              <p className="text-sm font-semibold group-hover:text-primary transition-colors duration-200 font-sans">
                                 {expert.displayName}
                               </p>
                               <p className="text-xs text-muted-foreground font-sans">
@@ -357,7 +357,7 @@ export default function AdminExpertsPage() {
                               <Badge
                                 key={s}
                                 variant="secondary"
-                                className="text-[10px] font-medium bg-[#1E40AF]/5 text-[#1E40AF]/80 border border-[#1E40AF]/10 hover:bg-[#1E40AF]/10 transition-colors duration-200"
+                                className="text-[10px] font-medium bg-primary/5 text-primary/80 border border-primary/10 hover:bg-primary/10 transition-colors duration-200"
                               >
                                 {s}
                               </Badge>

@@ -1,3 +1,4 @@
+import styles from "./admin-studio.module.css";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export default async function AdminLayout({
   if (!session?.user?.id) redirect("/login");
   if (session.user.role !== "ADMIN") redirect("/");
   return (
-    <div className="space-y-6">
+    <div className={`${styles.workspace} space-y-6`}>
       {/* Admin Breadcrumb Navigation */}
       <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
         <Link

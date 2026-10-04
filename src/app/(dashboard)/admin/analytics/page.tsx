@@ -66,7 +66,7 @@ function generateDailyEngagement() {
 
 function generateRoleDistribution() {
   return [
-    { name: "Subscribers", value: 2847, color: "#1E40AF" },
+    { name: "Subscribers", value: 2847, color: "hsl(var(--primary))" },
     { name: "Experts", value: 342, color: "#3B82F6" },
     { name: "Admins", value: 12, color: "#93C5FD" },
   ];
@@ -90,7 +90,7 @@ const tooltipStyle = {
 };
 
 const ROLE_LABELS = [
-  { color: "#1E40AF", label: "Subscribers" },
+  { color: "hsl(var(--primary))", label: "Subscribers" },
   { color: "#3B82F6", label: "Experts" },
   { color: "#93C5FD", label: "Admins" },
 ];
@@ -111,11 +111,11 @@ export default function AdminAnalyticsPage() {
         <FadeIn delay={0}>
           <div className="relative">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
-                <BarChart3 className="h-5 w-5 text-[#1E40AF]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10">
+                <BarChart3 className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold tracking-tight font-sans">
+                <h2 className="text-3xl font-medium tracking-tight font-sans">
                   Analytics Dashboard
                 </h2>
                 <p className="text-sm text-muted-foreground font-sans">
@@ -177,15 +177,15 @@ export default function AdminAnalyticsPage() {
                 <AreaChart data={monthlyData}>
                   <defs>
                     <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#1E40AF" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#1E40AF" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
                   <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
                   <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "hsl(var(--foreground))" }} />
-                  <Area type="monotone" dataKey="users" stroke="#1E40AF" strokeWidth={2} fill="url(#userGrad)" />
+                  <Area type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#userGrad)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -226,7 +226,7 @@ export default function AdminAnalyticsPage() {
                     <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
                     <Tooltip contentStyle={tooltipStyle} />
                     <Legend />
-                    <Bar dataKey="chats" fill="#1E40AF" radius={[4, 4, 0, 0]} name="Chats" />
+                    <Bar dataKey="chats" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Chats" />
                     <Bar dataKey="posts" fill="#3B82F6" radius={[4, 4, 0, 0]} name="Posts" />
                     <Bar dataKey="signups" fill="#93C5FD" radius={[4, 4, 0, 0]} name="Signups" />
                   </BarChart>
@@ -240,12 +240,12 @@ export default function AdminAnalyticsPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Role Distribution */}
           <FadeIn delay={0.3}>
-            <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-[#1E40AF]/20 hover:-translate-y-0.5">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-primary/20 ">
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <CardHeader className="relative space-y-1.5 pb-2">
                 <div className="relative flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/20">
-                    <PieChartIcon className="h-4 w-4 text-[#1E40AF]" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                    <PieChartIcon className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <CardTitle className="text-base font-semibold tracking-tight text-foreground font-sans">
@@ -305,7 +305,7 @@ export default function AdminAnalyticsPage() {
 
           {/* Top Experts */}
           <FadeIn delay={0.35}>
-            <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-[#1E40AF]/20 hover:-translate-y-0.5">
+            <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:border-primary/20 ">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-amber-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <CardHeader className="relative space-y-1.5 pb-2">
                 <div className="relative flex items-center gap-2.5">
@@ -336,7 +336,7 @@ export default function AdminAnalyticsPage() {
                               ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted-foreground text-sm font-bold text-white shadow-sm"
                               : i === 2
                               ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-700 text-sm font-bold text-white shadow-sm"
-                              : "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1E40AF]/10 text-sm font-bold text-[#1E40AF]"
+                              : "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary"
                           }
                         >
                           {i + 1}

@@ -71,12 +71,12 @@ const roleConfig: Record<string, { label: string; icon: typeof User; className: 
   EXPERT: {
     label: "Expert",
     icon: Shield,
-    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-400 border-[#1E40AF]/20",
+    className: "bg-primary/10 text-primary dark:text-primary border-primary/20",
   },
   ADMIN: {
     label: "Admin",
     icon: ShieldCheck,
-    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-300 border-[#1E40AF]/20",
+    className: "bg-primary/10 text-primary dark:text-primary border-primary/20",
   },
 };
 
@@ -239,7 +239,7 @@ export function UserTable() {
                 "pl-10 h-11 rounded-xl border-border",
                 "bg-card",
                 "placeholder:text-muted-foreground",
-                "focus-visible:ring-[#1E40AF]/20 focus-visible:border-[#1E40AF]/30",
+                "focus-visible:ring-primary/20 focus-visible:border-primary/30",
                 "transition-all duration-200"
               )}
             />
@@ -249,7 +249,7 @@ export function UserTable() {
               className={cn(
                 "w-full sm:w-[160px] h-11 rounded-xl border-border cursor-pointer",
                 "bg-card",
-                "focus:ring-[#1E40AF]/20 focus:border-[#1E40AF]/30",
+                "focus:ring-primary/20 focus:border-primary/30",
                 "transition-all duration-200"
               )}
             >
@@ -359,13 +359,13 @@ export function UserTable() {
                       <TableCell className="py-3.5">
                         <div className="flex items-center gap-3.5">
                           <div className="relative">
-                            <Avatar className="h-10 w-10 ring-2 ring-border/50 group-hover:ring-[#1E40AF]/20 transition-all duration-200">
+                            <Avatar className="h-10 w-10 ring-2 ring-border/50 group-hover:ring-primary/20 transition-all duration-200">
                               <AvatarImage src={user.image ?? undefined} />
                               <AvatarFallback
                                 className={cn(
                                   "text-xs font-semibold",
-                                  "bg-[#1E40AF]/10",
-                                  "text-[#1E40AF]/80"
+                                  "bg-primary/10",
+                                  "text-primary/80"
                                 )}
                               >
                                 {getInitials(user.name)}
@@ -382,7 +382,7 @@ export function UserTable() {
                             />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold truncate group-hover:text-[#1E40AF]/90 transition-colors duration-200 font-sans">
+                            <p className="text-sm font-semibold truncate group-hover:text-primary/90 transition-colors duration-200 font-sans">
                               {user.name}
                             </p>
                             <p className="text-xs text-muted-foreground truncate font-sans">
@@ -440,7 +440,7 @@ export function UserTable() {
                               disabled={actionLoading === user.id}
                             >
                               {actionLoading === user.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin text-[#1E40AF]" />
+                                <Loader2 className="h-4 w-4 animate-spin text-primary" />
                               ) : (
                                 <MoreHorizontal className="h-4 w-4" />
                               )}

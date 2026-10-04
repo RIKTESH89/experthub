@@ -82,12 +82,12 @@ const roleConfig = {
   EXPERT: {
     label: "Expert",
     icon: Shield,
-    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-400",
+    className: "bg-primary/10 text-primary dark:text-primary",
   },
   ADMIN: {
     label: "Admin",
     icon: ShieldCheck,
-    className: "bg-[#1E40AF]/10 text-[#1E40AF] dark:text-blue-300",
+    className: "bg-primary/10 text-primary dark:text-primary",
   },
 };
 
@@ -307,7 +307,7 @@ export default function AdminUserDetailPage() {
         <FadeIn delay={0.1} className="lg:col-span-1">
           <Card className="relative overflow-hidden border-border">
             {/* Top accent bar */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/50 pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/50 pointer-events-none" />
 
             <CardContent className="relative flex flex-col items-center pt-8 pb-6">
               {/* Avatar */}
@@ -406,11 +406,11 @@ export default function AdminUserDetailPage() {
           {/* Role Management */}
           <FadeIn delay={0.2}>
             <Card className="relative overflow-hidden border-border">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/40 pointer-events-none" />
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1E40AF]/10">
-                    <Shield className="h-4 w-4 text-[#1E40AF] dark:text-blue-400" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <Shield className="h-4 w-4 text-primary dark:text-primary" />
                   </div>
                   <div>
                     <CardTitle className="text-base text-foreground font-sans">Role Management</CardTitle>
@@ -435,13 +435,13 @@ export default function AdminUserDetailPage() {
                       </SelectItem>
                       <SelectItem value="EXPERT" className="cursor-pointer">
                         <span className="flex items-center gap-2">
-                          <Shield className="h-3.5 w-3.5 text-[#1E40AF]" />
+                          <Shield className="h-3.5 w-3.5 text-primary" />
                           Expert
                         </span>
                       </SelectItem>
                       <SelectItem value="ADMIN" className="cursor-pointer">
                         <span className="flex items-center gap-2">
-                          <ShieldCheck className="h-3.5 w-3.5 text-[#1E40AF]" />
+                          <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                           Admin
                         </span>
                       </SelectItem>
@@ -458,11 +458,11 @@ export default function AdminUserDetailPage() {
           {/* Recent Posts */}
           <FadeIn delay={0.3}>
             <Card className="relative overflow-hidden border-border">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/40 pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/40 pointer-events-none" />
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1E40AF]/10">
-                    <FileText className="h-4 w-4 text-[#1E40AF]" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <CardTitle className="text-base text-foreground font-sans">Recent Posts</CardTitle>

@@ -215,7 +215,7 @@ export default function AdminReportsPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10">
               <ShieldAlert className="h-4 w-4 text-red-500" />
             </div>
-            <h2 className="text-2xl font-bold tracking-tight font-sans">
+            <h2 className="text-3xl font-medium tracking-tight font-sans">
               Reports Management
             </h2>
           </div>
@@ -229,10 +229,10 @@ export default function AdminReportsPage() {
       <StaggerContainer className="grid gap-4 sm:grid-cols-4">
         <StaggerItem>
           <Card className="group relative overflow-hidden border shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <div className="absolute inset-x-0 top-0 h-0.5 bg-[#1E40AF] pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-primary pointer-events-none" />
             <CardContent className="flex items-center gap-4 p-5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1E40AF]/10 ring-1 ring-[#1E40AF]/10">
-                <Flag className="h-5 w-5 text-[#1E40AF]" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10">
+                <Flag className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-3xl font-bold tracking-tight">{stats.total}</p>
@@ -294,7 +294,7 @@ export default function AdminReportsPage() {
               placeholder="Search reports..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-0 bg-muted/40 pl-9 shadow-none transition-colors duration-200 focus-visible:bg-muted/60 focus-visible:ring-1 focus-visible:ring-[#1E40AF]/20"
+              className="border-0 bg-muted/40 pl-9 shadow-none transition-colors duration-200 focus-visible:bg-muted/60 focus-visible:ring-1 focus-visible:ring-primary/20"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -360,7 +360,7 @@ export default function AdminReportsPage() {
                               <AvatarImage
                                 src={report.reporter.image ?? undefined}
                               />
-                              <AvatarFallback className="bg-[#1E40AF]/10 text-[10px] font-semibold">
+                              <AvatarFallback className="bg-primary/10 text-[10px] font-semibold">
                                 {getInitials(report.reporter.name)}
                               </AvatarFallback>
                             </Avatar>

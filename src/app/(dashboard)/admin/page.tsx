@@ -10,7 +10,7 @@ import {
   Flag,
   Settings,
 } from "lucide-react";
-import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import styles from "./admin-studio.module.css";
 import { AdminStatCards } from "@/components/admin/admin-stat-cards";
 import {
   PageTransition,
@@ -26,8 +26,8 @@ const quickActions = [
     description: "View, edit, and manage all users on the platform",
     cta: "View Users",
     icon: Users,
-    accent: "bg-[#1E40AF]",
-    iconColor: "text-[#1E40AF]",
+    accent: "bg-primary",
+    iconColor: "text-primary",
   },
   {
     href: "/admin/applications",
@@ -35,8 +35,8 @@ const quickActions = [
     description: "Review and approve pending expert applications",
     cta: "Review Applications",
     icon: ClipboardCheck,
-    accent: "bg-[#1E40AF]",
-    iconColor: "text-[#1E40AF]",
+    accent: "bg-primary",
+    iconColor: "text-primary",
   },
   {
     href: "/admin/experts",
@@ -85,22 +85,17 @@ export default async function AdminDashboardPage() {
 
   return (
     <PageTransition className="space-y-10 font-sans">
-      {/* Welcome Banner */}
-      <FadeIn delay={0.05}>
-        <WelcomeBanner userName={session.user.name ?? "Admin"} role="ADMIN" />
-      </FadeIn>
-
-      {/* Page Header */}
-      <FadeIn delay={0.15}>
-        <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground font-sans">
-            Admin Dashboard
-          </h2>
-          <p className="text-muted-foreground font-sans">
-            Monitor platform health and manage operations at a glance.
-          </p>
+      <header className={styles.overview}>
+        <div>
+          <p className={styles.eyebrow}>Administration / Knowledge studio</p>
+          <h1>Platform operations</h1>
+          <p className="text-muted-foreground">Review the people, content, and decisions that keep ExpertHub running.</p>
         </div>
-      </FadeIn>
+        <aside>
+          <p className="font-medium">Welcome, {session.user.name ?? "Admin"}.</p>
+          <p className="mt-2 text-muted-foreground">Use the review queues below to manage applications, verification, and moderation.</p>
+        </aside>
+      </header>
 
       {/* Stat Cards */}
       <FadeIn delay={0.25}>
@@ -122,7 +117,7 @@ export default async function AdminDashboardPage() {
               <StaggerItem key={action.href}>
                 <Link
                   href={action.href}
-                  className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:border-[#1E40AF]/25 hover:shadow-[0_4px_12px_rgba(30,64,175,0.08)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#1E40AF]/30"
+                  className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:border-primary/25 hover:shadow-[0_4px_12px_rgba(30,64,175,0.08)]  focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
                   {/* Top accent bar */}
                   <div
@@ -145,7 +140,7 @@ export default async function AdminDashboardPage() {
                   </p>
 
                   {/* CTA */}
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E40AF] transition-colors font-sans">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors font-sans">
                     {action.cta}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                   </span>

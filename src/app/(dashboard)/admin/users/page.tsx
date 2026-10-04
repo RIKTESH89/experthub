@@ -16,7 +16,7 @@ export default async function AdminUsersPage() {
       <FadeIn delay={0.05}>
         <div className="relative overflow-hidden rounded-xl border border-border bg-card px-8 py-7">
           {/* Top accent bar */}
-          <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1E40AF]/60 pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-primary/60 pointer-events-none" />
 
           <div className="relative">
             <h2 className="text-3xl font-bold tracking-tight text-foreground font-sans">

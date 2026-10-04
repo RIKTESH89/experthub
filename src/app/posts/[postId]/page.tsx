@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "@/components/public-studio/reading.module.css";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -116,6 +117,7 @@ function ImageLightbox({
       onClick={onClose}
     >
       <button
+        aria-label="Close image"
         onClick={onClose}
         className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm hover:bg-white/20"
       >
@@ -132,6 +134,7 @@ function ImageLightbox({
             e.stopPropagation();
             setCurrent((i) => (i - 1 + images.length) % images.length);
           }}
+          aria-label="Previous image"
           className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -154,6 +157,7 @@ function ImageLightbox({
             e.stopPropagation();
             setCurrent((i) => (i + 1) % images.length);
           }}
+          aria-label="Next image"
           className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
         >
           <ChevronRight className="h-6 w-6" />
@@ -345,7 +349,7 @@ export default function PublicPostPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className={`${styles.page} ${styles.article}`}>
         <div className="mx-auto max-w-2xl px-4 py-8">
           <Skeleton className="h-8 w-32 mb-6" />
           <div className="space-y-4">
@@ -370,7 +374,7 @@ export default function PublicPostPage() {
   // Not found
   if (notFound || !post) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+      <div className={`${styles.page} ${styles.state}`}>
         <div className="text-center">
           <h1 className="text-4xl font-bold">404</h1>
           <p className="mt-2 text-muted-foreground">Post not found</p>
@@ -394,7 +398,7 @@ export default function PublicPostPage() {
   const isLoggedIn = sessionStatus === "authenticated";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`${styles.page} ${styles.article}`}>
       {/* Top bar */}
       <div className="sticky top-0 z-30 border-b border-border/50 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
@@ -402,6 +406,7 @@ export default function PublicPostPage() {
             variant="ghost"
             size="icon"
             className="h-8 w-8 shrink-0"
+            aria-label="Back to previous page"
             onClick={() => router.back()}
           >
             <ArrowLeft className="h-4 w-4" />
@@ -622,6 +627,7 @@ export default function PublicPostPage() {
               </Avatar>
               <div className="min-w-0 flex-1">
                 <Textarea
+                  aria-label="Write a comment"
                   placeholder="Write a comment..."
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
@@ -671,7 +677,7 @@ export default function PublicPostPage() {
 
         {/* Bottom CTA for non-logged-in users */}
         {!isLoggedIn && (
-          <div className="mt-10 rounded-xl border border-border bg-gradient-to-br from-primary/[0.06] to-violet-500/[0.04] p-6 text-center">
+          <div className="mt-10 rounded-xl border border-border bg-card p-6 text-center">
             <Sparkles className="mx-auto h-8 w-8 text-primary/60" />
             <h3 className="mt-3 text-base font-semibold">
               Join ExpertHub

@@ -131,7 +131,7 @@ export default function AdminApplicationsPage() {
             <FileText className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight font-sans">Expert Applications</h1>
+            <h1 className="text-3xl font-medium tracking-tight font-sans">Expert Applications</h1>
             <p className="text-sm text-muted-foreground font-sans">
               Review and approve expert requests
             </p>
@@ -143,7 +143,7 @@ export default function AdminApplicationsPage() {
             className="gap-1.5 border-amber-500/30 bg-amber-500/5 text-amber-600 px-3 py-1.5 font-semibold shadow-sm"
           >
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+              <span className="absolute inline-flex h-full w-full  rounded-full bg-amber-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
             </span>
             {pendingCount} pending
@@ -162,7 +162,7 @@ export default function AdminApplicationsPage() {
             <StaggerItem key={stat.label}>
               <div className={cn(
                 "flex items-center gap-3 rounded-xl border bg-card p-3.5 transition-all duration-200 hover:shadow-sm",
-                stat.color === "blue" && "border-l-4 border-l-[#1E40AF]",
+                stat.color === "blue" && "border-l-4 border-l-primary",
                 stat.color === "emerald" && "border-l-4 border-l-emerald-500",
                 stat.color === "amber" && "border-l-4 border-l-amber-500",
               )}>
@@ -212,7 +212,7 @@ export default function AdminApplicationsPage() {
                   <Card className={cn(
                     "relative overflow-hidden transition-all duration-200",
                     isPending
-                      ? "hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 ring-1 ring-transparent hover:ring-amber-500/10"
+                      ? "hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]  ring-1 ring-transparent hover:ring-amber-500/10"
                       : "opacity-70 hover:opacity-90",
                   )}>
                     {/* Top accent bar */}

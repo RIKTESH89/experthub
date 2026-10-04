@@ -1,10 +1,11 @@
 "use client";
 
+import styles from "@/components/public-studio/reading.module.css";
 import { WifiOff, RefreshCw } from "lucide-react";
 
 export default function OfflinePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+    <div className={`${styles.page} ${styles.state}`}>
       <div className="mx-auto max-w-md">
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
           <WifiOff className="h-10 w-10 text-muted-foreground" />

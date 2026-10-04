@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "@/components/public-studio/reading.module.css";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -62,7 +63,7 @@ export default function PublicExpertProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className={`${styles.page} ${styles.profile}`}>
         <div className="mx-auto max-w-2xl px-4 py-16">
           <div className="flex flex-col items-center gap-4">
             <Skeleton className="h-24 w-24 rounded-full" />
@@ -90,13 +91,13 @@ export default function PublicExpertProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`${styles.page} ${styles.profile}`}>
       {/* Nav bar */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
-              <Sparkles className="h-3.5 w-3.5 text-white" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold tracking-tight">ExpertHub</span>
           </Link>
@@ -160,12 +161,12 @@ export default function PublicExpertProfilePage() {
         {/* CTA Card — Chat with Twin */}
         <div className="mt-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/5">
           <div className="p-6 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 shadow-lg">
-              <Bot className="h-7 w-7 text-white" />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg">
+              <Bot className="h-7 w-7 text-primary-foreground" />
             </div>
             <h2 className="mt-4 text-lg font-semibold">Chat with my AI Digital Twin</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {expert.twinGreeting || `Ask me anything about ${expert.specialty[0] || "my expertise"} — I'm available 24/7.`}
+              {expert.twinGreeting || `Explore ${expert.specialty[0] || "this expert’s knowledge"} with an AI representation grounded in expert-provided content.`}
             </p>
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Button size="lg" className="gap-2" asChild>
@@ -218,7 +219,7 @@ export default function PublicExpertProfilePage() {
         {/* Subscribe CTA */}
         <div className="mt-10 rounded-xl border border-border/50 bg-muted/30 p-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Subscribe to get unlimited access to {expert.displayName}&apos;s Digital Twin, exclusive posts, and expert insights.
+            Subscribe to access {expert.displayName}&apos;s Digital Twin, posts, and expert insights.
           </p>
           <Button className="mt-4 gap-2" asChild>
             <Link href={`/register?ref=expert&id=${expert.id}`}>
