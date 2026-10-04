@@ -36,7 +36,7 @@ export function createEvidenceScene(canvas, { palette, mobile = false, onFailure
     const first = new Mesh(lineGeometry, edgeMaterial);
     first.position.set(0, 0.12, 0.03);
     sheet.add(first);
-    if (!mobile) {
+    if (!mobile && index < 3) {
       const second = new Mesh(lineGeometry, edgeMaterial);
       second.position.set(0, 0.04, 0.03);
       second.scale.x = 0.68;
@@ -116,11 +116,9 @@ export function createEvidenceScene(canvas, { palette, mobile = false, onFailure
       pointerX = Math.max(-1, Math.min(1, x));
       pointerY = Math.max(-1, Math.min(1, y));
       // Pointer depth stops when the five-second sequence finishes.
-      if (active && !disposed) position();
     },
     setScrollProgress(progress) {
       scrollProgress = Math.max(0, Math.min(1, progress));
-      if (active && !disposed) position();
     },
     setActive(next) {
       if (disposed) return;
