@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { EvidenceSculpture } from "./evidence-sculpture";
-import { ArrowRight, CornerDownRight, Network } from "lucide-react";
+import styles from "./knowledge-story.module.css";
+import { KnowledgeStory } from "./knowledge-story";
+import { ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { ExpertApplicationSection } from "@/components/landing/expert-application-section";
 import { publicPricingTiers } from "@/lib/public-launch-copy";
@@ -8,13 +9,9 @@ import { publicPricingTiers } from "@/lib/public-launch-copy";
 export function StudioHome() {
   return <div className="studio-home">
     <a className="studio-skip" href="#main-content">Skip to content</a>
-    <header className="studio-nav"><Link href="/" className="studio-brand"><span aria-hidden="true">e.</span> ExpertHub</Link><nav aria-label="Main navigation"><Link href="/about">Our approach</Link><Link href="/pricing">Pricing</Link><ThemeToggle /><Link className="studio-link" href="/login">Sign in <ArrowRight size={16}/></Link></nav></header>
+    <header className={`studio-nav ${styles.nav}`}><Link href="/" className="studio-brand"><span aria-hidden="true">e.</span> ExpertHub</Link><nav aria-label="Main navigation"><Link href="/about">Our approach</Link><Link href="/pricing">Pricing</Link><ThemeToggle /><Link className="studio-link" href="/login">Sign in <ArrowRight size={16}/></Link></nav></header>
     <main id="main-content" tabIndex={-1}>
-      <section className="studio-hero">
-        <div className="studio-hero-copy"><p className="studio-eyebrow">Expert knowledge. A new way in.</p><h1>Good questions.<br/><em>Deeper understanding.</em></h1><p className="studio-lede">Explore what experts share. Ask their AI Digital Twins. Follow the sources and build your own understanding.</p><div className="studio-actions"><Link className="studio-button" href="/login">Explore experts <ArrowRight size={18}/></Link><a className="studio-text-link" href="#how-it-works">See how it works <CornerDownRight size={18}/></a></div><p className="studio-disclosure">Digital Twins are AI representations, not the experts themselves. Answers can be inaccurate.</p></div>
-        <div className="studio-evidence" aria-label="How expert content informs an AI conversation"><div className="studio-evidence-top"><Network size={18}/><span>From knowledge to conversation</span></div><EvidenceSculpture/><div className="studio-evidence-row"><span>01</span><div><strong>Expert-provided content</strong><p>The starting point for a Digital Twin.</p></div></div><div className="studio-evidence-row"><span>02</span><div><strong>Questions in your context</strong><p>A conversation shaped by what you ask.</p></div></div><div className="studio-evidence-row"><span>03</span><div><strong>Sources you can explore</strong><p>Check available references for yourself.</p></div></div></div>
-      </section>
-      <section id="how-it-works" className="studio-section studio-process"><div><p className="studio-eyebrow">A considered conversation</p><h2>Keep curiosity.<br/>Keep your judgment.</h2></div><ol>{[{title:"Find your starting point",body:"Browse expert profiles and public posts. Choose the perspective you want to explore."},{title:"Ask a better question",body:"Bring your context to an AI conversation informed by content an expert provides."},{title:"Go back to the source",body:"Explore available references. AI answers may be incomplete or inaccurate; verify what matters."}].map((step,i)=><li key={step.title}><span>0{i+1}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol></section>
+      <KnowledgeStory />
       <section className="studio-section"><div className="studio-section-heading"><div><p className="studio-eyebrow">Access, on your terms</p><h2>Choose an expert.<br/>Review their plan.</h2></div><Link className="studio-text-link" href="/pricing">Understand pricing <ArrowRight size={18}/></Link></div><div className="studio-plans">{publicPricingTiers.map(tier=><article key={tier.name}><p className="studio-eyebrow">{tier.name}</p><h3>{tier.price} <small>{tier.period}</small></h3><p>{tier.description}</p><ul>{tier.features.map(feature=><li key={feature}>{feature}</li>)}</ul><Link className="studio-text-link" href={tier.href}>{tier.cta}<ArrowRight size={17}/></Link></article>)}</div></section>
       <div className="studio-application"><ExpertApplicationSection/></div>
     </main><footer className="studio-footer"><Link href="/" className="studio-brand">ExpertHub</Link><p>Expert content. AI conversations. Your judgment.</p><nav aria-label="Footer"><Link href="/about">About</Link><Link href="/pricing">Pricing</Link><Link href="/login">Sign in</Link></nav></footer>
