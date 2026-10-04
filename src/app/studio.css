@@ -868,3 +868,17 @@ to {
 }
 
 }
+/* Owned optional knowledge sculpture: reserved space; HTML remains independent. */
+.studio-sculpture{position:relative;height:320px;margin:8px -16px 12px;isolation:isolate;background:radial-gradient(ellipse at 45% 62%,hsl(var(--primary)/.08),transparent 64%)}
+.studio-sculpture canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+.studio-sculpture canvas.is-ready{opacity:1}
+.studio-sculpture[data-enhanced=true] .studio-sculpture-poster{visibility:hidden}
+.studio-sculpture-poster{position:absolute;inset:0;overflow:hidden}
+.studio-paper-fan{position:absolute;left:51%;top:45%;transform:rotate(-12deg)}
+.studio-paper{position:absolute;width:92px;height:134px;left:calc((var(--sheet) - 2)*21px);top:calc((var(--sheet) - 2)*-17px);border-radius:12px;background:linear-gradient(135deg,#f5efdf,#d9cdb6);border:1px solid #c6b99c;box-shadow:3px 5px 0 #bfb298,8px 13px 18px #071c241f;transform:translate(-50%,-50%) rotate(calc((var(--sheet) - 2)*11deg));padding:25px 17px}
+.studio-paper span{display:block;height:2px;background:#536b5866;margin-bottom:9px}.studio-paper span:first-child{width:55%;background:#536b58}.studio-paper span:last-child{width:70%}
+.studio-ceramic{position:absolute;left:23%;top:37%;width:128px;height:128px;border-radius:50%;background:repeating-radial-gradient(circle,#194731 0 5px,#285a42 6px 7px,#17412d 8px 11px);box-shadow:inset 3px 3px 5px #8fa78355,inset -7px -8px 8px #092217,7px 10px 0 #123a29,15px 25px 24px #061b2022;display:grid;place-items:center;transform:rotate(-12deg)}
+.studio-ceramic span{width:58px;height:58px;display:grid;place-items:center;background:#194731;border-radius:50%;font-size:36px;letter-spacing:-3px;color:#ccb483}
+.studio-sculpture-caption{position:absolute;bottom:8px;left:16px;max-width:70%;font-size:11px;line-height:1.4;color:hsl(var(--muted-foreground))}
+.studio-sculpture-replay{position:absolute;bottom:0;right:12px;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 8px;font-size:12px;color:hsl(var(--foreground));border-radius:6px}
+@media(max-width:600px){.studio-sculpture{height:290px}.studio-paper:nth-child(n+4){display:none}.studio-ceramic{left:22%;width:112px;height:112px}}

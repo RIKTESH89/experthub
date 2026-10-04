@@ -81,3 +81,7 @@ Completed integration lane split (source commits recorded in integration/report.
 6. Auth forms and state audit, preserving current auth service and policy.
 
 All workers start from the checkpoint, keep backend files untouched, avoid full concurrent builds, and use their own port. Report CSS token needs to shared owner. No package installation was performed. Three.js remains blocked by approval review pending direct authorization in this task.
+
+### Homepage enhancement checkpoint
+
+The approved Three.js package installation is complete. `/` now includes an original lazy-loaded sculptural evidence illustration with owned static poster, light/dark materials, reduced-motion/device capability gates, visibility pause, cleanup and keyboard replay. CUA observed the real renderer in both themes at desktop and 390px mobile. Full acceptance/performance caveats are in `three-prototype-report.md`; this does not upgrade fixture-only signed-in evidence to authenticated journey verification.

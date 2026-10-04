@@ -1,6 +1,6 @@
 # Premium evidence sculpture — art direction and prototype acceptance
 
-User explicitly requested complexity and a premium finish comparable in ambition to the researched studio work. The current prepared MeshBasicMaterial sheet/core renderer is a structural study only; it does not meet that finish. Do not present it as an approved premium prototype. No dependency install or asset-service spend has occurred.
+User explicitly requested complexity and a premium finish comparable in ambition to the researched studio work. The current prepared MeshBasicMaterial sheet/core renderer is a structural study only; it does not meet that finish. Do not present it as an approved premium prototype. The exact approved packages are now installed in the owned runtime; no asset-service spend has occurred.
 
 ## Original composition
 
@@ -16,7 +16,7 @@ Three clear beats within five seconds: source fragments approach in an offset fa
 
 Complexity comes from composition, geometry silhouette, material distinction, lighting and timed transformations—not high object counts. Prefer shared/instanced geometry for fragments and edge details. Desktop budget can expand deliberately to <=24 draw calls and <=30k triangles for the richer study, with no postprocessing or downloaded models/textures; measure real frame times before accepting any budget increase. Mobile uses three fragments, fewer paper layers, a simplified core and DPR 1. Its composition still needs to look crafted; it must not become an unrelated placeholder.
 
-Keep the short animation, offscreen/background pause and static reduced-motion/WebGL/slow-device fallback contract. The static poster must depict the same sculptural arrangement, implemented from owned SVG/CSS or a locally captured final render after approval. No generic loading spinner or blank canvas. Reserve dimensions so enhancement adds no layout shift. Current geometry/renderer budget constants remain the conservative initial prototype until measurements justify updating them.
+Keep the short animation, offscreen/background pause and static reduced-motion/WebGL/slow-device fallback contract. The static poster must depict the same sculptural arrangement, implemented from owned SVG/CSS or a locally captured final render after approval. No generic loading spinner or blank canvas. Reserve dimensions so enhancement adds no layout shift. The implemented prototype uses a 16-draw-call cap after observing 15 draws and 6,524 triangles on desktop; mobile uses three fragments.
 
 ## Evidence required before accepting the prototype
 

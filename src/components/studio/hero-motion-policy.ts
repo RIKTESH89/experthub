@@ -2,7 +2,7 @@
 export const HERO_MOTION_BUDGET = {
   maxPixelRatio: 1.5,
   framesPerSecond: 30,
-  maxDrawCalls: 12,
+  maxDrawCalls: 16,
   maxTriangles: 12_000,
   maxPointerTiltRadians: 0.08,
   maxActiveSeconds: 5,
