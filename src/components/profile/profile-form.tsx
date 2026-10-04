@@ -143,7 +143,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
             </div>
             <div>
               <p className="text-sm font-medium">Profile Photo</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Click the avatar to upload a new photo
               </p>
             </div>
@@ -161,7 +161,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
               })}
             />
             {errors.name && (
-              <p className="text-xs text-destructive">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -174,7 +174,7 @@ export function ProfileForm({ initialData, onSuccess }: ProfileFormProps) {
               disabled
               className="bg-muted"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Email cannot be changed
             </p>
           </div>

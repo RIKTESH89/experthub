@@ -2,11 +2,21 @@
 import { createElement } from "react";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
+let mockPathname = "/";
+jest.mock("next/navigation", () => ({ usePathname: () => mockPathname }));
 
 beforeEach(() => {
+  mockPathname = "/";
   jest.useFakeTimers();
   localStorage.clear();
   window.matchMedia = jest.fn().mockReturnValue({matches:false});
+});
+
+it("never places a site installation suggestion inside an embed frame", () => {
+  mockPathname = "/embed/synthetic";
+  render(createElement(PWAInstallPrompt));
+  act(() => jest.advanceTimersByTime(5000));
+  expect(screen.queryByRole("complementary")).toBeNull();
 });
 afterEach(() => { cleanup(); jest.useRealTimers(); });
 

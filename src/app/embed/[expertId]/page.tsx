@@ -12,8 +12,8 @@ export default async function EmbedExpertPage({
   const { expertId } = await params;
 
   return (
-    <html lang="en">
-      <body style={{ margin: 0, padding: 0, fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <>
+      <div className="font-sans">
         <div
           style={{
             display: "flex",
@@ -51,7 +51,7 @@ export default async function EmbedExpertPage({
         </div>
 
         <script src="/embed/widget.js" defer />
-      </body>
-    </html>
+      </div>
+    </>
   );
 }

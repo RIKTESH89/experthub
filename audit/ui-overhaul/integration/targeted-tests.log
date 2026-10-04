@@ -1,0 +1,277 @@
+PASS __tests__/local-ui-isolation.test.ts
+PASS __tests__/pwa-prompt-accessibility.test.ts
+PASS __tests__/exp26/checkout-pending.test.ts
+PASS __tests__/exp26/preview-origin.test.ts
+PASS __tests__/exp26/staging-build.test.ts
+  ● Console
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: BUILD_ONLY
+
+      at Object.main (scripts/staging/build.cjs:154:31)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: ENGINE_COMPLETED
+
+      at Object.main (scripts/staging/build.cjs:166:11)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: PREFLIGHT_PASSED
+
+      at Object.main (scripts/staging/build.cjs:164:11)
+
+    console.log
+      Staging guard: ENGINE_COMPLETED
+
+      at Object.main (scripts/staging/build.cjs:166:11)
+
+    console.log
+      Staging migration verified: 18 completed checksums, expected schema, no seed.
+
+      at Object.main (scripts/staging/build.cjs:170:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+    console.log
+      Staging guard: SELECTED
+
+      at Object.main (scripts/staging/build.cjs:155:10)
+
+    console.log
+      Staging guard: TARGET_VALIDATED
+
+      at Object.main (scripts/staging/build.cjs:158:10)
+
+PASS __tests__/exp16/routes.test.ts
+PASS __tests__/exp26/preview-isolation.test.ts
+PASS __tests__/post-feed-recovery.test.ts
+PASS __tests__/exp26/token-boundary.test.ts
+PASS __tests__/chat-input-accessibility.test.ts
+PASS __tests__/exp26/chat-access.test.ts
+PASS __tests__/exp16/page.test.ts
+PASS __tests__/exp26/auth.test.ts
+PASS __tests__/exp26/preview-error.test.ts
+PASS __tests__/local-ui-runtime-isolation.test.ts
+PASS __tests__/exp26/staging-google.test.ts
+PASS __tests__/exp26/preview-reporting.test.ts
+PASS __tests__/exp26/paid-access.test.ts
+PASS __tests__/hero-motion-policy.test.ts
+
+Test Suites: 19 passed, 19 total
+Tests:       250 passed, 250 total
+Snapshots:   0 total
+Time:        2.012 s, estimated 3 s
+Ran all test suites matching /__tests__\/local-ui-isolation.test.ts|__tests__\/local-ui-runtime-isolation.test.ts|__tests__\/chat-input-accessibility.test.ts|__tests__\/hero-motion-policy.test.ts|__tests__\/post-feed-recovery.test.ts|__tests__\/pwa-prompt-accessibility.test.ts|__tests__\/exp16|__tests__\/exp26/i.

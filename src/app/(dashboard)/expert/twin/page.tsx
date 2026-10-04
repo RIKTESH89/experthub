@@ -109,6 +109,7 @@ function ExpertTwinPageContent() {
   const [personalityProfile, setPersonalityProfile] = useState<PersonalityProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [statsError, setStatsError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -130,7 +131,8 @@ function ExpertTwinPageContent() {
           const statsData = await statsRes.json();
           setStats(statsData);
         } else {
-          setStats({ totalKnowledgeItems: 0, indexedDocuments: 0, totalChats: 0 });
+          setStatsError(true);
+          setStats(null);
         }
 
         if (personalityRes.ok) {
@@ -139,7 +141,8 @@ function ExpertTwinPageContent() {
         }
       } catch {
         setLoadError(true);
-        setStats({ totalKnowledgeItems: 0, indexedDocuments: 0, totalChats: 0 });
+        setStatsError(true);
+          setStats(null);
       } finally {
         setIsLoading(false);
       }
@@ -203,6 +206,7 @@ function ExpertTwinPageContent() {
         </div>
       </FadeIn>
 
+      {statsError && <p role="status" className="rounded-lg border bg-card p-4 text-sm text-muted-foreground">Twin activity could not be loaded. Refresh to try again.</p>}
       {/* Premium Stats */}
       {stats && (
         <StaggerContainer className="grid gap-4 sm:grid-cols-4">

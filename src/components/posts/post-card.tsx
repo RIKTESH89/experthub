@@ -204,8 +204,8 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
         className={cn(
           "flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors duration-200",
           isPlaying
-            ? "bg-blue-700 text-white"
-            : "bg-blue-700/10 text-blue-700 hover:bg-blue-700/20 dark:text-blue-400"
+            ? "bg-primary text-white"
+            : "bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary"
         )}
       >
         {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
@@ -220,7 +220,7 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
             })}
           </svg>
           <div className="absolute inset-0 overflow-hidden transition-all duration-75" style={{ width: `${progress}%` }}>
-            <svg viewBox="0 0 200 32" className="h-full w-full text-blue-700/70" preserveAspectRatio="none">
+            <svg viewBox="0 0 200 32" className="h-full w-full text-primary/70" preserveAspectRatio="none">
               {Array.from({ length: 40 }).map((_, i) => {
                 const h = ((i * 7 + 3) % 12) + 4;
                 return <rect key={i} x={i * 5} y={16 - h / 2} width="3" height={h} rx="1.5" fill="currentColor" />;
@@ -354,7 +354,7 @@ function CompactVideoThumbnail({
         <div className="flex h-full items-center justify-center bg-muted" />
       )}
       <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors duration-200 group-hover:bg-black/20">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white ring-2 ring-white/20 transition-colors duration-200 group-hover:bg-blue-700 group-hover:ring-blue-700/30">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white ring-2 ring-white/20 transition-colors duration-200 group-hover:bg-primary group-hover:ring-primary/30">
           <Play className="h-6 w-6 fill-current ml-0.5" />
         </div>
       </div>
@@ -497,9 +497,9 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
 
           <CardHeader className="flex flex-row items-start gap-3 space-y-0 pb-3">
             <Link href={`/subscriber/experts/${post.author.id}`} className="cursor-pointer">
-              <Avatar className="h-10 w-10 ring-1 ring-border transition-all duration-200 hover:ring-blue-700/30">
+              <Avatar className="h-10 w-10 ring-1 ring-border transition-all duration-200 hover:ring-primary/30">
                 <AvatarImage src={post.author.image ?? undefined} alt={post.author.name} />
-                <AvatarFallback className="bg-blue-50 text-sm font-semibold font-sans text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                <AvatarFallback className="bg-primary/10 text-sm font-semibold font-sans text-primary dark:bg-primary/10 dark:text-primary">
                   {getInitials(post.author.name)}
                 </AvatarFallback>
               </Avatar>
@@ -508,7 +508,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
               <div className="flex items-center gap-2">
                 <Link
                   href={`/subscriber/experts/${post.author.id}`}
-                  className="cursor-pointer text-sm font-semibold font-sans transition-colors duration-200 hover:text-blue-700"
+                  className="cursor-pointer text-sm font-semibold font-sans transition-colors duration-200 hover:text-primary"
                 >
                   {post.author.name}
                 </Link>
@@ -543,7 +543,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             {isTruncated && (
               <button
                 type="button"
-                className="cursor-pointer text-sm font-medium font-sans text-blue-700 transition-colors duration-200 hover:underline dark:text-blue-400"
+                className="cursor-pointer text-sm font-medium font-sans text-primary transition-colors duration-200 hover:underline dark:text-primary"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsOpen(true);
@@ -565,7 +565,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="rounded-full border-transparent bg-blue-700/[0.06] px-2.5 py-0.5 text-xs font-normal font-sans text-blue-700/80 transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+                    className="rounded-full border-transparent bg-primary/[0.06] px-2.5 py-0.5 text-xs font-normal font-sans text-primary/80 transition-colors duration-200 hover:bg-primary/10 hover:text-primary dark:bg-primary/10 dark:text-primary"
                   >
                     #{tag}
                   </Badge>
@@ -596,7 +596,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10 ring-1 ring-border">
                 <AvatarImage src={post.author.image ?? undefined} alt={post.author.name} />
-                <AvatarFallback className="bg-blue-50 text-sm font-semibold font-sans text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                <AvatarFallback className="bg-primary/10 text-sm font-semibold font-sans text-primary dark:bg-primary/10 dark:text-primary">
                   {getInitials(post.author.name)}
                 </AvatarFallback>
               </Avatar>
@@ -640,7 +640,7 @@ export function PostCard({ post, onLikeToggle, onBookmarkToggle }: PostCardProps
                     <Badge
                       key={tag}
                       variant="secondary"
-                      className="rounded-full border-transparent bg-blue-700/[0.06] px-2.5 py-0.5 text-xs font-normal font-sans text-blue-700/80 hover:bg-blue-700/10 dark:bg-blue-500/10 dark:text-blue-400"
+                      className="rounded-full border-transparent bg-primary/[0.06] px-2.5 py-0.5 text-xs font-normal font-sans text-primary/80 hover:bg-primary/10 dark:bg-primary/10 dark:text-primary"
                     >
                       #{tag}
                     </Badge>

@@ -17,6 +17,8 @@
   --border:45 12% 80%;
   --input:45 12% 73%;
   --ring:160 38% 27%;
+  --destructive:0 72% 42%;
+  --destructive-foreground:0 0% 100%;
   --radius:.75rem
 }
 
@@ -37,7 +39,9 @@
   --accent-foreground:42 20% 92%;
   --border:155 8% 28%;
   --input:155 8% 38%;
-  --ring:151 32% 72%
+  --ring:151 32% 72%;
+  --destructive:0 78% 70%;
+  --destructive-foreground:160 20% 12%
 }
 
 :focus-visible {

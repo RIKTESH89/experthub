@@ -47,28 +47,10 @@ export function ExpertProfileHeader({
   isOwnProfile = false,
 }: ExpertProfileHeaderProps) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border">
-      {/* Banner */}
-      <div className="relative h-36 overflow-hidden sm:h-44 md:h-52">
-        <div className="absolute inset-0 bg-blue-700" />
-
-        {/* Grid pattern overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.06] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
-        {/* Bottom fade to card */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-      </div>
-
-      <div className="relative bg-card px-4 pb-8 sm:px-6 md:px-8">
+    <div className="relative border-b border-border">
+      <div className="relative bg-card px-5 py-8 sm:px-8">
         {/* Avatar + Name + Subscribe */}
-        <div className="-mt-14 flex flex-col items-start gap-5 sm:-mt-18 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex items-end gap-4 sm:gap-5">
             <FadeIn delay={0.1} direction="up">
               <div className="relative rounded-full border-4 border-card">
@@ -130,7 +112,7 @@ export function ExpertProfileHeader({
               <Badge
                 key={spec}
                 variant="secondary"
-                className="rounded-full px-3 py-1 text-xs font-medium font-sans transition-colors duration-200 hover:bg-blue-700/10 hover:text-blue-700 dark:hover:text-blue-400"
+                className="rounded-full px-3 py-1 text-xs font-medium font-sans transition-colors duration-200 hover:bg-primary/10 hover:text-primary dark:hover:text-primary"
               >
                 {spec}
               </Badge>
@@ -142,8 +124,8 @@ export function ExpertProfileHeader({
         <FadeIn delay={0.35} direction="up">
           <div className="mt-5 flex flex-wrap items-center gap-5 border-t border-border/60 pt-5">
             <div className="flex items-center gap-2 text-sm font-sans text-muted-foreground">
-              <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-700/10">
-                <Users className="h-4 w-4 text-blue-700 dark:text-blue-400" />
+              <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10">
+                <Users className="h-4 w-4 text-primary dark:text-primary" />
               </div>
               <div className="flex items-baseline gap-1">
                 <AnimatedCounter
@@ -162,8 +144,7 @@ export function ExpertProfileHeader({
               </div>
             ) : (
               <div className="text-sm font-sans text-muted-foreground">
-                From{" "}
-                <span className="font-bold text-foreground">Free</span>
+                Review available plans
               </div>
             )}
 
@@ -173,10 +154,11 @@ export function ExpertProfileHeader({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 cursor-pointer rounded-full hover:bg-sky-500/10 hover:text-sky-500 transition-colors duration-200"
+                    className="h-11 w-11 cursor-pointer rounded-full hover:bg-primary/10 hover:text-primary transition-colors duration-200"
                     asChild
                   >
                     <a
+                      aria-label="Expert on X"
                       href={expert.socialLinks.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -189,10 +171,11 @@ export function ExpertProfileHeader({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 cursor-pointer rounded-full hover:bg-blue-600/10 hover:text-blue-600 transition-colors duration-200"
+                    className="h-11 w-11 cursor-pointer rounded-full hover:bg-primary/10 hover:text-primary transition-colors duration-200"
                     asChild
                   >
                     <a
+                      aria-label="Expert on LinkedIn"
                       href={expert.socialLinks.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -205,10 +188,11 @@ export function ExpertProfileHeader({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 cursor-pointer rounded-full hover:bg-blue-700/10 hover:text-blue-700 transition-colors duration-200"
+                    className="h-11 w-11 cursor-pointer rounded-full hover:bg-primary/10 hover:text-primary transition-colors duration-200"
                     asChild
                   >
                     <a
+                      aria-label="Expert website"
                       href={expert.socialLinks.website}
                       target="_blank"
                       rel="noopener noreferrer"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Download, X, Smartphone } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
@@ -11,6 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstallPrompt() {
+  const pathname = usePathname();
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -20,6 +22,7 @@ export function PWAInstallPrompt() {
   const installButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    if (pathname?.startsWith("/embed/")) return;
     if (window.matchMedia("(display-mode: standalone)").matches) return;
     try {
       const dismissed = localStorage.getItem("pwa-install-dismissed");
@@ -38,7 +41,7 @@ export function PWAInstallPrompt() {
       window.removeEventListener("beforeinstallprompt", handler);
       clearTimeout(timer);
     };
-  }, []);
+  }, [pathname]);
 
   const handleInstall = useCallback(async () => {
     if (installingRef.current) return;
@@ -62,7 +65,7 @@ export function PWAInstallPrompt() {
     try { localStorage.setItem("pwa-install-dismissed", Date.now().toString()); } catch { /* Optional preference. */ }
   }, []);
 
-  if (!showBanner) return null;
+  if (!showBanner || pathname?.startsWith("/embed/")) return null;
 
   return <>
     {/* In normal document flow, so it cannot cover mobile save/navigation controls. */}

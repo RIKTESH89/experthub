@@ -44,7 +44,7 @@ export function EmptyState({
         transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.4, 0.25, 1] }}
         className="flex h-14 w-14 items-center justify-center rounded-full border border-border/80 bg-background"
       >
-        <Icon className="h-6 w-6 text-blue-700/70 dark:text-blue-400/70" />
+        <Icon className="h-6 w-6 text-primary/70 dark:text-primary/70" />
       </motion.div>
 
       <motion.h3
@@ -74,7 +74,7 @@ export function EmptyState({
         >
           <Button
             onClick={action.onClick}
-            className="cursor-pointer bg-blue-700 px-6 font-sans text-white transition-colors duration-200 hover:bg-blue-800"
+            className="cursor-pointer bg-primary px-6 font-sans text-white transition-colors duration-200 hover:bg-blue-800"
           >
             {action.label}
           </Button>

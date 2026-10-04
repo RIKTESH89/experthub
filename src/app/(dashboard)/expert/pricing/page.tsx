@@ -66,7 +66,7 @@ const tierConfig = {
     iconBg: "bg-primary/10 ring-primary/20",
     iconColor: "text-primary dark:text-primary",
     accentColor: "blue",
-    badge: "Popular",
+    badge: null,
     headerGradient: "from-primary/[0.06] to-transparent",
   },
 };
