@@ -53,13 +53,17 @@ export function mountSequence(root) {
     }
     function setMode(preserve = false) {
         const current = chapters[active];
+        const outsideStory = stage.classList.contains('off');
+        const focused = document.activeElement;
+        const preserveFocus = root.contains(focused) && focused.matches('input,select,textarea') && !focused.closest('#story');
         modeReason = reasonForStatic();
         const next = !modeReason;
         if (next !== cinematic) {
             cinematic = next;
             body.dataset.cinematic = String(next);
             clearFrames();
-            if (preserve) current.scrollIntoView({ block: 'start', behavior: 'instant' });
+            if (preserve && preserveFocus) focused.scrollIntoView({ block: 'center', behavior: 'instant' });
+            else if (preserve && !outsideStory) current.scrollIntoView({ block: 'start', behavior: 'instant' });
         }
         body.dataset.renderReason = modeReason || 'none';
         const messages = {
