@@ -170,7 +170,7 @@
 
 /* Scroll-derived, interruptible text dissolves; artwork ownership is unchanged. */
 .home[data-cinematic="true"] :global(.panel),
-.home[data-cinematic="true"] :global(.story-text-layer){transition:opacity 640ms cubic-bezier(.4,0,.2,1)}
+.home[data-cinematic="true"] :global(.story-text-layer){transition:none}
 .home[data-cinematic="true"] :global([data-story-blend]){position:relative;display:block}
 .home[data-cinematic="true"] :global(.story-text-layer){position:absolute;top:0;left:0;right:0;pointer-events:none}
 .home :global(.story-semantic){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

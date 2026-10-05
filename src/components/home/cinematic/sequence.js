@@ -1,5 +1,6 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths, retimeChapter } from './timeline.js';
 import { textBeat, storyCopyLines, storyTitle, chapterTextOpacity } from './text-beats.js';
+import { createSequentialFade } from './sequential-text.js';
 import { artExitOpacity } from './stage-composition.js';
 import { mountLiveArtwork } from './live3d-adapter.js';
 import { assetRoot } from './asset-config.js';
@@ -29,13 +30,15 @@ export function mountSequence(root) {
         if(item.layers){item.element.textContent=item.original;item.layers=null;item.semantic=null;}
         item.element.removeAttribute('data-story-blend');item.element.style.opacity='1';
     }
-    function paintText(item,lines,weights,text) {
+    function paintText(item,lines,index,opacity,text) {
         if(!item.element)return;
         layersFor(item,lines);
         item.semantic.textContent=text;item.element.dataset.visibleCopy=text;
-        item.layers.forEach((span,index)=>{span.style.opacity=String(weights[index]);});
-        item.element.style.opacity='1';
+        item.layers.forEach((span,layer)=>{span.style.opacity=String(layer===index?1:0);});
+        item.element.style.opacity=String(opacity);
     }
+    let chapterFade,lastShown=-1,textMoving=false;
+    const clauseFades=Array(chapters.length);
     const controls = panels.map(panel => [...(panel?.querySelectorAll('a[href],button,input,select,textarea,[tabindex]') ?? [])].map(element => ({element, tabindex:element.getAttribute('tabindex')})));
     const interactive = Array(chapters.length);
     function panelInteractive(index, enabled) {
@@ -171,36 +174,51 @@ export function mountSequence(root) {
         root.style.setProperty('--story-stage-opacity',String(stageOpacity));
         canvas.dataset.stageOpacity=String(stageOpacity);
         canvas.dataset.exit=progress.exit.toFixed(4);
-        chapters.forEach((el, i) => {
+        textMoving=false;
+        let chapterState,shown=-1,clauseState;
+        if(cinematic&&!beyondStory){
+            if(!chapterFade)chapterFade=createSequentialFade(active);
+            chapterState=chapterFade.sample(active,now);shown=chapterState.displayed;
+            const shownBox=geometry.chapters[shown],shownPhase=Math.max(0,Math.min(1,(y-shownBox.top)/shownBox.height));
+            const targetBeat=textBeat(chapters[shown].id,shownPhase,copies[shown].original);
+            if(shown!==lastShown){clauseFades[shown]=createSequentialFade(targetBeat.index);lastShown=shown;}
+            const nextIndex=shown===active?targetBeat.index:clauseFades[shown].target;
+            clauseState=clauseFades[shown].sample(nextIndex,now);
+            textMoving=chapterState.moving||clauseState.moving;
+        }else{chapterFade=null;lastShown=-1;clauseFades.fill(null);}
+        chapters.forEach((el,i)=>{
             const box=geometry.chapters[i],phase=Math.max(0,Math.min(1,(y-box.top)/box.height));
-            const opacity=cinematic&&!beyondStory?chapterTextOpacity(y,box.top,box.top+box.height,innerHeight,i===0,i===chapters.length-1):cinematic?0:1;
+            const exit=i===chapters.length-1&&y>box.top?chapterTextOpacity(y,box.top,box.top+box.height,innerHeight,false,true):1;
+            // Only the shown chapter receives nonzero opacity, including while
+            // exiting toward a newer target. The final story exit is unchanged.
+            const opacity=!cinematic?1:i===shown?chapterState.opacity*(i===chapters.length-1?exit:1):0;
             el.style.setProperty('--text-opacity',String(opacity));
-            // A source/footer jump clears old overlays immediately; ordinary
-            // boundary/reverse input uses interruptible CSS opacity smoothing.
-            if(panels[i])panels[i].style.transition=beyondStory||!cinematic?'none':'';
-            const copy=copies[i],beat=textBeat(el.id,phase,copy.original);
+            if(panels[i])panels[i].style.transition='none';
+            const copy=copies[i],targetBeat=textBeat(el.id,phase,copy.original);
+            const index=i===shown?clauseState.displayed:targetBeat.index,copyOpacity=i===shown?clauseState.opacity:1;
+            const lines=storyCopyLines(el.id,copy.original);
             if(copy.element){
-                if(cinematic)paintText(copy,storyCopyLines(el.id,copy.original),beat.weights,beat.text);else restoreText(copy);
-                copy.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
+                if(cinematic)paintText(copy,lines,index,copyOpacity,lines[index]);else restoreText(copy);
+                copy.element.dataset.marker=cinematic?`${el.id}:${index}`:`${el.id}:static`;
                 copy.element.dataset.phase=phase.toFixed(4);
             }
             const title=titles[i];
             if(title.element){
-                if(cinematic&&i===0)paintText(title,[title.original,storyTitle(el.id,1,title.original)],beat.weights,storyTitle(el.id,beat.index,title.original));else restoreText(title);
+                if(cinematic&&i===0)paintText(title,[title.original,storyTitle(el.id,1,title.original)],index,copyOpacity,storyTitle(el.id,index,title.original));else restoreText(title);
                 title.element.parentElement.style.opacity='1';
-                title.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
+                title.element.dataset.marker=cinematic?`${el.id}:${index}`:`${el.id}:static`;
             }
-            el.dataset.beat=String(beat.index);
-            const paintedValue=i===active&&panels[i]?getComputedStyle(panels[i]).opacity:'';
-            const painted=paintedValue?Number(paintedValue):opacity;
-            const readable = !cinematic || (i===active&&opacity>=.99&&(!Number.isFinite(painted)||painted>=.98));
-            if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
-            panelInteractive(i, readable);
+            el.dataset.beat=String(targetBeat.index);
+            const readable=!cinematic||(i===active&&i===shown&&opacity>=.99);
+            if(!readable&&panels[i]?.contains(document.activeElement)&&document.activeElement.matches('a,button,input,select,textarea'))(beyondStory?button:nav[active])?.focus({preventScroll:true});
+            panelInteractive(i,readable);
         });
-        canvas.dataset.textOpacity=String(cinematic&&!beyondStory?chapterTextOpacity(y,bounds.top,bounds.top+bounds.height,innerHeight,active===0,active===chapters.length-1):0);
+        canvas.dataset.textOpacity=String(chapterState&&shown===active?chapterState.opacity:0);
         const activeBeat=textBeat(chapters[active].id,local,copies[active].original);
         canvas.dataset.textBeat=activeBeat.marker;
-        canvas.dataset.copyOpacity='1';
+        canvas.dataset.copyOpacity=String(clauseState?.opacity??1);
+        canvas.dataset.textShown=shown>=0?`${chapters[shown].id}:${clauseState.displayed}`:'';
+        canvas.dataset.textLeg=chapterState?.moving?`chapter-${chapterState.leg}`:clauseState?.leg??'idle';
         canvas.dataset.textWeights=JSON.stringify(activeBeat.weights);
         root.dataset.activeChapter = cinematic && !beyondStory ? chapters[active].id : '';
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'));
@@ -309,6 +327,7 @@ export function mountSequence(root) {
     function update() {
         ticket = 0;
         locate();
+        if(textMoving)schedule();
         if (!cinematic) {
             artwork?.setMode(false);
             report();
@@ -396,7 +415,6 @@ export function mountSequence(root) {
         schedule();
     });
     listen(poster,'load',()=>{const expected=variant ? new URL(variant.chapters[active].poster,assetBase).href : '';poster.hidden=!(poster.complete && poster.naturalWidth>0 && poster.currentSrc===poster.src && poster.dataset.frame===expected);if(!poster.hidden){metrics.posterLoads++;metrics.lastPosterMs=performance.now()-posterStarted;}schedule();});
-    panels.forEach(panel=>{if(panel)listen(panel,'transitionend',event=>{if(event.target===panel&&event.propertyName==='opacity')schedule();});});
     listen(window, 'scroll', schedule, { passive: true });
     listen(window, 'resize', () => {geometryDirty=true;schedule();}, { passive: true });
     if(document.fonts?.ready)document.fonts.ready.then(()=>{if(!disposed){geometryDirty=true;schedule();}});

@@ -17,9 +17,10 @@ function loadRuntime(): Mount {
   const assets = load("asset-config.js");
   const scheduler = load("scheduler.js");
   const artwork = load("live3d-adapter.js");
+  const sequential=load("sequential-text.js");
   const composition = load("stage-composition.js");
   const beats=load("text-beats.js");
-  return load("sequence.js", name => name.includes("text-beats") ? beats : name.includes("stage-composition") ? composition : name.includes("live3d-adapter") ? artwork : name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
+  return load("sequence.js", name => name.includes("sequential-text") ? sequential : name.includes("text-beats") ? beats : name.includes("stage-composition") ? composition : name.includes("live3d-adapter") ? artwork : name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
 }
 const ids = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"];
 function fixture() {
