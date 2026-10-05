@@ -3,7 +3,7 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "guarded isolated build passed for8df3; final mobile CSS candidate build recorded separately in task13/server-diagnosis",
+  "productionCompile": "guarded isolated build passed for6524460; final fragment-link candidate build recorded separately in task13/server-diagnosis",
   "fullTests": {
     "suites": 90,
     "tests": 1333,
@@ -22,6 +22,7 @@
     "nativeVerification": "worker ready to reload port3467"
   },
   "publicAssetRoot": "/uploads/cinematic-homepage/",
-  "headlessBrowser": "desktop and portrait holds, reverse continuity, sources, theme, static and preference/failure fallback verified; clean Pricing\u2192Back diagnostic resumes; original mixed-state timeout unclassified",
-  "mobileHeader": "established overlap repaired; actual320/390geometry verified"
+  "headlessBrowser": "desktop/portrait chapter and fallback checks pass; repaired fragment history regression passes all six public route Back/Forward cases",
+  "mobileHeader": "established overlap repaired; actual320/390geometry verified",
+  "fragmentHistory": "established sourcehash Back retained Pricing DOM; internal fragment Next Links repaired router history; saved Playwright regression verifies restored root/7chapters/decodedframes"
 }
