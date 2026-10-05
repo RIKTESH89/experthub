@@ -194,7 +194,7 @@ export function mountSequence(root) {
             const paintedValue=i===active&&panels[i]?getComputedStyle(panels[i]).opacity:'';
             const painted=paintedValue?Number(paintedValue):opacity;
             const readable = !cinematic || (i===active&&opacity>=.99&&(!Number.isFinite(painted)||painted>=.98));
-            if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea,[tabindex]')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
+            if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
             panelInteractive(i, readable);
         });
         canvas.dataset.textOpacity=String(cinematic&&!beyondStory?chapterTextOpacity(y,bounds.top,bounds.top+bounds.height,innerHeight,active===0,active===chapters.length-1):0);
