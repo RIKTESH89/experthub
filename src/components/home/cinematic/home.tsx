@@ -27,26 +27,26 @@ export function CinematicHome() {
     <nav className="chapter-nav" aria-label="Story navigation">{chapterNames.map((name, i) => <Link key={name} href={`#${chapterIds[i]}`} aria-label={name}>{name}</Link>)}</nav>
     <main id="story" tabIndex={-1}>
       <Chapter id="introduction" number={1} eyebrow="ExpertHub" title="Learn from expert Digital Twins." frame={0} caption="Expert knowledge, represented in AI.">
-        <p className="lead">Read expert content and chat with an AI representation shaped by their work.</p>
+        <p className="lead" data-story-copy="">Read expert content and chat with an AI representation shaped by their work.</p>
         <div className="action-group"><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert <span aria-hidden="true">↗</span></Link></div>
       </Chapter>
       <Chapter id="contributions" number={2} eyebrow="Share" title="Start with what you know." frame={28} caption="01–04 / Fictional source records">
-        <p>Add your posts and notes, or import text from supported PDFs and blog articles.</p><Link className="text-link" href="#source-01">Read the fictional source examples</Link>
+        <p data-story-copy="">Add your posts and notes, or import text from supported PDFs and blog articles.</p><Link className="text-link" href="#source-01">Read the fictional source examples</Link>
       </Chapter>
       <Chapter id="context" number={3} eyebrow="Connect" title="Keep the context close." frame={53} caption="01 / A passage in context" liveCaption>
-        <p>Relevant passages and related ideas give your twin context for a question.</p>
+        <p data-story-copy="">Relevant passages and related ideas give your twin context for a question.</p>
       </Chapter>
       <Chapter id="construction" number={4} eyebrow="Build" title="Your knowledge takes shape." frame={76} caption="A partial Digital Twin" liveCaption>
-        <p>Your shared content helps shape an AI twin that people can ask questions.</p>
+        <p data-story-copy="">Your shared content helps shape an AI twin that people can ask questions.</p>
       </Chapter>
       <Chapter id="conversation" number={5} eyebrow="Ask" title="Ask a question. Keep learning." frame={137} caption="Fictional conversation · not live AI" liveCaption>
-        <p>Ask follow-ups and check available sources behind the answers.</p><Link className="text-link" href="#sample-conversation">Read the fictional conversation · scripted, not live</Link>
+        <p data-story-copy="">Ask follow-ups and check available sources behind the answers.</p><Link className="text-link" href="#sample-conversation">Read the fictional conversation · scripted, not live</Link>
       </Chapter>
       <Chapter id="control" number={6} eyebrow="Maintain" title="Keep your knowledge up to date." frame={151} caption="Shared sources remain distinct">
-        <p>Add new material and correct your notes as your work and thinking change.</p>
+        <p data-story-copy="">Add new material and correct your notes as your work and thinking change.</p>
       </Chapter>
       <Chapter id="close" number={7} eyebrow="Explore" title="Find your next conversation." frame={172} caption="Start exploring">
-        <p className="lead">Choose an expert to learn from, or apply to share your own expertise.</p><div className="action-group"><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert <span aria-hidden="true">↗</span></Link></div>
+        <p className="lead" data-story-copy="">Choose an expert to learn from, or apply to share your own expertise.</p><div className="action-group"><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert <span aria-hidden="true">↗</span></Link></div>
       </Chapter>
     </main>
     <div className="story-release" aria-hidden="true" />

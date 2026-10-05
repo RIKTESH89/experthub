@@ -1,4 +1,5 @@
-import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
+import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths, retimeChapter } from './timeline.js';
+import { textBeat, storyCopyLines, storyTitle } from './text-beats.js';
 import { artExitOpacity } from './stage-composition.js';
 import { mountLiveArtwork } from './live3d-adapter.js';
 import { assetRoot } from './asset-config.js';
@@ -13,6 +14,8 @@ export function mountSequence(root) {
     const assetBase = new URL(assetRoot, location.origin);
     const body = root, chapters = [...root.querySelectorAll('.chapter')], nav = [...root.querySelectorAll('.chapter-nav a')];
     const panels = chapters.map(ch => ch.querySelector('.panel'));
+    const copies = chapters.map(ch => { const element=ch.querySelector('[data-story-copy]'); return {element,original:element?.textContent??'',minHeight:element?.style.minHeight??''}; });
+    const titles=chapters.map(ch=>{const element=ch.querySelector('h1,h2');return {element,original:element?.textContent??'',minHeight:element?.style.minHeight??''};});
     const controls = panels.map(panel => [...(panel?.querySelectorAll('a[href],button,input,select,textarea,[tabindex]') ?? [])].map(element => ({element, tabindex:element.getAttribute('tabindex')})));
     const interactive = Array(chapters.length);
     function panelInteractive(index, enabled) {
@@ -102,6 +105,30 @@ export function mountSequence(root) {
         schedule();
     }
     function measureGeometry() {
+        // Reserve each chapter's longest clause once per layout change so a copy
+        // swap cannot abruptly resize the portrait camera's logical lane.
+        copies.forEach((copy,index)=>{
+            if(!copy.element)return;
+            if(!cinematic){copy.element.style.minHeight=copy.minHeight;return;}
+            const probe=copy.element.cloneNode(false);
+            probe.removeAttribute('data-story-copy');probe.removeAttribute('id');probe.setAttribute('aria-hidden','true');
+            Object.assign(probe.style,{position:'absolute',left:'-9999px',top:'0px',width:`${copy.element.getBoundingClientRect().width}px`,height:'auto',minHeight:'0px',opacity:'0',visibility:'hidden',pointerEvents:'none'});
+            copy.element.parentElement.append(probe);
+            let height=0;
+            for(const text of storyCopyLines(chapters[index].id,copy.original)){probe.textContent=text;height=Math.max(height,probe.getBoundingClientRect().height);}
+            probe.remove();copy.element.style.minHeight=`${Math.ceil(height)}px`;
+        });
+        const hero=titles[0];
+        if(hero.element){
+            if(!cinematic)hero.element.style.minHeight=hero.minHeight;
+            else{
+                const probe=hero.element.cloneNode(false);probe.removeAttribute('id');probe.setAttribute('aria-hidden','true');
+                Object.assign(probe.style,{position:'absolute',left:'-9999px',width:`${hero.element.getBoundingClientRect().width}px`,height:'auto',minHeight:'0px',opacity:'0',visibility:'hidden'});
+                hero.element.parentElement.append(probe);let height=0;
+                for(const index of [0,1]){probe.textContent=storyTitle('introduction',index,hero.original);height=Math.max(height,probe.getBoundingClientRect().height);}
+                probe.remove();hero.element.style.minHeight=`${Math.ceil(height)}px`;
+            }
+        }
         const story=root.querySelector('#story'), plans=root.querySelector('#plans');
         geometry={chapters:chapters.map(ch=>({top:ch.getBoundingClientRect().top+scrollY,height:ch.offsetHeight})),
             end:story.getBoundingClientRect().top+scrollY+story.offsetHeight,
@@ -127,12 +154,30 @@ export function mountSequence(root) {
         chapters.forEach((el, i) => {
             const opacity = cinematic ? (!beyondStory && i === active ? textOpacity(local, i === 0) : 0) : 1;
             el.style.setProperty('--text-opacity', String(opacity));
-            el.dataset.beat = String(Math.min(3, Math.floor((i === active ? local : 0) * 4)));
+            const copy=copies[i],beat=textBeat(el.id,i===active?local:0,copy.original);
+            if(copy.element){
+                const text=cinematic?beat.text:copy.original;
+                if(copy.element.textContent!==text)copy.element.textContent=text;
+                copy.element.style.opacity=String(cinematic?beat.opacity:1);
+                copy.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
+                copy.element.dataset.phase=(i===active?local:0).toFixed(4);
+            }
+            const title=titles[i];
+            if(title.element){
+                const text=cinematic?storyTitle(el.id,beat.index,title.original):title.original;
+                if(title.element.textContent!==text)title.element.textContent=text;
+                title.element.parentElement.style.opacity=String(cinematic&&i===0?beat.opacity:1);
+                title.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
+            }
+            el.dataset.beat=String(beat.index);
             const readable = !cinematic || opacity >= .99;
             if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea,[tabindex]')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
             panelInteractive(i, readable);
         });
         canvas.dataset.textOpacity = String(cinematic && !beyondStory ? textOpacity(local, active === 0) : 0);
+        const activeBeat=textBeat(chapters[active].id,local,copies[active].original);
+        canvas.dataset.textBeat=activeBeat.marker;
+        canvas.dataset.copyOpacity=String(cinematic?activeBeat.opacity:1);
         root.dataset.activeChapter = cinematic && !beyondStory ? chapters[active].id : '';
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'));
         const beat = Math.min(3, Math.floor(local * 4));
@@ -329,6 +374,7 @@ export function mountSequence(root) {
     listen(poster,'load',()=>{const expected=variant ? new URL(variant.chapters[active].poster,assetBase).href : '';poster.hidden=!(poster.complete && poster.naturalWidth>0 && poster.currentSrc===poster.src && poster.dataset.frame===expected);if(!poster.hidden){metrics.posterLoads++;metrics.lastPosterMs=performance.now()-posterStarted;}schedule();});
     listen(window, 'scroll', schedule, { passive: true });
     listen(window, 'resize', () => {geometryDirty=true;schedule();}, { passive: true });
+    if(document.fonts?.ready)document.fonts.ready.then(()=>{if(!disposed){geometryDirty=true;schedule();}});
     listen(window, 'pagehide', clearFrames);
     listen(window, 'pageshow', schedule);
     function anchorTarget(hash, focus = false, scroll = false) {
@@ -384,7 +430,8 @@ export function mountSequence(root) {
             const parsed = await response.json();
             if (disposed || abort !== manifestController)
                 return;
-            manifest = validateManifest(parsed, chapters.map(s => s.id));
+            const original=validateManifest(parsed, chapters.map(s => s.id));
+            manifest={...original,variants:Object.fromEntries(Object.entries(original.variants).map(([name,value])=>[name,{...value,chapters:value.chapters.map(retimeChapter)}]))};
             prepared=new Map(Object.values(manifest.variants).map(v=>[v,v.chapters.map(ch=>ch.frames.map(f=>new URL(f,assetBase).href))]));
             geometryDirty=true;
             if (manifest.contractOnly)

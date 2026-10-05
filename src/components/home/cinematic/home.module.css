@@ -156,3 +156,14 @@
  -webkit-mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px));
  mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px))
 }
+
+/* Bottom-aligned phone copy reserves safe-area and complete controls. */
+@media(max-width:900px){
+ .home[data-cinematic="true"] :global(.body-lane),.home[data-cinematic="true"] :global(#context .body-lane),.home[data-cinematic="true"] :global(#conversation .body-lane){top:auto;bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+}
+
+@media(max-width:900px){
+ .home[data-cinematic="true"] :global([data-story-copy]){display:flex;align-items:flex-end}
+ .home[data-cinematic="true"] :global(.body-lane p:last-child){margin-bottom:0}
+ .home[data-cinematic="true"] :global(.action-group .cta){margin:0}
+}

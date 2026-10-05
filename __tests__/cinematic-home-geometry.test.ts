@@ -12,9 +12,9 @@ const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/upl
 
 test("the repaired source-reading pose stays open through the reading hold and returns monotonically", () => {
   for (const variant of Object.values(manifest.variants) as Array<{chapters:Array<{id:string;poster:string;frames:string[];keyframes:number[][]}>}>) {
-    const chapter = variant.chapters.find(c => c.id === "conversation")!;
+    const chapter = (functions.retimeChapter as any)(variant.chapters.find(c => c.id === "conversation")!);
     expect(chapter.poster).toBe("assets/" + (variant === manifest.variants.desktop ? "desktop" : "portrait") + "/frame-137.webp");
-    for (const phase of [.55,.625,.7,.8,.84,.86]) expect(chapter.frames[frameAt(phase,chapter.frames.length,chapter.keyframes)]).toMatch(/frame-137\.webp$/);
+    for (const phase of [.6,.65,.7,.75,.78]) expect(chapter.frames[frameAt(phase,chapter.frames.length,chapter.keyframes)]).toMatch(/frame-137\.webp$/);
     let previous = -1;
     for (let step=0;step<=100;step++) {
       const frame = frameAt(step/100,chapter.frames.length,chapter.keyframes);
@@ -82,9 +82,9 @@ test("fixed overlay timing remains tied to chapter distance rather than viewport
 
 test("text fades at fixed positions with full reading holds and identical forward/reverse phase values", () => {
   expect(opacity(0,true)).toBe(1);
-  expect(opacity(0)).toBe(0);expect(opacity(.05)).toBeCloseTo(.5,9);
-  expect(opacity(.1)).toBe(1);expect(opacity(.88)).toBe(1);
-  expect(opacity(.94)).toBeCloseTo(.5,9);expect(opacity(1)).toBe(0);
+  expect(opacity(0)).toBe(0);expect(opacity(.03)).toBeCloseTo(.5,9);
+  expect(opacity(.06)).toBe(1);expect(opacity(.86)).toBe(1);
+  expect(opacity(.93)).toBeCloseTo(.5,9);expect(opacity(1)).toBe(0);
   for(const p of [.025,.05,.15,.375,.625,.85,.94,.98])expect(opacity(p)).toBe(opacity(progress(p*1500,0,1500,640).phase));
 });
 
@@ -100,4 +100,12 @@ test("homepage asset paths use the existing anonymous static boundary without ex
     }
   }
   for(const route of ["/uploads-admin/cinematic-homepage", "/api/uploads/cinematic-homepage", "/api/expert/knowledge", "/expert/knowledge"])expect(isPublicRoute(route)).toBe(false);
+});
+
+test('original manifest stays immutable while protected reading hold and camera seams are retimed',()=>{
+ const original=manifest.variants.desktop.chapters;const snapshot=JSON.stringify(original);
+ const chapters=original.map(functions.retimeChapter as any);
+ expect(JSON.stringify(original)).toBe(snapshot);
+ expect(chapters.find((ch:any)=>ch.id==='conversation').keyframes).toContainEqual([.78,18]);
+ for(const chapter of chapters){let last=-1;for(let i=0;i<=200;i++){const f=frameAt(i/200,chapter.frames.length,chapter.keyframes);expect(f).toBeGreaterThanOrEqual(last);last=f;}expect(last).toBe(chapter.frames.length-1);}
 });
