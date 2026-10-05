@@ -34,7 +34,7 @@ async function resumed() {
       await page.locator('#motion').click();
       await resumed();
       for (const route of ['/pricing', '/about', '/login']) {
-        await page.locator('.site-links a[href="'+route+'"]').click();
+        await page.locator('[data-cinematic-home] a[href="'+route+'"]').first().click();
         await page.waitForURL('**'+route);
         assert.equal(await page.locator('[data-cinematic-home]').count(), 0);
         await page.goBack({waitUntil:'networkidle'});

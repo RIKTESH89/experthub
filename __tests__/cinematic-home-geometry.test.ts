@@ -14,7 +14,7 @@ test.each([900, 844, 812])("all seven timelines finish holds, final pose and tex
   for (const variant of Object.values(manifest.variants) as Array<{chapters: Array<{id:string;scrollRange:number[];frames:string[];keyframes:number[][]}>}>) {
     let top = 88;
     for (const chapter of variant.chapters) {
-      const height = 18 * (chapter.scrollRange[1] - chapter.scrollRange[0]) * viewport;
+      const height = (functions.chapterLengths as Record<string,number>)[chapter.id] * viewport;
       const pinned = height - viewport;
       expect(pinned).toBeGreaterThan(0);
       const anchor = progress(top, top, height, viewport);

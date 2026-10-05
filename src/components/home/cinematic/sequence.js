@@ -1,4 +1,4 @@
-import { frameAt, textOpacity, validateManifest, chapterProgress } from './timeline.js';
+import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
 export function mountSequence(root) {
     const lifecycle = new AbortController(), manifestController = new AbortController();
     let manifestTimer;
@@ -9,7 +9,7 @@ export function mountSequence(root) {
     const canvas = root.querySelector('#sequence'), ctx = canvas.getContext('2d', { alpha: false }), stage = root.querySelector('#stage'), poster = root.querySelector('#stage-poster');
     const status = root.querySelector('#runtime-status'), warning = root.querySelector('#asset-status'), button = root.querySelector('#motion');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)'), portrait = matchMedia('(max-width: 900px)');
-    const compact = matchMedia('(max-width: 900px) and (max-height: 720px)');
+    const compact = matchMedia('(max-height: 620px), (max-width: 900px) and (max-height: 720px)');
     const connection = navigator.connection, constrained = () => connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType);
     let manifest, variant, active = 0, local = 0, cinematic = false, userStatic = false, ticket = 0, generation = 0, desired = '', lastDrawn = '', windowUrls = [], failures = 0;
     const cache = new Map(), inflight = new Map(), bad = new Set(), failedDemands = new Set();
@@ -37,7 +37,7 @@ export function mountSequence(root) {
         button.hidden = compact.matches;
         button.setAttribute('aria-pressed', String(userStatic || reduced.matches || constrained()));
         button.textContent = cinematic ? 'Reduce motion' : 'Static story';
-        status.textContent = cinematic ? 'Scroll-controlled image sequence. Use Reduce motion for the static story.' : reduced.matches ? 'Static story follows your reduced-motion preference.' : compact.matches ? 'Static story fits this short viewport.' : constrained() ? 'Static story uses fewer images on this connection.' : portrait.matches && !manifest?.variants.portrait ? 'Static mobile story. Dedicated portrait sequence is pending.' : 'Static story with all sources and context.';
+        status.textContent = cinematic ? 'Scroll to follow the story. Choose Reduce motion for a static version.' : reduced.matches ? 'Static story follows your reduced-motion preference.' : compact.matches ? 'Static story fits this short viewport.' : constrained() ? 'Static story uses fewer images on this connection.' : portrait.matches && !manifest?.variants.portrait ? 'Static mobile story. Dedicated portrait sequence is pending.' : 'Static story with all sources and context.';
         schedule();
     }
     function locate() {
@@ -63,7 +63,11 @@ export function mountSequence(root) {
         if (captions[chapters[active].id])
             chapters[active].querySelector('[data-caption]').textContent = captions[chapters[active].id][beat];
         const story = root.querySelector('#story');
-        stage.classList.toggle('off', y >= story.getBoundingClientRect().top + scrollY + story.offsetHeight - 1);
+        const plans = root.querySelector('#plans');
+        const chromeHeight = root.querySelector('.site-nav')?.getBoundingClientRect().height ?? 0;
+        const beyondStory = y >= story.getBoundingClientRect().top + scrollY + story.offsetHeight - 1 || Boolean(plans && plans.getBoundingClientRect().top <= chromeHeight + 32);
+        stage.classList.toggle('off', beyondStory);
+        root.querySelector('.chapter-nav').hidden = beyondStory;
     }
     function resize() { const ratio = Math.min(devicePixelRatio || 1, 1.5); const w = Math.round(innerWidth * ratio), h = Math.round(innerHeight * ratio); if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
@@ -220,15 +224,16 @@ export function mountSequence(root) {
     listen(window, 'resize', schedule, { passive: true });
     listen(window, 'pagehide', clearFrames);
     listen(window, 'pageshow', schedule);
-    function anchorTarget(hash, focus = false, scroll = false) { const el = root.querySelector('#' + CSS.escape(hash.slice(1))); if (!el)
+    function anchorTarget(hash, focus = false, scroll = false) { const el = document.getElementById(hash.slice(1)); if (!el || !root.contains(el))
         return; const details = el.closest('details'); if (details)
         details.open = true; if (scroll)
-        el.scrollIntoView({ block: 'start' }); if (focus) {
+        el.scrollIntoView({ block: 'start', behavior: 'instant' }); if (focus) {
         const target = el.querySelector('h1,h2') ?? el;
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
     } schedule(); }
-    root.querySelectorAll('a[href^="#"]').forEach(a => listen(a, 'click', () => { const hash = a.getAttribute('href'); anchorTarget(hash, true); }));
-    listen(window, 'hashchange', () => anchorTarget(location.hash, true));
+    root.querySelectorAll('a[href^="#"]').forEach(a => listen(a, 'click', () => { const hash = a.getAttribute('href'); anchorTarget(hash, true, true); }));
+    listen(window, 'hashchange', () => anchorTarget(location.hash, true, true));
     root.querySelectorAll('.static-visual img').forEach(img => listen(img, 'error', () => { img.hidden = true; img.closest('figure').querySelector('figcaption').textContent = 'Scene image unavailable. The complete explanation follows in text.'; }));
     listen(poster, 'error', () => { poster.style.visibility = 'hidden'; });
     listen(poster, 'load', () => { poster.style.visibility = 'visible'; });
@@ -247,12 +252,10 @@ export function mountSequence(root) {
             manifest = validateManifest(parsed, chapters.map(s => s.id));
             if (manifest.contractOnly)
                 throw Error('Unrendered contract is not a runnable manifest');
-            if (manifest.variants.desktop.chapters.every(c => c.scrollRange)) {
-                manifest.variants.desktop.chapters.forEach((c, i) => chapters[i].style.setProperty('--length', String(18 * (c.scrollRange[1] - c.scrollRange[0]))));
-            }
-            warning.textContent = manifest.status === 'final' ? '' : manifest.validation?.actualSequenceRendered ? 'Concept sequence · awaiting visual acceptance' : manifest.description;
-            warning.title = manifest.description;
-            warning.hidden = manifest.status === 'final';
+            chapters.forEach(ch => ch.style.setProperty('--length', String(chapterLengths[ch.id])));
+            warning.textContent = '';
+            warning.title = '';
+            warning.hidden = true;
             for (const v of Object.values(manifest.variants))
                 for (const ch of v.chapters) {
                     for (const path of [ch.poster, ...ch.frames]) {
@@ -271,7 +274,9 @@ export function mountSequence(root) {
             if (disposed)
                 return;
             userStatic = true;
-            status.textContent = 'Scene assets unavailable. The complete story remains readable.';
+            status.textContent = 'The illustration is unavailable. The complete story remains readable.';
+            warning.textContent = 'The illustration is unavailable. Read the story and use the product links below.';
+            warning.hidden = false;
             button.hidden = true;
             schedule();
         }

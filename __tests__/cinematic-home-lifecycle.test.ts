@@ -77,3 +77,17 @@ test("a delayed manifest body cannot revive an unmounted renderer or overwrite i
   expect(raf).not.toHaveBeenCalled();
   cleanupCurrent(); pending[1].resolve({ ok: false }); await settle();
 });
+
+
+test("local product shortcut scrolls to its target and focuses a heading while retaining the semantic fragment", () => {
+  const root = fixture();
+  root.insertAdjacentHTML("beforeend", '<a href="#plans">Pricing</a><section id="plans"><h2>Access</h2></section>');
+  const scroll = jest.fn();
+  Object.defineProperty(root.querySelector("#plans"), "scrollIntoView", {configurable:true,value:scroll});
+  const dispose = loadRuntime()(root);
+  (root.querySelector('a[href="#plans"]') as HTMLAnchorElement).click();
+  expect(scroll).toHaveBeenCalledWith({block:"start",behavior:"instant"});
+  expect(document.activeElement).toBe(root.querySelector("#plans h2"));
+  expect(root.querySelector('a[href="#plans"]')?.getAttribute("href")).toBe("#plans");
+  dispose();
+});

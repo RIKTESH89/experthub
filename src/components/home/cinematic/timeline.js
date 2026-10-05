@@ -1,3 +1,5 @@
+export const chapterLengths = { introduction: 1.25, contributions: 1.75, context: 1.65, construction: 2.25, conversation: 1.85, control: 1.4, close: 1.3 };
+
 export function frameAt(phase, count, keys) {
     const end = count - 1, points = keys ?? [[0, 0], [.12, 0], [.32, 0], [.72, end], [.88, end], [1, end]], p = Math.max(0, Math.min(1, phase));
     for (let i = 1; i < points.length; i++) {

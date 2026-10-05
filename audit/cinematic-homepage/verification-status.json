@@ -3,26 +3,34 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "guarded isolated build passed for6524460; final fragment-link candidate build recorded separately in task13/server-diagnosis",
+  "productionCompile": "Exact local product candidate compile is recorded separately in task-13/product-homepage-qa/final-candidate-build.json",
   "fullTests": {
     "suites": 90,
-    "tests": 1333,
+    "tests": 1334,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
   "nativeBrowser": "pending worker observation; native session untouched",
-  "protectedStaging": "not pushed or deployed",
+  "protectedStaging": "Prior a1c9b06 published to protected Preview; current product revision has not been pushed or deployed",
   "production": "unchanged",
   "database": "no migration/seed/write performed",
   "independentReviewCorrections": {
     "lateManifestBodyGuard": true,
     "renderedPanelPinnedInterval": true,
     "explicitDepartureInterval": true,
-    "focusedRegressionTests": 9,
+    "focusedRegressionTests": 10,
     "nativeVerification": "worker ready to reload port3467"
   },
   "publicAssetRoot": "/uploads/cinematic-homepage/",
-  "headlessBrowser": "desktop/portrait chapter and fallback checks pass; repaired fragment history regression passes all six public route Back/Forward cases",
+  "headlessBrowser": "Actual local desktop/portrait product journeys pass: 56 reading holds, reverse continuity, keyboard/source/pricing/application jumps, shared theme/static; reduced/short/no-JS/missing-asset fallbacks; six route Back/Forward cases pass",
   "mobileHeader": "established overlap repaired; actual320/390geometry verified",
-  "fragmentHistory": "established sourcehash Back retained Pricing DOM; internal fragment Next Links repaired router history; saved Playwright regression verifies restored root/7chapters/decodedframes"
+  "fragmentHistory": "established sourcehash Back retained Pricing DOM; internal fragment Next Links repaired router history; saved Playwright regression verifies restored root/7chapters/decodedframes",
+  "productRevision": {
+    "hero": "Immediate cinematic brain with Sign in to explore and Apply as an expert",
+    "pricing": "Persistent jump to unchanged app pricing definitions and existing expert application",
+    "storyViewportLengths": 11.45,
+    "authoredManifestUnchanged": true,
+    "fragmentJump": "Instant local scrolling and heading focus; Next Link retains route history; actual arrival checked at1470/390/320widths",
+    "portraitFraming": "Consistent 10svh visual shift with stronger text-lane shade; no frame edits"
+  }
 }
