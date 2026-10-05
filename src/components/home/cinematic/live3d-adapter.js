@@ -14,6 +14,7 @@ export function mountLiveArtwork(root, requestUpdate) {
         if (!state) return;
         const chapter = root.querySelector(`#${state.chapter.id}`), title = chapter?.querySelector('.title-lane')?.getBoundingClientRect(), body = chapter?.querySelector('.body-lane')?.getBoundingClientRect();
         const header = root.querySelector('.site-nav')?.getBoundingClientRect();
+        viewport.style.setProperty('--art-chrome-bottom', `${Math.max(0,header?.bottom ?? 0)}px`);
         let x, y, width, height;
         if (state.portrait) {
             x = 8; y = Math.max(header?.bottom ?? 0,title?.bottom ?? 0)+12;

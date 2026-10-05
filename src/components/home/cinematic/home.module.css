@@ -146,3 +146,9 @@
  content:"";position:absolute;inset:-40px -56px;z-index:-1;pointer-events:none;
  background:radial-gradient(ellipse at center,var(--bg) 66%,transparent 100%);border-radius:0
 }
+
+/* Overscanning secondary objects fade before the opaque navigation boundary. */
+.home[data-artwork="live"] :global(#live-art canvas){
+ -webkit-mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px));
+ mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px))
+}
