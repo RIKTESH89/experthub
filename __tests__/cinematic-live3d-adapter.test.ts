@@ -58,3 +58,21 @@ test('a readiness failure retains raster, and a fresh motion cycle can retry',as
   instance.setMode(false);instance.update(state);await settle();expect(root.dataset.artwork).toBe('live');expect(controller.setFrame).toHaveBeenCalled();
   instance.dispose();expect(controller.dispose).toHaveBeenCalledTimes(1);
 });
+test('a decoded loading poster cannot revive after motion is disabled',async()=>{
+  let ready:()=>void=()=>{};
+  const old=HTMLImageElement.prototype.decode;
+  HTMLImageElement.prototype.decode=jest.fn(()=>new Promise<void>(resolve=>{ready=resolve}));
+  const root=fixture(),instance=adapter(jest.fn(()=>new Promise(()=>{})))(root,jest.fn());
+  try {instance.update(state);await settle();instance.setMode(false);ready();await settle();
+    expect(root.dataset.bPoster).toBeUndefined();expect(root.querySelector<HTMLImageElement>('#b-loading-poster')!.hidden).toBe(true);
+  } finally {instance.dispose();HTMLImageElement.prototype.decode=old;}
+});
+test('only the latest loading poster can become visible after a theme change',async()=>{
+  const resolve:Array<()=>void>=[],old=HTMLImageElement.prototype.decode;
+  HTMLImageElement.prototype.decode=jest.fn(()=>new Promise<void>(r=>{resolve.push(r)}));
+  const root=fixture(),instance=adapter(jest.fn(()=>new Promise(()=>{})))(root,jest.fn());
+  try {instance.update(state);await settle();document.documentElement.classList.add('dark');await settle();
+    expect(resolve).toHaveLength(2);resolve[0]();await settle();expect(root.dataset.bPoster).toBeUndefined();
+    resolve[1]();await settle();expect(root.dataset.bPoster).toBe('ready');expect(root.querySelector<HTMLImageElement>('#b-loading-poster')!.src).toContain('dark.png');
+  } finally {instance.dispose();document.documentElement.classList.remove('dark');HTMLImageElement.prototype.decode=old;}
+});

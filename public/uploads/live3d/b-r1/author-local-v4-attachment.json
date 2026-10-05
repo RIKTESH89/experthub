@@ -1,0 +1,21 @@
+{
+  "exportedGeometryChecked": true,
+  "frames": [
+    116,
+    137,
+    150,
+    164,
+    176,
+    191
+  ],
+  "actualInkVertexChecks": 1404,
+  "locatorCount": 12,
+  "maxLocatorError": 2.417381613635596e-8,
+  "maxNormalError": 2.56096414075202e-8,
+  "maxInkPaperGap": 0.0009715183197255561,
+  "minInkPaperGap": 0.000049998698158193466,
+  "inkIsOnOwningPhysicalSurface": true,
+  "seatUsesOwnSourceLayer": true,
+  "globalCopyToSeatPlacementValidated": false,
+  "nativeCombinedSceneAcceptance": false
+}

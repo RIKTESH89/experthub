@@ -7,6 +7,19 @@ export function mountLiveArtwork(root, requestUpdate) {
     const canvas = root.querySelector('#live-artwork');
     if (!viewport || !canvas) return null;
     const lifetime = new AbortController();
+    const loadingPoster=document.createElement('img');loadingPoster.alt='';loadingPoster.id='b-loading-poster';loadingPoster.hidden=true;viewport.append(loadingPoster);
+    let posterGeneration=0,posterURL='';
+    function preparePoster(){
+        if(!state||!composition||root.dataset.artwork!=='loading')return;
+        const f=authoredFrame(state.phase,state.chapter),phase=f<24?'hero':f<96?'overview':f<143?'reading':'formation';
+        const sourceWidth=state.portrait?360:1470,sourceHeight=state.portrait?640:801;
+        const reference=state.portrait?[0,164,360,416]:[411.6,40,1058.4,711];
+        const ratio=composition.width/reference[2];
+        Object.assign(loadingPoster.style,{width:`${sourceWidth*ratio}px`,height:`${sourceHeight*ratio}px`,left:`${composition.x+composition.width/2-(reference[0]+reference[2]/2)*ratio}px`,top:`${composition.y+composition.height/2-(reference[1]+reference[3]/2)*ratio}px`});
+        const url=`/uploads/live3d/b-r1/fallback-${state.portrait?'portrait':'desktop'}-${phase}-${dark()?'dark':'light'}.png`;
+        if(url===posterURL)return;posterURL=url;loadingPoster.hidden=true;delete root.dataset.bPoster;const mine=++posterGeneration;loadingPoster.src=url;
+        (loadingPoster.decode ? loadingPoster.decode() : new Promise((resolve,reject)=>{loadingPoster.onload=resolve;loadingPoster.onerror=reject;})).then(()=>{if(!disposed&&mine===posterGeneration&&root.dataset.artwork==='loading'){loadingPoster.hidden=false;root.dataset.bPoster='ready';}},()=>{});
+    }
     let controller, load, timeout, generation = 0, disposed = false, eligible = false, failed = false, state, composition, rectKey = '', physicalKey = '';
     root.dataset.artwork = 'raster';
     function diagnostics(values) { Object.assign(canvas.dataset, Object.fromEntries(Object.entries(values).map(([key,value]) => [key, typeof value === 'object' ? JSON.stringify(value) : String(value)]))); }
@@ -36,19 +49,19 @@ export function mountLiveArtwork(root, requestUpdate) {
             Object.assign(viewport.style,{ left:'0px',top:'0px',width:`${innerWidth}px`,height:`${innerHeight}px` });
             controller?.resize();
         }
-        diagnostics({ viewport:[0,0,innerWidth,innerHeight], focusRect:composition });
+        diagnostics({ viewport:[0,0,innerWidth,innerHeight], focusRect:composition }); preparePoster();
     }
     function activate() {
         if (!controller || !eligible || !state?.visible || disposed || root.dataset.artwork === 'live') return;
         // Do not expose the boot pose under a later chapter after a slow load.
         if (!(Number(canvas.dataset.frames)>0) || Math.abs(Number(canvas.dataset.frame)-authoredFrame(state.phase,state.chapter))>.00001 || canvas.dataset.dark!==String(dark()) || canvas.dataset.composition!==JSON.stringify(composition) || canvas.dataset.portrait!==String(state.portrait)) return;
-        root.dataset.artwork = 'live'; diagnostics({ state:'live' });
+        root.dataset.artwork = 'live';loadingPoster.hidden=true;delete root.dataset.bPoster; diagnostics({ state:'live' });
         root.querySelector('#runtime-status').textContent = 'Scroll to follow the story. Choose Reduce motion for a static version. Live artwork is a prototype.';
         requestUpdate();
     }
     function dark() { return document.documentElement.classList.contains('dark'); }
     function release() {
-        generation++; clearTimeout(timeout); load?.abort(); load = null;
+        generation++;posterGeneration++;posterURL='';loadingPoster.hidden=true;delete root.dataset.bPoster; clearTimeout(timeout); load?.abort(); load = null;
         controller?.dispose(); controller = null;
         root.dataset.artwork = 'raster'; viewport.hidden = true;
         diagnostics({ state: 'raster' });
@@ -60,9 +73,10 @@ export function mountLiveArtwork(root, requestUpdate) {
         if (disposed || failed || !eligible || !state || load || controller) return;
         const mine = ++generation, abort = load = new AbortController();
         viewport.hidden = false; root.dataset.artwork = 'loading'; diagnostics({ state:'loading',version:artworkAssets.version }); position();
+        root.querySelector('#runtime-status').textContent='Loading experimental artwork. A static B composition is shown while the live scene prepares.';
         timeout = setTimeout(()=> { if (mine === generation) fail(new Error('artwork-readiness-timeout')); },15000);
         try {
-            const { createArtwork } = await import('./artwork.js');
+            const { createArtwork } = await import('./b-artwork.js');
             if (disposed || mine !== generation || abort.signal.aborted) return;
             const artwork = await createArtwork({ canvas,viewport,composition,assets:artworkAssets,signal:abort.signal,frame:authoredFrame(state.phase,state.chapter),portrait:state.portrait,dark:dark(),onMetrics:values=>{ if(mine===generation && !disposed) {diagnostics(values);activate();} },onError:fail });
             if (disposed || mine !== generation || abort.signal.aborted || !eligible) { artwork.dispose(); return; }
@@ -89,11 +103,11 @@ export function mountLiveArtwork(root, requestUpdate) {
         canvas.addEventListener('inspect-resources', event => { event.detail.readResources = controller?.inspectResources; }, { signal:lifetime.signal });
         canvas.addEventListener('inspect-artwork', event => { event.detail.result = controller?.inspectFraming(); }, { signal:lifetime.signal });
     }
-    const themeObserver = new MutationObserver(()=>controller?.setTheme(dark()?'dark':'light'));
+    const themeObserver = new MutationObserver(()=>{controller?.setTheme(dark()?'dark':'light');preparePoster();});
     themeObserver.observe(document.documentElement,{ attributes:true,attributeFilter:['class'] });
     document.addEventListener('visibilitychange',()=>controller?.setVisible(Boolean(state?.visible) && !document.hidden),{signal:lifetime.signal});
     canvas.addEventListener('webglcontextrestored',()=> { failed = false; start(); },{signal:lifetime.signal});
     window.addEventListener('pagehide',release,{signal:lifetime.signal});
     window.addEventListener('pageshow',()=> { if (eligible) start(); },{signal:lifetime.signal});
-    return { update, setMode:eligibility, dispose() { disposed = true; release(); themeObserver.disconnect(); lifetime.abort(); } };
+    return { update, setMode:eligibility, dispose() { disposed = true; release(); themeObserver.disconnect(); lifetime.abort();loadingPoster.remove(); } };
 }

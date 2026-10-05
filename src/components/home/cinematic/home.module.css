@@ -128,12 +128,12 @@
 /* Persistent live artwork uses the free region between the existing copy lanes. */
 .home :global(#live-art){position:absolute;pointer-events:none;opacity:0}
 .home :global(#live-art canvas){width:100%;height:100%;opacity:1;transform:none!important}
-.home[data-artwork="live"] :global(#live-art){opacity:1}
-.home[data-artwork="live"] :global(#sequence),.home[data-artwork="live"] :global(#stage-poster){visibility:hidden!important}
-.home[data-cinematic="true"][data-artwork="live"]{--bg:#f7f6f2;--paper:#2a302b;--muted:#5b655e;--accent:#665039;--line:#c6c7bd}
-:global(.dark) .home[data-cinematic="true"][data-artwork="live"]{--bg:#151411;--paper:#eee7da;--muted:#c5bcab;--accent:#caa775;--line:#665b49}
-.home[data-artwork="live"] :global(.shade){background:none}
-.home[data-artwork="live"] :global(.title-lane)::before,.home[data-artwork="live"] :global(.body-lane)::before{background:var(--bg);border-radius:0}
+.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(#live-art){opacity:1}
+.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(#sequence),.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(#stage-poster){visibility:hidden!important}
+.home[data-cinematic="true"]:is([data-artwork="live"],[data-b-poster="ready"]){--bg:#f7f6f2;--paper:#2a302b;--muted:#5b655e;--accent:#665039;--line:#c6c7bd}
+:global(.dark) .home[data-cinematic="true"]:is([data-artwork="live"],[data-b-poster="ready"]){--bg:#151411;--paper:#eee7da;--muted:#c5bcab;--accent:#caa775;--line:#665b49}
+.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(.shade){background:none}
+.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(.title-lane)::before,.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(.body-lane)::before{background:var(--bg);border-radius:0}
 
 /* A full-page frustum keeps incoming art and shadows outside the focal gutter. */
 .home :global(#live-art){inset:0}
@@ -141,8 +141,8 @@
 .home[data-cinematic="true"] :global(.story-release){display:block;height:calc(100svh + 32px)}
 .home[data-cinematic="true"] :global(#stage){opacity:var(--story-stage-opacity,1)}
 /* Copy protection blends into the page; it does not replace the old canvas cut. */
-.home[data-cinematic="true"][data-artwork="live"] :global(.title-lane)::before,
-.home[data-cinematic="true"][data-artwork="live"] :global(.body-lane)::before{
+.home[data-cinematic="true"]:is([data-artwork="live"],[data-b-poster="ready"]) :global(.title-lane)::before,
+.home[data-cinematic="true"]:is([data-artwork="live"],[data-b-poster="ready"]) :global(.body-lane)::before{
  content:"";position:absolute;inset:-40px -56px;z-index:-1;pointer-events:none;
  background:var(--bg);border-radius:0;
  -webkit-mask-image:linear-gradient(to right,transparent,#000 56px,#000 calc(100% - 56px),transparent),linear-gradient(to bottom,transparent,#000 40px,#000 calc(100% - 40px),transparent);
@@ -152,7 +152,7 @@
 }
 
 /* Overscanning secondary objects fade before the opaque navigation boundary. */
-.home[data-artwork="live"] :global(#live-art canvas){
+.home:is([data-artwork="live"],[data-b-poster="ready"]) :global(#live-art canvas){
  -webkit-mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px));
  mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px))
 }
@@ -177,3 +177,10 @@
 @media(max-width:900px){
  .home[data-cinematic="true"] :global([data-story-copy] .story-text-layer){top:auto;bottom:0}
 }
+
+/* B loading poster uses the same camera composition, never a smaller animated stand-in. */
+.home :global(#b-loading-poster){position:absolute;max-width:none;object-fit:fill;transform:none!important;pointer-events:none}
+.home[data-artwork="loading"] :global(#live-art canvas){opacity:0}
+.home[data-artwork="loading"] :global(#sequence),.home[data-artwork="loading"] :global(#stage-poster){visibility:hidden!important}
+
+.home[data-b-poster="ready"] :global(#live-art){mask-image:linear-gradient(to bottom,transparent var(--art-chrome-bottom,88px),#000 calc(var(--art-chrome-bottom,88px) + 72px))}
