@@ -1,5 +1,5 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths, retimeChapter } from './timeline.js';
-import { textBeat, storyCopyLines, storyTitle } from './text-beats.js';
+import { textBeat, storyCopyLines, storyTitle, chapterTextOpacity } from './text-beats.js';
 import { artExitOpacity } from './stage-composition.js';
 import { mountLiveArtwork } from './live3d-adapter.js';
 import { assetRoot } from './asset-config.js';
@@ -16,6 +16,26 @@ export function mountSequence(root) {
     const panels = chapters.map(ch => ch.querySelector('.panel'));
     const copies = chapters.map(ch => { const element=ch.querySelector('[data-story-copy]'); return {element,original:element?.textContent??'',minHeight:element?.style.minHeight??''}; });
     const titles=chapters.map(ch=>{const element=ch.querySelector('h1,h2');return {element,original:element?.textContent??'',minHeight:element?.style.minHeight??''};});
+    // Visual layers never replace a still-visible sentence. One semantic node
+    // supplies accessible text; duplicated visual clauses are aria-hidden.
+    function layersFor(item,lines) {
+        if(item.layers)return;
+        const semantic=document.createElement('span');semantic.className='story-semantic';
+        item.semantic=semantic;item.layers=lines.map(text=>{const span=document.createElement('span');span.className='story-text-layer';span.setAttribute('aria-hidden','true');span.textContent=text;return span;});
+        item.element.replaceChildren(semantic,...item.layers);item.element.setAttribute('data-story-blend','');
+    }
+    function restoreText(item) {
+        if(!item.element)return;
+        if(item.layers){item.element.textContent=item.original;item.layers=null;item.semantic=null;}
+        item.element.removeAttribute('data-story-blend');item.element.style.opacity='1';
+    }
+    function paintText(item,lines,weights,text) {
+        if(!item.element)return;
+        layersFor(item,lines);
+        item.semantic.textContent=text;item.element.dataset.visibleCopy=text;
+        item.layers.forEach((span,index)=>{span.style.opacity=String(weights[index]);});
+        item.element.style.opacity='1';
+    }
     const controls = panels.map(panel => [...(panel?.querySelectorAll('a[href],button,input,select,textarea,[tabindex]') ?? [])].map(element => ({element, tabindex:element.getAttribute('tabindex')})));
     const interactive = Array(chapters.length);
     function panelInteractive(index, enabled) {
@@ -152,32 +172,36 @@ export function mountSequence(root) {
         canvas.dataset.stageOpacity=String(stageOpacity);
         canvas.dataset.exit=progress.exit.toFixed(4);
         chapters.forEach((el, i) => {
-            const opacity = cinematic ? (!beyondStory && i === active ? textOpacity(local, i === 0) : 0) : 1;
-            el.style.setProperty('--text-opacity', String(opacity));
-            const copy=copies[i],beat=textBeat(el.id,i===active?local:0,copy.original);
+            const box=geometry.chapters[i],phase=Math.max(0,Math.min(1,(y-box.top)/box.height));
+            const opacity=cinematic&&!beyondStory?chapterTextOpacity(y,box.top,box.top+box.height,innerHeight,i===0,i===chapters.length-1):cinematic?0:1;
+            el.style.setProperty('--text-opacity',String(opacity));
+            // A source/footer jump clears old overlays immediately; ordinary
+            // boundary/reverse input uses interruptible CSS opacity smoothing.
+            if(panels[i])panels[i].style.transition=beyondStory||!cinematic?'none':'';
+            const copy=copies[i],beat=textBeat(el.id,phase,copy.original);
             if(copy.element){
-                const text=cinematic?beat.text:copy.original;
-                if(copy.element.textContent!==text)copy.element.textContent=text;
-                copy.element.style.opacity=String(cinematic?beat.opacity:1);
+                if(cinematic)paintText(copy,storyCopyLines(el.id,copy.original),beat.weights,beat.text);else restoreText(copy);
                 copy.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
-                copy.element.dataset.phase=(i===active?local:0).toFixed(4);
+                copy.element.dataset.phase=phase.toFixed(4);
             }
             const title=titles[i];
             if(title.element){
-                const text=cinematic?storyTitle(el.id,beat.index,title.original):title.original;
-                if(title.element.textContent!==text)title.element.textContent=text;
-                title.element.parentElement.style.opacity=String(cinematic&&i===0?beat.opacity:1);
+                if(cinematic&&i===0)paintText(title,[title.original,storyTitle(el.id,1,title.original)],beat.weights,storyTitle(el.id,beat.index,title.original));else restoreText(title);
+                title.element.parentElement.style.opacity='1';
                 title.element.dataset.marker=cinematic?beat.marker:`${el.id}:static`;
             }
             el.dataset.beat=String(beat.index);
-            const readable = !cinematic || opacity >= .99;
+            const paintedValue=i===active&&panels[i]?getComputedStyle(panels[i]).opacity:'';
+            const painted=paintedValue?Number(paintedValue):opacity;
+            const readable = !cinematic || (i===active&&opacity>=.99&&(!Number.isFinite(painted)||painted>=.98));
             if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea,[tabindex]')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
             panelInteractive(i, readable);
         });
-        canvas.dataset.textOpacity = String(cinematic && !beyondStory ? textOpacity(local, active === 0) : 0);
+        canvas.dataset.textOpacity=String(cinematic&&!beyondStory?chapterTextOpacity(y,bounds.top,bounds.top+bounds.height,innerHeight,active===0,active===chapters.length-1):0);
         const activeBeat=textBeat(chapters[active].id,local,copies[active].original);
         canvas.dataset.textBeat=activeBeat.marker;
-        canvas.dataset.copyOpacity=String(cinematic?activeBeat.opacity:1);
+        canvas.dataset.copyOpacity='1';
+        canvas.dataset.textWeights=JSON.stringify(activeBeat.weights);
         root.dataset.activeChapter = cinematic && !beyondStory ? chapters[active].id : '';
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'));
         const beat = Math.min(3, Math.floor(local * 4));
@@ -372,6 +396,7 @@ export function mountSequence(root) {
         schedule();
     });
     listen(poster,'load',()=>{const expected=variant ? new URL(variant.chapters[active].poster,assetBase).href : '';poster.hidden=!(poster.complete && poster.naturalWidth>0 && poster.currentSrc===poster.src && poster.dataset.frame===expected);if(!poster.hidden){metrics.posterLoads++;metrics.lastPosterMs=performance.now()-posterStarted;}schedule();});
+    panels.forEach(panel=>{if(panel)listen(panel,'transitionend',event=>{if(event.target===panel&&event.propertyName==='opacity')schedule();});});
     listen(window, 'scroll', schedule, { passive: true });
     listen(window, 'resize', () => {geometryDirty=true;schedule();}, { passive: true });
     if(document.fonts?.ready)document.fonts.ready.then(()=>{if(!disposed){geometryDirty=true;schedule();}});
@@ -470,5 +495,5 @@ export function mountSequence(root) {
     const observer='ResizeObserver' in window ? new ResizeObserver(()=>{geometryDirty=true;schedule();}) : null;
     if(observer){observer.observe(root.querySelector('#story'));chapters.forEach(ch=>observer.observe(ch));}
     start();
-    return () => { disposed = true; artwork?.dispose(); observer?.disconnect(); manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); chapters.forEach((_chapter,index)=>panelInteractive(index,true)); delete root.dataset.activeChapter; delete root.dataset.cinematic; };
+    return () => { disposed = true; artwork?.dispose(); observer?.disconnect(); manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); chapters.forEach((_chapter,index)=>panelInteractive(index,true)); copies.forEach(restoreText);titles.forEach(restoreText); delete root.dataset.activeChapter; delete root.dataset.cinematic; };
 }

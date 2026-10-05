@@ -11,10 +11,21 @@ const copy={
 };
 export function storyTitle(id,index,original){return id==='introduction'&&index===1?'Knowledge you choose to share.':original;}
 export function storyCopyLines(id,original){return (copy[id]??[null]).map(line=>line??original);}
+// A partition of opacity: at a semantic boundary both clauses remain present.
+// CSS interpolates interrupted targets; settled state remains scroll-derived.
 export function textBeat(id,phase,original){
- const lines=copy[id]??[null],p=Math.max(0,Math.min(1,phase));
+ const lines=storyCopyLines(id,original),p=Math.max(0,Math.min(1,phase));
  const boundaries=lines.length===4?[.25,.5,.75]:lines.length===2?[id==='introduction'?.25:.5]:[];
- const index=boundaries.filter(boundary=>p>=boundary).length;
- const distance=boundaries.length?Math.min(...boundaries.map(boundary=>Math.abs(p-boundary))):1;
- return {index,text:lines[index]??original,opacity:smooth(distance/.05),marker:`${id}:${index}`};
+ const index=boundaries.filter(boundary=>p>=boundary).length,weights=Array(lines.length).fill(0);
+ weights[index]=1;
+ for(let i=0;i<boundaries.length;i++)if(Math.abs(p-boundaries[i])<.08){
+  const mix=smooth((p-boundaries[i]+.08)/.16);weights.fill(0);weights[i]=1-mix;weights[i+1]=mix;break;
+ }
+ return {index,text:lines[index],opacity:1,weights,marker:`${id}:${index}`};
+}
+export function chapterTextOpacity(scroll,top,end,viewport,first=false,last=false){
+ const half=Math.max(1,viewport*.12);
+ const enter=first?1:smooth((scroll-top+half)/(2*half));
+ const leave=last?1-smooth((scroll-(end-viewport*.28))/(viewport*.28)):1-smooth((scroll-end+half)/(2*half));
+ return Math.min(enter,leave);
 }
