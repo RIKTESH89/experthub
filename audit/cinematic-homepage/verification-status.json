@@ -3,7 +3,7 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "Exact local product candidate compile is recorded separately in task-13/product-homepage-qa/final-candidate-build.json",
+  "productionCompile": "Exact caption candidate compile recorded separately in task-13/product-homepage-qa/final-caption-build.json",
   "fullTests": {
     "suites": 90,
     "tests": 1334,
@@ -32,5 +32,14 @@
     "authoredManifestUnchanged": true,
     "fragmentJump": "Instant local scrolling and heading focus; Next Link retains route history; actual arrival checked at1470/390/320widths",
     "portraitFraming": "Consistent 10svh visual shift with stronger text-lane shade; no frame edits"
+  },
+  "finalVisualReview": {
+    "desktopCaptionBacking": "Opaque #151411 backing / #eee7da text;16 affected reading holds recaptured; representative chapter02/03/06/07 screenshots visually inspected",
+    "computedCaptionContrastRatio": 14.98,
+    "noJavaScriptImages": "All14 individually exposed and decoded; element/viewport screenshots saved; all14 nonblank pixel variation verified. Earlier blank capture retained.",
+    "staticFallbackCodeChanged": false,
+    "focusedRegressionTests": 10,
+    "types": "pass",
+    "lint": "pass"
   }
 }
