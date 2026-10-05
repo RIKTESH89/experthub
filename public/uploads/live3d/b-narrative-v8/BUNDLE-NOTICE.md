@@ -1,0 +1,3 @@
+# Bundled dependencies
+
+Three.js0.186.1 and its shipped addons/meshopt decoder come from the already installed app dependency. Three.js MIT notice is retained in THREE-LICENSE.txt. Meshoptimizer decoder is MIT, copyright2016–2026 Arseny Kapoulkine; its MIT notice is retained in MESHOPT-LICENSE.txt (installed package copyright2016–2025; shipped decoder header copyright2016–2026). This private local proof uses installed Next.js compiled webpack and Terser for building; neither is shipped as runtime code. No dependency installed. Bundled output licenses must accompany any reviewed downstream distribution.

@@ -1,0 +1,384 @@
+{
+  "decodedActualThree": true,
+  "errors": 0,
+  "baseMeshes": 62,
+  "maxFinalVertexError": 0,
+  "clearanceError": 0,
+  "unmodifiedMeshError": 0,
+  "sourcesEqual": true,
+  "allFinalVerticesIdentical": true,
+  "proofs": [
+    {
+      "mesh": "Brain_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 12430
+    },
+    {
+      "mesh": "Cube001",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1944
+    },
+    {
+      "mesh": "Cube001_1",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1944
+    },
+    {
+      "mesh": "Cube001_2",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24654
+    },
+    {
+      "mesh": "Cube001_4",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line00",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2496
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2222
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2120
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line03",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3556
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line04",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3792
+    },
+    {
+      "mesh": "Ink_Source01_Original_Line05",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 7690
+    },
+    {
+      "mesh": "Twin_Anatomical_Foundation",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 17531
+    },
+    {
+      "mesh": "Twin_Layers_Source01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 36524
+    },
+    {
+      "mesh": "Twin_Source01_Receiver",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3253
+    },
+    {
+      "mesh": "Twin_Layers_Source02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 37853
+    },
+    {
+      "mesh": "Twin_Source02_Receiver",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3253
+    },
+    {
+      "mesh": "Twin_Layers_Source03",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 36935
+    },
+    {
+      "mesh": "Twin_Source03_Receiver",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3253
+    },
+    {
+      "mesh": "Twin_Layers_Source04",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 25362
+    },
+    {
+      "mesh": "Twin_Source04_Receiver",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3253
+    },
+    {
+      "mesh": "Source01_Copy_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3250
+    },
+    {
+      "mesh": "Ink_Source01_Copy_Line00",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4098
+    },
+    {
+      "mesh": "Ink_Source01_Copy_Line01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3426
+    },
+    {
+      "mesh": "Ink_Source01_Copy_Line02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2984
+    },
+    {
+      "mesh": "Source01_Copy_AttachedIndex",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 50
+    },
+    {
+      "mesh": "Source02_Original_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Ink_Source02_Original_Original02_GlyphRow00_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1926
+    },
+    {
+      "mesh": "Ink_Source02_Original_Original02_GlyphRow01_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3584
+    },
+    {
+      "mesh": "Ink_Source02_Original_Original02_GlyphRow02_subselected",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2476
+    },
+    {
+      "mesh": "Ink_Source02_Original_Original02_GlyphRow02_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1476
+    },
+    {
+      "mesh": "Source02_SelectionUnderline",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Source02_Copy_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3250
+    },
+    {
+      "mesh": "Ink_Source02_Copy_Line00",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4326
+    },
+    {
+      "mesh": "Ink_Source02_Copy_Line01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2346
+    },
+    {
+      "mesh": "Ink_Source02_Copy_Line02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1354
+    },
+    {
+      "mesh": "Ink_Source02_Copy_Line03",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 6170
+    },
+    {
+      "mesh": "Source03_Original_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow00_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2970
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow01_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3336
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow02_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3840
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow03_subselected",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3270
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow03_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 106
+    },
+    {
+      "mesh": "Ink_Source03_Original_Original03_GlyphRow04_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4538
+    },
+    {
+      "mesh": "Source03_SelectionUnderline",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Source03_Copy_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3250
+    },
+    {
+      "mesh": "Ink_Source03_Copy_Line00",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4478
+    },
+    {
+      "mesh": "Ink_Source03_Copy_Line01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2560
+    },
+    {
+      "mesh": "Ink_Source03_Copy_Line02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2342
+    },
+    {
+      "mesh": "Ink_Source03_Copy_Line03",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 5718
+    },
+    {
+      "mesh": "Source04_Original_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow00_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2494
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow01_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2328
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow02_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4190
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow03_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 1628
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow04_subselected",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3084
+    },
+    {
+      "mesh": "Ink_Source04_Original_Original04_GlyphRow04_rest",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 82
+    },
+    {
+      "mesh": "Source04_SelectionUnderline",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 24
+    },
+    {
+      "mesh": "Source04_Copy_Surface",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 3250
+    },
+    {
+      "mesh": "Ink_Source04_Copy_Line00",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4144
+    },
+    {
+      "mesh": "Ink_Source04_Copy_Line01",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2278
+    },
+    {
+      "mesh": "Ink_Source04_Copy_Line02",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 2342
+    },
+    {
+      "mesh": "Ink_Source04_Copy_Line03",
+      "baseEqual": true,
+      "indexEqual": true,
+      "vertices": 4302
+    }
+  ]
+}

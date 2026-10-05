@@ -1,0 +1,925 @@
+{
+  "status": "Typography-oriented frames, source-owned contact receivers and all four physical copied excerpts; final native acceptance pending",
+  "sharedContract": "experthub-b-shared-v1",
+  "sha256": "7e4f9701c513ce70fd2c623c39db4d993964970e82363709abf36a57a24c0b59",
+  "bytes": 35001432,
+  "triangles": 512358,
+  "meshes": 46,
+  "materials": 46,
+  "textures": 0,
+  "morphArrayBytes": 22074192,
+  "channels": 54,
+  "animationCount": 1,
+  "cameras": 0,
+  "semanticRootTransforms": "identity",
+  "globalAnimationTracks": 0,
+  "authoredSource01Typography": true,
+  "finiteSource01Leaf": true,
+  "sharedCurlForInkPaperIndex": true,
+  "secondaryCanonicalCopyGeometry": true,
+  "geometryPolish": [
+    {
+      "mesh": "Twin_Anatomical_Foundation",
+      "iterations": 4,
+      "strength": 0.34,
+      "vertical": 1,
+      "vertices": 12430,
+      "weldedVertices": 12430,
+      "allAbsoluteMorphTargetsPolished": true
+    },
+    {
+      "mesh": "Twin_Layers_Source01",
+      "iterations": 8,
+      "strength": 0.44,
+      "vertical": 0,
+      "vertices": 9855,
+      "weldedVertices": 9844,
+      "allAbsoluteMorphTargetsPolished": true
+    },
+    {
+      "mesh": "Twin_Layers_Source02",
+      "iterations": 8,
+      "strength": 0.44,
+      "vertical": 0,
+      "vertices": 16132,
+      "weldedVertices": 16118,
+      "allAbsoluteMorphTargetsPolished": true
+    },
+    {
+      "mesh": "Twin_Layers_Source03",
+      "iterations": 8,
+      "strength": 0.44,
+      "vertical": 0,
+      "vertices": 17654,
+      "weldedVertices": 17640,
+      "allAbsoluteMorphTargetsPolished": true
+    },
+    {
+      "mesh": "Twin_Layers_Source04",
+      "iterations": 8,
+      "strength": 0.44,
+      "vertical": 0,
+      "vertices": 9050,
+      "weldedVertices": 9040,
+      "allAbsoluteMorphTargetsPolished": true
+    },
+    {
+      "mesh": "Twin_Layers_Source01",
+      "method": "real anatomical section radial contours, six contour smoothing passes, finite four-ring beveled edge",
+      "sections": 19,
+      "angularSamples": 128,
+      "thicknessNormalized": 0.0038,
+      "bevelNormalized": 0.00075
+    },
+    {
+      "mesh": "Twin_Layers_Source02",
+      "method": "real anatomical section radial contours, six contour smoothing passes, finite four-ring beveled edge",
+      "sections": 19,
+      "angularSamples": 128,
+      "thicknessNormalized": 0.0038,
+      "bevelNormalized": 0.00075
+    },
+    {
+      "mesh": "Twin_Layers_Source03",
+      "method": "real anatomical section radial contours, six contour smoothing passes, finite four-ring beveled edge",
+      "sections": 19,
+      "angularSamples": 128,
+      "thicknessNormalized": 0.0038,
+      "bevelNormalized": 0.00075
+    },
+    {
+      "mesh": "Twin_Layers_Source04",
+      "method": "real anatomical section radial contours, six contour smoothing passes, finite four-ring beveled edge",
+      "sections": 19,
+      "angularSamples": 128,
+      "thicknessNormalized": 0.0038,
+      "bevelNormalized": 0.00075
+    }
+  ],
+  "receivers": [
+    {
+      "sourceId": 1,
+      "owningLayer": "Twin_Layers_Source01",
+      "receiver": "Twin_Source01_Receiver",
+      "anchor": [
+        -0.1,
+        -0.24,
+        0.3083
+      ],
+      "ratio": 0.2996389891696751,
+      "finalBodyScale": 2.77,
+      "finalCopyScale": 0.83,
+      "rendererNormalOffsetWorld": 0.015,
+      "receiverBodyOverlapDepth": 0.0015,
+      "frameFit": [
+        176,
+        191
+      ],
+      "footprint": {
+        "min": [
+          -0.22202246465408804,
+          -0.29971131289700575,
+          0.22630828075484735
+        ],
+        "max": [
+          0.06211291138032554,
+          -0.18944416943018325,
+          0.3113233902649208
+        ]
+      },
+      "depth": 0.22230828075484735
+    },
+    {
+      "sourceId": 2,
+      "owningLayer": "Twin_Layers_Source02",
+      "receiver": "Twin_Source02_Receiver",
+      "anchor": [
+        0.13,
+        -0.08,
+        0.48
+      ],
+      "ratio": 0.1624548736462094,
+      "finalBodyScale": 2.77,
+      "finalCopyScale": 0.45,
+      "rendererNormalOffsetWorld": 0.015,
+      "receiverBodyOverlapDepth": 0.0015,
+      "frameFit": [
+        176,
+        191
+      ],
+      "footprint": {
+        "min": [
+          0.0533298377497025,
+          -0.12119279509030335,
+          0.4639999395063549
+        ],
+        "max": [
+          0.20604352311094754,
+          -0.06140940405407427,
+          0.48411554904972803
+        ]
+      },
+      "depth": 0.45999993950635487
+    },
+    {
+      "sourceId": 3,
+      "owningLayer": "Twin_Layers_Source03",
+      "receiver": "Twin_Source03_Receiver",
+      "anchor": [
+        -0.1,
+        0.08,
+        0.47
+      ],
+      "ratio": 0.1624548736462094,
+      "finalBodyScale": 2.77,
+      "finalCopyScale": 0.45,
+      "rendererNormalOffsetWorld": 0.015,
+      "receiverBodyOverlapDepth": 0.0015,
+      "frameFit": [
+        176,
+        191
+      ],
+      "footprint": {
+        "min": [
+          -0.19102033843288446,
+          0.02964077394617056,
+          0.44683684012451996
+        ],
+        "max": [
+          0.007464440980288575,
+          0.10735918146113,
+          0.4737264267982678
+        ]
+      },
+      "depth": 0.44283684012451996
+    },
+    {
+      "sourceId": 4,
+      "owningLayer": "Twin_Layers_Source04",
+      "receiver": "Twin_Source04_Receiver",
+      "anchor": [
+        0.035,
+        0.24,
+        0.3579
+      ],
+      "ratio": 0.1624548736462094,
+      "finalBodyScale": 2.77,
+      "finalCopyScale": 0.45,
+      "rendererNormalOffsetWorld": 0.015,
+      "receiverBodyOverlapDepth": 0.0015,
+      "frameFit": [
+        176,
+        191
+      ],
+      "footprint": {
+        "min": [
+          -0.0607784421777285,
+          0.17655785110473146,
+          0.3266602588330031
+        ],
+        "max": [
+          0.16791913115383875,
+          0.2662329424249587,
+          0.36137004589006605
+        ]
+      },
+      "depth": 0.3226602588330031
+    }
+  ],
+  "typographyOrientedTangents": true,
+  "normalization": {
+    "brain": {
+      "center": [
+        -2.700366273522377,
+        -0.08317387104034424,
+        -1.4378027021884918
+      ],
+      "size": [
+        2.167236328125,
+        1.79443359375,
+        2.7626953125
+      ],
+      "scale": 0.36196535878402264,
+      "names": [
+        "Brain_Root"
+      ]
+    },
+    "folio": {
+      "center": [
+        -2.939999833703041,
+        -0.883122056722641,
+        1.5480000972747803
+      ],
+      "size": [
+        3.48046875,
+        0.393310546875,
+        2.279296875
+      ],
+      "scale": 0.287317620650954,
+      "names": [
+        "Source01_Original"
+      ]
+    },
+    "body": {
+      "center": [
+        3.336679682135582,
+        -0.08463871479034424,
+        -1.5956250429153442
+      ],
+      "size": [
+        2.162109375,
+        1.74755859375,
+        2.759765625
+      ],
+      "scale": 0.3623496107572541,
+      "names": [
+        "Twin_Anatomical_Foundation",
+        "Twin_Layers_Source01",
+        "Twin_Layers_Source02",
+        "Twin_Layers_Source03",
+        "Twin_Layers_Source04"
+      ]
+    },
+    "copy01": {
+      "center": [
+        3.7571098655462265,
+        0.7469948530197144,
+        0.2503255605697632
+      ],
+      "size": [
+        0.8450603485107422,
+        1.853994369506836,
+        2.6168832778930664
+      ],
+      "scale": 0.3821339715255206,
+      "names": [
+        "Source01_Copy",
+        "Persistent_source_index_edge",
+        "Repeated_original_fragment",
+        "Traveling_fragment_disclaimer",
+        "Traveling_source_identity"
+      ],
+      "authoredBasis": {
+        "paperPlane": "XZ",
+        "normal": "+Y",
+        "width": 0.94,
+        "height": 0.353,
+        "thickness": 0.008,
+        "reference": "shared material-contract copy01BaselinePrint",
+        "oldV7NormalizationNotApplied": true,
+        "requiresNativeShapeReview": true
+      }
+    },
+    "record2": {
+      "center": [
+        -2.141103520989418,
+        -0.7804394960403442,
+        1.6226366758346558
+      ],
+      "size": [
+        1.13818359375,
+        0.07763671875,
+        1.0517578125
+      ],
+      "scale": 0.8785928785928786,
+      "names": [
+        "Source02_Original"
+      ]
+    },
+    "copy02": {
+      "center": [
+        2.8379004076123238,
+        0.053789108991622925,
+        -0.5929394066333771
+      ],
+      "size": [
+        0.56396484375,
+        0.3486328125,
+        0.81005859375
+      ],
+      "scale": 1.2344786015672091,
+      "names": [
+        "Source02_Copy"
+      ],
+      "authoredBasis": {
+        "paperPlane": "XZ",
+        "normal": "+Y",
+        "width": 0.94,
+        "height": 0.353,
+        "thickness": 0.008,
+        "oldV7NormalizationNotApplied": true,
+        "requiresNativeShapeReview": true,
+        "localVolumeFactor": 1,
+        "globalRootScaleUnchanged": true
+      }
+    },
+    "record3": {
+      "center": [
+        -0.5520000010728836,
+        -1.051605373620987,
+        1.7519999742507935
+      ],
+      "size": [
+        1.343994140625,
+        0.015380859375,
+        0.94775390625
+      ],
+      "scale": 0.7440508628519528,
+      "names": [
+        "Source03_Original"
+      ]
+    },
+    "copy03": {
+      "center": [
+        4.200937516987324,
+        0.13875004649162292,
+        -0.6610546410083771
+      ],
+      "size": [
+        0.626953125,
+        0.515625,
+        0.720703125
+      ],
+      "scale": 1.3875338753387534,
+      "names": [
+        "Source03_Copy"
+      ],
+      "authoredBasis": {
+        "paperPlane": "XZ",
+        "normal": "+Y",
+        "width": 1.222,
+        "height": 0.4589,
+        "thickness": 0.010400000000000001,
+        "oldV7NormalizationNotApplied": true,
+        "requiresNativeShapeReview": true,
+        "localVolumeFactor": 1.3,
+        "globalRootScaleUnchanged": true
+      }
+    },
+    "record4": {
+      "center": [
+        -0.31078125536441803,
+        -1.0433789491653442,
+        2.0752733945846558
+      ],
+      "size": [
+        1.343994140625,
+        0.015380859375,
+        0.94775390625
+      ],
+      "scale": 0.7440508628519528,
+      "names": [
+        "Source04_Original"
+      ]
+    },
+    "copy04": {
+      "center": [
+        4.853525612948536,
+        0.7057038056664169,
+        -0.6836799434181011
+      ],
+      "size": [
+        0.4373568238221033,
+        0.8709014346823096,
+        1.1691227986724035
+      ],
+      "scale": 0.8553421429601314,
+      "names": [
+        "Source04_Copy"
+      ],
+      "authoredBasis": {
+        "paperPlane": "XZ",
+        "normal": "+Y",
+        "width": 1.41,
+        "height": 0.5295,
+        "thickness": 0.012,
+        "oldV7NormalizationNotApplied": true,
+        "requiresNativeShapeReview": true,
+        "localVolumeFactor": 1.5,
+        "globalRootScaleUnchanged": true
+      }
+    }
+  },
+  "localMorphTiming": [
+    {
+      "name": "Twin_Layers_Source01",
+      "knots": [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          20
+        ],
+        [
+          116,
+          65
+        ],
+        [
+          137,
+          78
+        ],
+        [
+          164,
+          115
+        ],
+        [
+          176,
+          137
+        ],
+        [
+          191,
+          137
+        ]
+      ]
+    },
+    {
+      "name": "Twin_Layers_Source02",
+      "knots": [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          35
+        ],
+        [
+          86,
+          70
+        ],
+        [
+          116,
+          105
+        ],
+        [
+          164,
+          137
+        ],
+        [
+          191,
+          137
+        ]
+      ]
+    },
+    {
+      "name": "Twin_Layers_Source03",
+      "knots": [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          35
+        ],
+        [
+          86,
+          70
+        ],
+        [
+          116,
+          105
+        ],
+        [
+          164,
+          137
+        ],
+        [
+          191,
+          137
+        ]
+      ]
+    },
+    {
+      "name": "Twin_Layers_Source04",
+      "knots": [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          35
+        ],
+        [
+          86,
+          70
+        ],
+        [
+          116,
+          105
+        ],
+        [
+          164,
+          137
+        ],
+        [
+          191,
+          137
+        ]
+      ]
+    }
+  ],
+  "locators": [
+    {
+      "name": "Source01_SelectionSurface",
+      "sourceId": 1,
+      "owningMesh": "Cube001_2",
+      "triangleIndex": 12099,
+      "vertexIndices": [
+        20644,
+        20724,
+        20723
+      ],
+      "barycentric": [
+        0.47325890991211983,
+        0.446339130401614,
+        0.08040195968626623
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "actual selected-fragment ink bounds"
+    },
+    {
+      "name": "Source01_CopyInkSurface",
+      "sourceId": 1,
+      "owningMesh": "Source01_Copy_Surface",
+      "triangleIndex": 1333,
+      "vertexIndices": [
+        677,
+        741,
+        742
+      ],
+      "barycentric": [
+        0.5142537702928894,
+        0.2843755368500184,
+        0.20137069285709225
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "actual selected-fragment ink bounds"
+    },
+    {
+      "name": "Twin_Source01_Seat",
+      "sourceId": 1,
+      "owningMesh": "Twin_Source01_Receiver",
+      "triangleIndex": 0,
+      "vertexIndices": [
+        0,
+        1,
+        2
+      ],
+      "barycentric": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source02_SelectionSurface",
+      "sourceId": 2,
+      "owningMesh": "Second_documented_record_label",
+      "triangleIndex": 2956,
+      "vertexIndices": [
+        5488,
+        5499,
+        5509
+      ],
+      "barycentric": [
+        0.3538511829032165,
+        0.6461488170967835,
+        0
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source02_CopyInkSurface",
+      "sourceId": 2,
+      "owningMesh": "Source02_Copy_Surface",
+      "triangleIndex": 832,
+      "vertexIndices": [
+        422,
+        487,
+        423
+      ],
+      "barycentric": [
+        0.07135546367131118,
+        0.760690215725325,
+        0.1679543206033638
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Twin_Source02_Seat",
+      "sourceId": 2,
+      "owningMesh": "Twin_Source02_Receiver",
+      "triangleIndex": 0,
+      "vertexIndices": [
+        0,
+        1,
+        2
+      ],
+      "barycentric": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source03_SelectionSurface",
+      "sourceId": 3,
+      "owningMesh": "Cube017",
+      "triangleIndex": 966,
+      "vertexIndices": [
+        1702,
+        730,
+        248
+      ],
+      "barycentric": [
+        0.5,
+        0,
+        0.5
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source03_CopyInkSurface",
+      "sourceId": 3,
+      "owningMesh": "Source03_Copy_Surface",
+      "triangleIndex": 954,
+      "vertexIndices": [
+        484,
+        549,
+        485
+      ],
+      "barycentric": [
+        0.03524873402662043,
+        0.7979071489563632,
+        0.16684411701701643
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Twin_Source03_Seat",
+      "sourceId": 3,
+      "owningMesh": "Twin_Source03_Receiver",
+      "triangleIndex": 0,
+      "vertexIndices": [
+        0,
+        1,
+        2
+      ],
+      "barycentric": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source04_SelectionSurface",
+      "sourceId": 4,
+      "owningMesh": "Cube018",
+      "triangleIndex": 966,
+      "vertexIndices": [
+        1702,
+        730,
+        248
+      ],
+      "barycentric": [
+        0.5,
+        0,
+        0.5
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Source04_CopyInkSurface",
+      "sourceId": 4,
+      "owningMesh": "Source04_Copy_Surface",
+      "triangleIndex": 820,
+      "vertexIndices": [
+        416,
+        481,
+        417
+      ],
+      "barycentric": [
+        0.24786309436461096,
+        0.33768140216653153,
+        0.41445550346885746
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    },
+    {
+      "name": "Twin_Source04_Seat",
+      "sourceId": 4,
+      "owningMesh": "Twin_Source04_Receiver",
+      "triangleIndex": 0,
+      "vertexIndices": [
+        0,
+        1,
+        2
+      ],
+      "barycentric": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "normalAxis": "+Y",
+      "tangentAxis": "+X",
+      "physicallyBound": true,
+      "placementReviewPending": true,
+      "typographicTangent": "owning root +X projected onto surface normal",
+      "normalFallback": "rest orientation while collapsed",
+      "selectionCorrespondence": "source-linked physical mesh"
+    }
+  ],
+  "attachmentChecks": [
+    {
+      "name": "Source01_SelectionSurface",
+      "owningMesh": "Cube001_2",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source01_CopyInkSurface",
+      "owningMesh": "Source01_Copy_Surface",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Twin_Source01_Seat",
+      "owningMesh": "Twin_Source01_Receiver",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source02_SelectionSurface",
+      "owningMesh": "Second_documented_record_label",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source02_CopyInkSurface",
+      "owningMesh": "Source02_Copy_Surface",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Twin_Source02_Seat",
+      "owningMesh": "Twin_Source02_Receiver",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source03_SelectionSurface",
+      "owningMesh": "Cube017",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source03_CopyInkSurface",
+      "owningMesh": "Source03_Copy_Surface",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Twin_Source03_Seat",
+      "owningMesh": "Twin_Source03_Receiver",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source04_SelectionSurface",
+      "owningMesh": "Cube018",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Source04_CopyInkSurface",
+      "owningMesh": "Source04_Copy_Surface",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    },
+    {
+      "name": "Twin_Source04_Seat",
+      "owningMesh": "Twin_Source04_Receiver",
+      "fallbackFrames": 0,
+      "sampledEveryFrame": true
+    }
+  ],
+  "sourceRegistrySha256": "22d81bc47ff1a1c361a45c4186eb365a5330a2dfce87f708da90ac9a91b072ce",
+  "baselineSha256": "c602aa49df4785c6c80bf14c9c74b0874076b97424cd1611285b07899a2a5ea0",
+  "rendered": false,
+  "geometryFinishAccepted": false,
+  "seatAttachmentAccepted": false,
+  "sharedOwnershipCompatible": true,
+  "published": false,
+  "rendererMaterialCompatibility": "Receiving materials avoid generic ivory/paper override; authored warm receiving shades retained by existing renderer"
+}

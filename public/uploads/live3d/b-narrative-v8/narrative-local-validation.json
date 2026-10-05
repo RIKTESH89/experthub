@@ -1,0 +1,1069 @@
+{
+  "actualDecodedThree": true,
+  "sourceProofs": [
+    {
+      "source": 2,
+      "reconstructedPhysicalFullText": "Question → Context → Decision",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "Question → Context",
+      "exactSelectedText": true,
+      "glyphVertices": 9462,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 2.2887833992611187e-16
+    },
+    {
+      "source": 3,
+      "reconstructedPhysicalFullText": "Illustrative case note: after naming the constraint, the example’s next step changed.",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "naming the constraint",
+      "exactSelectedText": true,
+      "glyphVertices": 18060,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 6.206335383118183e-17
+    },
+    {
+      "source": 4,
+      "reconstructedPhysicalFullText": "Compare the available options against the stated constraint.",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "the stated constraint",
+      "exactSelectedText": true,
+      "glyphVertices": 13806,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 1.2412670766236366e-16
+    }
+  ],
+  "growthProofs": [
+    {
+      "name": "before-source02",
+      "progress": {
+        "1": 1,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.37505740673931803,
+          -0.2848007380329628,
+          -0.48961488760201055
+        ],
+        "max": [
+          0.37732400104498426,
+          -0.139234700780006,
+          0.4606869397902438
+        ],
+        "size": [
+          0.7523814077843023,
+          0.1455660372529568,
+          0.9503018273922543
+        ]
+      },
+      "constructionProgress": 0.25
+    },
+    {
+      "name": "source02-half",
+      "progress": {
+        "1": 1,
+        "2": 0.5,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0.5,
+            0,
+            0.5,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.37740958524737384,
+          -0.2848007380329628,
+          -0.48961488760201055
+        ],
+        "max": [
+          0.3800608324017494,
+          -0.06610567453307456,
+          0.4665785139533364
+        ],
+        "size": [
+          0.7574704176491233,
+          0.21869506349988824,
+          0.9561934015553469
+        ]
+      },
+      "constructionProgress": 0.375
+    },
+    {
+      "name": "source02-complete",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.3860879237990978,
+          -0.2848007380329628,
+          -0.48961488760201055
+        ],
+        "max": [
+          0.3870643567127788,
+          0.0011265262676652121,
+          0.4917768115798632
+        ],
+        "size": [
+          0.7731522805118766,
+          0.285927264300628,
+          0.9813916991818737
+        ]
+      },
+      "constructionProgress": 0.5
+    },
+    {
+      "name": "source03-half",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 0.5,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0.5,
+            0,
+            0.5
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.5,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.3860879237990978,
+          -0.2848007380329628,
+          -0.48961488760201055
+        ],
+        "max": [
+          0.3870643567127788,
+          0.07786527662014009,
+          0.491839124890333
+        ],
+        "size": [
+          0.7731522805118766,
+          0.3626660146531029,
+          0.9814540124923435
+        ]
+      },
+      "constructionProgress": 0.625
+    },
+    {
+      "name": "source03-complete",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 1,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.3860879237990978,
+          -0.2848007380329628,
+          -0.48961488760201055
+        ],
+        "max": [
+          0.3870643567127788,
+          0.14735918794214858,
+          0.4919014382008028
+        ],
+        "size": [
+          0.7731522805118766,
+          0.4321599259751114,
+          0.9815163258028133
+        ]
+      },
+      "constructionProgress": 0.75
+    },
+    {
+      "name": "source04-half",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 0.5
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.5
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.5
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0.5,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.5,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.38690749247362666,
+          -0.2848007380329628,
+          -0.4899932796534967
+        ],
+        "max": [
+          0.38785237111863063,
+          0.22803351529844262,
+          0.4919014382008028
+        ],
+        "size": [
+          0.7747598635922572,
+          0.5128342533314054,
+          0.9818947178542995
+        ]
+      },
+      "constructionProgress": 0.875
+    },
+    {
+      "name": "all-complete",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0,
+      "maxCompletedLeafContact": 2.334698890114613e-7,
+      "maxBodyPenetration": 0,
+      "bodyBounds": {
+        "min": [
+          -0.38690749247362666,
+          -0.2848007380329628,
+          -0.4899932796534967
+        ],
+        "max": [
+          0.3878523711186309,
+          0.31667689102723606,
+          0.4919014382008028
+        ],
+        "size": [
+          0.7747598635922576,
+          0.6014776290601989,
+          0.9818947178542995
+        ]
+      },
+      "constructionProgress": 1
+    }
+  ],
+  "growthSweep": [
+    {
+      "source": 2,
+      "progress": 0,
+      "height": 0.1455660372529568,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.05,
+      "height": 0.15300503717568678,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.1,
+      "height": 0.16030392189099568,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.15,
+      "height": 0.16760280065271027,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.2,
+      "height": 0.17490170431642169,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.25,
+      "height": 0.18220060798013304,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.3,
+      "height": 0.18949948565422808,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.35,
+      "height": 0.1967983676788013,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.4,
+      "height": 0.2040972583477045,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.45,
+      "height": 0.21139616309903544,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.5,
+      "height": 0.21869506349988824,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.55,
+      "height": 0.22599394226160283,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.6,
+      "height": 0.23329282102331741,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.65,
+      "height": 0.2405917203931769,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.7,
+      "height": 0.24789061970641013,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.75,
+      "height": 0.25518951901964343,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.8,
+      "height": 0.26133705694816356,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.85,
+      "height": 0.26748459487668375,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.9,
+      "height": 0.2736321508949078,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 0.95,
+      "height": 0.2797797075977679,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 2,
+      "progress": 1,
+      "height": 0.285927264300628,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0,
+      "height": 0.285927264300628,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.05,
+      "height": 0.2939832363890919,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.1,
+      "height": 0.30161465129992504,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.15,
+      "height": 0.309246062258975,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.2,
+      "height": 0.3168774901623279,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.25,
+      "height": 0.3245089180656808,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.3,
+      "height": 0.3321403278875607,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.35,
+      "height": 0.3397717422581209,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.4,
+      "height": 0.3474031611207373,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.45,
+      "height": 0.3550345901612602,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.5,
+      "height": 0.3626660146531029,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.55,
+      "height": 0.37029742561215284,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.6,
+      "height": 0.3779288365712028,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.65,
+      "height": 0.38556026453118,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.7,
+      "height": 0.3931916878858524,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.75,
+      "height": 0.40082311124052494,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.8,
+      "height": 0.4070904656309135,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.85,
+      "height": 0.41335782002130217,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.9,
+      "height": 0.4196251884461035,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 0.95,
+      "height": 0.425892553161035,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 3,
+      "progress": 1,
+      "height": 0.4321599259751114,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0,
+      "height": 0.4321599259751114,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.05,
+      "height": 0.44022735142151026,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.1,
+      "height": 0.4482947849670543,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.15,
+      "height": 0.4563622185125982,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.2,
+      "height": 0.4644296520581421,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.25,
+      "height": 0.4724970856036859,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.3,
+      "height": 0.48056451914922976,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.35,
+      "height": 0.4886319526947737,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.4,
+      "height": 0.49669938624031756,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.45,
+      "height": 0.5047668197858616,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.5,
+      "height": 0.5128342533314054,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.55,
+      "height": 0.5209016868769492,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.6,
+      "height": 0.5289691204224932,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.65,
+      "height": 0.5370501301229527,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.7,
+      "height": 0.5459826303204988,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.75,
+      "height": 0.5549151305180449,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.8,
+      "height": 0.5642276268960663,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.85,
+      "height": 0.5735401232740878,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.9,
+      "height": 0.582852633528815,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 0.95,
+      "height": 0.5921651312945069,
+      "maxCompletedLeafContact": 2.2632099779572845e-7,
+      "maxBodyPenetration": 0
+    },
+    {
+      "source": 4,
+      "progress": 1,
+      "height": 0.6014776290601989,
+      "maxCompletedLeafContact": 2.334698890114613e-7,
+      "maxBodyPenetration": 0
+    }
+  ],
+  "maxHeightReversal": 0,
+  "reverseMismatch": 0,
+  "maxCopyLocatorError": 1.0326427314779783e-8,
+  "storyGlobalTracksChanged": false,
+  "browserRendered": false
+}

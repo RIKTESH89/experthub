@@ -1,6 +1,6 @@
 import fs from 'fs';import path from 'path';import ts from 'typescript';
 const load=(name:string)=>{const x:Record<string,any>={};new Function('exports',ts.transpileModule(fs.readFileSync(path.join(process.cwd(),'src/components/home/cinematic',name),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(x);return x;};
-const bMap=load('b-chapter-map.js'),clock=load('b-narrative-v7/narrative-clock.js');
+const bMap=load('b-chapter-map.js'),clock=load('b-narrative-v8/narrative-clock.js');
 const api:Record<string,any>={};new Function('exports','require',ts.transpileModule(fs.readFileSync(path.join(process.cwd(),'src/components/home/cinematic/text-beats.js'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(api,(name:string)=>name.includes('b-chapter-map')?bMap:clock);
 test.each(['contributions','context','conversation'])('semantic %s clauses settle at authored reading poses and reverse identically',id=>{
  for(const [i,p]of [.1,.34,.59,.84].entries()){const beat=api.textBeat(id,p,'original');expect(beat.index).toBe(i);expect(beat.opacity).toBe(1);}

@@ -1,4 +1,4 @@
-import { narrativeState } from './b-narrative-v7/narrative-clock.js';
+import { narrativeState } from './b-narrative-v8/narrative-clock.js';
 import { artworkAssets } from './live3d-config.js';
 import { bChapterFrame as authoredFrame, portraitWidthPerHeight } from './b-chapter-map.js';
 
@@ -19,7 +19,7 @@ export function mountLiveArtwork(root, requestUpdate) {
         Object.assign(loadingPoster.style,{width:`${sourceWidth*ratio}px`,height:`${sourceHeight*ratio}px`,left:`${composition.x+composition.width/2-(reference[0]+reference[2]/2)*ratio}px`,top:`${composition.y+composition.height/2-(reference[1]+reference[3]/2)*ratio}px`});
         const n=narrativeState(f),view=state.portrait?'portrait':'desktop',theme=dark()?'dark':'light';
         const posterName=n.chapter==='secondary'?`narrative-source-${n.source}-${n.phase==='seat'?'formation':n.phase==='copy'||n.phase==='approach'?'copy':'reading'}-${view}-${theme}`:`fallback-${view}-${phase}-${theme}`;
-        const url=`/uploads/live3d/b-narrative-v7/${posterName}.png`;
+        const url=`/uploads/live3d/b-narrative-v8/${posterName}.png`;
         if(url===posterURL)return;posterURL=url;loadingPoster.hidden=true;delete root.dataset.bPoster;const mine=++posterGeneration;loadingPoster.src=url;
         (loadingPoster.decode ? loadingPoster.decode() : new Promise((resolve,reject)=>{loadingPoster.onload=resolve;loadingPoster.onerror=reject;})).then(()=>{if(!disposed&&mine===posterGeneration&&['loading','fallback'].includes(root.dataset.artwork)){loadingPoster.hidden=false;root.dataset.bPoster='ready';}},()=>{});
     }

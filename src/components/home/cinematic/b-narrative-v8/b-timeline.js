@@ -1,0 +1,12 @@
+import * as T from 'three';
+export const clampFrame=f=>Math.max(0,Math.min(191,Number.isFinite(+f)?+f:0));
+export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
+export const windowWeight=(f,a,b)=>smooth((f-a)/(b-a));
+export function createTimeline(envelope){
+ const names=['Brain_Root','Source01_Original','Twin_Root','Source01_Copy'];
+ function compile(p){const transforms={};for(const name of names){const g=p.groups[name];transforms[name]={position:new T.Vector3().fromArray(g.position),quaternion:new T.Quaternion().setFromEuler(new T.Euler(...g.rotationXYZ)),scale:g.scale};}p.sourceRecords.forEach((g,i)=>transforms['Source0'+(i+2)+'_Original']={position:new T.Vector3().fromArray(g.position),quaternion:new T.Quaternion().setFromEuler(new T.Euler(...g.rotationXYZ)),scale:g.scale});return {transforms,cameraPosition:new T.Vector3().fromArray(p.camera.position),target:new T.Vector3().fromArray(p.camera.target)};}
+ const poses={};for(const [name,p] of Object.entries(envelope.acceptedPoses))poses[name]=compile(p);
+ const mobileOverview=compile(envelope.acceptedPoses.desktopOverview);mobileOverview.cameraPosition.set(-.65,.95,8.7);mobileOverview.target.set(.15,-.05,.2);
+ function sample(input,portrait){const frame=clampFrame(input),overview=portrait?mobileOverview:poses.desktopOverview,keys=[[0,poses.hero],[14,poses.hero],[53,overview],[86,overview],[116,poses.reading],[137,poses.reading],[176,poses.formation],[191,poses.formation]];let i=0;while(i<keys.length-2&&keys[i+1][0]<frame)i++;const [fa,a]=keys[i],[fb,b]=keys[i+1],t=smooth((frame-fa)/(fb-fa)),transforms={};for(const name of Object.keys(a.transforms)){const x=a.transforms[name],y=b.transforms[name];transforms[name]={position:x.position.clone().lerp(y.position,t),quaternion:x.quaternion.clone().slerp(y.quaternion,t),scale:Math.exp(T.MathUtils.lerp(Math.log(x.scale),Math.log(y.scale),t))};}return {frame,transforms,cameraPosition:a.cameraPosition.clone().lerp(b.cameraPosition,t),target:a.target.clone().lerp(b.target,t),stage:frame<24?'hero':frame<96?'overview':frame<143?'reading':'formation',selection:windowWeight(frame,76,108),printSource:windowWeight(frame,78,110)*(1-windowWeight(frame,145,168)),printCopy:windowWeight(frame,76,106),patchAdvance:windowWeight(frame,142,164)*(1-windowWeight(frame,176,191)),seatBlend:windowWeight(frame,160,176)};}
+ return {sample,version:envelope.version};
+}

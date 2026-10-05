@@ -1,5 +1,5 @@
 import { bChapterFrame } from './b-chapter-map.js';
-import { narrativeState } from './b-narrative-v7/narrative-clock.js';
+import { narrativeState } from './b-narrative-v8/narrative-clock.js';
 // Original editorial beats tied to existing authored camera/reading phases.
 const smooth=value=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
 const copy={

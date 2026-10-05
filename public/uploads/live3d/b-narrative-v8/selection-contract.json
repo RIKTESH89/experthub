@@ -1,0 +1,398 @@
+{
+  "mode": "Highlight the existing selected glyphs/physical underline; copy root hidden through selection, then reveal same copy",
+  "sources": [
+    {
+      "source": 2,
+      "sourceId": "diagram-02",
+      "fullSource": "Question → Context → Decision",
+      "selectedText": "Question → Context",
+      "selectedGlyphMeshes": [
+        "Ink_Source02_Original_Original02_GlyphRow02_subselected"
+      ],
+      "owningPaper": "Source02_Original_Surface",
+      "bounds": {
+        "min": [
+          -0.4172295331954956,
+          0.0945499986410141,
+          -0.057541776448488235
+        ],
+        "max": [
+          0.11568161845207214,
+          0.09544999897480011,
+          -0.006442392244935036
+        ]
+      },
+      "locator": {
+        "name": "Source02_SelectionSurface",
+        "sourceId": 2,
+        "owningMesh": "Source02_Original_Surface",
+        "triangleIndex": 4,
+        "vertexIndices": [
+          8,
+          10,
+          9
+        ],
+        "barycentric": [
+          0.2055290622506501,
+          0.45152714685536294,
+          0.342943790893987
+        ],
+        "normalAxis": "+Y",
+        "tangentAxis": "+X",
+        "physicallyBound": true,
+        "selectionCorrespondence": "actual selected prefix glyph components, punctuation excluded",
+        "selectedGlyphMeshes": [
+          "Ink_Source02_Original_Original02_GlyphRow02_subselected"
+        ],
+        "selectedText": "Question → Context",
+        "position": [
+          -0.1507739573717118,
+          0.0944999998062849,
+          -0.031992084346711636
+        ]
+      },
+      "corners": [
+        {
+          "name": "Source02_SelectionBoundsTL",
+          "position": [
+            -0.4172295331954956,
+            0.0944999998062849,
+            -0.057541776448488235
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.5217986130990593,
+            0.4128154936939643,
+            0.06538589320697645
+          ]
+        },
+        {
+          "name": "Source02_SelectionBoundsTR",
+          "position": [
+            0.11568161845207209,
+            0.0944999998062849,
+            -0.057541776448488235
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.3794983114190022,
+            0.0333171822749622,
+            0.5871845063060356
+          ]
+        },
+        {
+          "name": "Source02_SelectionBoundsBL",
+          "position": [
+            -0.4172295331954956,
+            0.0944999998062849,
+            -0.006442392244935091
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.44437530677626214,
+            0.49023880001676146,
+            0.06538589320697645
+          ]
+        },
+        {
+          "name": "Source02_SelectionBoundsBR",
+          "position": [
+            0.11568161845207225,
+            0.0944999998062849,
+            -0.006442392244935091
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.37949831141900187,
+            0.11074048859775946,
+            0.5097611999832387
+          ]
+        }
+      ],
+      "highlightObject": "Source02_SelectionUnderline",
+      "copyMustRemainHiddenUntilSelectionEnds": true
+    },
+    {
+      "source": 3,
+      "sourceId": "case-note-03",
+      "fullSource": "Illustrative case note: after naming the constraint, the example’s next step changed.",
+      "selectedText": "naming the constraint",
+      "selectedGlyphMeshes": [
+        "Ink_Source03_Original_Original03_GlyphRow03_subselected"
+      ],
+      "owningPaper": "Source03_Original_Surface",
+      "bounds": {
+        "min": [
+          -0.41530299186706543,
+          0.0945499986410141,
+          -0.007513999938964844
+        ],
+        "max": [
+          0.2571379840373993,
+          0.09544999897480011,
+          0.0627100020647049
+        ]
+      },
+      "locator": {
+        "name": "Source03_SelectionSurface",
+        "sourceId": 3,
+        "owningMesh": "Source03_Original_Surface",
+        "triangleIndex": 4,
+        "vertexIndices": [
+          8,
+          10,
+          9
+        ],
+        "barycentric": [
+          0.04056245862192498,
+          0.5418151514639759,
+          0.4176223899140991
+        ],
+        "normalAxis": "+Y",
+        "tangentAxis": "+X",
+        "physicallyBound": true,
+        "selectionCorrespondence": "actual selected prefix glyph components, punctuation excluded",
+        "selectedGlyphMeshes": [
+          "Ink_Source03_Original_Original03_GlyphRow03_subselected"
+        ],
+        "selectedText": "naming the constraint",
+        "position": [
+          -0.07908250391483312,
+          0.0944999998062849,
+          0.027598001062870026
+        ]
+      },
+      "corners": [
+        {
+          "name": "Source03_SelectionBoundsTL",
+          "position": [
+            -0.41530299186706543,
+            0.0944999998062849,
+            -0.007513999938964844
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.4439921408043641,
+            0.48861515206002226,
+            0.06739270713561367
+          ]
+        },
+        {
+          "name": "Source03_SelectionBoundsTR",
+          "position": [
+            0.2571379840373994,
+            0.0944999998062849,
+            -0.007513999938964899
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.2321479273074153,
+            0.25646722475260697,
+            0.5113848479399777
+          ]
+        },
+        {
+          "name": "Source03_SelectionBoundsBL",
+          "position": [
+            -0.41530299186706543,
+            0.0944999998062849,
+            0.06271000206470495
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.3375921419964568,
+            0.5950151508679296,
+            0.06739270713561367
+          ]
+        },
+        {
+          "name": "Source03_SelectionBoundsBR",
+          "position": [
+            0.25713798403739935,
+            0.0944999998062849,
+            0.06271000206470484
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.23214792730741535,
+            0.362867223560514,
+            0.4049848491320707
+          ]
+        }
+      ],
+      "highlightObject": "Source03_SelectionUnderline",
+      "copyMustRemainHiddenUntilSelectionEnds": true
+    },
+    {
+      "source": 4,
+      "sourceId": "decision-04",
+      "fullSource": "Compare the available options against the stated constraint.",
+      "selectedText": "the stated constraint",
+      "selectedGlyphMeshes": [
+        "Ink_Source04_Original_Original04_GlyphRow04_subselected"
+      ],
+      "owningPaper": "Source04_Original_Surface",
+      "bounds": {
+        "min": [
+          -0.41999998688697815,
+          0.0945499986410141,
+          0.10248599946498871
+        ],
+        "max": [
+          0.22810909152030945,
+          0.09544999897480011,
+          0.15569299459457397
+        ]
+      },
+      "locator": {
+        "name": "Source04_SelectionSurface",
+        "sourceId": 4,
+        "owningMesh": "Source04_Original_Surface",
+        "triangleIndex": 5,
+        "vertexIndices": [
+          10,
+          11,
+          9
+        ],
+        "barycentric": [
+          0.5999431769040442,
+          0.09564696233872222,
+          0.30440986075723364
+        ],
+        "normalAxis": "+Y",
+        "tangentAxis": "+X",
+        "physicallyBound": true,
+        "selectionCorrespondence": "actual selected prefix glyph components, punctuation excluded",
+        "selectedGlyphMeshes": [
+          "Ink_Source04_Original_Original04_GlyphRow04_subselected"
+        ],
+        "selectedText": "the stated constraint",
+        "position": [
+          -0.09594544768333435,
+          0.0944999998062849,
+          0.12908949702978134
+        ]
+      },
+      "corners": [
+        {
+          "name": "Source04_SelectionBoundsTL",
+          "position": [
+            -0.41999998688697815,
+            0.0944999998062849,
+            0.10248599946498876
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.2822181849186388,
+            0.6552818112008504,
+            0.06250000388051082
+          ]
+        },
+        {
+          "name": "Source04_SelectionBoundsTR",
+          "position": [
+            0.2281090915203095,
+            0.0944999998062849,
+            0.10248599946498871
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.26238635768859875,
+            0.3928954535122514,
+            0.34471818879914984
+          ]
+        },
+        {
+          "name": "Source04_SelectionBoundsBL",
+          "position": [
+            -0.41999998688697815,
+            0.0944999998062849,
+            0.15569299459457397
+          ],
+          "triangleIndex": 4,
+          "vertexIndices": [
+            8,
+            10,
+            9
+          ],
+          "barycentric": [
+            0.20160152883480664,
+            0.7358984672846826,
+            0.06250000388051082
+          ]
+        },
+        {
+          "name": "Source04_SelectionBoundsBR",
+          "position": [
+            0.22810909152030934,
+            0.0944999998062849,
+            0.155692994594574
+          ],
+          "triangleIndex": 5,
+          "vertexIndices": [
+            10,
+            11,
+            9
+          ],
+          "barycentric": [
+            0.26238635768859914,
+            0.47351210959608353,
+            0.2641015327153174
+          ]
+        }
+      ],
+      "highlightObject": "Source04_SelectionUnderline",
+      "copyMustRemainHiddenUntilSelectionEnds": true
+    }
+  ]
+}
