@@ -4,7 +4,7 @@ import ts from "typescript";
 const source=fs.readFileSync(path.join(process.cwd(),"src/components/home/cinematic/scheduler.js"),"utf8");
 const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
 const functions:Record<string,any>={};new Function("exports",code)(functions);
-const {frameWindow,nearestReadyFrame}=functions;
+const {frameWindow,nearestReadyFrame,canServeChapter}=functions;
 const frames=Array.from({length:30},(_,i)=>`frame-${i}`);
 
 test("current demand remains first with bounded unique future and reverse candidates",()=>{
@@ -42,3 +42,15 @@ test("a source-reading hold requires its exact pose and far frames do not substi
  expect(nearestReadyFrame(frames,10,cache,1,1)).toBeUndefined();
  cache.set("frame-10",{});expect(nearestReadyFrame(frames,10,cache,1,0).key).toBe("frame-10");
 });
+
+ test("previously demanded work cannot occupy slots for an unrelated chapter",()=>{
+   const current=["context-start","context-hold"];
+   expect(canServeChapter("old-introduction-demand",current,["previous-poster","next-poster"])).toBe(false);
+   expect(canServeChapter("context-start",current,["previous-poster","next-poster"])).toBe(true);
+ });
+ test("bounded adjacent poster work remains useful on either direction of travel",()=>{
+   const current=["context-hold"];
+   for(const anchor of ["previous-poster","current-poster","next-poster"])
+     expect(canServeChapter(anchor,current,["previous-poster","current-poster","next-poster"])).toBe(true);
+   expect(canServeChapter("distant-poster",current,["previous-poster","current-poster","next-poster"])).toBe(false);
+ });

@@ -12,3 +12,9 @@ export function nearestReadyFrame(frames, index, cache, direction, maxDistance =
     });
     return result;
 }
+
+// A previous demand is useful only while it can still serve the current chapter
+// or one of the bounded adjacent poster anchors. Demand history alone is insufficient.
+export function canServeChapter(key, frames, adjacentPosters) {
+    return frames.includes(key) || adjacentPosters.includes(key);
+}

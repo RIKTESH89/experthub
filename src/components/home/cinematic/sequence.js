@@ -1,6 +1,6 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
 import { assetRoot } from './asset-config.js';
-import { frameWindow, nearestReadyFrame } from './scheduler.js';
+import { frameWindow, nearestReadyFrame, canServeChapter } from './scheduler.js';
 export function mountSequence(root) {
     const lifecycle = new AbortController();
     let manifestController = new AbortController();
@@ -31,15 +31,18 @@ export function mountSequence(root) {
     let manifest, variant, active = 0, local = 0, cinematic = false, userStatic = false, ticket = 0, generation = 0, desired = '', lastDrawn = '', windowUrls = [], failures = 0;
     const cache = new Map(), inflight = new Map(), bad = new Set(), failedDemands = new Set(), blobs = new Map();
     let blobBytes=0, latencyMs=100, scrollVelocity=0, previousScroll=scrollY, previousScrollTime=performance.now();
-    let prepared, geometry, geometryDirty=true;
-    const metrics = { requests: 0, receivedBytes: 0, cachePeak: 0, decodedBytesPeak: 0, rendered: 0, missingDemands: 0, aborts: 0, errors: 0, blobHits:0, decoded:0, skippedDraws:0, crossChapterHides:0, lastFetchMs:0, lastDecodeMs:0, lastDrawMs:0 };
-    function report() { Object.assign(canvas.dataset, { chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', reason: modeReason || 'none', cache: String(cache.size), pending: String(inflight.size), blobBytes:String(blobBytes), blobCache:String(blobs.size), visualChapter:lastDrawn ? chapters[active].id : '', visualPending:String(desired!==lastDrawn), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
+    let prepared, geometry, geometryDirty=true, posterObjectURL='', posterStarted=0;
+    const metrics = { requests: 0, receivedBytes: 0, cachePeak: 0, decodedBytesPeak: 0, rendered: 0, missingDemands: 0, aborts: 0, errors: 0, blobHits:0, decoded:0, skippedDraws:0, crossChapterHides:0, lastFetchMs:0, lastDecodeMs:0, lastDrawMs:0, posterSwitches:0, posterLoads:0, posterErrors:0, posterBlobHits:0, lastPosterMs:0 };
+    function report() { Object.assign(canvas.dataset, { chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', reason: modeReason || 'none', cache: String(cache.size), pending: String(inflight.size), blobBytes:String(blobBytes), blobCache:String(blobs.size), posterPrimed:String(posterKeys().filter(k=>blobs.has(k)).length), primerPending:String([...inflight.values()].filter(j=>j.primer).length), jobs:JSON.stringify([...inflight].map(([url,j])=>({frame:url,age:performance.now()-j.started,demanded:j.demanded,primer:j.primer}))), posterFrame:poster.dataset.frame??'', posterReady:String(!poster.hidden && poster.complete && poster.naturalWidth>0), posterAgeMs:String(posterStarted ? performance.now()-posterStarted : 0), visualChapter:lastDrawn ? chapters[active].id : '', visualPending:String(desired!==lastDrawn), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
     function free(image) { image.close?.(); if (image instanceof HTMLImageElement)
         image.src = ''; }
-    function clearFrames() { generation++; inflight.forEach(v => v.controller.abort()); inflight.clear(); cache.forEach(v => free(v.image)); cache.clear(); bad.clear(); failedDemands.clear(); failures = 0; windowUrls = []; desired = ''; lastDrawn = ''; blobs.clear(); blobBytes=0; canvas.classList.remove('ready'); }
+    function clearFrames() { if(posterObjectURL){URL.revokeObjectURL(posterObjectURL);posterObjectURL='';}poster.hidden=true;delete poster.dataset.frame;generation++; inflight.forEach(v => v.controller.abort()); inflight.clear(); cache.forEach(v => free(v.image)); cache.clear(); bad.clear(); failedDemands.clear(); failures = 0; windowUrls = []; desired = ''; lastDrawn = ''; blobs.clear(); blobBytes=0; canvas.classList.remove('ready'); }
     function limit() { return portrait.matches ? 6 : 10; }
+    function posterKeys() { return variant ? variant.chapters.map(ch=>new URL(ch.poster,assetBase).href) : []; }
+    function anchors() { return variant ? [active,active+1,active-1].filter(i=>i>=0 && i<variant.chapters.length).map(i=>new URL(variant.chapters[i].poster,assetBase).href) : []; }
     function evict() { while (cache.size > limit()) {
-        const key = [...cache.keys()].find(k => k !== desired) ?? cache.keys().next().value;
+        const protectedKeys = new Set([desired,...anchors()]);
+        const key = [...cache.keys()].find(k => !protectedKeys.has(k)) ?? [...cache.keys()].find(k=>k!==desired) ?? cache.keys().next().value;
         free(cache.get(key).image);
         cache.delete(key);
     } }
@@ -127,6 +130,20 @@ export function mountSequence(root) {
         const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 + 02 / Related ideas'], construction: ['A sparse foundation', '01 / First context layer', '02 + 03 + 04 / Related knowledge', 'A partial Digital Twin'], conversation: ['Fictional question', '01 + 04 / Available sources', '01 + 04 / Check the source passages', 'Scripted example · not live AI'] };
         const caption = chapters[active].querySelector('[data-caption]');
         if (caption && captions[chapters[active].id]) caption.textContent = captions[chapters[active].id][beat];
+        if(portrait.matches){
+            const title=chapters[active].querySelector('.title-lane');
+            const top=geometry.chrome+12;
+            root.style.setProperty('--portrait-title-top',`${top}px`);
+            root.style.setProperty('--portrait-shade-end',`${top+(title?.offsetHeight??60)+6}px`);
+            const weight=Math.max(0,Math.min(1,local/.15,(1-local)/.15));
+            const context=chapters[active].id==='context',question=chapters[active].id==='conversation';
+            const questionShift=3-Math.max(0,Math.min(1,(local-.45)/.1));
+            root.style.setProperty('--portrait-body-top',`${78+(context?8:0)*weight}%`);
+            root.style.setProperty('--portrait-shade-bottom-start',`${75+(context?8:0)*weight}%`);
+            root.style.setProperty('--portrait-shade-bottom-end',`${78+(context?7:0)*weight}%`);
+            root.style.setProperty('--portrait-shift',`${-10+(context?4:question?questionShift:0)*weight}svh`);
+            root.style.setProperty('--portrait-scale',String(1-(context ? .05 : 0)*weight));
+        }
         stage.classList.toggle('off', beyondStory);
         root.querySelector('.chapter-nav').hidden = beyondStory;
     }
@@ -154,19 +171,22 @@ export function mountSequence(root) {
         if(blobs.has(key))blobBytes-=blobs.get(key).size;
         blobs.delete(key);blobs.set(key,blob);blobBytes+=blob.size;
         const budget=portrait.matches ? 2*1024*1024 : 4*1024*1024;
-        while(blobBytes>budget || blobs.size>64) {const oldest=blobs.keys().next().value;blobBytes-=blobs.get(oldest).size;blobs.delete(oldest);}
+        while(blobBytes>budget || blobs.size>64) {const primers=new Set(posterKeys());const oldest=[...blobs.keys()].find(k=>!primers.has(k))??blobs.keys().next().value;blobBytes-=blobs.get(oldest).size;blobs.delete(oldest);}
     }
     function pump() {
         if(!cinematic)return;
         // A current demand can displace speculative work, never an earlier demand.
         if(!cache.has(desired) && !inflight.has(desired) && inflight.size>=2) {
-            const speculative=[...inflight].find(([,job])=>!job.demanded);
+            const speculative=[...inflight].find(([url,job])=>!job.demanded && !anchors().includes(url)) ?? [...inflight].find(([,job])=>!job.demanded);
             if(speculative){speculative[1].cancelled=true;speculative[1].controller.abort();inflight.delete(speculative[0]);metrics.aborts++;}
         }
-        for(const key of windowUrls) {
+        const primers=posterKeys().filter(key=>!blobs.has(key));
+        const jobs=[...new Set([desired,...anchors(),...primers,...windowUrls])];
+        for(const key of jobs) {
             if(inflight.size>=2)break;
-            if(cache.has(key)||inflight.has(key)||bad.has(key))continue;
-            const controller=new AbortController(),epoch=generation,job={controller,demanded:key===desired,cancelled:false};
+            const primer=!windowUrls.includes(key);
+            if(cache.has(key)||inflight.has(key)||bad.has(key)||(primer&&blobs.has(key)))continue;
+            const controller=new AbortController(),epoch=generation,job={controller,demanded:key===desired,cancelled:false,primer,started:performance.now()};
             inflight.set(key,job);
             const timeout=setTimeout(()=>controller.abort(),8000);
             (async()=>{let decoded;
@@ -183,7 +203,7 @@ export function mountSequence(root) {
                         if(epoch!==generation || !cinematic)return;
                         retainBlob(key,blob);
                     }
-                    if(controller.signal.aborted)return;
+                    if(controller.signal.aborted || primer)return;
                     const started=performance.now();decoded=await decode(blob);
                     metrics.lastDecodeMs=performance.now()-started;metrics.decoded++;
                     if(epoch!==generation || !cinematic || controller.signal.aborted){free(decoded);return;}
@@ -219,17 +239,25 @@ export function mountSequence(root) {
         resize();
         const ch=variant.chapters[active], frames=prepared.get(variant)[active];
         const posterURL=new URL(ch.poster,assetBase).href;
-        if(poster.src!==posterURL){poster.hidden=true;poster.src=posterURL;}
-        if(poster.complete && poster.naturalWidth>0 && poster.src===posterURL)poster.hidden=false;
+        const availableBlob=blobs.get(posterURL);
+        const pendingRemote=poster.dataset.frame===posterURL && !posterObjectURL && !(poster.complete && poster.naturalWidth>0);
+        if(poster.dataset.frame!==posterURL || (pendingRemote && availableBlob)){
+            if(posterObjectURL)URL.revokeObjectURL(posterObjectURL);
+            posterObjectURL='';poster.hidden=true;poster.dataset.frame=posterURL;posterStarted=performance.now();metrics.posterSwitches++;
+            if(availableBlob){posterObjectURL=URL.createObjectURL(availableBlob);poster.src=posterObjectURL;metrics.posterBlobHits++;}
+            else if(poster.src!==posterURL)poster.src=posterURL;
+        }
+        if(poster.complete && poster.naturalWidth>0 && poster.currentSrc===poster.src)poster.hidden=false;
         const index=frameAt(local,ch.frames.length,ch.keyframes),key=frames[index];
         desired=key;
         const direction=scrollVelocity<0?-1:1;
         const lookAhead=Math.max(0,Math.min(1,local+scrollVelocity*latencyMs/geometry.chapters[active].height));
         const predicted=frameAt(lookAhead,ch.frames.length,ch.keyframes);
-        windowUrls=frameWindow(frames,index,predicted,direction,portrait.matches?2:3);
+        const adjacent=anchors();
+        windowUrls=[...new Set([key,...adjacent,...frameWindow(frames,index,predicted,direction,portrait.matches?2:3)])].slice(0,portrait.matches?5:7);
         if(inflight.has(key))inflight.get(key).demanded=true;
-        // Retain useful in-flight demand during scrubbing. Drop only obsolete speculation.
-        for(const [url,job]of inflight)if(!job.demanded && !frames.includes(url)){job.cancelled=true;job.controller.abort();inflight.delete(url);metrics.aborts++;}
+        // Keep same-chapter demand and adjacent posters; preempt unusable old chapters.
+        for(const [url,job]of inflight)if(!job.primer && !canServeChapter(url,frames,adjacent)){job.cancelled=true;job.controller.abort();inflight.delete(url);metrics.aborts++;}
         if(!cache.has(key) && canvas.dataset.frame!==key)metrics.missingDemands++;
         if (bad.has(key)) {
             currentFailure(key);
@@ -277,7 +305,7 @@ export function mountSequence(root) {
         if (index !== active || textOpacity(local, index === 0) < .99) chapter.scrollIntoView({block:'start',behavior:'instant'});
         schedule();
     });
-    listen(poster,'load',()=>{const expected=variant ? new URL(variant.chapters[active].poster,assetBase).href : '';poster.hidden=!(poster.complete && poster.naturalWidth>0 && poster.currentSrc===expected);schedule();});
+    listen(poster,'load',()=>{const expected=variant ? new URL(variant.chapters[active].poster,assetBase).href : '';poster.hidden=!(poster.complete && poster.naturalWidth>0 && poster.currentSrc===poster.src && poster.dataset.frame===expected);if(!poster.hidden){metrics.posterLoads++;metrics.lastPosterMs=performance.now()-posterStarted;}schedule();});
     listen(window, 'scroll', schedule, { passive: true });
     listen(window, 'resize', () => {geometryDirty=true;schedule();}, { passive: true });
     listen(window, 'pagehide', clearFrames);
@@ -293,7 +321,7 @@ export function mountSequence(root) {
     root.querySelectorAll('a[href^="#"]').forEach(a => listen(a, 'click', () => { const hash = a.getAttribute('href'); anchorTarget(hash, true, true); }));
     listen(window, 'hashchange', () => anchorTarget(location.hash, true, true));
     root.querySelectorAll('.static-visual img').forEach(img => listen(img, 'error', () => { img.hidden = true; img.closest('figure').querySelector('figcaption').textContent = 'Scene image unavailable. The complete explanation follows in text.'; }));
-    listen(poster, 'error', () => { poster.style.visibility = 'hidden'; });
+    listen(poster, 'error', () => { poster.hidden=true;poster.style.visibility='hidden';metrics.posterErrors++;schedule(); });
     listen(poster, 'load', () => { poster.style.visibility = 'visible'; });
     async function start(preserve = false) {
         manifestController.abort();
