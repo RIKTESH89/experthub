@@ -86,6 +86,7 @@ export function mountLiveArtwork(root, requestUpdate) {
     }
     // Local QA calls an explicit measurement; normal rendering never scans vertices.
     if (location.hostname === '127.0.0.1' && new URLSearchParams(location.search).has('artwork-test')) {
+        canvas.addEventListener('inspect-resources', event => { event.detail.readResources = controller?.inspectResources; }, { signal:lifetime.signal });
         canvas.addEventListener('inspect-artwork', event => { event.detail.result = controller?.inspectFraming(); }, { signal:lifetime.signal });
     }
     const themeObserver = new MutationObserver(()=>controller?.setTheme(dark()?'dark':'light'));

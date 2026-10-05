@@ -1,8 +1,8 @@
-// App-owned WebGL lifecycle around the immutable renderer-r3 camera/studio handoff.
+// App-owned WebGL lifecycle around the immutable renderer-r4 studio / unchanged r3 camera handoff.
 import * as T from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { createCameraDirector, createStudioRig } from './cinematic-runtime-r3.js';
+import { createCameraDirector, createStudioRig } from './cinematic-runtime-r4.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 function releaseScene(scene) {
@@ -64,10 +64,12 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
     function draw(now) {
         ticket = 0;
         if (disposed || !visible || document.hidden || !dirty) return;
-        pose(); const start = performance.now(); renderer.render(scene,camera);
+        pose(); const start = performance.now(); studio.renderContacts(performance.now()); renderer.render(scene,camera);
         metrics.drawMs = performance.now()-start; metrics.frames++;
         metrics.frame = currentFrame; metrics.composition = currentComposition; metrics.portrait = currentPortrait; metrics.dark = currentDark; metrics.intervalMs = last ? now-last : 0; last = now;
-        metrics.drawCalls = renderer.info.render.calls; metrics.triangles = renderer.info.render.triangles;
+        metrics.contact = { ...studio.contactInfo };
+        metrics.mainDrawCalls = renderer.info.render.calls; metrics.mainTriangles = renderer.info.render.triangles;
+        metrics.drawCalls = metrics.mainDrawCalls + (metrics.contact.drawCalls || 0); metrics.triangles = metrics.mainTriangles + (metrics.contact.triangles || 0);
         metrics.geometries = renderer.info.memory.geometries; metrics.textures = renderer.info.memory.textures;
         metrics.buffer = [canvas.width,canvas.height]; metrics.dpr = renderer.getPixelRatio();
         if (!metrics.firstFrameMs) metrics.firstFrameMs = performance.now()-started;
@@ -83,7 +85,7 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
     }
     try {
         const start = performance.now();
-        const [data, metadata, bounds] = await Promise.all([read(assets.scene), read(assets.camera,true), read(assets.framing,true)]);
+        const [data, metadata, bounds, contactBounds] = await Promise.all([read(assets.scene), read(assets.camera,true), read(assets.framing,true), assets.contact ? read(assets.contact,true).catch(error => { if (signal.aborted) throw error; return null; }) : null]);
         metrics.loadMs = performance.now()-start; metrics.assetBytes = data.byteLength; ensureAlive();
         contract = metadata; framing = bounds;
         if (!contract.tracks?.desktop?.length || !contract.tracks?.portrait?.length || !framing.samples?.length) throw Error('Artwork metadata unavailable');
@@ -112,7 +114,7 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
             node.castShadow = !/desk|ink|bronze/i.test(name); node.receiveShadow = !copy && !/selected|ink|bronze|folio/i.test(name);
         });
         renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
-        studio = createStudioRig(T,{ scene,renderer });
+        studio = createStudioRig(T,{ scene,renderer,contactBounds });
         resize(); pose(); const compileStart = performance.now();
         await renderer.compileAsync(scene,camera); metrics.compileMs = performance.now()-compileStart; ensureAlive();
         compiled = true; cancelAnimationFrame(ticket); ticket = 0; draw(performance.now());
@@ -146,6 +148,7 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
                     }
                 }); return { ...extent,weights,kinds };
             },
+            inspectResources() { return { disposed, memory:{...renderer.info.memory}, contact:{...studio.contactInfo}, frame:currentFrame, visible }; },
             resize, dispose,
         };
     } catch (error) { dispose(); throw error; }
