@@ -8,7 +8,31 @@ new Function("exports", code)(functions);
 const progress = functions.chapterProgress as (scroll: number, top: number, height: number, viewport: number) => {phase: number; exit: number; pinnedDistance: number};
 const frameAt = functions.frameAt as (phase: number, count: number, keyframes: number[][]) => number;
 const opacity = functions.textOpacity as (phase: number, opening?:boolean) => number;
-const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8"));
+const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json"), "utf8"));
+
+test("the repaired source-reading pose stays open through the reading hold and returns monotonically", () => {
+  for (const variant of Object.values(manifest.variants) as Array<{chapters:Array<{id:string;poster:string;frames:string[];keyframes:number[][]}>}>) {
+    const chapter = variant.chapters.find(c => c.id === "conversation")!;
+    expect(chapter.poster).toBe("assets/" + (variant === manifest.variants.desktop ? "desktop" : "portrait") + "/frame-137.webp");
+    for (const phase of [.55,.625,.7,.8,.84,.86]) expect(chapter.frames[frameAt(phase,chapter.frames.length,chapter.keyframes)]).toMatch(/frame-137\.webp$/);
+    let previous = -1;
+    for (let step=0;step<=100;step++) {
+      const frame = frameAt(step/100,chapter.frames.length,chapter.keyframes);
+      expect(frame).toBeGreaterThanOrEqual(previous); previous=frame;
+    }
+    expect(chapter.frames[previous]).toMatch(/frame-151\.webp$/);
+  }
+});
+
+test("SSR and runtime share one versioned namespace while the original manifest remains available", () => {
+  const assetConfig = fs.readFileSync(path.join(process.cwd(),"src/components/home/cinematic/asset-config.js"),"utf8");
+  const runtime = fs.readFileSync(path.join(process.cwd(),"src/components/home/cinematic/sequence.js"),"utf8");
+  const markup = fs.readFileSync(path.join(process.cwd(),"src/components/home/cinematic/home.tsx"),"utf8");
+  expect(assetConfig).toContain("/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/");
+  expect(runtime).toContain("import { assetRoot } from './asset-config.js'");
+  expect(markup).toContain('import { assetRoot } from "./asset-config.js"');
+  expect(fs.existsSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/frame-manifest.json"))).toBe(true);
+});
 
 test.each([640, 700, 750, 812, 844, 900, 915])("all seven fixed overlays use the full chapter distance and retain authored reading holds at viewport %i", viewport => {
   for (const variant of Object.values(manifest.variants) as Array<{chapters: Array<{id:string;scrollRange:number[];frames:string[];keyframes:number[][]}>}>) {
@@ -69,7 +93,7 @@ test("homepage asset paths use the existing anonymous static boundary without ex
   for(const variant of Object.values(manifest.variants) as Array<{chapters:Array<{frames:string[];poster:string}>}>) {
     for(const chapter of variant.chapters) {
       for(const frame of [chapter.poster,...chapter.frames]) {
-        const route="/uploads/cinematic-homepage/"+frame;
+        const route="/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/"+frame;
         expect(isPublicRoute(route)).toBe(true);
         expect(fs.existsSync(path.join(process.cwd(),"public",route))).toBe(true);
       }

@@ -1,11 +1,12 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
+import { assetRoot } from './asset-config.js';
 export function mountSequence(root) {
     const lifecycle = new AbortController();
     let manifestController = new AbortController();
     let manifestTimer;
     let disposed = false;
     const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: lifecycle.signal });
-    const assetBase = new URL('/uploads/cinematic-homepage/', location.origin);
+    const assetBase = new URL(assetRoot, location.origin);
     const body = root, chapters = [...root.querySelectorAll('.chapter')], nav = [...root.querySelectorAll('.chapter-nav a')];
     const panels = chapters.map(ch => ch.querySelector('.panel'));
     const controls = panels.map(panel => [...(panel?.querySelectorAll('a[href],button,input,select,textarea,[tabindex]') ?? [])].map(element => ({element, tabindex:element.getAttribute('tabindex')})));
@@ -115,7 +116,7 @@ export function mountSequence(root) {
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current'));
         const beat = Math.min(3, Math.floor(local * 4));
         root.querySelectorAll('.build-beats li').forEach((li, i) => i === beat ? li.setAttribute('data-active', '') : li.removeAttribute('data-active'));
-        const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 + 02 / Related ideas'], construction: ['A sparse foundation', '01 / First context layer', '02 + 03 + 04 / Related knowledge', 'A partial Digital Twin'], conversation: ['Fictional question', '01 + 04 / Available sources', 'Check the source passages', 'Scripted answer · not live AI'] };
+        const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 + 02 / Related ideas'], construction: ['A sparse foundation', '01 / First context layer', '02 + 03 + 04 / Related knowledge', 'A partial Digital Twin'], conversation: ['Fictional question', '01 + 04 / Available sources', '01 + 04 / Check the source passages', 'Scripted example · not live AI'] };
         const caption = chapters[active].querySelector('[data-caption]');
         if (caption && captions[chapters[active].id]) caption.textContent = captions[chapters[active].id][beat];
         stage.classList.toggle('off', beyondStory);

@@ -14,7 +14,8 @@ function loadRuntime(): Mount {
     return exports;
   };
   const timeline = load("timeline.js");
-  return load("sequence.js", () => timeline).mountSequence as Mount;
+  const assets = load("asset-config.js");
+  return load("sequence.js", name => name.includes("asset-config") ? assets : timeline).mountSequence as Mount;
 }
 const ids = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"];
 function fixture() {
@@ -72,7 +73,7 @@ test("a delayed manifest body cannot revive an unmounted renderer or overwrite i
   const cleanupCurrent = mount(root);
   root.querySelector("#runtime-status")!.textContent = "Current renderer awaiting its own response";
   const before = root.innerHTML;
-  resolveBody(JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8")));
+  resolveBody(JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json"), "utf8")));
   await settle();
   expect(root.dataset.cinematic).toBeUndefined();
   expect(root.innerHTML).toBe(before);
@@ -106,14 +107,14 @@ test("a failed manifest offers a fresh retry and cleanup aborts that retry witho
   expect(root.dataset.renderReason).toBe("loading");
   cleanup(); expect(pending[1].signal.aborted).toBe(true);
   const before = root.innerHTML;
-  pending[1].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/frame-manifest.json"),"utf8"))});
+  pending[1].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json"),"utf8"))});
   await settle(); expect(root.innerHTML).toBe(before);
 });
 
 test("reduced motion remains respected and cannot be overridden through the animation button", async () => {
   Object.defineProperty(window,"matchMedia",{configurable:true,value:jest.fn(query=>{const media=new EventTarget();Object.assign(media,{matches:query.includes("prefers-reduced-motion")});return media})});
   const root=fixture();const cleanup=loadRuntime()(root);
-  pending[0].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/frame-manifest.json"),"utf8"))});await settle();
+  pending[0].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json"),"utf8"))});await settle();
   expect(root.dataset.renderReason).toBe("reduced-motion");
   const button=root.querySelector<HTMLButtonElement>("#motion")!;expect(button.disabled).toBe(true);button.click();
   expect(root.dataset.renderReason).toBe("reduced-motion");expect(pending).toHaveLength(1);cleanup();

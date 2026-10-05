@@ -1,0 +1,1304 @@
+{
+  "version": 1,
+  "status": "concept",
+  "assetReadiness": "Complete continuous desktop and independently framed portrait sequence rendered and file-validated; integrated browser and parent visual acceptance pending.",
+  "description": "Seven-chapter authored sculpture with fictional source records. Conversation source01 and04 face the reading view; the exact scripted example remains in accessible HTML. Local revision awaiting integrated review.",
+  "productUrl": "https://experthub.co.in",
+  "variants": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "chapters": [
+        {
+          "id": "introduction",
+          "scrollRange": [
+            0,
+            0.12
+          ],
+          "poster": "assets/desktop/frame-000.webp",
+          "frames": [
+            "assets/desktop/frame-000.webp",
+            "assets/desktop/frame-001.webp",
+            "assets/desktop/frame-002.webp",
+            "assets/desktop/frame-003.webp",
+            "assets/desktop/frame-004.webp",
+            "assets/desktop/frame-005.webp",
+            "assets/desktop/frame-006.webp",
+            "assets/desktop/frame-007.webp",
+            "assets/desktop/frame-008.webp",
+            "assets/desktop/frame-009.webp",
+            "assets/desktop/frame-010.webp",
+            "assets/desktop/frame-011.webp",
+            "assets/desktop/frame-012.webp",
+            "assets/desktop/frame-013.webp",
+            "assets/desktop/frame-014.webp",
+            "assets/desktop/frame-015.webp",
+            "assets/desktop/frame-016.webp",
+            "assets/desktop/frame-017.webp",
+            "assets/desktop/frame-018.webp",
+            "assets/desktop/frame-019.webp",
+            "assets/desktop/frame-020.webp",
+            "assets/desktop/frame-021.webp",
+            "assets/desktop/frame-022.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              22
+            ],
+            [
+              0.88,
+              22
+            ],
+            [
+              1,
+              22
+            ]
+          ],
+          "headline": "Give your knowledge a new way to speak.",
+          "body": "Create an AI representation of your expertise from the material you choose to share."
+        },
+        {
+          "id": "contributions",
+          "scrollRange": [
+            0.12,
+            0.26
+          ],
+          "poster": "assets/desktop/frame-028.webp",
+          "frames": [
+            "assets/desktop/frame-022.webp",
+            "assets/desktop/frame-023.webp",
+            "assets/desktop/frame-024.webp",
+            "assets/desktop/frame-025.webp",
+            "assets/desktop/frame-026.webp",
+            "assets/desktop/frame-027.webp",
+            "assets/desktop/frame-028.webp",
+            "assets/desktop/frame-029.webp",
+            "assets/desktop/frame-030.webp",
+            "assets/desktop/frame-031.webp",
+            "assets/desktop/frame-032.webp",
+            "assets/desktop/frame-033.webp",
+            "assets/desktop/frame-034.webp",
+            "assets/desktop/frame-035.webp",
+            "assets/desktop/frame-036.webp",
+            "assets/desktop/frame-037.webp",
+            "assets/desktop/frame-038.webp",
+            "assets/desktop/frame-039.webp",
+            "assets/desktop/frame-040.webp",
+            "assets/desktop/frame-041.webp",
+            "assets/desktop/frame-042.webp",
+            "assets/desktop/frame-043.webp",
+            "assets/desktop/frame-044.webp",
+            "assets/desktop/frame-045.webp",
+            "assets/desktop/frame-046.webp",
+            "assets/desktop/frame-047.webp",
+            "assets/desktop/frame-048.webp",
+            "assets/desktop/frame-049.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              6
+            ],
+            [
+              0.2,
+              6
+            ],
+            [
+              0.3,
+              13
+            ],
+            [
+              0.45,
+              13
+            ],
+            [
+              0.55,
+              20
+            ],
+            [
+              0.7,
+              20
+            ],
+            [
+              0.8,
+              27
+            ],
+            [
+              0.94,
+              27
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          "headline": "Begin with what you\u2019ve put into words.",
+          "body": "Contributed explanations, diagrams, shared case notes and decision examples provide the source material."
+        },
+        {
+          "id": "context",
+          "scrollRange": [
+            0.26,
+            0.4
+          ],
+          "poster": "assets/desktop/frame-053.webp",
+          "frames": [
+            "assets/desktop/frame-049.webp",
+            "assets/desktop/frame-050.webp",
+            "assets/desktop/frame-051.webp",
+            "assets/desktop/frame-052.webp",
+            "assets/desktop/frame-053.webp",
+            "assets/desktop/frame-054.webp",
+            "assets/desktop/frame-055.webp",
+            "assets/desktop/frame-056.webp",
+            "assets/desktop/frame-057.webp",
+            "assets/desktop/frame-058.webp",
+            "assets/desktop/frame-059.webp",
+            "assets/desktop/frame-060.webp",
+            "assets/desktop/frame-061.webp",
+            "assets/desktop/frame-062.webp",
+            "assets/desktop/frame-063.webp",
+            "assets/desktop/frame-064.webp",
+            "assets/desktop/frame-065.webp",
+            "assets/desktop/frame-066.webp",
+            "assets/desktop/frame-067.webp",
+            "assets/desktop/frame-068.webp",
+            "assets/desktop/frame-069.webp",
+            "assets/desktop/frame-070.webp",
+            "assets/desktop/frame-071.webp",
+            "assets/desktop/frame-072.webp",
+            "assets/desktop/frame-073.webp",
+            "assets/desktop/frame-074.webp",
+            "assets/desktop/frame-075.webp",
+            "assets/desktop/frame-076.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              4
+            ],
+            [
+              0.2,
+              4
+            ],
+            [
+              0.3,
+              6
+            ],
+            [
+              0.45,
+              6
+            ],
+            [
+              0.55,
+              15
+            ],
+            [
+              0.7,
+              15
+            ],
+            [
+              0.8,
+              27
+            ],
+            [
+              0.94,
+              27
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          "headline": "An idea means more in context.",
+          "body": "Selected passages keep their original context and source in view."
+        },
+        {
+          "id": "construction",
+          "scrollRange": [
+            0.4,
+            0.62
+          ],
+          "poster": "assets/desktop/frame-076.webp",
+          "frames": [
+            "assets/desktop/frame-076.webp",
+            "assets/desktop/frame-077.webp",
+            "assets/desktop/frame-078.webp",
+            "assets/desktop/frame-079.webp",
+            "assets/desktop/frame-080.webp",
+            "assets/desktop/frame-081.webp",
+            "assets/desktop/frame-082.webp",
+            "assets/desktop/frame-083.webp",
+            "assets/desktop/frame-084.webp",
+            "assets/desktop/frame-085.webp",
+            "assets/desktop/frame-086.webp",
+            "assets/desktop/frame-087.webp",
+            "assets/desktop/frame-088.webp",
+            "assets/desktop/frame-089.webp",
+            "assets/desktop/frame-090.webp",
+            "assets/desktop/frame-091.webp",
+            "assets/desktop/frame-092.webp",
+            "assets/desktop/frame-093.webp",
+            "assets/desktop/frame-094.webp",
+            "assets/desktop/frame-095.webp",
+            "assets/desktop/frame-096.webp",
+            "assets/desktop/frame-097.webp",
+            "assets/desktop/frame-098.webp",
+            "assets/desktop/frame-099.webp",
+            "assets/desktop/frame-100.webp",
+            "assets/desktop/frame-101.webp",
+            "assets/desktop/frame-102.webp",
+            "assets/desktop/frame-103.webp",
+            "assets/desktop/frame-104.webp",
+            "assets/desktop/frame-105.webp",
+            "assets/desktop/frame-106.webp",
+            "assets/desktop/frame-107.webp",
+            "assets/desktop/frame-108.webp",
+            "assets/desktop/frame-109.webp",
+            "assets/desktop/frame-110.webp",
+            "assets/desktop/frame-111.webp",
+            "assets/desktop/frame-112.webp",
+            "assets/desktop/frame-113.webp",
+            "assets/desktop/frame-114.webp",
+            "assets/desktop/frame-115.webp",
+            "assets/desktop/frame-116.webp",
+            "assets/desktop/frame-117.webp",
+            "assets/desktop/frame-118.webp",
+            "assets/desktop/frame-119.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              0
+            ],
+            [
+              0.2,
+              0
+            ],
+            [
+              0.3,
+              18
+            ],
+            [
+              0.45,
+              18
+            ],
+            [
+              0.55,
+              34
+            ],
+            [
+              0.7,
+              34
+            ],
+            [
+              0.8,
+              43
+            ],
+            [
+              0.94,
+              43
+            ],
+            [
+              1,
+              43
+            ]
+          ],
+          "headline": "Your shared knowledge, taking a new shape.",
+          "body": "Selected copies connect related ideas and assemble a partial AI representation. The originals remain intact."
+        },
+        {
+          "id": "conversation",
+          "scrollRange": [
+            0.62,
+            0.79
+          ],
+          "poster": "assets/desktop/frame-137.webp",
+          "frames": [
+            "assets/desktop/frame-119.webp",
+            "assets/desktop/frame-120.webp",
+            "assets/desktop/frame-121.webp",
+            "assets/desktop/frame-122.webp",
+            "assets/desktop/frame-123.webp",
+            "assets/desktop/frame-124.webp",
+            "assets/desktop/frame-125.webp",
+            "assets/desktop/frame-126.webp",
+            "assets/desktop/frame-127.webp",
+            "assets/desktop/frame-128.webp",
+            "assets/desktop/frame-129.webp",
+            "assets/desktop/frame-130.webp",
+            "assets/desktop/frame-131.webp",
+            "assets/desktop/frame-132.webp",
+            "assets/desktop/frame-133.webp",
+            "assets/desktop/frame-134.webp",
+            "assets/desktop/frame-135.webp",
+            "assets/desktop/frame-136.webp",
+            "assets/desktop/frame-137.webp",
+            "assets/desktop/frame-138.webp",
+            "assets/desktop/frame-139.webp",
+            "assets/desktop/frame-140.webp",
+            "assets/desktop/frame-141.webp",
+            "assets/desktop/frame-142.webp",
+            "assets/desktop/frame-143.webp",
+            "assets/desktop/frame-144.webp",
+            "assets/desktop/frame-145.webp",
+            "assets/desktop/frame-146.webp",
+            "assets/desktop/frame-147.webp",
+            "assets/desktop/frame-148.webp",
+            "assets/desktop/frame-149.webp",
+            "assets/desktop/frame-150.webp",
+            "assets/desktop/frame-151.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              6
+            ],
+            [
+              0.2,
+              6
+            ],
+            [
+              0.3,
+              9
+            ],
+            [
+              0.45,
+              9
+            ],
+            [
+              0.55,
+              18
+            ],
+            [
+              0.7,
+              18
+            ],
+            [
+              0.8,
+              18
+            ],
+            [
+              0.86,
+              18
+            ],
+            [
+              0.96,
+              30
+            ],
+            [
+              1,
+              32
+            ]
+          ],
+          "headline": "Ask a question. Follow the answer back.",
+          "body": "Illustrative question and scripted answer, with the contributing source passages alongside."
+        },
+        {
+          "id": "control",
+          "scrollRange": [
+            0.79,
+            0.9
+          ],
+          "poster": "assets/desktop/frame-151.webp",
+          "frames": [
+            "assets/desktop/frame-151.webp",
+            "assets/desktop/frame-152.webp",
+            "assets/desktop/frame-153.webp",
+            "assets/desktop/frame-154.webp",
+            "assets/desktop/frame-155.webp",
+            "assets/desktop/frame-156.webp",
+            "assets/desktop/frame-157.webp",
+            "assets/desktop/frame-158.webp",
+            "assets/desktop/frame-159.webp",
+            "assets/desktop/frame-160.webp",
+            "assets/desktop/frame-161.webp",
+            "assets/desktop/frame-162.webp",
+            "assets/desktop/frame-163.webp",
+            "assets/desktop/frame-164.webp",
+            "assets/desktop/frame-165.webp",
+            "assets/desktop/frame-166.webp",
+            "assets/desktop/frame-167.webp",
+            "assets/desktop/frame-168.webp",
+            "assets/desktop/frame-169.webp",
+            "assets/desktop/frame-170.webp",
+            "assets/desktop/frame-171.webp",
+            "assets/desktop/frame-172.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              21
+            ],
+            [
+              0.88,
+              21
+            ],
+            [
+              1,
+              21
+            ]
+          ],
+          "headline": "You shape what it represents.",
+          "body": "Review and correct the material you choose to share."
+        },
+        {
+          "id": "close",
+          "scrollRange": [
+            0.9,
+            1
+          ],
+          "poster": "assets/desktop/frame-172.webp",
+          "frames": [
+            "assets/desktop/frame-172.webp",
+            "assets/desktop/frame-173.webp",
+            "assets/desktop/frame-174.webp",
+            "assets/desktop/frame-175.webp",
+            "assets/desktop/frame-176.webp",
+            "assets/desktop/frame-177.webp",
+            "assets/desktop/frame-178.webp",
+            "assets/desktop/frame-179.webp",
+            "assets/desktop/frame-180.webp",
+            "assets/desktop/frame-181.webp",
+            "assets/desktop/frame-182.webp",
+            "assets/desktop/frame-183.webp",
+            "assets/desktop/frame-184.webp",
+            "assets/desktop/frame-185.webp",
+            "assets/desktop/frame-186.webp",
+            "assets/desktop/frame-187.webp",
+            "assets/desktop/frame-188.webp",
+            "assets/desktop/frame-189.webp",
+            "assets/desktop/frame-190.webp",
+            "assets/desktop/frame-191.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              19
+            ],
+            [
+              0.88,
+              19
+            ],
+            [
+              1,
+              19
+            ]
+          ],
+          "headline": "What you know can start a conversation.",
+          "body": "A representation based on shared material, with its sources and limits kept in view."
+        }
+      ]
+    },
+    "portrait": {
+      "width": 640,
+      "height": 960,
+      "chapters": [
+        {
+          "id": "introduction",
+          "scrollRange": [
+            0,
+            0.12
+          ],
+          "poster": "assets/portrait/frame-000.webp",
+          "frames": [
+            "assets/portrait/frame-000.webp",
+            "assets/portrait/frame-001.webp",
+            "assets/portrait/frame-002.webp",
+            "assets/portrait/frame-003.webp",
+            "assets/portrait/frame-004.webp",
+            "assets/portrait/frame-005.webp",
+            "assets/portrait/frame-006.webp",
+            "assets/portrait/frame-007.webp",
+            "assets/portrait/frame-008.webp",
+            "assets/portrait/frame-009.webp",
+            "assets/portrait/frame-010.webp",
+            "assets/portrait/frame-011.webp",
+            "assets/portrait/frame-012.webp",
+            "assets/portrait/frame-013.webp",
+            "assets/portrait/frame-014.webp",
+            "assets/portrait/frame-015.webp",
+            "assets/portrait/frame-016.webp",
+            "assets/portrait/frame-017.webp",
+            "assets/portrait/frame-018.webp",
+            "assets/portrait/frame-019.webp",
+            "assets/portrait/frame-020.webp",
+            "assets/portrait/frame-021.webp",
+            "assets/portrait/frame-022.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              22
+            ],
+            [
+              0.88,
+              22
+            ],
+            [
+              1,
+              22
+            ]
+          ],
+          "headline": "Give your knowledge a new way to speak.",
+          "body": "Create an AI representation of your expertise from the material you choose to share."
+        },
+        {
+          "id": "contributions",
+          "scrollRange": [
+            0.12,
+            0.26
+          ],
+          "poster": "assets/portrait/frame-028.webp",
+          "frames": [
+            "assets/portrait/frame-022.webp",
+            "assets/portrait/frame-023.webp",
+            "assets/portrait/frame-024.webp",
+            "assets/portrait/frame-025.webp",
+            "assets/portrait/frame-026.webp",
+            "assets/portrait/frame-027.webp",
+            "assets/portrait/frame-028.webp",
+            "assets/portrait/frame-029.webp",
+            "assets/portrait/frame-030.webp",
+            "assets/portrait/frame-031.webp",
+            "assets/portrait/frame-032.webp",
+            "assets/portrait/frame-033.webp",
+            "assets/portrait/frame-034.webp",
+            "assets/portrait/frame-035.webp",
+            "assets/portrait/frame-036.webp",
+            "assets/portrait/frame-037.webp",
+            "assets/portrait/frame-038.webp",
+            "assets/portrait/frame-039.webp",
+            "assets/portrait/frame-040.webp",
+            "assets/portrait/frame-041.webp",
+            "assets/portrait/frame-042.webp",
+            "assets/portrait/frame-043.webp",
+            "assets/portrait/frame-044.webp",
+            "assets/portrait/frame-045.webp",
+            "assets/portrait/frame-046.webp",
+            "assets/portrait/frame-047.webp",
+            "assets/portrait/frame-048.webp",
+            "assets/portrait/frame-049.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              6
+            ],
+            [
+              0.2,
+              6
+            ],
+            [
+              0.3,
+              13
+            ],
+            [
+              0.45,
+              13
+            ],
+            [
+              0.55,
+              20
+            ],
+            [
+              0.7,
+              20
+            ],
+            [
+              0.8,
+              27
+            ],
+            [
+              0.94,
+              27
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          "headline": "Begin with what you\u2019ve put into words.",
+          "body": "Contributed explanations, diagrams, shared case notes and decision examples provide the source material."
+        },
+        {
+          "id": "context",
+          "scrollRange": [
+            0.26,
+            0.4
+          ],
+          "poster": "assets/portrait/frame-053.webp",
+          "frames": [
+            "assets/portrait/frame-049.webp",
+            "assets/portrait/frame-050.webp",
+            "assets/portrait/frame-051.webp",
+            "assets/portrait/frame-052.webp",
+            "assets/portrait/frame-053.webp",
+            "assets/portrait/frame-054.webp",
+            "assets/portrait/frame-055.webp",
+            "assets/portrait/frame-056.webp",
+            "assets/portrait/frame-057.webp",
+            "assets/portrait/frame-058.webp",
+            "assets/portrait/frame-059.webp",
+            "assets/portrait/frame-060.webp",
+            "assets/portrait/frame-061.webp",
+            "assets/portrait/frame-062.webp",
+            "assets/portrait/frame-063.webp",
+            "assets/portrait/frame-064.webp",
+            "assets/portrait/frame-065.webp",
+            "assets/portrait/frame-066.webp",
+            "assets/portrait/frame-067.webp",
+            "assets/portrait/frame-068.webp",
+            "assets/portrait/frame-069.webp",
+            "assets/portrait/frame-070.webp",
+            "assets/portrait/frame-071.webp",
+            "assets/portrait/frame-072.webp",
+            "assets/portrait/frame-073.webp",
+            "assets/portrait/frame-074.webp",
+            "assets/portrait/frame-075.webp",
+            "assets/portrait/frame-076.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              4
+            ],
+            [
+              0.2,
+              4
+            ],
+            [
+              0.3,
+              6
+            ],
+            [
+              0.45,
+              6
+            ],
+            [
+              0.55,
+              15
+            ],
+            [
+              0.7,
+              15
+            ],
+            [
+              0.8,
+              27
+            ],
+            [
+              0.94,
+              27
+            ],
+            [
+              1,
+              27
+            ]
+          ],
+          "headline": "An idea means more in context.",
+          "body": "Selected passages keep their original context and source in view."
+        },
+        {
+          "id": "construction",
+          "scrollRange": [
+            0.4,
+            0.62
+          ],
+          "poster": "assets/portrait/frame-076.webp",
+          "frames": [
+            "assets/portrait/frame-076.webp",
+            "assets/portrait/frame-077.webp",
+            "assets/portrait/frame-078.webp",
+            "assets/portrait/frame-079.webp",
+            "assets/portrait/frame-080.webp",
+            "assets/portrait/frame-081.webp",
+            "assets/portrait/frame-082.webp",
+            "assets/portrait/frame-083.webp",
+            "assets/portrait/frame-084.webp",
+            "assets/portrait/frame-085.webp",
+            "assets/portrait/frame-086.webp",
+            "assets/portrait/frame-087.webp",
+            "assets/portrait/frame-088.webp",
+            "assets/portrait/frame-089.webp",
+            "assets/portrait/frame-090.webp",
+            "assets/portrait/frame-091.webp",
+            "assets/portrait/frame-092.webp",
+            "assets/portrait/frame-093.webp",
+            "assets/portrait/frame-094.webp",
+            "assets/portrait/frame-095.webp",
+            "assets/portrait/frame-096.webp",
+            "assets/portrait/frame-097.webp",
+            "assets/portrait/frame-098.webp",
+            "assets/portrait/frame-099.webp",
+            "assets/portrait/frame-100.webp",
+            "assets/portrait/frame-101.webp",
+            "assets/portrait/frame-102.webp",
+            "assets/portrait/frame-103.webp",
+            "assets/portrait/frame-104.webp",
+            "assets/portrait/frame-105.webp",
+            "assets/portrait/frame-106.webp",
+            "assets/portrait/frame-107.webp",
+            "assets/portrait/frame-108.webp",
+            "assets/portrait/frame-109.webp",
+            "assets/portrait/frame-110.webp",
+            "assets/portrait/frame-111.webp",
+            "assets/portrait/frame-112.webp",
+            "assets/portrait/frame-113.webp",
+            "assets/portrait/frame-114.webp",
+            "assets/portrait/frame-115.webp",
+            "assets/portrait/frame-116.webp",
+            "assets/portrait/frame-117.webp",
+            "assets/portrait/frame-118.webp",
+            "assets/portrait/frame-119.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              0
+            ],
+            [
+              0.2,
+              0
+            ],
+            [
+              0.3,
+              18
+            ],
+            [
+              0.45,
+              18
+            ],
+            [
+              0.55,
+              34
+            ],
+            [
+              0.7,
+              34
+            ],
+            [
+              0.8,
+              43
+            ],
+            [
+              0.94,
+              43
+            ],
+            [
+              1,
+              43
+            ]
+          ],
+          "headline": "Your shared knowledge, taking a new shape.",
+          "body": "Selected copies connect related ideas and assemble a partial AI representation. The originals remain intact."
+        },
+        {
+          "id": "conversation",
+          "scrollRange": [
+            0.62,
+            0.79
+          ],
+          "poster": "assets/portrait/frame-137.webp",
+          "frames": [
+            "assets/portrait/frame-119.webp",
+            "assets/portrait/frame-120.webp",
+            "assets/portrait/frame-121.webp",
+            "assets/portrait/frame-122.webp",
+            "assets/portrait/frame-123.webp",
+            "assets/portrait/frame-124.webp",
+            "assets/portrait/frame-125.webp",
+            "assets/portrait/frame-126.webp",
+            "assets/portrait/frame-127.webp",
+            "assets/portrait/frame-128.webp",
+            "assets/portrait/frame-129.webp",
+            "assets/portrait/frame-130.webp",
+            "assets/portrait/frame-131.webp",
+            "assets/portrait/frame-132.webp",
+            "assets/portrait/frame-133.webp",
+            "assets/portrait/frame-134.webp",
+            "assets/portrait/frame-135.webp",
+            "assets/portrait/frame-136.webp",
+            "assets/portrait/frame-137.webp",
+            "assets/portrait/frame-138.webp",
+            "assets/portrait/frame-139.webp",
+            "assets/portrait/frame-140.webp",
+            "assets/portrait/frame-141.webp",
+            "assets/portrait/frame-142.webp",
+            "assets/portrait/frame-143.webp",
+            "assets/portrait/frame-144.webp",
+            "assets/portrait/frame-145.webp",
+            "assets/portrait/frame-146.webp",
+            "assets/portrait/frame-147.webp",
+            "assets/portrait/frame-148.webp",
+            "assets/portrait/frame-149.webp",
+            "assets/portrait/frame-150.webp",
+            "assets/portrait/frame-151.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.06,
+              6
+            ],
+            [
+              0.2,
+              6
+            ],
+            [
+              0.3,
+              9
+            ],
+            [
+              0.45,
+              9
+            ],
+            [
+              0.55,
+              18
+            ],
+            [
+              0.7,
+              18
+            ],
+            [
+              0.8,
+              18
+            ],
+            [
+              0.86,
+              18
+            ],
+            [
+              0.96,
+              30
+            ],
+            [
+              1,
+              32
+            ]
+          ],
+          "headline": "Ask a question. Follow the answer back.",
+          "body": "Illustrative question and scripted answer, with the contributing source passages alongside."
+        },
+        {
+          "id": "control",
+          "scrollRange": [
+            0.79,
+            0.9
+          ],
+          "poster": "assets/portrait/frame-151.webp",
+          "frames": [
+            "assets/portrait/frame-151.webp",
+            "assets/portrait/frame-152.webp",
+            "assets/portrait/frame-153.webp",
+            "assets/portrait/frame-154.webp",
+            "assets/portrait/frame-155.webp",
+            "assets/portrait/frame-156.webp",
+            "assets/portrait/frame-157.webp",
+            "assets/portrait/frame-158.webp",
+            "assets/portrait/frame-159.webp",
+            "assets/portrait/frame-160.webp",
+            "assets/portrait/frame-161.webp",
+            "assets/portrait/frame-162.webp",
+            "assets/portrait/frame-163.webp",
+            "assets/portrait/frame-164.webp",
+            "assets/portrait/frame-165.webp",
+            "assets/portrait/frame-166.webp",
+            "assets/portrait/frame-167.webp",
+            "assets/portrait/frame-168.webp",
+            "assets/portrait/frame-169.webp",
+            "assets/portrait/frame-170.webp",
+            "assets/portrait/frame-171.webp",
+            "assets/portrait/frame-172.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              21
+            ],
+            [
+              0.88,
+              21
+            ],
+            [
+              1,
+              21
+            ]
+          ],
+          "headline": "You shape what it represents.",
+          "body": "Review and correct the material you choose to share."
+        },
+        {
+          "id": "close",
+          "scrollRange": [
+            0.9,
+            1
+          ],
+          "poster": "assets/portrait/frame-172.webp",
+          "frames": [
+            "assets/portrait/frame-172.webp",
+            "assets/portrait/frame-173.webp",
+            "assets/portrait/frame-174.webp",
+            "assets/portrait/frame-175.webp",
+            "assets/portrait/frame-176.webp",
+            "assets/portrait/frame-177.webp",
+            "assets/portrait/frame-178.webp",
+            "assets/portrait/frame-179.webp",
+            "assets/portrait/frame-180.webp",
+            "assets/portrait/frame-181.webp",
+            "assets/portrait/frame-182.webp",
+            "assets/portrait/frame-183.webp",
+            "assets/portrait/frame-184.webp",
+            "assets/portrait/frame-185.webp",
+            "assets/portrait/frame-186.webp",
+            "assets/portrait/frame-187.webp",
+            "assets/portrait/frame-188.webp",
+            "assets/portrait/frame-189.webp",
+            "assets/portrait/frame-190.webp",
+            "assets/portrait/frame-191.webp"
+          ],
+          "keyframes": [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.32,
+              0
+            ],
+            [
+              0.72,
+              19
+            ],
+            [
+              0.88,
+              19
+            ],
+            [
+              1,
+              19
+            ]
+          ],
+          "headline": "What you know can start a conversation.",
+          "body": "A representation based on shared material, with its sources and limits kept in view."
+        }
+      ]
+    }
+  },
+  "sourceRegistry": "source-registry.json",
+  "license": {
+    "credit": "BodyParts3D, \u00a9 The Database Center for Life Science licensed under CC Attribution 4.0 International",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+    "modifications": "Seam welding, normal repair, scale, studio materials, paper lamination, partial assembly, source-record deformation and authored camera animation."
+  },
+  "availableFrameIds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191
+  ],
+  "boundaryContinuity": "Each chapter starts with the exact previous last image path; camera/model pose must be continuous.",
+  "validation": {
+    "actualSequenceRendered": true,
+    "replacementFramesPerVariant": 31,
+    "unchangedFramesPerVariant": 161,
+    "allCameraStatesUnchanged": true,
+    "shared119And151EvaluatedGeometryIdentical": true,
+    "chapterBoundaryPathsMatch": true,
+    "sourceRegistryByteIdentical": true,
+    "browserVerified": false,
+    "parentVisualAcceptance": false
+  },
+  "assetVersion": "copy-alignment-v2",
+  "baseManifestSha256": "7ddd07a9b3884bad27f41a03e7394318c7d431fb5a796b9903fdb5bc161f7196",
+  "changedGlobalFrameRange": [
+    120,
+    150
+  ]
+}

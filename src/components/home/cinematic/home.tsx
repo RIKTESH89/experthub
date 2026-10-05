@@ -7,7 +7,7 @@ import { publicPricingTiers } from "@/lib/public-launch-copy";
 import { SequenceRuntime } from "./runtime";
 import { chapterLengths } from "./timeline";
 import styles from "./home.module.css";
-const assetRoot = "/uploads/cinematic-homepage/";
+import { assetRoot } from "./asset-config.js";
 const chapterNames = ["Learn from experts", "Share your knowledge", "Explore the context", "Meet the Digital Twin", "Ask a question", "Keep it current", "Get started"];
 const chapterIds = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"] as const;
 function Scene({ frame, caption, priority = false }: { frame: number; caption: string; priority?: boolean }) {
@@ -39,10 +39,10 @@ export function CinematicHome() {
       <Chapter id="construction" number={4} eyebrow="04 / Build" title="Your knowledge takes shape." frame={76} caption="A partial Digital Twin" liveCaption>
         <p>Your shared content helps shape an AI twin that people can ask questions.</p>
       </Chapter>
-      <Chapter id="conversation" number={5} eyebrow="05 / Ask" title="Ask a question. Keep learning." frame={125} caption="Fictional conversation · not live AI" liveCaption>
+      <Chapter id="conversation" number={5} eyebrow="05 / Ask" title="Ask a question. Keep learning." frame={137} caption="Fictional conversation · not live AI" liveCaption>
         <p>Ask follow-ups and check available sources behind the answers.</p><Link className="text-link" href="#sample-conversation">Read the fictional conversation · scripted, not live</Link>
       </Chapter>
-      <Chapter id="control" number={6} eyebrow="06 / Maintain" title="Keep your knowledge up to date." frame={151} caption="Expert-managed knowledge">
+      <Chapter id="control" number={6} eyebrow="06 / Maintain" title="Keep your knowledge up to date." frame={151} caption="Shared sources remain distinct">
         <p>Add new material and correct your notes as your work and thinking change.</p>
       </Chapter>
       <Chapter id="close" number={7} eyebrow="07 / Explore" title="Find your next conversation." frame={172} caption="Start exploring">

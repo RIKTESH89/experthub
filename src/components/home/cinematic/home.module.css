@@ -93,3 +93,5 @@
 .home[data-cinematic="true"] :global(.shade){background:linear-gradient(#15141166,transparent 28%,transparent 76%,#151411dd 96%)}
 .home[data-cinematic="true"] :global(.scene-caption),.home[data-cinematic="true"] :global(#context .scene-caption),.home[data-cinematic="true"] :global(#conversation .scene-caption){display:block;background:#151411;color:#eee7da;border:1px solid #665b49;border-radius:12px;padding:8px 12px;font-size:10px;line-height:1.5;text-align:center;bottom:11%}
 }
+/* Leave the repaired source-reading leaves visible above the phone support lane. */
+@media(max-width:900px){.home[data-cinematic="true"] :global(#conversation .body-lane){top:66%}}
