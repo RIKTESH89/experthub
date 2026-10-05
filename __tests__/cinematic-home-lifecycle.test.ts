@@ -120,3 +120,21 @@ test("reduced motion remains respected and cannot be overridden through the anim
   const button=root.querySelector<HTMLButtonElement>("#motion")!;expect(button.disabled).toBe(true);button.click();
   expect(root.dataset.renderReason).toBe("reduced-motion");expect(pending).toHaveLength(1);cleanup();
 });
+
+test.each(["source-01", "source-04"])("source fragment %s opens its details before scrolling and measures the header", id => {
+   const root = fixture();
+   root.insertAdjacentHTML("beforeend", `<header class="site-nav"></header><a href="#${id}">Read source</a><footer><details><summary>Sources</summary><div id="${id}"><h3>Source</h3><p>Complete quotation.</p></div></details></footer>`);
+   const header = root.querySelector(".site-nav")!;
+   jest.spyOn(header, "getBoundingClientRect").mockReturnValue({height:100} as DOMRect);
+   const target = root.querySelector(`#${id}`)!;
+   const scroll = jest.fn(() => {
+     expect(target.closest("details")!.open).toBe(true);
+     expect(root.style.getPropertyValue("--anchor-header-offset")).toBe("116px");
+   });
+   Object.defineProperty(target,"scrollIntoView",{configurable:true,value:scroll});
+   const cleanup = loadRuntime()(root);
+   (root.querySelector(`a[href="#${id}"]`) as HTMLAnchorElement).click();
+   expect(scroll).toHaveBeenCalled();
+   expect(document.activeElement).toBe(target);
+   cleanup();
+ });

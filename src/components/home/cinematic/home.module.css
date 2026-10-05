@@ -118,3 +118,9 @@
 }
 
 @media(max-width:900px){.home[data-cinematic="true"] :global(#stage canvas),.home[data-cinematic="true"] :global(#stage-poster){transform:translateY(var(--portrait-shift,-10svh)) scale(var(--portrait-scale,1))}}
+
+/* Source fragments stay below the actual header after details expansion. */
+.home :global(footer [id]){scroll-margin-top:var(--anchor-header-offset,112px)}
+
+/* Fragment restoration uses the document scroller, not the story wrapper. */
+:global(html):has(.home){scroll-behavior:auto}

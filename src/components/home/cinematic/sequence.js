@@ -103,6 +103,7 @@ export function mountSequence(root) {
             end:story.getBoundingClientRect().top+scrollY+story.offsetHeight,
             plans:plans ? plans.getBoundingClientRect().top+scrollY : Infinity,
             chrome:root.querySelector('.site-nav')?.getBoundingClientRect().height??0};
+        root.style.setProperty('--anchor-header-offset', `${geometry.chrome+16}px`);
         geometryDirty=false;
     }
     function locate() {
@@ -318,10 +319,17 @@ export function mountSequence(root) {
     listen(window, 'resize', () => {geometryDirty=true;schedule();}, { passive: true });
     listen(window, 'pagehide', clearFrames);
     listen(window, 'pageshow', schedule);
-    function anchorTarget(hash, focus = false, scroll = false) { const el = document.getElementById(hash.slice(1)); if (!el || !root.contains(el))
-        return; const details = el.closest('details'); if (details)
-        details.open = true; if (scroll)
-        el.scrollIntoView({ block: 'start', behavior: 'instant' }); if (focus) {
+    function anchorTarget(hash, focus = false, scroll = false) {
+        const el = document.getElementById(hash.slice(1));
+        if (!el || !root.contains(el)) return;
+        // Opening first forces target geometry to represent the readable content.
+        const details = el.closest('details');
+        if (details) details.open = true;
+        const header = root.querySelector('.site-nav');
+        const headerHeight = header?.getBoundingClientRect().height ?? 0;
+        root.style.setProperty('--anchor-header-offset', `${headerHeight+16}px`);
+        if (scroll) el.scrollIntoView({ block: 'start', behavior: 'instant' });
+        if (focus) {
         const target = el.querySelector('h1,h2') ?? el;
         if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
@@ -377,8 +385,10 @@ export function mountSequence(root) {
             chapters.forEach((ch, i) => { const image=ch.querySelector('.static-visual img'); if(image) image.src = new URL(staticVariant.chapters[i].poster, assetBase).href; });
             manifestState = 'ready';
             setMode(preserve);
-            if (location.hash)
-                anchorTarget(location.hash, false, true);
+            if (location.hash) {
+                const fragment = document.getElementById(location.hash.slice(1));
+                anchorTarget(location.hash, Boolean(fragment?.closest('footer')), true);
+            }
         }
         catch {
             if (disposed || abort !== manifestController) return;
