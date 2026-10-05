@@ -3,14 +3,14 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "passed prior namespace repair; fresh compile pending coordinated QA pause",
+  "productionCompile": "guarded isolated build passed for8df3; final mobile CSS candidate build recorded separately in task13/server-diagnosis",
   "fullTests": {
     "suites": 90,
     "tests": 1333,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
-  "nativeBrowser": "fresh native worker QA pending after public asset namespace repair",
+  "nativeBrowser": "pending worker observation; native session untouched",
   "protectedStaging": "not pushed or deployed",
   "production": "unchanged",
   "database": "no migration/seed/write performed",
@@ -21,5 +21,7 @@
     "focusedRegressionTests": 9,
     "nativeVerification": "worker ready to reload port3467"
   },
-  "publicAssetRoot": "/uploads/cinematic-homepage/"
+  "publicAssetRoot": "/uploads/cinematic-homepage/",
+  "headlessBrowser": "desktop and portrait holds, reverse continuity, sources, theme, static and preference/failure fallback verified; clean Pricing\u2192Back diagnostic resumes; original mixed-state timeout unclassified",
+  "mobileHeader": "established overlap repaired; actual320/390geometry verified"
 }

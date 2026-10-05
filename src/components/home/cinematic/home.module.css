@@ -24,3 +24,5 @@
    Authored cinematic overlays keep their source-image contrast. */
 .home[data-cinematic="true"] :global(.site-nav),.home :global(.product-continuation),.home :global(footer){--bg:#f7f6f2;--paper:#2a302b;--muted:#5b655e;--accent:#665039;--line:#c6c7bd;background:var(--bg);color:var(--paper)}
 :global(.dark) .home[data-cinematic="true"] :global(.site-nav),:global(.dark) .home :global(.product-continuation),:global(.dark) .home :global(footer){--bg:#151411;--paper:#eee7da;--muted:#c5bcab;--accent:#caa775;--line:#665b49;background:var(--bg);color:var(--paper)}
+/* Keep the mobile chrome below the cinematic status and chapter eyebrow. */
+@media(max-width:900px){.home :global(.site-links){width:100%;flex-wrap:nowrap;justify-content:space-between;gap:8px}.home :global(.site-links a){white-space:nowrap}.home :global(.site-links button){flex-shrink:0}.home :global(#motion){font-size:10px;padding:8px 11px}}
