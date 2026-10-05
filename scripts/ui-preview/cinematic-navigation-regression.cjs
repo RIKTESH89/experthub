@@ -27,14 +27,17 @@ async function resumed() {
       await page.locator('.chapter-nav a[href="#conversation"]').focus();
       await page.keyboard.press('Enter');
       await page.waitForFunction(() => location.hash === '#conversation' && document.activeElement?.id === 'title-5');
-      await page.locator('.answer a[href="#source-01"]').click();
+      await page.locator('.answer a[href="#sample-conversation"]').click();
+      await page.waitForFunction(() => location.hash === '#sample-conversation' && document.querySelector('#sample-conversation').closest('details').open);
+      await page.locator('#sample-conversation a[href="#source-01"]').click();
       await page.waitForFunction(() => location.hash === '#source-01' && document.querySelector('details').open);
       await page.locator('#motion').click();
       await page.waitForFunction(() => document.querySelector('#sequence').dataset.mode === 'static');
       await page.locator('#motion').click();
       await resumed();
       for (const route of ['/pricing', '/about', '/login']) {
-        await page.locator('[data-cinematic-home] a[href="'+route+'"]').first().click();
+        const scope = route === '/about' ? '.credit' : route === '/pricing' ? '.section-heading' : '.site-links';
+        await page.locator(scope+' a[href="'+route+'"]').first().click();
         await page.waitForURL('**'+route);
         assert.equal(await page.locator('[data-cinematic-home]').count(), 0);
         await page.goBack({waitUntil:'networkidle'});

@@ -7,15 +7,15 @@ const functions: Record<string, unknown> = {};
 new Function("exports", code)(functions);
 const progress = functions.chapterProgress as (scroll: number, top: number, height: number, viewport: number) => {phase: number; exit: number; pinnedDistance: number};
 const frameAt = functions.frameAt as (phase: number, count: number, keyframes: number[][]) => number;
-const opacity = functions.textOpacity as (phase: number) => number;
+const opacity = functions.textOpacity as (phase: number, opening?:boolean) => number;
 const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8"));
 
-test.each([640, 700, 750, 812, 844, 900, 915])("all seven timelines finish holds, final pose and text exit before sticky departure at viewport %i", viewport => {
+test.each([640, 700, 750, 812, 844, 900, 915])("all seven fixed overlays use the full chapter distance and retain authored reading holds at viewport %i", viewport => {
   for (const variant of Object.values(manifest.variants) as Array<{chapters: Array<{id:string;scrollRange:number[];frames:string[];keyframes:number[][]}>}>) {
     let top = 88;
     for (const chapter of variant.chapters) {
       const height = (functions.chapterLengths as Record<string,number>)[chapter.id] * viewport;
-      const pinned = height - viewport;
+      const pinned = height;
       expect(pinned).toBeGreaterThan(0);
       const anchor = progress(top, top, height, viewport);
       expect(anchor.phase).toBe(0); expect(anchor.exit).toBe(0);
@@ -47,13 +47,21 @@ test.each([640, 700, 750, 812, 844, 900, 915])("all seven timelines finish holds
   }
 });
 
-test("pinned timing uses the rendered panel height when small viewport units differ from the layout viewport", () => {
-  const top=88, chapterHeight=1620, actualPanelHeight=812;
-  const point=progress(top+.85*(chapterHeight-actualPanelHeight),top,chapterHeight,actualPanelHeight);
-  expect(point.phase).toBeCloseTo(.85,9);expect(point.exit).toBe(0);
-  expect(point.pinnedDistance).toBe(808);
-  const departure=progress(top+808,top,chapterHeight,actualPanelHeight);
-  expect(departure.phase).toBe(1);expect(opacity(departure.phase)).toBe(0);
+test("fixed overlay timing remains tied to chapter distance rather than viewport-sized departure", () => {
+  const top=88,height=1620;
+  for(const viewport of [640,812,900]) {
+    expect(progress(top+.85*height,top,height,viewport).phase).toBeCloseTo(.85,9);
+    expect(progress(top+height,top,height,viewport).phase).toBe(1);
+    expect(progress(top+height,top,height,viewport).pinnedDistance).toBe(height);
+  }
+});
+
+test("text fades at fixed positions with full reading holds and identical forward/reverse phase values", () => {
+  expect(opacity(0,true)).toBe(1);
+  expect(opacity(0)).toBe(0);expect(opacity(.05)).toBeCloseTo(.5,9);
+  expect(opacity(.1)).toBe(1);expect(opacity(.88)).toBe(1);
+  expect(opacity(.94)).toBeCloseTo(.5,9);expect(opacity(1)).toBe(0);
+  for(const p of [.025,.05,.15,.375,.625,.85,.94,.98])expect(opacity(p)).toBe(opacity(progress(p*1500,0,1500,640).phase));
 });
 
 test("homepage asset paths use the existing anonymous static boundary without exposing protected APIs", () => {

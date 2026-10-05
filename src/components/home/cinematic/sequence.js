@@ -7,6 +7,19 @@ export function mountSequence(root) {
     const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: lifecycle.signal });
     const assetBase = new URL('/uploads/cinematic-homepage/', location.origin);
     const body = root, chapters = [...root.querySelectorAll('.chapter')], nav = [...root.querySelectorAll('.chapter-nav a')];
+    const panels = chapters.map(ch => ch.querySelector('.panel'));
+    const controls = panels.map(panel => [...(panel?.querySelectorAll('a[href],button,input,select,textarea,[tabindex]') ?? [])].map(element => ({element, tabindex:element.getAttribute('tabindex')})));
+    const interactive = Array(chapters.length);
+    function panelInteractive(index, enabled) {
+        if (interactive[index] === enabled) return;
+        interactive[index] = enabled;
+        if (panels[index]) panels[index].style.pointerEvents = enabled ? 'auto' : 'none';
+        controls[index].forEach(({element, tabindex}) => {
+            if (!enabled) element.setAttribute('tabindex', '-1');
+            else if (tabindex === null) element.removeAttribute('tabindex');
+            else element.setAttribute('tabindex', tabindex);
+        });
+    }
     const canvas = root.querySelector('#sequence'), ctx = canvas.getContext('2d', { alpha: false }), stage = root.querySelector('#stage'), poster = root.querySelector('#stage-poster');
     const status = root.querySelector('#runtime-status'), warning = root.querySelector('#asset-status'), button = root.querySelector('#motion');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)'), portrait = matchMedia('(max-width: 900px)');
@@ -77,25 +90,30 @@ export function mountSequence(root) {
             if ((chapters[i].getBoundingClientRect().top + scrollY) <= y + 2)
                 active = i;
         }
-        // The panel stays pinned for chapter height minus its viewport-sized height.
-        // Run every authored hold and its text exit while that panel is still pinned.
-        // The remaining viewport is an explicit departure interval: hold the final
-        // camera pose with outgoing copy already faded, until the next anchor.
-        const panelHeight = chapters[active].querySelector('.panel')?.getBoundingClientRect().height || innerHeight;
-        const progress = chapterProgress(y, chapters[active].getBoundingClientRect().top + scrollY, chapters[active].offsetHeight, panelHeight);
-        local = progress.phase;
-        canvas.dataset.exit = progress.exit.toFixed(4);
-        chapters.forEach((el, i) => { el.style.setProperty('--text-opacity', String(cinematic ? (i === active ? textOpacity(local) : 0) : 1)); el.dataset.beat = String(Math.min(3, Math.floor((i === active ? local : 0) * 4))); });
-        nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current'));
-        const beat = Math.min(3, Math.floor(local * 4));
-        root.querySelectorAll('.build-beats li').forEach((li, i) => i === beat ? li.setAttribute('data-active', '') : li.removeAttribute('data-active'));
-        const captions = { context: ['Original record stays in place · 01 / Context note', 'Exact selection · 01 / “a clear question”', 'A copied passage keeps its source index · 01', 'Question → Context · 01 + 02'], construction: ['Sparse foundation · contributed copies remain distinct', '01 / “a clear question” · first context layer', '02 + 03 + 04 · related records connect and join', 'A partial representation · contributed sources stay whole'], conversation: ['Illustrative question · How should I begin choosing an option?', 'Relevant ideas and indexed layers · 01 + 04', 'The same source fragments reopen beside the answer', 'Scripted answer with sources · then the leaf returns'] };
-        if (captions[chapters[active].id])
-            chapters[active].querySelector('[data-caption]').textContent = captions[chapters[active].id][beat];
         const story = root.querySelector('#story');
         const plans = root.querySelector('#plans');
         const chromeHeight = root.querySelector('.site-nav')?.getBoundingClientRect().height ?? 0;
         const beyondStory = y >= story.getBoundingClientRect().top + scrollY + story.offsetHeight - 1 || Boolean(plans && plans.getBoundingClientRect().top <= chromeHeight + 32);
+        const panelHeight = panels[active]?.getBoundingClientRect().height || innerHeight;
+        const progress = chapterProgress(y, chapters[active].getBoundingClientRect().top + scrollY, chapters[active].offsetHeight, panelHeight);
+        local = progress.phase;
+        canvas.dataset.exit = progress.exit.toFixed(4);
+        chapters.forEach((el, i) => {
+            const opacity = cinematic ? (!beyondStory && i === active ? textOpacity(local, i === 0) : 0) : 1;
+            el.style.setProperty('--text-opacity', String(opacity));
+            el.dataset.beat = String(Math.min(3, Math.floor((i === active ? local : 0) * 4)));
+            const readable = !cinematic || opacity >= .99;
+            if (!readable && panels[i]?.contains(document.activeElement) && document.activeElement.matches('a,button,input,select,textarea,[tabindex]')) (beyondStory ? button : nav[active])?.focus({preventScroll:true});
+            panelInteractive(i, readable);
+        });
+        canvas.dataset.textOpacity = String(cinematic && !beyondStory ? textOpacity(local, active === 0) : 0);
+        root.dataset.activeChapter = cinematic && !beyondStory ? chapters[active].id : '';
+        nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current'));
+        const beat = Math.min(3, Math.floor(local * 4));
+        root.querySelectorAll('.build-beats li').forEach((li, i) => i === beat ? li.setAttribute('data-active', '') : li.removeAttribute('data-active'));
+        const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 + 02 / Related ideas'], construction: ['A sparse foundation', '01 / First context layer', '02 + 03 + 04 / Related knowledge', 'A partial Digital Twin'], conversation: ['Fictional question', '01 + 04 / Available sources', 'Check the source passages', 'Scripted answer · not live AI'] };
+        const caption = chapters[active].querySelector('[data-caption]');
+        if (caption && captions[chapters[active].id]) caption.textContent = captions[chapters[active].id][beat];
         stage.classList.toggle('off', beyondStory);
         root.querySelector('.chapter-nav').hidden = beyondStory;
     }
@@ -251,6 +269,14 @@ export function mountSequence(root) {
     listen(compact, 'change', () => setMode(true));
     if (connection)
         listen(connection, 'change', () => setMode(true));
+    listen(root, 'focusin', event => {
+        if (!cinematic) return;
+        const chapter = event.target.closest('.chapter');
+        if (!chapter) return;
+        const index = chapters.indexOf(chapter);
+        if (index !== active || textOpacity(local, index === 0) < .99) chapter.scrollIntoView({block:'start',behavior:'instant'});
+        schedule();
+    });
     listen(window, 'scroll', schedule, { passive: true });
     listen(window, 'resize', schedule, { passive: true });
     listen(window, 'pagehide', clearFrames);
@@ -308,7 +334,7 @@ export function mountSequence(root) {
                     }
                 }
             const staticVariant = portrait.matches && manifest.variants.portrait ? manifest.variants.portrait : manifest.variants.desktop;
-            chapters.forEach((ch, i) => { ch.querySelector('.static-visual img').src = new URL(staticVariant.chapters[i].poster, assetBase).href; });
+            chapters.forEach((ch, i) => { const image=ch.querySelector('.static-visual img'); if(image) image.src = new URL(staticVariant.chapters[i].poster, assetBase).href; });
             manifestState = 'ready';
             setMode(preserve);
             if (location.hash)
@@ -325,5 +351,5 @@ export function mountSequence(root) {
         }
     }
     start();
-    return () => { disposed = true; manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); delete root.dataset.cinematic; };
+    return () => { disposed = true; manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); chapters.forEach((_chapter,index)=>panelInteractive(index,true)); delete root.dataset.activeChapter; delete root.dataset.cinematic; };
 }

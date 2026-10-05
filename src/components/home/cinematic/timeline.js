@@ -11,8 +11,12 @@ export function frameAt(phase, count, keys) {
     }
     return end;
 }
-export function textOpacity(p) { if (p <= .85)
-    return 1; return Math.max(0, 1 - (p - .85) / .13); }
+export function textOpacity(p, opening = false) {
+    const smooth = value => { const x = Math.max(0, Math.min(1, value)); return x * x * (3 - 2 * x); };
+    const enter = opening ? 1 : smooth(p / .1);
+    const leave = 1 - smooth((p - .88) / .12);
+    return Math.min(enter, leave);
+}
 export function validateManifest(m, ids) { if (m.version !== 1 || !['concept', 'final'].includes(m.status) || !m.variants?.desktop)
     throw Error('Unsupported manifest'); for (const v of Object.values(m.variants)) {
     if (!Number.isInteger(v.width) || !Number.isInteger(v.height) || v.width < 1 || v.height < 1 || v.width > 4096 || v.height > 4096 || v.chapters?.length !== ids.length)
@@ -26,10 +30,10 @@ export function validateManifest(m, ids) { if (m.version !== 1 || !['concept', '
     } });
 } return m; }
 
-// Geometry shared by runtime and regression tests. A full-viewport sticky panel
-// begins departure one viewport before its containing chapter's bottom.
+// Fixed scene overlays consume the full chapter distance; they never depart
+// with their containing document section. The same phase drives text and camera.
 export function chapterProgress(scroll, top, height, viewport) {
-    const pinnedDistance = Math.max(1, height - viewport);
+    const pinnedDistance = Math.max(1, height);
     const distance = scroll - top;
     return {
         phase: Math.max(0, Math.min(1, distance / pinnedDistance)),

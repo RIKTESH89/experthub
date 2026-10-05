@@ -3,10 +3,10 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "Exact Android candidate compile recorded separately in task-13/product-homepage-qa/android-final-build.json",
+  "productionCompile": "Exact pinned/sparse candidate compile recorded separately in task-13/product-homepage-qa/pinned-final-build.json",
   "fullTests": {
     "suites": 90,
-    "tests": 1340,
+    "tests": 1341,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
@@ -71,5 +71,37 @@
     "reducedMotionAndSaveDataHonored": true,
     "authoredAssetsUnchanged": true,
     "publication": "Local only; review required"
+  },
+  "fixedTextAndSparseCopy": {
+    "copyCommit": "6c27c4d",
+    "base": "c8d33c7",
+    "panels": "Fixed viewport coordinates; no vertical departure",
+    "phase": "Full chapter distance drives camera and smooth reveal/hold/fade",
+    "readingWindow": [
+      0.1,
+      0.88
+    ],
+    "chapterAnchorPhase": 0.12,
+    "inactiveControls": "Tab/pointer disabled; fading focus relocates; static/unmount restores attributes",
+    "semanticStory": "No inert/aria-hidden on chapters/headings/panels",
+    "browserViews": [
+      [
+        1470,
+        801
+      ],
+      [
+        360,
+        640
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "phoneReadingHolds": 112,
+    "publicHistoryJourneys": 6,
+    "theme": "9cae1f3 not integrated pending scope review",
+    "assetAudit": "Author-owned; no asset mutation",
+    "publication": "Local only, review pending"
   }
 }
