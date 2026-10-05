@@ -1,46 +1,27 @@
-# Experimental B app integration preparation
+# Four-contribution homepage integration preparation
 
-Refinement branch `integration/b-app-native-refinement` follows preparation commit `4131c52c1ac881494e24f10e9278bb26263679b1`, which starts at accepted sequential-text commit `d3bbef37fee30616961b81a2528b843fd9ae6007`. Local review target: http://127.0.0.1:3897/. No push/deploy or final acceptance.
+Local review: http://127.0.0.1:3907/. Branch `integration/b-four-contribution-preparation`, based on accepted `36241f68507fd7139fd6d198fb8e04d5d0f3be96`. This is a V7 integration candidate. Publication is authorized for the separate study site after parent integration checks; this candidate is not published or visually accepted.
 
-App ownership: `src/components/home/cinematic/b-artwork.js`, the existing app adapter/configuration, DOM safe region and loading presentation. Renderer/author ownership remains task-4's `experthub-b-animation-r1/handoff-b-r1` and its coordinated author asset. Only frozen copies are imported here. Original author files were read, never edited. The handoff report actually resides in the prototype root, not inside the handoff directory.
+App ownership covers the adapter, chapter mapping, accessible copy, composition rectangle, loading/failure posters and static delivery headers. Author/renderer files in task-4/task-10 were read and copied, never edited. The supplied V7 runtime freeze has 308 files: all bytes and SHA-256 verified, zero mismatch. Evidence is in `../b-narrative-prep-qa/FREEZE-VERIFICATION.json`.
 
-## Frozen experiment
+## Frozen asset and contract
 
-Asset: `public/uploads/live3d/b-r1/scene-b-local-v4.glb`, 12,191,884 bytes, SHA-256 `142d85fe44f17f6838b16b9e8d91221a8e5d0a5a843c4b7ca1b73f920ccd1966`. This is the uncorrected local-v4 proof. `authorGeometryPending`, `attachmentValidated:false` and `fullLeafContactAccepted:false` remain truthful runtime diagnostics. Sources 02–04 copies are still hidden by the supplied runtime. Rights and attribution are included beside the asset; existing BodyParts3D CC BY 4 footer attribution is preserved.
+The app fetches only `scene-07dadf5f371b658d.glb.br`: 6,546,906 compressed bytes, SHA-256 `08eba356a6f20384f5b828d0ecf880c78dc0ab590d1f4ce1225e581cc5c492a1`. Browser-decoded GLB is 14,869,200 bytes, SHA-256 `07dadf5f371b658d526757561b23ed5a815574c815e5b08ec51d47157f25bc34`. The raw 35 MB author candidate is not served as a fallback. The uncompressed packed file is retained for offline provenance, not requested by the page.
 
-The copied runtime differs only by explicit registry/validation URL parameters for app relocation and removal of four unused declarations to pass the app lint rules. No transform, geometry, seat, normalization, animation or material implementation was independently changed. The copied `b-timeline.js` and shared contract JSON are unchanged. Input hashes are recorded in `../b-integration-qa/FROZEN-INPUTS.json` (unchanged imported assets).
+A targeted Next static header rule provides Brotli encoding, binary GLTF content type and content-hashed immutable caching. Local HTTP headers and browser decoded hash are verified. Intercepted browser transfer counters are not reliable wire/cache measurements. Existing auth middleware adds anonymous cookies to static responses: hosted CDN caching requires a separate deployment check; auth code is unchanged. Next headers reference: https://nextjs.org/docs/14/app/api-reference/next-config-js/headers.
 
-## Adapter contract
+The copied author evaluator, clock, timeline and metadata preserve the frozen normalized contribution contract. The two runtime modules have only unused-declaration lint cleanup; geometry, root/camera transforms, materials, clip normalization and local evaluator behavior were not changed. Author clips apply after Story, without a second actor normalization. BodyParts3D CC BY 4 attribution and bundled third-party licenses remain included.
 
-The app retains seven chapters, reading holds, reverse-safe versioned B chapter frame mapping, accepted sequential text controller, source anchors/history, pricing release, login/apply/pricing routes, theme, reduced-motion/static eligibility and raster cache/failure recovery. The wrapper supplies an owned canvas, abort signal, frozen asset identity, pose envelope, theme and normalized actual DOM composition rectangle to `createBRuntime`. It performs demand rendering, visibility pause, late-result disposal and context-loss fallback through the existing app lifecycle. Every recreation owns a separate renderer/scene/mixer; author-local actor roots are not normalized again.
+## App behavior
 
-Loading uses the author's transparent hero/overview/reading/formation posters. Their reference composition is transformed into the actual app composition rectangle using the same width/reference-aspect relation and center as B's off-axis projection. The loading image is a static milestone, not a fabricated in-progress live pose. It uses full-viewport chrome masking, clears on activation/failure/disposal and cannot revive from an obsolete decode after theme/motion changes. The live canvas is revealed only after it reports the current app frame, theme, composition and portrait state. The original raster/static fallback remains available on live failure or ineligibility.
+The seven chapters and accepted sequential copy exit/swap/enter controller remain. Introduction maps 0–14, contributions 14–86, context 86–137 with a settled reading hold. Construction maps 137→191→311→431→551 and now spans 600svh to leave readable intervals for each contribution. Conversation, manual source control and close hold 551. The pure clock is monotone and reverse continuous, retaining completed-seat holds for Sources 02/03.
 
-## Coordination required before adoption
+Construction copy names the actual active record and exact selected fragment across reading, selection, copying, approach and seating. Sources 02–04 are shown individually; the final staged question uses Sources 01 and 04. All examples remain illustrative, shared material is the only input represented, source correction is manual, and citation is not a correctness guarantee. The semantic static DOM, disclosures and source/history journeys remain intact.
 
-1. Renderer/author must provide the corrected asset filename, SHA, bytes, normalization/locator validation, runtime version and complete frozen contract together. Do not overwrite this fixture or add a guessed accepted hash.
-2. Corrected readable seated quote orientation, whole-leaf surface contact and intersections, secondary contributions and final twin geometry remain author/native acceptance gates.
-3. App now proposes B chapter map v2 under the parent's explicit app-refinement instruction (table below). B renderer/author Story root/camera tracks remain byte-identical. This app mapping and Source01-specific copy need a coordinated native gate; they are not author asset acceptance.
-4. Desktop support copy now shares the left heading column, letting B's camera fit a broad right scene. Phone fitting uses available height and retains visible outgoing lanes through sequential exit. Integrated native app-fit review remains required; isolated gallery acceptance does not establish app acceptance.
-5. Final integrated native Chrome cadence, corrected-asset visuals and physical Android remain separate gates. This is preparation only.
+Desktop retains the larger right-hand scene and left copy column. Phone reserves both target and visibly outgoing copy lanes, caps scene width by available height and clips to the same safe rectangle. Source-specific reading/copy/formation posters track current scroll and theme while loading or after failure. Rendering is deferred and demand driven. A 20-second asset timeout aborts activation; obsolete results cannot attach. Reduced motion, no JavaScript and short landscape retain static readable content. No autoplay audio, backend/provider changes, installations or performance promises were introduced.
 
-Cross-thread author messaging is not callable in this worker; parent must relay this contract/identity and obtain the exact corrected handoff. No other worker's files, accepted 3877 fixture, live application or public archive have been changed.
+## Validation and remaining gates
 
+96 suites / 1,378 tests and the compiled Next build pass. Installed Chrome checks pass: 108 source episodes at 360×640, 384×700 and 1470×801 in both themes; 48 transient text cases; 20 app-fit/lifecycle cases; 68 source/history journeys; 9 failure/reduced-motion/no-JS/context checks; 2 delayed-loading cases. Actual Source03/04 phone screenshots were inspected: full originals are readable and clear of HTML copy. This is headless browser evidence, not physical Android or parent native acceptance.
 
-## App refinement v2
-
-| Chapter | B Story range | App hold |
-|---|---:|---|
-| Introduction | 0–14 | hero0 through phase .16 |
-| Contributions | 14–86 | reveal/selection, end86 |
-| Context | 86–137 | physical source137 from phase .55 to1 |
-| Construction | 137–152 | source-preserving fragment approach |
-| Conversation | 152–164 | answer152 through phase .78 |
-| Maintain | 164–176 | seat transition; author correction pending |
-| Close | 176–191 | final191 from phase .72 |
-
-All chapter seams are exact and monotone, including reverse sampling. Seven existing chapter lengths, text boundaries and the sequential controller are retained. Live clauses/captions now describe the shown Source01 note, selected fragment and shared source identity; they do not claim displayed secondary copied contributions. The accessible expanded source records01–04 and original static semantic DOM remain intact.
-
-`live3d-adapter.js` reserves the union of target and actually visible outgoing title/body lanes until outgoing panel opacity ≤0.001. Phone camera width is capped by available height using a continuous pose-stage fit ratio, with horizontal centering. Desktop places support below heading in one left column and allocates the broader right rectangle. The owned live-stage clip enforces that same safe rectangle for both live canvas and loading image; this is an additional containment guard, not a replacement for camera fitting. Some secondary travel can meet the clip boundary, so native visual refinement must still inspect silhouettes.
-
-Pricing error classification: identical application auth/pricing code; preparation3887 and initially unconfigured refinement3897 had Auth.js `UntrustedHost`, while accepted3877 returned anonymous `null`. Same compiled refinement build at a guarded loopback control origin with explicit synthetic `AUTH_TRUST_HOST=true` returned200/null without console errors. Review3897 now uses that verified local-only startup setting. No application authentication code, provider configuration, user identity, login cookie or authorization was changed; final anonymous pricing/session read matches3877. Server/browser external requests remain blocked. Details in `../b-refinement-qa/pricing-baseline.json`, `pricing-host-control.json`, `pricing-final.json`.
+V7 remains on art HOLD because its scaffold/growth does not satisfy the final connected construction requirement. V8 author handoff is now frozen but is not adopted before renderer proof. Required swap handoff: exact packed/compressed asset identities and byte counts, frozen evaluator/runtime files, normalized contribution metadata/validation, regenerated milestone/source-specific posters and attribution. Recheck app framing, forward/reverse construction, timeout/fallback and actual delivery after the swap. Parent native Chrome review, physical Android and hosted CDN/cold/warm checks remain outstanding. The old 3467 fixture is not this review target; no repairs to that historical fixture are claimed.

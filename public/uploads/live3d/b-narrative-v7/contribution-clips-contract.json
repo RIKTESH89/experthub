@@ -1,0 +1,71 @@
+{
+  "ownership": "local geometry only; renderer keeps global clock, camera, rootTRS, copy reveal and clip evaluation",
+  "referenceStoryUnchangedDuration": true,
+  "foundationFill": {
+    "mesh": "Twin_Anatomical_Foundation",
+    "morphSlot": 1,
+    "formula": "1 - (p1+p2+p3+p4)/4; p is each layer build progress, Source01 inferred from Story weights; apply only named slot after Story, not a global transform"
+  },
+  "clips": [
+    {
+      "source": 1,
+      "clip": "Contribution_Source01",
+      "normalizedProgress": true,
+      "progressInput": "0–1 supplied by renderer; curves represent arrival→completed seat, no global episode timings authored",
+      "requestedRendererProposal": "growth near episode100–120, provisional; complete receiver/leaf match at progress1",
+      "copyShapeCoupled": false,
+      "protectedStoryChannels": [
+        "layer clearance slot",
+        "receiver deflection slot",
+        "primary paper curl and locator"
+      ],
+      "requiredEvaluation": "Apply local channels AFTER Story; upcoming secondary contributions progress0; completed contributions1. Preserve primary Story clearance/receiver deflection when applying Source01 growth. Never equal-blend clips with Story.",
+      "copyRevealOwnedByRenderer": true,
+      "selectedGlyphs": [
+        "Ink_Source01_Original_Line03"
+      ]
+    },
+    {
+      "source": 2,
+      "clip": "Contribution_Source02",
+      "normalizedProgress": true,
+      "progressInput": "0–1 supplied by renderer; curves represent arrival→completed seat, no global episode timings authored",
+      "requestedRendererProposal": "growth near episode100–120, provisional; complete receiver/leaf match at progress1",
+      "copyShapeCoupled": true,
+      "protectedStoryChannels": [],
+      "requiredEvaluation": "Apply local channels AFTER Story; upcoming secondary contributions progress0; completed contributions1. Preserve primary Story clearance/receiver deflection when applying Source01 growth. Never equal-blend clips with Story.",
+      "copyRevealOwnedByRenderer": true,
+      "selectedGlyphs": [
+        "Ink_Source02_Original_Original02_GlyphRow02_subselected"
+      ]
+    },
+    {
+      "source": 3,
+      "clip": "Contribution_Source03",
+      "normalizedProgress": true,
+      "progressInput": "0–1 supplied by renderer; curves represent arrival→completed seat, no global episode timings authored",
+      "requestedRendererProposal": "growth near episode100–120, provisional; complete receiver/leaf match at progress1",
+      "copyShapeCoupled": true,
+      "protectedStoryChannels": [],
+      "requiredEvaluation": "Apply local channels AFTER Story; upcoming secondary contributions progress0; completed contributions1. Preserve primary Story clearance/receiver deflection when applying Source01 growth. Never equal-blend clips with Story.",
+      "copyRevealOwnedByRenderer": true,
+      "selectedGlyphs": [
+        "Ink_Source03_Original_Original03_GlyphRow03_subselected"
+      ]
+    },
+    {
+      "source": 4,
+      "clip": "Contribution_Source04",
+      "normalizedProgress": true,
+      "progressInput": "0–1 supplied by renderer; curves represent arrival→completed seat, no global episode timings authored",
+      "requestedRendererProposal": "growth near episode100–120, provisional; complete receiver/leaf match at progress1",
+      "copyShapeCoupled": true,
+      "protectedStoryChannels": [],
+      "requiredEvaluation": "Apply local channels AFTER Story; upcoming secondary contributions progress0; completed contributions1. Preserve primary Story clearance/receiver deflection when applying Source01 growth. Never equal-blend clips with Story.",
+      "copyRevealOwnedByRenderer": true,
+      "selectedGlyphs": [
+        "Ink_Source04_Original_Original04_GlyphRow04_subselected"
+      ]
+    }
+  ]
+}

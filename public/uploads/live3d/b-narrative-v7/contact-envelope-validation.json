@@ -1,0 +1,648 @@
+{
+  "method": "Body-local +Z projected triangle envelope; two-sided conservative directional test; every underside vertex at every integer137–175 approach frame",
+  "scope": "Decoded actual v7 geometry against unchanged renderer root/seat algorithm; secondary static root placement is a proposal",
+  "proofs": [
+    {
+      "frame": 137,
+      "source01RightDotCameraRight": 0.9956447053237706,
+      "source01UpDotCameraUp": 0.9518082504831624,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 138,
+      "source01RightDotCameraRight": 0.9956448232353985,
+      "source01UpDotCameraUp": 0.9518077081092398,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 139,
+      "source01RightDotCameraRight": 0.9956456120455333,
+      "source01UpDotCameraUp": 0.9518040789064612,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 140,
+      "source01RightDotCameraRight": 0.9956476446184964,
+      "source01UpDotCameraUp": 0.951794720859536,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 141,
+      "source01RightDotCameraRight": 0.995651391957665,
+      "source01UpDotCameraUp": 0.9517774435442705,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 142,
+      "source01RightDotCameraRight": 0.9956572287923118,
+      "source01UpDotCameraUp": 0.9517504695074295,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 143,
+      "source01RightDotCameraRight": 0.9956654392406122,
+      "source01UpDotCameraUp": 0.9517123965608627,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 144,
+      "source01RightDotCameraRight": 0.9956762226203554,
+      "source01UpDotCameraUp": 0.9516621630166678,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 145,
+      "source01RightDotCameraRight": 0.9956896994483811,
+      "source01UpDotCameraUp": 0.9515990171006039,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 146,
+      "source01RightDotCameraRight": 0.9957059176324763,
+      "source01UpDotCameraUp": 0.9515224911347221,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 147,
+      "source01RightDotCameraRight": 0.9957248588208917,
+      "source01UpDotCameraUp": 0.951432380561948,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 148,
+      "source01RightDotCameraRight": 0.9957464448410303,
+      "source01UpDotCameraUp": 0.9513287274791214,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 149,
+      "source01RightDotCameraRight": 0.9957705441354933,
+      "source01UpDotCameraUp": 0.9512118080356182,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 150,
+      "source01RightDotCameraRight": 0.9957969780942207,
+      "source01UpDotCameraUp": 0.9510821228285555,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 151,
+      "source01RightDotCameraRight": 0.9958255271872773,
+      "source01UpDotCameraUp": 0.9509403892712802,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 152,
+      "source01RightDotCameraRight": 0.9958559368230767,
+      "source01UpDotCameraUp": 0.9507875348200105,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 153,
+      "source01RightDotCameraRight": 0.9958879228886192,
+      "source01UpDotCameraUp": 0.9506246899069536,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 154,
+      "source01RightDotCameraRight": 0.9959211769672425,
+      "source01UpDotCameraUp": 0.9504531794414202,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 155,
+      "source01RightDotCameraRight": 0.99595537127027,
+      "source01UpDotCameraUp": 0.9502745117994179,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 156,
+      "source01RightDotCameraRight": 0.9959901633564138,
+      "source01UpDotCameraUp": 0.950090364323765,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 157,
+      "source01RightDotCameraRight": 0.9960252007421105,
+      "source01UpDotCameraUp": 0.9499025644982377,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 158,
+      "source01RightDotCameraRight": 0.9960601255235075,
+      "source01UpDotCameraUp": 0.9497130661378052,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 159,
+      "source01RightDotCameraRight": 0.996094579134551,
+      "source01UpDotCameraUp": 0.9495239201489613,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 160,
+      "source01RightDotCameraRight": 0.9961282073552404,
+      "source01UpDotCameraUp": 0.94933723965468,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 161,
+      "source01RightDotCameraRight": 0.996160665661059,
+      "source01UpDotCameraUp": 0.9491551595407838,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 162,
+      "source01RightDotCameraRight": 0.996191624971685,
+      "source01UpDotCameraUp": 0.9489797907556912,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 163,
+      "source01RightDotCameraRight": 0.9962207778182832,
+      "source01UpDotCameraUp": 0.9488131699722268,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 164,
+      "source01RightDotCameraRight": 0.9962478449082549,
+      "source01UpDotCameraUp": 0.9486572054848059,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 165,
+      "source01RightDotCameraRight": 0.9963759766663824,
+      "source01UpDotCameraUp": 0.9491794227484145,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 166,
+      "source01RightDotCameraRight": 0.9969499495873511,
+      "source01UpDotCameraUp": 0.9529464249973798,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 167,
+      "source01RightDotCameraRight": 0.9978181016873676,
+      "source01UpDotCameraUp": 0.9610097362620224,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 168,
+      "source01RightDotCameraRight": 0.9981181313081504,
+      "source01UpDotCameraUp": 0.9721613752109586,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 169,
+      "source01RightDotCameraRight": 0.9966559597152449,
+      "source01UpDotCameraUp": 0.983720137263502,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 170,
+      "source01RightDotCameraRight": 0.9925931551259624,
+      "source01UpDotCameraUp": 0.9928492823953133,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 171,
+      "source01RightDotCameraRight": 0.9860346441494726,
+      "source01UpDotCameraUp": 0.9978420200491708,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 172,
+      "source01RightDotCameraRight": 0.9781548582819194,
+      "source01UpDotCameraUp": 0.9987676716300743,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 173,
+      "source01RightDotCameraRight": 0.970760448651825,
+      "source01UpDotCameraUp": 0.9971817958672708,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 174,
+      "source01RightDotCameraRight": 0.9654916211957125,
+      "source01UpDotCameraUp": 0.9951108221868441,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 175,
+      "source01RightDotCameraRight": 0.9630293413155678,
+      "source01UpDotCameraUp": 0.9939191268199586,
+      "finalTextUpright": true,
+      "approach": {
+        "undersideVerticesChecked": 1625,
+        "oldPenetration": 0,
+        "receiverPenetration": 0,
+        "oldWorst": null
+      }
+    },
+    {
+      "frame": 176,
+      "source01RightDotCameraRight": 0.9626275314190197,
+      "source01UpDotCameraUp": 0.9937037099105582,
+      "finalTextUpright": true,
+      "source01": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 2.2003668094423573e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 6,
+        "receiverBackBestGap": 0.004649449750930976,
+        "receiverBackOwnHits": 175,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": false
+      },
+      "source02": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 6.231665077085627e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 18,
+        "receiverBackBestGap": 0.004553762370091583,
+        "receiverBackOwnHits": 222,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      },
+      "source03": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 6.975047082762104e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 39,
+        "receiverBackBestGap": 0.005718738230322561,
+        "receiverBackOwnHits": 153,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      },
+      "source04": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 9.025531009073419e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 8,
+        "receiverBackBestGap": 0.0041302587090647535,
+        "receiverBackOwnHits": 205,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      }
+    },
+    {
+      "frame": 191,
+      "source01RightDotCameraRight": 0.9626275283097618,
+      "source01UpDotCameraUp": 0.9937037047788067,
+      "finalTextUpright": true,
+      "source01": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 2.2632099779572845e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 6,
+        "receiverBackBestGap": 0.004649419425736772,
+        "receiverBackOwnHits": 175,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": false
+      },
+      "source02": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 2.0200686128149712e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 18,
+        "receiverBackBestGap": 0.0045537556358223995,
+        "receiverBackOwnHits": 222,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      },
+      "source03": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 2.2361161540725867e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 39,
+        "receiverBackBestGap": 0.005718879994891741,
+        "receiverBackOwnHits": 153,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      },
+      "source04": {
+        "undersideVerticesChecked": 1625,
+        "matchingTriangleTopology": true,
+        "misses": 0,
+        "maxContactError": 2.3401498372534972e-7,
+        "maxOtherPenetration": 0,
+        "otherWorst": null,
+        "receiverBackEngagedVertices": 8,
+        "receiverBackBestGap": 0.004130247093437174,
+        "receiverBackOwnHits": 205,
+        "wholeLeafContactNumericallyVerified": true,
+        "secondaryPlacementIsProposal": true
+      },
+      "phoneQuoteProjectedBounds": [
+        {
+          "source": 1,
+          "line": 1,
+          "exactText": "a clear question",
+          "widthPx": 72.84517856183257,
+          "heightPx": 15.882518664853308,
+          "readingCertified": false
+        },
+        {
+          "source": 2,
+          "line": 1,
+          "exactText": "Question →",
+          "widthPx": 56.642901411873936,
+          "heightPx": 14.236731067947915,
+          "readingCertified": false
+        },
+        {
+          "source": 2,
+          "line": 2,
+          "exactText": "Context",
+          "widthPx": 37.21790795146393,
+          "heightPx": 13.946900449180703,
+          "readingCertified": false
+        },
+        {
+          "source": 3,
+          "line": 1,
+          "exactText": "naming the",
+          "widthPx": 60.46837423533477,
+          "heightPx": 14.96626562794225,
+          "readingCertified": false
+        },
+        {
+          "source": 3,
+          "line": 2,
+          "exactText": "constraint",
+          "widthPx": 55.47908309679341,
+          "heightPx": 12.406188121999122,
+          "readingCertified": false
+        },
+        {
+          "source": 4,
+          "line": 1,
+          "exactText": "the stated",
+          "widthPx": 65.34940636605629,
+          "heightPx": 15.084714585617746,
+          "readingCertified": false
+        },
+        {
+          "source": 4,
+          "line": 2,
+          "exactText": "constraint",
+          "widthPx": 65.82637557633721,
+          "heightPx": 11.925058586720638,
+          "readingCertified": false
+        }
+      ]
+    }
+  ]
+}

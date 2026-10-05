@@ -187,3 +187,8 @@
 
 /* Desktop scales the mobile-first B scene beside one copy column. */
 @media(min-width:901px){.home[data-cinematic="true"] :global(.body-lane),.home[data-cinematic="true"] :global(#context .body-lane),.home[data-cinematic="true"] :global(#conversation .body-lane){left:6%;right:auto;width:25%;top:auto;bottom:64px}.home[data-cinematic="true"] :global(.title-lane){left:6%;width:25%}}
+
+/* Three full-source episodes need real scroll distance for reading/copy/seat holds. */
+.home[data-cinematic="true"] :global(#construction){height:600svh;min-height:600svh}
+
+.home[data-artwork="fallback"] :global(#live-art canvas){opacity:0}

@@ -1,0 +1,410 @@
+{
+  "actualDecodedThree": true,
+  "sourceProofs": [
+    {
+      "source": 2,
+      "reconstructedPhysicalFullText": "Question → Context → Decision",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "Question → Context",
+      "exactSelectedText": true,
+      "glyphVertices": 9462,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 2.2887833992611187e-16
+    },
+    {
+      "source": 3,
+      "reconstructedPhysicalFullText": "Illustrative case note: after naming the constraint, the example’s next step changed.",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "naming the constraint",
+      "exactSelectedText": true,
+      "glyphVertices": 18060,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 6.206335383118183e-17
+    },
+    {
+      "source": 4,
+      "reconstructedPhysicalFullText": "Compare the available options against the stated constraint.",
+      "exactFullSource": true,
+      "reconstructedSelectedText": "the stated constraint",
+      "exactSelectedText": true,
+      "glyphVertices": 13806,
+      "minPaperFrontGap": 0.000049998641014098455,
+      "outsidePaper": 0,
+      "maxBindingError": 1.2412670766236366e-16
+    }
+  ],
+  "growthProofs": [
+    {
+      "name": "before-source02",
+      "progress": {
+        "1": 1,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.75,
+      "maxCompletedLeafContact": 2.2632099779572845e-7
+    },
+    {
+      "name": "source02-half",
+      "progress": {
+        "1": 1,
+        "2": 0.5,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.625,
+      "maxCompletedLeafContact": 2.2632099779572845e-7
+    },
+    {
+      "name": "source02-complete",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 0,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.5,
+      "maxCompletedLeafContact": 2.2632099779572845e-7
+    },
+    {
+      "name": "source03-half",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 0.5,
+        "4": 0
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": false,
+          "weights": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.375,
+      "maxCompletedLeafContact": 2.2632099779572845e-7
+    },
+    {
+      "name": "source04-half",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 0.5
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0.125,
+      "maxCompletedLeafContact": 2.2632099779572845e-7
+    },
+    {
+      "name": "all-complete",
+      "progress": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "layers": [
+        {
+          "source": 1,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 2,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 3,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "source": 4,
+          "visible": true,
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "foundationFill": 0,
+      "maxCompletedLeafContact": 2.334698890114613e-7
+    }
+  ],
+  "reverseMismatch": 0,
+  "maxCopyLocatorError": 1.0326427314779783e-8,
+  "storyGlobalTracksChanged": false,
+  "browserRendered": false
+}

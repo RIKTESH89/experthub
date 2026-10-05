@@ -14,6 +14,8 @@ const nextConfig = {
     ...(previewIsolated ? { NEXT_PUBLIC_EXPERTHUB_PREVIEW_ORIGIN: previewOrigin, AUTH_URL: previewOrigin, NEXTAUTH_URL: previewOrigin, NEXT_PUBLIC_APP_URL: previewOrigin } : {}),
     ...(localUi ? { AUTH_URL: localUi.origin, NEXTAUTH_URL: localUi.origin, NEXT_PUBLIC_APP_URL: localUi.origin } : {}),
   },
+  // Frozen static asset only: HTTP decodes Brotli before the runtime verifies SHA.
+  async headers() { return [{ source:'/uploads/live3d/b-narrative-v7/scene-07dadf5f371b658d.glb.br', headers:[{key:'Content-Encoding',value:'br'},{key:'Content-Type',value:'model/gltf-binary'},{key:'Cache-Control',value:'public, max-age=31536000, immutable'},{key:'Vary',value:'Accept-Encoding'}] }]; },
   images: {
     remotePatterns: [
       {

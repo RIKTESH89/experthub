@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "status": "Full-story authored source registry; not yet rendered into the full sequence",
+  "originals_remain_intact": true,
+  "source_ids_persist": true,
+  "records": [
+    {
+      "source_id": "framework-01",
+      "type": "contributed explanation",
+      "form": "bound ivory folio page",
+      "label": "01 / Explanation",
+      "title": "Context note",
+      "full_source": "Begin with a clear question. Keep its context in view.",
+      "selected_fragment": "a clear question",
+      "related_concepts": [
+        "question",
+        "context"
+      ],
+      "destination_patch": "front-left context lamella",
+      "display_disclaimer": "Original fictional demonstration text; no expert attribution"
+    },
+    {
+      "source_id": "diagram-02",
+      "type": "contributed diagram",
+      "form": "substantial diagram leaf with three indexed nodes",
+      "label": "02 / Diagram",
+      "title": "Question, context, decision",
+      "full_source": "Question → Context → Decision",
+      "selected_fragment": "Question → Context",
+      "related_concepts": [
+        "question",
+        "context",
+        "decision"
+      ],
+      "destination_patch": "superior relationship lamella",
+      "display_disclaimer": "Illustrative diagram; not a model architecture diagram"
+    },
+    {
+      "source_id": "case-note-03",
+      "type": "documented experience shared as a record",
+      "form": "warm ivory case-note leaf with restrained corner index",
+      "label": "03 / Shared case note",
+      "title": "A constraint in an example",
+      "full_source": "Illustrative case note: after naming the constraint, the example’s next step changed.",
+      "selected_fragment": "naming the constraint",
+      "related_concepts": [
+        "context",
+        "constraint",
+        "next_step"
+      ],
+      "destination_patch": "lateral context/application lamella",
+      "display_disclaimer": "Fictional recorded example; not an extracted private memory"
+    },
+    {
+      "source_id": "decision-04",
+      "type": "contributed decision example",
+      "form": "authored folded manuscript leaf",
+      "label": "04 / Decision example",
+      "title": "Compare options",
+      "full_source": "Compare the available options against the stated constraint.",
+      "selected_fragment": "the stated constraint",
+      "related_concepts": [
+        "constraint",
+        "options",
+        "decision"
+      ],
+      "destination_patch": "front-right decision lamella",
+      "display_disclaimer": "Fictional demonstration source; not expert-specific advice"
+    }
+  ],
+  "concept_connections": [
+    {
+      "from": "question",
+      "to": "context",
+      "source_ids": [
+        "framework-01",
+        "diagram-02"
+      ]
+    },
+    {
+      "from": "context",
+      "to": "constraint",
+      "source_ids": [
+        "case-note-03"
+      ]
+    },
+    {
+      "from": "constraint",
+      "to": "decision",
+      "source_ids": [
+        "decision-04",
+        "diagram-02"
+      ]
+    }
+  ],
+  "staged_query": {
+    "question": "How should I begin choosing an option?",
+    "answer": "Begin with a clear question. Compare the available options against the stated constraint.",
+    "source_ids": [
+      "framework-01",
+      "decision-04"
+    ],
+    "label": "Illustrative question and scripted answer; not a live AI response"
+  },
+  "privacy_limit": "Only contributed records are represented. No brain scan, private-memory extraction or personality cloning."
+}

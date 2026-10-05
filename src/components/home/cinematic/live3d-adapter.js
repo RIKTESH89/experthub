@@ -1,3 +1,4 @@
+import { narrativeState } from './b-narrative-v7/narrative-clock.js';
 import { artworkAssets } from './live3d-config.js';
 import { bChapterFrame as authoredFrame, portraitWidthPerHeight } from './b-chapter-map.js';
 
@@ -10,15 +11,17 @@ export function mountLiveArtwork(root, requestUpdate) {
     const loadingPoster=document.createElement('img');loadingPoster.alt='';loadingPoster.id='b-loading-poster';loadingPoster.hidden=true;viewport.append(loadingPoster);
     let posterGeneration=0,posterURL='';
     function preparePoster(){
-        if(!state||!composition||root.dataset.artwork!=='loading')return;
+        if(!state||!composition||!['loading','fallback'].includes(root.dataset.artwork))return;
         const f=authoredFrame(state.phase,state.chapter),phase=f<24?'hero':f<96?'overview':f<143?'reading':'formation';
         const sourceWidth=state.portrait?360:1470,sourceHeight=state.portrait?640:801;
         const reference=state.portrait?[0,164,360,416]:[411.6,40,1058.4,711];
         const ratio=composition.width/reference[2];
         Object.assign(loadingPoster.style,{width:`${sourceWidth*ratio}px`,height:`${sourceHeight*ratio}px`,left:`${composition.x+composition.width/2-(reference[0]+reference[2]/2)*ratio}px`,top:`${composition.y+composition.height/2-(reference[1]+reference[3]/2)*ratio}px`});
-        const url=`/uploads/live3d/b-r1/fallback-${state.portrait?'portrait':'desktop'}-${phase}-${dark()?'dark':'light'}.png`;
+        const n=narrativeState(f),view=state.portrait?'portrait':'desktop',theme=dark()?'dark':'light';
+        const posterName=n.chapter==='secondary'?`narrative-source-${n.source}-${n.phase==='seat'?'formation':n.phase==='copy'||n.phase==='approach'?'copy':'reading'}-${view}-${theme}`:`fallback-${view}-${phase}-${theme}`;
+        const url=`/uploads/live3d/b-narrative-v7/${posterName}.png`;
         if(url===posterURL)return;posterURL=url;loadingPoster.hidden=true;delete root.dataset.bPoster;const mine=++posterGeneration;loadingPoster.src=url;
-        (loadingPoster.decode ? loadingPoster.decode() : new Promise((resolve,reject)=>{loadingPoster.onload=resolve;loadingPoster.onerror=reject;})).then(()=>{if(!disposed&&mine===posterGeneration&&root.dataset.artwork==='loading'){loadingPoster.hidden=false;root.dataset.bPoster='ready';}},()=>{});
+        (loadingPoster.decode ? loadingPoster.decode() : new Promise((resolve,reject)=>{loadingPoster.onload=resolve;loadingPoster.onerror=reject;})).then(()=>{if(!disposed&&mine===posterGeneration&&['loading','fallback'].includes(root.dataset.artwork)){loadingPoster.hidden=false;root.dataset.bPoster='ready';}},()=>{});
     }
     let controller, load, timeout, generation = 0, disposed = false, eligible = false, failed = false, state, composition, rectKey = '', physicalKey = '';
     root.dataset.artwork = 'raster';
@@ -76,14 +79,14 @@ export function mountLiveArtwork(root, requestUpdate) {
         diagnostics({ state: 'raster' });
     }
     function fail(error) {
-        failed = true; release(); diagnostics({ state: 'fallback', error: error.message }); requestUpdate();
+        failed = true; release();root.dataset.artwork='fallback';viewport.hidden=false;preparePoster();diagnostics({ state:'fallback',error:error.message });root.querySelector('#runtime-status').textContent='Static source-specific artwork — the experimental live scene could not load. The story and source links remain available.'; requestUpdate();
     }
     async function start() {
         if (disposed || failed || !eligible || !state || load || controller) return;
         const mine = ++generation, abort = load = new AbortController();
         viewport.hidden = false; root.dataset.artwork = 'loading'; diagnostics({ state:'loading',version:artworkAssets.version }); position();
         root.querySelector('#runtime-status').textContent='Loading experimental artwork. A static B composition is shown while the live scene prepares.';
-        timeout = setTimeout(()=> { if (mine === generation) fail(new Error('artwork-readiness-timeout')); },15000);
+        timeout = setTimeout(()=> { if (mine === generation) fail(new Error('artwork-readiness-timeout')); },20000);
         try {
             const { createArtwork } = await import('./b-artwork.js');
             if (disposed || mine !== generation || abort.signal.aborted) return;

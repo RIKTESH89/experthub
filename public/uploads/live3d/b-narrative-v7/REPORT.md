@@ -1,0 +1,49 @@
+# V7 causal renderer — frozen handoff, art/homepage adoption HOLD
+
+**Runtime/seat-hold and lossless-delivery handoff complete. Labelled private preview GO; final narrative/art and fast first-visit homepage adoption remain HOLD.** Exact author candidate snapshot SHA **dd3d9ab7bcee179334c1d5d195d3707de443ef090addc21fc93b3c127f655102**,35,166,312bytes. No author/app edits or publication. Local gallery http://127.0.0.1:4333/review.html; integration boundary in handoff-v7/INTEGRATION.md.
+
+## Final behavior and responsibilities
+
+Author V7 provides complete physical originals02–04, existing selected glyphs/underline, coherent35% depth compression instead of the Source01 bite, and four normalized local contribution clips. Runtime applies Story before contribution evaluation and keeps author local geometry/locators/root identity intact. Source01 retains its primary Story; secondaries are upcoming0/completed1. Future layers and receivers stay hidden, completed leaves stay attached. Exact physical selected glyphs are highlighted, underlines visibility-gated, copied paper hidden through selection. Original withdrawal begins after selection.
+
+Final secondary120-frame clock: enter0–14, read14–38, selection38–50, extract50–58, copy58–74, approach74–110, growth90–110, completed-seat hold110–120. Source02 holds301–311 before Source03; Source03 holds421–431 before Source04; Source04 holds541–551. Completion excludes the boundary where the next episode enters. Total551 and existing scroll height unchanged: holds replace part of the old approach, rather than lengthening it. Camera/body return74–106; fragment continues to110. Partial morph fit is not claimed as a completed seat. Author-owned scaffold and lamina repairs remain forV8; shared v1 authority files unchanged.
+
+## Native evidence and verification
+
+Final108 actual native Chrome whole-page captures at360×640/1470×801, light/dark, plus12-second canvas-only forward/reverse VP9 recordings. Recordings omitDOM and compress the full clock; they do not certify user scroll cadence or a fresh human native-control acceptance. Older first-look captures are segregated under evidence/preliminary-critical; final gallery uses narrative-* captures.
+
+All552 states forward/reverse have **zero** matrix/morph/visibility/material-color/opacity mismatch on phone and desktop. Camera matrix quarter-frame maximum increment0.013046936; this is a camera continuity sample, not a full collision or perceptual smoothness certificate. Completed leaf dense contact (1625 underside vertices per leaf at checkpoints including seat holds) max **2.334699e-7world units**.111 integer secondary approach frames, underside stride31 and visible-body/receiver normal-directed rays: neighbor penetration0, own receiver max1.1671e-7. Primary137–17539integer runtime directional checks pass; author's all1625vertex decoded geometry report is separately retained, not relabelled as our fresh exhaustive runtime check. Partial morphs retain an approach stand-off until full growth; dense receiver/leaf correspondence throughout partial growth is not certified.
+
+Causal verification checks every552frame: future contribution/receiver/copy absence, completed progress persistence, no copy through selection, no growth before approach. Source02/03/04 physical body text reconstructs exactly to the unchanged registry and is inside the phone canvas at reading holds. Existing selected glyph text matches exact selected fragments; selection233/353/473 has underline visible and copy hidden. Inspected phone light/dark stills show readable full originals and copied excerpts; independent ranked captured-art review clears the prior missing-original, duplicate-selection and torn-cavity blockers. That review did not certify fresh native scroll. Parent requested the completed holds implemented here; their perceived duration still needs live assessment.
+
+Keyboard full-source access/marks/Escape, reduced-motion source-specific posters, idle rendering, portraitDPR3 cap, context-loss/restore preserving473, initial reduced-motion skipping heavy bundles/GLB, failed-load fallback and obsolete-startup zero-context checks pass onV7. Static posters regenerated for the new causal states. The inherited20-second startup budget, AbortSignal/generation ownership, demand rendering and teardown remain. Actual v6 timeout test is prior evidence; final v7 timeout code unchanged, not newly claimed as retested20seconds here.
+
+## Asset, transfer and real timings
+
+V7 asset: **62meshes/62primitives/62materials,510,560triangles,0textures/images/cameras**. Story54channels; contribution clips2/9/9/9channels, all local. Existing installed Three.js0.186.1/addons/MeshoptEncoder/Decoder and Next.js compiled webpack/Terser reused; no install. Main clock/DOM remain independent of heavy imports. BundledJS3requests, **167,244B Brotli**. Raw author GLB stays intact.
+
+Lossless packed GLB **14,869,200B**, SHA **07dadf5f371b658d526757561b23ed5a815574c815e5b08ec51d47157f25bc34**. All502decoded bufferViews compare byte-identically; index order preserved, no quantization/simplification/reorder. Raw/packed actual canvas40renders/20paired checkpoints match exactly under the final timeline. Geometry/index/morph backing buffers34,817,884B for both routes; excludes animations, JS heap, textures and driver/process peak.
+
+Brotli quality11/default window encoded6,589,689B; quality11/window24 encoded **6,546,906B**, round-trip byte-identical. Standard window24 caps decoder sliding window at16MiB, larger than default4MiB; complete decompression-memory/process peak is not measured. Offline compression~21.2s, not browser startup. Whole GLB/hash and parsed geometry stay identical. Codec window change is a delivery choice, not geometry quality transformation.
+
+Native Chrome154.0.8037.98 on MacM5, sequential controlled runs after visual/probe workloads finish. Fresh browser contexts, cache cleared before each cold, caching enabled; warm navigation repeats in the same context. CDP500,000B/s down,125,000B/s up,150mslatency.3cold/warm pairs,2unthrottled pairs,1pair with4×CPU. This is local browser/network simulation, not a WAN/CDN or physicalAndroid measurement. Small repeats establish consistency, not population percentiles. Full resource timelines/encoded/decoded bytes in evidence/delivery-measurements.json.
+
+| Final profile | Cold navigation→live | Warm navigation→live |
+|---|---:|---:|
+| Simulated4Mbps/150ms,3pairs | **14.150s median** | **0.477s median** |
+| Unthrottled localhost,2pairs | 0.210s | 0.172s |
+| Simulated4Mbps/150ms plus4×CPU,1pair | 14.337s | 0.649s |
+
+ReadableFCP~0.19s; cold static art **0.696s median**, warm~0.35s. Cold bodies~6.83MB; warm~10.8KB. Final warm scene and JS resource transferSize0 confirms actual cache reuse. Scene wire alone has13.094s lower bound at4Mbps; first-visit14.15s remains too slow for accepted homepage enhancement. Mac hash/parse/compile are measured separately; parse~21–27ms cold/~18–19ms warm, initial shader compile~28–32ms;4×CPU parse~84mscold/~71mswarm. All geometry/clips still decoded and initialized on warm visits; no custom persistent parsed-scene cache.
+
+Early standard-window runs refetched the6.59MB scene even after intended immutable headers and an authorized owned-server restart, making warm~13.65s. Final16MiB-window representation caches and warm is~0.48s. Chromium memory-cache source describes a50MiB cap and max-entry1/8, consistent with this size-sensitive result; active backend/threshold cause is inferred, not proven by our traces. Payload is only6694bytes below that theoretical6.25MiB boundary; futureV8/other browsers/cache pressure must be remeasured. See [Chromium memory-cache implementation](https://raw.githubusercontent.com/chromium/chromium/main/net/disk_cache/memory/mem_backend_impl.cc). Retained standard-window/stale-server measurements are labelled separately; do not mix them with final results.
+
+Sequential20-second forward/reverse GPU sweep after2.2second warmup,360bounded timer samples: desktop1470×801 GPU p95 **6.499ms**, phone360×640 **4.681ms** on this Mac. CPU submission p950.500/0.500ms. Framebuffer<=1.6Mpixels, portraitDPR1, desktop<=1.5. **65geometries/34textures plateau**; dispose returns to engine1/1baseline. Authored asset0textures contrasts with runtime PMREM/shadow allocations. Counts/geometry-byte scope do not certify totalGPU/process/driver peak or physicalmobileFPS.
+
+## Remaining gates and handoff
+
+Author/art: full-volume gold scaffold masks perceived source-driven construction; loose/disconnected upper laminae; final leaves still read as rectangular panels. Parent coordinatesV8. Final completed-seat holds are now present, but fresh continuous native user scroll and independent duration/visual-growth acceptance remain. Actual app303px phone lane versus tested416px, deviceGPU/thermal/memory and WAN/CDN behavior are unverified. No physicalAndroid/ORYZOparity claim. Fast first-visit requires further asset reduction/progressive review; header/cache success is not sufficient.
+
+The earlier sandbox `ps` denial was reported and work stopped. Parent then authorized identical read-only inspection through normal require_escalated review; it succeeded. Read-only cwd/port evidence identified onlyPID13906 as this worker's owned4333server; only that server was restarted. No alternative process-control bypass or other process termination. No remaining execution denial; independent art gates remain.
+
+Frozen isolated renderer handoff only. Shared v1 contract and prior frozen artifacts verified unchanged. No author/app/other-worker edit, provider/auth/DB/form/network write, paid service, install, push or publication. The copied authorV7 is a candidate snapshot, not an author-owned freeze. Read runtime-freeze.json and handoff-v7/INTEGRATION.md for exact delivery identity and app boundary.
