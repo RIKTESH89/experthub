@@ -63,7 +63,7 @@ export function LoadingSpinner({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={circumference * 0.35}
-            className="text-blue-700 dark:text-blue-400"
+            className="text-primary"
           />
         </motion.svg>
       </div>

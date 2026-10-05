@@ -200,20 +200,20 @@ export function Sidebar({ navItems, className }: SidebarProps) {
           className="h-7 w-7 shrink-0 rounded-lg"
           aria-hidden="true"
         >
-          <rect width="512" height="512" rx="112" fill="#1E40AF" />
-          <rect x="140" y="128" width="36" height="256" rx="4" fill="white" />
-          <rect x="176" y="128" width="180" height="30" rx="4" fill="white" />
-          <rect x="176" y="225" width="120" height="30" rx="4" fill="white" />
+          <rect width="512" height="512" rx="112" fill="currentColor" className="text-primary" />
+          <rect x="140" y="128" width="36" height="256" rx="4" fill="hsl(var(--primary-foreground))" />
+          <rect x="176" y="128" width="180" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
+          <rect x="176" y="225" width="120" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
           <rect
             x="316"
             y="225"
             width="40"
             height="30"
             rx="4"
-            fill="white"
+            fill="hsl(var(--primary-foreground))"
             opacity="0.5"
           />
-          <rect x="176" y="354" width="180" height="30" rx="4" fill="white" />
+          <rect x="176" y="354" width="180" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
         </svg>
 
         <AnimatePresence mode="wait">

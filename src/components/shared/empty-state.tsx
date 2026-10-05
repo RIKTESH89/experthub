@@ -74,7 +74,7 @@ export function EmptyState({
         >
           <Button
             onClick={action.onClick}
-            className="cursor-pointer bg-primary px-6 font-sans text-white transition-colors duration-200 hover:bg-blue-800"
+            className="cursor-pointer bg-primary px-6 font-sans text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
           >
             {action.label}
           </Button>

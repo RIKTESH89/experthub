@@ -1,45 +1,45 @@
 /* Knowledge Studio: semantic tokens shared across all route families. */
 :root {
-  --background:45 24% 96%;
-  --foreground:160 16% 13%;
-  --card:45 30% 99%;
-  --card-foreground:160 16% 13%;
-  --popover:45 30% 99%;
-  --popover-foreground:160 16% 13%;
-  --primary:160 38% 27%;
-  --primary-foreground:45 30% 99%;
-  --secondary:43 18% 91%;
-  --secondary-foreground:160 16% 13%;
-  --muted:43 18% 91%;
-  --muted-foreground:155 9% 37%;
-  --accent:155 19% 89%;
-  --accent-foreground:160 16% 13%;
-  --border:45 12% 80%;
-  --input:45 12% 73%;
-  --ring:160 38% 27%;
+  --background:48.000 23.810% 95.882%;
+  --foreground:130.000 6.667% 17.647%;
+  --card:40.000 60.000% 98.039%;
+  --card-foreground:130.000 6.667% 17.647%;
+  --popover:40.000 60.000% 98.039%;
+  --popover-foreground:130.000 6.667% 17.647%;
+  --primary:30.667 28.302% 31.176%;
+  --primary-foreground:40.000 60.000% 98.039%;
+  --secondary:43.636 23.404% 90.784%;
+  --secondary-foreground:130.000 6.667% 17.647%;
+  --muted:43.636 23.404% 90.784%;
+  --muted-foreground:138.000 5.208% 37.647%;
+  --accent:37.143 31.343% 86.863%;
+  --accent-foreground:130.000 6.667% 17.647%;
+  --border:66.000 8.197% 76.078%;
+  --input:78.000 4.673% 58.039%;
+  --ring:30.667 28.302% 31.176%;
   --destructive:0 72% 42%;
   --destructive-foreground:0 0% 100%;
   --radius:.75rem
 }
 
 .dark {
-  --background:160 13% 9%;
-  --foreground:42 20% 92%;
-  --card:160 12% 12%;
-  --card-foreground:42 20% 92%;
-  --popover:160 12% 12%;
-  --popover-foreground:42 20% 92%;
-  --primary:151 32% 72%;
-  --primary-foreground:160 20% 12%;
-  --secondary:160 10% 17%;
-  --secondary-foreground:42 20% 92%;
-  --muted:160 10% 17%;
-  --muted-foreground:150 9% 68%;
-  --accent:160 13% 21%;
-  --accent-foreground:42 20% 92%;
-  --border:155 8% 28%;
-  --input:155 8% 38%;
-  --ring:151 32% 72%;
+  --background:45.000 10.526% 7.451%;
+  --foreground:39.000 37.037% 89.412%;
+  --card:42.857 12.281% 11.176%;
+  --card-foreground:39.000 37.037% 89.412%;
+  --popover:42.857 12.281% 11.176%;
+  --popover-foreground:39.000 37.037% 89.412%;
+  --primary:35.294 44.503% 62.549%;
+  --primary-foreground:45.000 10.526% 7.451%;
+  --secondary:42.000 12.821% 15.294%;
+  --secondary-foreground:39.000 37.037% 89.412%;
+  --muted:42.000 12.821% 15.294%;
+  --muted-foreground:39.231 18.310% 72.157%;
+  --accent:37.895 20.000% 18.627%;
+  --accent-foreground:39.000 37.037% 89.412%;
+  --border:37.241 16.571% 34.314%;
+  --input:36.667 16.364% 43.137%;
+  --ring:35.294 44.503% 62.549%;
   --destructive:0 78% 70%;
   --destructive-foreground:160 20% 12%
 }

@@ -171,10 +171,10 @@ function ExpertSubscribersPageContent() {
             <circle cx="120" cy="74" r="4" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
             <path d="M114 82a6 6 0 0112 0" stroke="currentColor" strokeWidth="1" fill="currentColor"/>
             {/* Connection lines */}
-            <line x1="44" y1="30" x2="66" y2="36" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
-            <line x1="116" y1="30" x2="94" y2="36" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
-            <line x1="50" y1="72" x2="68" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
-            <line x1="110" y1="72" x2="92" y2="52" stroke="#ddd6fe" strokeWidth="1.5" strokeDasharray="3 2"/>
+            <line x1="44" y1="30" x2="66" y2="36" stroke="hsl(var(--border))" strokeWidth="1.5" strokeDasharray="3 2"/>
+            <line x1="116" y1="30" x2="94" y2="36" stroke="hsl(var(--border))" strokeWidth="1.5" strokeDasharray="3 2"/>
+            <line x1="50" y1="72" x2="68" y2="52" stroke="hsl(var(--border))" strokeWidth="1.5" strokeDasharray="3 2"/>
+            <line x1="110" y1="72" x2="92" y2="52" stroke="hsl(var(--border))" strokeWidth="1.5" strokeDasharray="3 2"/>
             {/* Sparkle */}
             <path d="M80 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="currentColor" opacity="0.5"/>
           </svg>

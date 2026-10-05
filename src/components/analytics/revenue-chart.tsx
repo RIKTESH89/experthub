@@ -64,8 +64,8 @@ export function RevenueChart({ data }: RevenueChartProps) {
             </p>
           )}
         </div>
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-700/10">
-          <TrendingUp className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <TrendingUp className="h-5 w-5 text-primary" />
         </div>
       </CardHeader>
       <CardContent className="pb-4">
@@ -86,8 +86,8 @@ export function RevenueChart({ data }: RevenueChartProps) {
             <BarChart data={data} barCategoryGap="20%">
               <defs>
                 <linearGradient id="revenueBarGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E40AF" stopOpacity={1} />
-                  <stop offset="100%" stopColor="#1E40AF" stopOpacity={0.6} />
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
                 </linearGradient>
               </defs>
               <CartesianGrid

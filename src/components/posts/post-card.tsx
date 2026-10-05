@@ -204,7 +204,7 @@ function InlineAudioPlayer({ audio }: { audio: PostMedia }) {
         className={cn(
           "flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors duration-200",
           isPlaying
-            ? "bg-primary text-white"
+            ? "bg-primary text-primary-foreground"
             : "bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary"
         )}
       >
@@ -354,7 +354,7 @@ function CompactVideoThumbnail({
         <div className="flex h-full items-center justify-center bg-muted" />
       )}
       <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors duration-200 group-hover:bg-black/20">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white ring-2 ring-white/20 transition-colors duration-200 group-hover:bg-primary group-hover:ring-primary/30">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white ring-2 ring-white/20 transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground group-hover:ring-primary/30">
           <Play className="h-6 w-6 fill-current ml-0.5" />
         </div>
       </div>

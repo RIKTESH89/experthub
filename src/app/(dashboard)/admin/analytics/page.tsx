@@ -67,8 +67,8 @@ function generateDailyEngagement() {
 function generateRoleDistribution() {
   return [
     { name: "Subscribers", value: 2847, color: "hsl(var(--primary))" },
-    { name: "Experts", value: 342, color: "#3B82F6" },
-    { name: "Admins", value: 12, color: "#93C5FD" },
+    { name: "Experts", value: 342, color: "hsl(var(--chart-4))" },
+    { name: "Admins", value: 12, color: "hsl(var(--chart-5))" },
   ];
 }
 
@@ -91,8 +91,8 @@ const tooltipStyle = {
 
 const ROLE_LABELS = [
   { color: "hsl(var(--primary))", label: "Subscribers" },
-  { color: "#3B82F6", label: "Experts" },
-  { color: "#93C5FD", label: "Admins" },
+  { color: "hsl(var(--chart-4))", label: "Experts" },
+  { color: "hsl(var(--chart-5))", label: "Admins" },
 ];
 
 export default function AdminAnalyticsPage() {
@@ -227,8 +227,8 @@ export default function AdminAnalyticsPage() {
                     <Tooltip contentStyle={tooltipStyle} />
                     <Legend />
                     <Bar dataKey="chats" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Chats" />
-                    <Bar dataKey="posts" fill="#3B82F6" radius={[4, 4, 0, 0]} name="Posts" />
-                    <Bar dataKey="signups" fill="#93C5FD" radius={[4, 4, 0, 0]} name="Signups" />
+                    <Bar dataKey="posts" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} name="Posts" />
+                    <Bar dataKey="signups" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} name="Signups" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

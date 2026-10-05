@@ -116,7 +116,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
         {/* Header */}
         <SheetHeader className="border-b border-border/50 px-5 py-5">
           <SheetTitle className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1E40AF]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
               <svg
                 viewBox="0 0 512 512"
                 className="h-5 w-5 shrink-0"
@@ -128,7 +128,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   width="36"
                   height="256"
                   rx="4"
-                  fill="white"
+                  fill="hsl(var(--primary-foreground))"
                 />
                 <rect
                   x="176"
@@ -136,7 +136,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   width="180"
                   height="30"
                   rx="4"
-                  fill="white"
+                  fill="hsl(var(--primary-foreground))"
                 />
                 <rect
                   x="176"
@@ -144,7 +144,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   width="120"
                   height="30"
                   rx="4"
-                  fill="white"
+                  fill="hsl(var(--primary-foreground))"
                 />
                 <rect
                   x="316"
@@ -152,7 +152,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   width="40"
                   height="30"
                   rx="4"
-                  fill="white"
+                  fill="hsl(var(--primary-foreground))"
                   opacity="0.5"
                 />
                 <rect
@@ -161,10 +161,10 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   width="180"
                   height="30"
                   rx="4"
-                  fill="white"
+                  fill="hsl(var(--primary-foreground))"
                 />
-                <circle cx="378" cy="240" r="8" fill="white" opacity="0.3" />
-                <circle cx="400" cy="240" r="5" fill="white" opacity="0.15" />
+                <circle cx="378" cy="240" r="8" fill="hsl(var(--primary-foreground))" opacity="0.3" />
+                <circle cx="400" cy="240" r="5" fill="hsl(var(--primary-foreground))" opacity="0.15" />
               </svg>
             </div>
             <div className="flex flex-col">
@@ -215,7 +215,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                         "transition-colors duration-200",
                         "hover:bg-accent",
                         isActive
-                          ? "text-[#1E40AF] dark:text-blue-400"
+                          ? "text-primary"
                           : "text-muted-foreground hover:text-foreground"
                       )}
                     >
@@ -223,7 +223,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                       {isActive && (
                         <motion.div
                           layoutId="mobile-nav-active"
-                          className="absolute inset-0 rounded-lg bg-[#1E40AF]/[0.08]"
+                          className="absolute inset-0 rounded-lg bg-primary/[0.08]"
                           transition={{
                             type: "spring",
                             stiffness: 400,
@@ -236,7 +236,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                       {isActive && (
                         <motion.div
                           layoutId="mobile-nav-accent"
-                          className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-[#1E40AF]"
+                          className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-primary"
                           transition={{
                             type: "spring",
                             stiffness: 400,
@@ -249,7 +249,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                         className={cn(
                           "relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors duration-200",
                           isActive
-                            ? "bg-[#1E40AF]/10"
+                            ? "bg-primary/10"
                             : "bg-card group-hover:bg-accent"
                         )}
                       >
@@ -257,7 +257,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
                           className={cn(
                             "h-[18px] w-[18px] transition-colors duration-200",
                             isActive
-                              ? "text-[#1E40AF] dark:text-blue-400"
+                              ? "text-primary"
                               : "text-muted-foreground group-hover:text-foreground"
                           )}
                         />
@@ -277,7 +277,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
           <div className="absolute inset-x-0 bottom-0 border-t border-border/50 bg-background/80 backdrop-blur-xl p-3">
             <div className="flex items-center gap-3 rounded-lg bg-card p-2.5">
               <Avatar className="h-8 w-8 ring-1 ring-border/50">
-                <AvatarFallback className="bg-[#1E40AF]/10 text-[#1E40AF] text-xs font-semibold">
+                <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                   {userInitials}
                 </AvatarFallback>
               </Avatar>

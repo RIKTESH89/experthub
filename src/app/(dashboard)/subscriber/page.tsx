@@ -33,9 +33,9 @@ const statCardConfig = [
     title: "Subscriptions",
     description: "experts subscribed",
     icon: CreditCard,
-    iconBg: "bg-[#1E40AF]/10 ring-[#1E40AF]/20 group-hover:bg-[#1E40AF]/15",
-    iconColor: "text-[#1E40AF] dark:text-blue-400",
-    borderHover: "hover:border-[#1E40AF]/30",
+    iconBg: "bg-primary/10 ring-primary/20 group-hover:bg-primary/15",
+    iconColor: "text-primary",
+    borderHover: "hover:border-primary/30",
   },
   {
     key: "bookmarkedPosts" as const,
