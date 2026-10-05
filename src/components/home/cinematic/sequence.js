@@ -1,6 +1,7 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
 export function mountSequence(root) {
-    const lifecycle = new AbortController(), manifestController = new AbortController();
+    const lifecycle = new AbortController();
+    let manifestController = new AbortController();
     let manifestTimer;
     let disposed = false;
     const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: lifecycle.signal });
@@ -9,12 +10,13 @@ export function mountSequence(root) {
     const canvas = root.querySelector('#sequence'), ctx = canvas.getContext('2d', { alpha: false }), stage = root.querySelector('#stage'), poster = root.querySelector('#stage-poster');
     const status = root.querySelector('#runtime-status'), warning = root.querySelector('#asset-status'), button = root.querySelector('#motion');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)'), portrait = matchMedia('(max-width: 900px)');
-    const compact = matchMedia('(max-height: 620px), (max-width: 900px) and (max-height: 720px)');
-    const connection = navigator.connection, constrained = () => connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType);
+    const compact = matchMedia('(orientation: landscape) and (max-height: 480px)');
+    const connection = navigator.connection;
+    let manifestState = 'loading', assetError = '', modeReason = 'loading';
     let manifest, variant, active = 0, local = 0, cinematic = false, userStatic = false, ticket = 0, generation = 0, desired = '', lastDrawn = '', windowUrls = [], failures = 0;
     const cache = new Map(), inflight = new Map(), bad = new Set(), failedDemands = new Set();
     const metrics = { requests: 0, receivedBytes: 0, cachePeak: 0, decodedBytesPeak: 0, rendered: 0, missingDemands: 0, aborts: 0, errors: 0 };
-    function report() { Object.assign(canvas.dataset, { chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', cache: String(cache.size), pending: String(inflight.size), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
+    function report() { Object.assign(canvas.dataset, { chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', reason: modeReason || 'none', cache: String(cache.size), pending: String(inflight.size), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
     function free(image) { image.close?.(); if (image instanceof HTMLImageElement)
         image.src = ''; }
     function clearFrames() { generation++; inflight.forEach(v => v.controller.abort()); inflight.clear(); cache.forEach(v => free(v.image)); cache.clear(); bad.clear(); failedDemands.clear(); failures = 0; windowUrls = []; desired = ''; lastDrawn = ''; canvas.classList.remove('ready'); }
@@ -24,20 +26,48 @@ export function mountSequence(root) {
         free(cache.get(key).image);
         cache.delete(key);
     } }
+    function reasonForStatic() {
+        if (reduced.matches) return 'reduced-motion';
+        if (connection?.saveData) return 'save-data';
+        if (['slow-2g', '2g'].includes(connection?.effectiveType)) return 'slow-connection';
+        if (!ctx) return 'canvas-unavailable';
+        if (manifestState !== 'ready') return manifestState === 'failed' ? 'manifest-unavailable' : 'loading';
+        if (assetError) return assetError;
+        if (userStatic) return 'user-choice';
+        if (compact.matches) return 'short-landscape';
+        if (portrait.matches && !manifest.variants.portrait) return 'portrait-unavailable';
+        return '';
+    }
     function setMode(preserve = false) {
         const current = chapters[active];
-        const next = Boolean(manifest && ctx && !reduced.matches && !constrained() && !userStatic && !compact.matches && (!portrait.matches || manifest.variants.portrait));
+        modeReason = reasonForStatic();
+        const next = !modeReason;
         if (next !== cinematic) {
             cinematic = next;
             body.dataset.cinematic = String(next);
             clearFrames();
-            if (preserve)
-                current.scrollIntoView({ block: 'start' });
+            if (preserve) current.scrollIntoView({ block: 'start', behavior: 'instant' });
         }
-        button.hidden = compact.matches;
-        button.setAttribute('aria-pressed', String(userStatic || reduced.matches || constrained()));
-        button.textContent = cinematic ? 'Reduce motion' : 'Static story';
-        status.textContent = cinematic ? 'Scroll to follow the story. Choose Reduce motion for a static version.' : reduced.matches ? 'Static story follows your reduced-motion preference.' : compact.matches ? 'Static story fits this short viewport.' : constrained() ? 'Static story uses fewer images on this connection.' : portrait.matches && !manifest?.variants.portrait ? 'Static mobile story. Dedicated portrait sequence is pending.' : 'Static story with all sources and context.';
+        body.dataset.renderReason = modeReason || 'none';
+        const messages = {
+            'loading': 'Loading scroll animation. The complete story remains readable.',
+            'reduced-motion': 'Animation is off to respect your reduced-motion setting. The complete story follows.',
+            'save-data': 'Animation is off to respect Save Data. The complete story follows.',
+            'slow-connection': 'Animation is paused on this slow connection. The complete story follows.',
+            'canvas-unavailable': 'Scroll animation is unavailable in this browser. The complete story follows.',
+            'manifest-unavailable': 'Animation could not load. Retry animation, or read the complete story below.',
+            'image-unavailable': 'Some animation images could not load. Retry animation, or read the complete story below.',
+            'user-choice': 'You chose the static story. Select Show animation to resume.',
+            'short-landscape': 'Rotate to portrait for scroll animation. The complete story remains readable in this short landscape view.',
+            'portrait-unavailable': 'Portrait animation is unavailable. The complete story follows.'
+        };
+        button.hidden = false;
+        button.disabled = Boolean(modeReason && !['user-choice', 'manifest-unavailable', 'image-unavailable'].includes(modeReason));
+        button.setAttribute('aria-pressed', String(Boolean(modeReason)));
+        button.textContent = cinematic ? 'Reduce motion' : modeReason === 'user-choice' ? 'Show animation' : ['manifest-unavailable', 'image-unavailable'].includes(modeReason) ? 'Retry animation' : modeReason === 'loading' ? 'Loading animation' : 'Static story';
+        status.textContent = cinematic ? 'Scroll to follow the story. Choose Reduce motion for a static version.' : messages[modeReason];
+        warning.textContent = cinematic ? '' : messages[modeReason];
+        warning.hidden = cinematic;
         schedule();
     }
     function locate() {
@@ -86,7 +116,7 @@ export function mountSequence(root) {
     } }
     function currentFailure(key) { if (key !== desired || failedDemands.has(key))
         return; failedDemands.add(key); failures++; status.textContent = 'A scene image is unavailable. The readable static story is available below.'; if (failures >= 3) {
-        userStatic = true;
+        assetError = 'image-unavailable';
         setMode(true);
     } }
     function pump() {
@@ -184,9 +214,8 @@ export function mountSequence(root) {
         if (bad.has(key)) {
             currentFailure(key);
             if (cinematic && windowUrls.every(url => bad.has(url))) {
-                userStatic = true;
+                assetError = 'image-unavailable';
                 setMode(true);
-                status.textContent = 'Scene images unavailable. The complete static story remains readable.';
             }
             if (!cinematic) {
                 report();
@@ -210,11 +239,13 @@ export function mountSequence(root) {
     }
     function schedule() { if (!disposed && !ticket)
         ticket = requestAnimationFrame(update); }
-    listen(button, 'click', () => { if (reduced.matches || constrained()) {
-        userStatic = true;
-        status.textContent = 'Static story follows your motion or connection preference.';
-        return;
-    } userStatic = !userStatic; setMode(true); });
+    listen(button, 'click', () => {
+        if (button.disabled) return;
+        if (manifestState === 'failed') { userStatic = false; start(true); return; }
+        if (assetError) { assetError = ''; userStatic = false; clearFrames(); }
+        else userStatic = !userStatic;
+        setMode(true);
+    });
     listen(reduced, 'change', () => setMode(true));
     listen(portrait, 'change', () => setMode(true));
     listen(compact, 'change', () => setMode(true));
@@ -237,17 +268,29 @@ export function mountSequence(root) {
     root.querySelectorAll('.static-visual img').forEach(img => listen(img, 'error', () => { img.hidden = true; img.closest('figure').querySelector('figcaption').textContent = 'Scene image unavailable. The complete explanation follows in text.'; }));
     listen(poster, 'error', () => { poster.style.visibility = 'hidden'; });
     listen(poster, 'load', () => { poster.style.visibility = 'visible'; });
-    async function start() {
-        const abort = manifestController;
+    async function start(preserve = false) {
+        manifestController.abort();
+        const abort = manifestController = new AbortController();
+        manifestState = 'loading';
+        assetError = '';
+        button.disabled = true;
+        button.hidden = false;
+        button.textContent = 'Loading animation';
+        body.dataset.renderReason = 'loading';
+        modeReason = 'loading';
+        canvas.dataset.reason = 'loading';
+        warning.textContent = 'Loading scroll animation. The complete story remains readable.';
+        warning.hidden = false;
+        status.textContent = 'Loading scroll animation. The complete story remains readable.';
         const timeout = manifestTimer = setTimeout(() => abort.abort(), 6000);
         try {
             const response = await fetch(new URL('frame-manifest.json', assetBase), { signal: abort.signal, cache: 'no-store' });
             if (!response.ok)
                 throw Error('Manifest unavailable');
-            if (disposed)
+            if (disposed || abort !== manifestController)
                 return;
             const parsed = await response.json();
-            if (disposed)
+            if (disposed || abort !== manifestController)
                 return;
             manifest = validateManifest(parsed, chapters.map(s => s.id));
             if (manifest.contractOnly)
@@ -266,19 +309,16 @@ export function mountSequence(root) {
                 }
             const staticVariant = portrait.matches && manifest.variants.portrait ? manifest.variants.portrait : manifest.variants.desktop;
             chapters.forEach((ch, i) => { ch.querySelector('.static-visual img').src = new URL(staticVariant.chapters[i].poster, assetBase).href; });
-            setMode();
+            manifestState = 'ready';
+            setMode(preserve);
             if (location.hash)
                 anchorTarget(location.hash, false, true);
         }
         catch {
-            if (disposed)
-                return;
-            userStatic = true;
-            status.textContent = 'The illustration is unavailable. The complete story remains readable.';
-            warning.textContent = 'The illustration is unavailable. Read the story and use the product links below.';
-            warning.hidden = false;
-            button.hidden = true;
-            schedule();
+            if (disposed || abort !== manifestController) return;
+            manifestState = 'failed';
+            manifest = undefined;
+            setMode(preserve);
         }
         finally {
             clearTimeout(timeout);

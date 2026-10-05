@@ -3,10 +3,10 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "Exact caption candidate compile recorded separately in task-13/product-homepage-qa/final-caption-build.json",
+  "productionCompile": "Exact Android candidate compile recorded separately in task-13/product-homepage-qa/android-final-build.json",
   "fullTests": {
     "suites": 90,
-    "tests": 1334,
+    "tests": 1340,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
@@ -41,5 +41,35 @@
     "focusedRegressionTests": 10,
     "types": "pass",
     "lint": "pass"
+  },
+  "androidCorrection": {
+    "publishedBase": "4cf372e924a48736fec079afec4f1235c4318b3f",
+    "cause": "Portraitheight\u2264720 disabled ordinary360\u00d7640/384\u00d7700 phones despite hydration/assets and no user preferences",
+    "localFix": "Portraitheight cutoff removed; only shortlandscape\u2264480 fallback remains, explicitly explained",
+    "ordinaryPortraitViewports": [
+      [
+        360,
+        640
+      ],
+      [
+        384,
+        700
+      ],
+      [
+        412,
+        750
+      ],
+      [
+        412,
+        915
+      ]
+    ],
+    "readingHolds": 112,
+    "realWheelCaptures": 151,
+    "allSevenChaptersAdvanceFrames": true,
+    "manifestRetryRecovered": true,
+    "reducedMotionAndSaveDataHonored": true,
+    "authoredAssetsUnchanged": true,
+    "publication": "Local only; review required"
   }
 }

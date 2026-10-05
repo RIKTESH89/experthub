@@ -54,9 +54,11 @@ test("StrictMode-style cleanup and remount leaves only the active renderer sched
 test("a missing manifest leaves semantic story readable and reports fallback", async () => {
   const root = fixture(); const cleanup = loadRuntime()(root);
   pending[0].resolve({ ok: false }); await settle();
-  expect(root.querySelector("#runtime-status")?.textContent).toMatch(/complete story remains readable/);
+  expect(root.querySelector("#runtime-status")?.textContent).toMatch(/complete story/);
   expect(root.querySelectorAll(".chapter h2")).toHaveLength(7);
-  expect(root.querySelector<HTMLButtonElement>("#motion")?.hidden).toBe(true);
+  expect(root.querySelector<HTMLButtonElement>("#motion")?.hidden).toBe(false);
+  expect(root.querySelector<HTMLButtonElement>("#motion")?.textContent).toBe("Retry animation");
+  expect(root.dataset.renderReason).toBe("manifest-unavailable");
   cleanup();
 });
 
@@ -90,4 +92,29 @@ test("local product shortcut scrolls to its target and focuses a heading while r
   expect(document.activeElement).toBe(root.querySelector("#plans h2"));
   expect(root.querySelector('a[href="#plans"]')?.getAttribute("href")).toBe("#plans");
   dispose();
+});
+
+
+test("a failed manifest offers a fresh retry and cleanup aborts that retry without reviving the renderer", async () => {
+  const root = fixture(); const cleanup = loadRuntime()(root);
+  pending[0].resolve({ok:false}); await settle();
+  const button = root.querySelector<HTMLButtonElement>("#motion")!;
+  expect(button.disabled).toBe(false); button.click();
+  expect(pending).toHaveLength(2);
+  expect(pending[0].signal.aborted).toBe(true);
+  expect(button.disabled).toBe(true);
+  expect(root.dataset.renderReason).toBe("loading");
+  cleanup(); expect(pending[1].signal.aborted).toBe(true);
+  const before = root.innerHTML;
+  pending[1].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/frame-manifest.json"),"utf8"))});
+  await settle(); expect(root.innerHTML).toBe(before);
+});
+
+test("reduced motion remains respected and cannot be overridden through the animation button", async () => {
+  Object.defineProperty(window,"matchMedia",{configurable:true,value:jest.fn(query=>{const media=new EventTarget();Object.assign(media,{matches:query.includes("prefers-reduced-motion")});return media})});
+  const root=fixture();const cleanup=loadRuntime()(root);
+  pending[0].resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(process.cwd(),"public/uploads/cinematic-homepage/frame-manifest.json"),"utf8"))});await settle();
+  expect(root.dataset.renderReason).toBe("reduced-motion");
+  const button=root.querySelector<HTMLButtonElement>("#motion")!;expect(button.disabled).toBe(true);button.click();
+  expect(root.dataset.renderReason).toBe("reduced-motion");expect(pending).toHaveLength(1);cleanup();
 });

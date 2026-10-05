@@ -19,11 +19,11 @@ function Chapter({ id, number, eyebrow, title, frame, caption, children, liveCap
   return <section className="chapter" id={id} style={{ "--length": chapterLengths[id] } as CSSProperties} aria-labelledby={headingId}><div className="panel"><div className="title-lane"><p className="eyebrow">{eyebrow}</p>{number === 1 ? <h1 id={headingId} tabIndex={-1}>{title}</h1> : <h2 id={headingId} tabIndex={-1}>{title}</h2>}</div><Scene frame={frame} caption={caption} priority={number === 1} /><div className={`body-lane${id === "conversation" ? " answer" : ""}`}>{children}</div><p className="scene-caption" data-caption={liveCaption ? "" : undefined}>{caption}</p></div></section>;
 }
 export function CinematicHome() {
-  return <div className={styles.home} data-cinematic-home="">
+  return <div className={styles.home} data-cinematic-home="" data-render-reason="javascript-not-initialized">
     <Link className="skip" href="#story">Skip to the story</Link>
-    <header className="site-nav"><Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link><nav className="site-links" aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /><button id="motion" type="button" aria-pressed="false">Reduce motion</button></nav></header>
+    <header className="site-nav"><Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link><nav className="site-links" aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /><button id="motion" type="button" aria-pressed="false" disabled>Loading animation</button></nav></header>
     <div id="stage" aria-hidden="true"><Image id="stage-poster" src={`${assetRoot}assets/desktop/frame-000.webp`} alt="" width={1280} height={800} unoptimized priority /><canvas id="sequence" /><div className="shade" /></div>
-    <p id="asset-status" className="asset-status" hidden role="status" />
+    <p id="asset-status" className="asset-status" hidden role="status" /><noscript><p className="asset-status">Scroll animation needs JavaScript. The complete static story follows.</p></noscript>
     <nav className="chapter-nav" aria-label="Story chapters">{chapterNames.map((name, i) => <Link key={name} href={`#${chapterIds[i]}`} aria-label={`${i + 1}. ${name}`}>{String(i + 1).padStart(2, "0")}</Link>)}</nav>
     <main id="story" tabIndex={-1}>
       <Chapter id="introduction" number={1} eyebrow="ExpertHub · Content and AI conversations" title="Give your knowledge a new way to speak." frame={0} caption="Shared knowledge → relevant context → an AI conversation">

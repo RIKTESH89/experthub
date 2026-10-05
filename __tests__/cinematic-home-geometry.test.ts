@@ -10,7 +10,7 @@ const frameAt = functions.frameAt as (phase: number, count: number, keyframes: n
 const opacity = functions.textOpacity as (phase: number) => number;
 const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8"));
 
-test.each([900, 844, 812])("all seven timelines finish holds, final pose and text exit before sticky departure at viewport %i", viewport => {
+test.each([640, 700, 750, 812, 844, 900, 915])("all seven timelines finish holds, final pose and text exit before sticky departure at viewport %i", viewport => {
   for (const variant of Object.values(manifest.variants) as Array<{chapters: Array<{id:string;scrollRange:number[];frames:string[];keyframes:number[][]}>}>) {
     let top = 88;
     for (const chapter of variant.chapters) {

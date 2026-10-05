@@ -53,3 +53,32 @@
 @media(max-width:900px){.home[data-cinematic="true"] :global(#stage canvas),.home[data-cinematic="true"] :global(#stage-poster){transform:translateY(-10svh)}.home[data-cinematic="true"] :global(.shade){background:linear-gradient(#151411cc,transparent 28%,transparent 43%,#151411f2 54%)}}
 /* Captions retain contrast as the authored camera moves over pale paper and sculpture. */
 @media(min-width:901px){.home[data-cinematic="true"] :global(.scene-caption){background:#151411;color:#eee7da;border:1px solid #665b49;border-radius:12px;padding:10px 16px;line-height:1.5}}
+/* Ordinary portrait phones retain animation; compact typography clears the art and controls. */
+@media(max-width:900px) and (max-height:780px) and (orientation:portrait){
+.home[data-cinematic="true"] :global(.site-nav){min-height:88px;padding:8px 16px;gap:6px}
+.home[data-cinematic="true"] :global(.title-lane){top:108px}
+.home[data-cinematic="true"] :global(h1),.home[data-cinematic="true"] :global(h2){font-size:28px;max-width:100%}
+.home[data-cinematic="true"] :global(.eyebrow){font-size:9px;margin-bottom:9px}
+.home[data-cinematic="true"] :global(.body-lane){top:48%;font-size:11px;line-height:1.5}
+.home[data-cinematic="true"] :global(#context .body-lane),.home[data-cinematic="true"] :global(#conversation .body-lane){top:46%}
+.home[data-cinematic="true"] :global(.lead){font-size:15px;line-height:1.4}
+.home[data-cinematic="true"] :global(.small){font-size:10px;line-height:1.45}
+.home[data-cinematic="true"] :global(blockquote){font-size:15px;line-height:1.4}
+.home[data-cinematic="true"] :global(.question){font-size:15px;line-height:1.35}
+.home[data-cinematic="true"] :global(.action-group){margin-top:12px}
+.home[data-cinematic="true"] :global(.action-group .cta){min-height:38px;padding:8px 13px}
+.home[data-cinematic="true"] :global(.scene-caption){display:none}
+.home[data-cinematic="true"] :global(#stage canvas),.home[data-cinematic="true"] :global(#stage-poster){transform:translateY(-13svh)}
+}
+.home :global(#motion:disabled){cursor:default;opacity:.75}
+@media(max-width:900px) and (max-height:780px) and (orientation:portrait){
+.home[data-cinematic="true"] :global(#context .connections p){font-size:11px;line-height:1.45;margin-bottom:3px}
+.home[data-cinematic="true"] :global(#context .connections .index){font-size:9px;line-height:1.5;margin-bottom:5px}
+.home[data-cinematic="true"] :global(#context .source-note blockquote){font-size:14px;line-height:1.4;margin-bottom:10px}
+}
+@media(max-width:900px) and (max-height:780px) and (orientation:portrait){.home[data-cinematic="true"] :global(#context .body-lane){top:44%}}
+/* Pale source cards can pass behind either short-phone text lane. */
+@media(max-width:900px) and (max-height:780px) and (orientation:portrait){
+.home[data-cinematic="true"] :global(.title-lane),.home[data-cinematic="true"] :global(.body-lane){isolation:isolate}
+.home[data-cinematic="true"] :global(.title-lane)::before,.home[data-cinematic="true"] :global(.body-lane)::before{content:"";position:absolute;inset:-8px -12px;z-index:-1;background:#151411e6;border-radius:12px}
+}
