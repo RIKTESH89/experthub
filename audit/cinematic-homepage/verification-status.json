@@ -3,14 +3,14 @@
   "branch": "integration/cinematic-homepage",
   "types": "pass",
   "lint": "pass",
-  "productionCompile": "pass, isolated synthetic Preview environment with external network blocked",
+  "productionCompile": "passed prior namespace repair; fresh compile pending coordinated QA pause",
   "fullTests": {
     "suites": 90,
-    "tests": 1332,
+    "tests": 1333,
     "passed": true
   },
   "assetHashVerification": "387 copied files including384frames match standalone candidate",
-  "nativeBrowser": "pending human Mac unlock",
+  "nativeBrowser": "fresh native worker QA pending after public asset namespace repair",
   "protectedStaging": "not pushed or deployed",
   "production": "unchanged",
   "database": "no migration/seed/write performed",
@@ -18,7 +18,8 @@
     "lateManifestBodyGuard": true,
     "renderedPanelPinnedInterval": true,
     "explicitDepartureInterval": true,
-    "focusedRegressionTests": 8,
-    "nativeVerification": "pending unlock"
-  }
+    "focusedRegressionTests": 9,
+    "nativeVerification": "worker ready to reload port3467"
+  },
+  "publicAssetRoot": "/uploads/cinematic-homepage/"
 }

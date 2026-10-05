@@ -8,7 +8,7 @@ new Function("exports", code)(functions);
 const progress = functions.chapterProgress as (scroll: number, top: number, height: number, viewport: number) => {phase: number; exit: number; pinnedDistance: number};
 const frameAt = functions.frameAt as (phase: number, count: number, keyframes: number[][]) => number;
 const opacity = functions.textOpacity as (phase: number) => number;
-const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/cinematic/frame-manifest.json"), "utf8"));
+const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8"));
 
 test.each([900, 844, 812])("all seven timelines finish holds, final pose and text exit before sticky departure at viewport %i", viewport => {
   for (const variant of Object.values(manifest.variants) as Array<{chapters: Array<{id:string;scrollRange:number[];frames:string[];keyframes:number[][]}>}>) {
@@ -54,4 +54,18 @@ test("pinned timing uses the rendered panel height when small viewport units dif
   expect(point.pinnedDistance).toBe(808);
   const departure=progress(top+808,top,chapterHeight,actualPanelHeight);
   expect(departure.phase).toBe(1);expect(opacity(departure.phase)).toBe(0);
+});
+
+test("homepage asset paths use the existing anonymous static boundary without exposing protected APIs", () => {
+  const {isPublicRoute}=require("@/lib/route-access");
+  for(const variant of Object.values(manifest.variants) as Array<{chapters:Array<{frames:string[];poster:string}>}>) {
+    for(const chapter of variant.chapters) {
+      for(const frame of [chapter.poster,...chapter.frames]) {
+        const route="/uploads/cinematic-homepage/"+frame;
+        expect(isPublicRoute(route)).toBe(true);
+        expect(fs.existsSync(path.join(process.cwd(),"public",route))).toBe(true);
+      }
+    }
+  }
+  for(const route of ["/uploads-admin/cinematic-homepage", "/api/uploads/cinematic-homepage", "/api/expert/knowledge", "/expert/knowledge"])expect(isPublicRoute(route)).toBe(false);
 });

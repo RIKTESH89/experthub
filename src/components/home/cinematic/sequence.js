@@ -4,7 +4,7 @@ export function mountSequence(root) {
     let manifestTimer;
     let disposed = false;
     const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: lifecycle.signal });
-    const assetBase = new URL('/cinematic/', location.origin);
+    const assetBase = new URL('/uploads/cinematic-homepage/', location.origin);
     const body = root, chapters = [...root.querySelectorAll('.chapter')], nav = [...root.querySelectorAll('.chapter-nav a')];
     const canvas = root.querySelector('#sequence'), ctx = canvas.getContext('2d', { alpha: false }), stage = root.querySelector('#stage'), poster = root.querySelector('#stage-poster');
     const status = root.querySelector('#runtime-status'), warning = root.querySelector('#asset-status'), button = root.querySelector('#motion');

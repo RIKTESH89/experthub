@@ -2,11 +2,11 @@
 
 Base: `exp25-26-launch-auth-payments` remote head `64ced9adfb7ba57c58772cf65d094edc653ba6f9`, verified with `git ls-remote` before creating the independent clone. Local branch: `integration/cinematic-homepage`.
 
-Ownership is limited to the signed-out homepage entry, `src/components/home/cinematic`, `public/cinematic`, its lifecycle tests and this evidence. Root layout, global CSS, shared navigation implementations, authentication, backend, providers, migration 18 and production master are unchanged. Signed-in role redirects in the homepage entry remain intact.
+Ownership is limited to the signed-out homepage entry, `src/components/home/cinematic`, `public/uploads/cinematic-homepage`, its lifecycle tests and this evidence. Root layout, global CSS, shared navigation implementations, authentication, backend, providers, migration 18 and production master are unchanged. Signed-in role redirects in the homepage entry remain intact.
 
 The server-rendered seven-chapter story uses the existing ThemeToggle, app-native `/about`, `/pricing`, `/login`, pricing definitions and expert application component at `/#apply-expert`. The login route retains the app's existing root callback and authenticated role redirect. No fake login or application submission is added. The four source records and response are explicitly fictional/scripted. Citations do not guarantee correctness; the brain is a metaphor. Existing BodyParts3D CC BY 4.0 credit and modification history are retained.
 
-Frames and source registry retain the exact author's hashes. Manifest unchanged: `7ddd07a9b3884bad27f41a03e7394318c7d431fb5a796b9903fdb5bc161f7196`. Runtime resolves all 384 frames under `/cinematic/`. CSS is scoped by one CSS module; the renderer changes its local root attribute rather than body classes. Its media/scroll/hash/page listeners, manifest request, animation request and decoded frames are released on React unmount, including development remounts. No render-loop React state updates. Desktop decoded cache limit 10; portrait 6; parallel fetch/decode limit 2. The image buffer figures are not whole-browser memory measurements.
+Frames and source registry retain the exact author's hashes. Manifest unchanged: `7ddd07a9b3884bad27f41a03e7394318c7d431fb5a796b9903fdb5bc161f7196`. Runtime resolves all 384 frames under `/uploads/cinematic-homepage/`. CSS is scoped by one CSS module; the renderer changes its local root attribute rather than body classes. Its media/scroll/hash/page listeners, manifest request, animation request and decoded frames are released on React unmount, including development remounts. No render-loop React state updates. Desktop decoded cache limit 10; portrait 6; parallel fetch/decode limit 2. The image buffer figures are not whole-browser memory measurements.
 
 Cinematic artwork maintains the authored dark studio contrast in either app theme. Static story, continuation/application sections and navigation to other pages use the shared theme. Short viewports, reduced motion, constrained connections, missing assets and no JavaScript retain readable HTML. Native fragment anchors and source disclosures work independently of a live AI service.
 
@@ -14,9 +14,9 @@ Cinematic artwork maintains the authored dark studio contrast in either app them
 
 - Reused installed dependencies via a checkout-local symlink. No package installs, Prisma generation or shared dependency edits.
 - Type check and lint pass.
-- Full Jest suite: 90 suites, 1332 tests pass. Four lifecycle tests verify cancellation, cleanup/remount, missing manifest behavior and delayed-body disposal; four geometry regressions verify visible held poses and panel departure.
-- Next production build passes with synthetic loopback database URLs, synthetic auth secret, Preview mode and the existing network guard blocking external networking. This compile did not run the staging migration engine or access a live database. Build warnings from the inherited auth Edge dependency remain.
-- Browser validation pending Mac unlock. No browser bypass or alternate executor used.
+- Full Jest suite: 90 suites, 1333 tests pass. Four lifecycle tests verify cancellation, cleanup/remount, missing manifest behavior and delayed-body disposal; four geometry regressions verify visible held poses and panel departure.
+- Prior candidate Next production build passed with synthetic loopback database URLs, synthetic auth secret, Preview mode and the existing network guard blocking external networking. This compile did not run the staging migration engine or access a live database. Build warnings from the inherited auth Edge dependency remain. A fresh production compile for the public namespace repair is pending a coordinated browser QA pause.
+- Native Chrome worker validation pending fresh reload after the public asset repair. No browser bypass or alternate executor used.
 
 ## Protected staging plan
 
@@ -32,4 +32,10 @@ Cinematic artwork maintains the authored dark studio contrast in either app them
 
 A delayed manifest JSON body now receives a second disposal check after decoding and before validation or any DOM mutation. Regression coverage pauses body decoding, disposes the old renderer, mounts its replacement, then releases the old valid manifest and verifies no overwrite.
 
-Timeline phase now uses the actual pinned interval: chapter height minus rendered panel height, measured rather than assuming browser viewport height equals `100svh`. All authored keyframes, quarter reading holds and the text fade complete while the panel is pinned. The remaining panel-height interval is an explicit departure phase; it holds the last camera pose with outgoing text faded. Native chapter anchors still start at phase zero. Geometry regressions cover all seven chapters and both variants at desktop/phone heights, including the short closing chapter. Native geometry validation remains pending unlock.
+Timeline phase now uses the actual pinned interval: chapter height minus rendered panel height, measured rather than assuming browser viewport height equals `100svh`. All authored keyframes, quarter reading holds and the text fade complete while the panel is pinned. The remaining panel-height interval is an explicit departure phase; it holds the last camera pose with outgoing text faded. Native chapter anchors still start at phase zero. Geometry regressions cover all seven chapters and both variants at desktop/phone heights, including the short closing chapter. Native geometry validation remains pending worker QA.
+
+## Local browser serving correction
+
+Native QA found the original `/cinematic/` asset prefix intercepted by the existing login guard. The immutable homepage assets now live under the already-public `/uploads/cinematic-homepage/` namespace. No route/auth policy changed. Existing upload routes remain untouched; the new directory contains only these static authored frames, manifest, source registry and attribution. Tests cover anonymous public routing and rejection of protected neighboring/API paths.
+
+The reported layout-chunk SyntaxError was not reproduced by read-only inspection: served bytes matched disk, top-level syntax parsed, and all134 embedded eval modules parsed. Pre-restart served chunk preserved outside the app at task-13/server-diagnosis/pre-restart-layout.js. A clean dev-cache restart is a diagnostic recovery; browser reload must determine whether the earlier syntax error was stale/truncated dev output.

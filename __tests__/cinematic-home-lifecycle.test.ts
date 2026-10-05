@@ -70,7 +70,7 @@ test("a delayed manifest body cannot revive an unmounted renderer or overwrite i
   const cleanupCurrent = mount(root);
   root.querySelector("#runtime-status")!.textContent = "Current renderer awaiting its own response";
   const before = root.innerHTML;
-  resolveBody(JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/cinematic/frame-manifest.json"), "utf8")));
+  resolveBody(JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/uploads/cinematic-homepage/frame-manifest.json"), "utf8")));
   await settle();
   expect(root.dataset.cinematic).toBeUndefined();
   expect(root.innerHTML).toBe(before);
