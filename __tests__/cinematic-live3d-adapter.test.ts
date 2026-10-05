@@ -11,6 +11,7 @@ function moduleAt(name: string, requireModule: (id: string) => unknown = () => (
 }
 const chapters = JSON.parse(fs.readFileSync(path.join(process.cwd(),'public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json'),'utf8')).variants.desktop.chapters;
 const timeline = moduleAt('live3d-timeline.js');
+const bMap = moduleAt('b-chapter-map.js');
 const raster = moduleAt('timeline.js');
 test('live frame mapping preserves all seven authored ranges, shared seams and reading holds',()=>{
   expect(chapters).toHaveLength(7);
@@ -36,7 +37,7 @@ function fixture() {
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
 function adapter(create: jest.Mock) {
-  return moduleAt('live3d-adapter.js',id=>id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
+  return moduleAt('live3d-adapter.js',id=>id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('b-chapter-map')?bMap:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
 }
 const state={cinematic:true,chapter:chapters[0],phase:.375,portrait:true,visible:true};
 test('static eligibility does not import/create WebGL and disposal aborts a late renderer',async()=>{

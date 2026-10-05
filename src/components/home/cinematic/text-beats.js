@@ -2,10 +2,10 @@
 const smooth=value=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);};
 const copy={
  introduction:[null,'An AI representation starts with material you choose to share.'],
- contributions:[null,'02 · Diagram: question → context → decision.','03 · Case note: naming a constraint changes the next step.','04 · Decision example: compare options against the stated constraint.'],
- context:[null,'Select “a clear question” while keeping the original source in view.','The copied passage travels with its source identity.','Related ideas connect question, context and decision.'],
- construction:[null,'The first contribution joins an incomplete form.','Related records contribute further context.','The result is a partial representation of shared knowledge.'],
- conversation:[null,'Fictional question: How should I begin choosing an option?','Scripted answer: Begin with a clear question.','Scripted answer: compare options against the stated constraint. Check sources 01 and 04.'],
+ contributions:[null,'01 · Context note: begin with a clear question.','Source 01 keeps that question beside its context.','This illustrated journey follows one selected contribution from Source 01.'],
+ context:[null,'Read Source 01: “Begin with a clear question. Keep its context in view.”','Select “a clear question” while preserving its original source.','Question and context stay related through the same Source 01 identity.'],
+ construction:[null,'The Source 01 fragment approaches an incomplete twin.','Its citation keeps the fragment connected to the original note.','This prototype illustrates one contribution; further contributions are still being developed.'],
+ conversation:[null,'Fictional question: How should I begin choosing an option?','Scripted answer: Begin with a clear question.','Scripted example: keep its context in view. Follow this passage back to Source 01.'],
  control:[null,'Correct shared source notes manually. Citations still need your judgment.'],
  close:[null,'Check available sources as you explore a conversation.'],
 };

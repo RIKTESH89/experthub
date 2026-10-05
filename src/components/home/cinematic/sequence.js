@@ -224,7 +224,7 @@ export function mountSequence(root) {
         nav.forEach((a, i) => i === active ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'));
         const beat = Math.min(3, Math.floor(local * 4));
         root.querySelectorAll('.build-beats li').forEach((li, i) => i === beat ? li.setAttribute('data-active', '') : li.removeAttribute('data-active'));
-        const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 + 02 / Related ideas'], construction: ['A sparse foundation', '01 / First context layer', '02 + 03 + 04 / Related knowledge', 'A partial Digital Twin'], conversation: ['Fictional question', '01 + 04 / Available sources', '01 + 04 / Check the source passages', 'Scripted example · not live AI'] };
+        const captions = { context: ['01 / Original source', '01 / “a clear question”', '01 / A passage in context', '01 / Question and context'], construction: ['A sparse foundation', '01 / First context layer', '01 / Original-source identity', 'A partial Digital Twin'], conversation: ['Fictional question', '01 / Available source', '01 / Check the source passage', 'Scripted example · not live AI'] };
         const caption = chapters[active].querySelector('[data-caption]');
         if (caption && captions[chapters[active].id]) caption.textContent = captions[chapters[active].id][beat];
         if(portrait.matches){

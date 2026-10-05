@@ -6,7 +6,7 @@ test.each(['contributions','context','construction','conversation'])('semantic %
  const positions=[.1,.23,.25,.28,.375,.5,.625,.75,.85];expect(positions.map(p=>api.textBeat(id,p,'original')).reverse()).toEqual(positions.slice().reverse().map(p=>api.textBeat(id,p,'original')));
 });
 test('scripted source wording and original static copy remain distinct',()=>{
- expect(api.textBeat('conversation',.625,'original').text).toBe('Scripted answer: Begin with a clear question.');expect(api.textBeat('conversation',.85,'original').text).toContain('sources 01 and 04');
+ expect(api.textBeat('conversation',.625,'original').text).toBe('Scripted answer: Begin with a clear question.');expect(api.textBeat('conversation',.85,'original').text).toContain('Source 01');
  expect(api.storyCopyLines('close','original')[0]).toBe('original');expect(api.textBeat('unknown',.9,'original').text).toBe('original');
 });
 

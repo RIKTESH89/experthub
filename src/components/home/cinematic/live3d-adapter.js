@@ -1,5 +1,5 @@
 import { artworkAssets } from './live3d-config.js';
-import { authoredFrame } from './live3d-timeline.js';
+import { bChapterFrame as authoredFrame, portraitWidthPerHeight } from './b-chapter-map.js';
 
 // App owns scroll, eligibility, source links, theme and fallback. Artwork owns WebGL.
 export function mountLiveArtwork(root, requestUpdate) {
@@ -25,17 +25,26 @@ export function mountLiveArtwork(root, requestUpdate) {
     function diagnostics(values) { Object.assign(canvas.dataset, Object.fromEntries(Object.entries(values).map(([key,value]) => [key, typeof value === 'object' ? JSON.stringify(value) : String(value)]))); }
     function position() {
         if (!state) return;
-        const chapter = root.querySelector(`#${state.chapter.id}`), title = chapter?.querySelector('.title-lane')?.getBoundingClientRect(), body = chapter?.querySelector('.body-lane')?.getBoundingClientRect();
+        const chapter = root.querySelector(`#${state.chapter.id}`), title = chapter?.querySelector('.title-lane')?.getBoundingClientRect();
+        // Reserve both the target and any still-visible outgoing chapter. The
+        // sequential fade may retain old copy while the scroll pose advances.
+        const occupied=[...new Set([...root.querySelectorAll('.chapter'),chapter])].filter(Boolean).filter(el=>el===chapter||Number(getComputedStyle(el.querySelector('.panel')).opacity)>.001);
+        const titleBottom=Math.max(...occupied.map(el=>el.querySelector('.title-lane').getBoundingClientRect().bottom));
+        const bodyTop=Math.min(...occupied.map(el=>el.querySelector('.body-lane').getBoundingClientRect().top));
         const header = root.querySelector('.site-nav')?.getBoundingClientRect();
         viewport.style.setProperty('--art-chrome-bottom', `${Math.max(0,header?.bottom ?? 0)}px`);
         let x, y, width, height;
         if (state.portrait) {
-            x = 8; y = Math.max(header?.bottom ?? 0,title?.bottom ?? 0)+12;
-            width = innerWidth-16; height = Math.max(1,(body?.top ?? innerHeight*.78)-12-y);
+            y = Math.max(header?.bottom ?? 0,titleBottom)+16;
+            height = Math.max(1,bodyTop-16-y);
+            width = Math.max(1,Math.min(innerWidth-16,height*portraitWidthPerHeight(authoredFrame(state.phase,state.chapter))));
+            x = (innerWidth-width)/2;
         } else {
-            x = (title?.right ?? innerWidth*.28)+20; y = (header?.bottom ?? 88)+24;
-            width = Math.max(1,(body?.left ?? innerWidth*.73)-20-x); height = Math.max(1,innerHeight-y-32);
+            x = (title?.right ?? innerWidth*.28)+32; y = (header?.bottom ?? 88)+24;
+            height = Math.max(1,innerHeight-y-48);
+            width = Math.max(1,Math.min(innerWidth-x-48,height*(1058.4/711)));
         }
+        viewport.style.clipPath=`inset(${y}px ${Math.max(0,innerWidth-x-width)}px ${Math.max(0,innerHeight-y-height)}px ${x}px)`;
         const next = [x,y,width,height].map(n=>Math.round(n)).join(',');
         if (next !== rectKey) {
             rectKey = next;
