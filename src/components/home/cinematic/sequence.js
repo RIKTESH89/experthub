@@ -1,4 +1,5 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
+import { artExitOpacity } from './stage-composition.js';
 import { mountLiveArtwork } from './live3d-adapter.js';
 import { assetRoot } from './asset-config.js';
 import { frameWindow, nearestReadyFrame, canServeChapter } from './scheduler.js';
@@ -119,6 +120,9 @@ export function mountSequence(root) {
         const bounds=geometry.chapters[active];
         const progress=chapterProgress(y,bounds.top,bounds.height,innerHeight);
         local=progress.phase;
+        const stageOpacity = beyondStory ? 0 : active===chapters.length-1 ? artExitOpacity(local) : 1;
+        root.style.setProperty('--story-stage-opacity',String(stageOpacity));
+        canvas.dataset.stageOpacity=String(stageOpacity);
         canvas.dataset.exit=progress.exit.toFixed(4);
         chapters.forEach((el, i) => {
             const opacity = cinematic ? (!beyondStory && i === active ? textOpacity(local, i === 0) : 0) : 1;

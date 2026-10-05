@@ -50,8 +50,8 @@ test('static eligibility does not import/create WebGL and disposal aborts a late
   const stale={dispose:jest.fn()};resolve(stale);await settle();expect(stale.dispose).toHaveBeenCalledTimes(1);expect(root.dataset.artwork).toBe('raster');
 });
 test('a readiness failure retains raster, and a fresh motion cycle can retry',async()=>{
-  const controller={dispose:jest.fn(),setFrame:jest.fn(),setTheme:jest.fn(),setVisible:jest.fn(),resize:jest.fn()};
-  const create=jest.fn().mockRejectedValueOnce(new Error('missing scene')).mockImplementationOnce((options:any)=>{options.onMetrics({frames:1,frame:options.frame,dark:false});return Promise.resolve(controller)});
+  const controller={dispose:jest.fn(),setFrame:jest.fn(),setComposition:jest.fn(),setTheme:jest.fn(),setVisible:jest.fn(),resize:jest.fn()};
+  const create=jest.fn().mockRejectedValueOnce(new Error('missing scene')).mockImplementationOnce((options:any)=>{options.onMetrics({frames:1,frame:options.frame,dark:false,composition:options.composition,portrait:options.portrait});return Promise.resolve(controller)});
   const root=fixture(),instance=adapter(create)(root,jest.fn());
   instance.update(state);await settle();expect(root.dataset.artwork).toBe('raster');expect(root.querySelector<HTMLElement>('#live-artwork')!.dataset.error).toBe('missing scene');
   instance.update(state);await settle();expect(create).toHaveBeenCalledTimes(1);

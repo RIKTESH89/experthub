@@ -1,4 +1,5 @@
 // App-owned WebGL lifecycle around the immutable renderer-r2 camera/studio handoff.
+import { expandProjection } from './stage-composition.js';
 import * as T from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -20,9 +21,9 @@ function releaseScene(scene) {
     textures.forEach(t => { t.source?.data?.close?.(); t.dispose(); });
     materials.forEach(m => m.dispose());
 }
-export async function createArtwork({ canvas, viewport, assets, signal, onMetrics, onError, frame = 0, portrait = false, dark = false }) {
+export async function createArtwork({ canvas, viewport, composition, assets, signal, onMetrics, onError, frame = 0, portrait = false, dark = false }) {
     let scene, renderer, mixer, actions = [], contract, framing, cameras;
-    let disposed = false, ticket = 0, visible = true, dirty = true, currentFrame = frame, currentPortrait = portrait, currentDark = dark;
+    let disposed = false, ticket = 0, visible = true, dirty = true, currentFrame = frame, currentPortrait = portrait, currentDark = dark, currentComposition = composition;
     let last = 0, compiled = false;
     const metrics = { version: assets.version, frames: 0, loadMs: 0, parseMs: 0, compileMs: 0, drawMs: 0, firstFrameMs: 0, assetBytes: 0, revision: T.REVISION };
     const started = performance.now();
@@ -57,7 +58,9 @@ export async function createArtwork({ canvas, viewport, assets, signal, onMetric
         const variant = currentPortrait ? 'portrait' : 'desktop';
         const sourceCamera = cameras[currentPortrait ? 1 : 0];
         const track = contract.tracks[variant][Math.min(191,Math.round(currentFrame))];
-        metrics.framing = director.apply({ camera,sourceCamera,frame:currentFrame,aspect:camera.aspect,variant,track });
+        metrics.framing = director.apply({ camera,sourceCamera,frame:currentFrame,aspect:currentComposition.width/currentComposition.height,variant,track });
+        expandProjection(camera.projectionMatrix.elements,currentComposition,viewport.clientWidth,viewport.clientHeight);
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
         studio.setTheme(currentDark);
     }
     function draw(now) {
@@ -65,7 +68,7 @@ export async function createArtwork({ canvas, viewport, assets, signal, onMetric
         if (disposed || !visible || document.hidden || !dirty) return;
         pose(); const start = performance.now(); renderer.render(scene,camera);
         metrics.drawMs = performance.now()-start; metrics.frames++;
-        metrics.frame = currentFrame; metrics.dark = currentDark; metrics.intervalMs = last ? now-last : 0; last = now;
+        metrics.frame = currentFrame; metrics.composition = currentComposition; metrics.portrait = currentPortrait; metrics.dark = currentDark; metrics.intervalMs = last ? now-last : 0; last = now;
         metrics.drawCalls = renderer.info.render.calls; metrics.triangles = renderer.info.render.triangles;
         metrics.geometries = renderer.info.memory.geometries; metrics.textures = renderer.info.memory.textures;
         metrics.buffer = [canvas.width,canvas.height]; metrics.dpr = renderer.getPixelRatio();
@@ -119,6 +122,9 @@ export async function createArtwork({ canvas, viewport, assets, signal, onMetric
             setFrame(value, isPortrait = currentPortrait) {
                 value = Math.max(0,Math.min(191,value));
                 if (value !== currentFrame || isPortrait !== currentPortrait) { currentFrame = value; currentPortrait = isPortrait; dirty = true; request(); }
+            },
+            setComposition(rect) {
+                if (JSON.stringify(rect) !== JSON.stringify(currentComposition)) { currentComposition = { ...rect }; dirty = true; request(); }
             },
             setTheme(theme) { const next = theme === 'dark'; if (next !== currentDark) { currentDark = next; dirty = true; request(); } },
             setVisible(value) { if (visible === value) return; visible = value; if (!visible) { cancelAnimationFrame(ticket); ticket = 0; last = 0; } else { dirty = true; request(); } },

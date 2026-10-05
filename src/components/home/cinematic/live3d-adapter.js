@@ -7,7 +7,7 @@ export function mountLiveArtwork(root, requestUpdate) {
     const canvas = root.querySelector('#live-artwork');
     if (!viewport || !canvas) return null;
     const lifetime = new AbortController();
-    let controller, load, timeout, generation = 0, disposed = false, eligible = false, failed = false, state, rectKey = '';
+    let controller, load, timeout, generation = 0, disposed = false, eligible = false, failed = false, state, composition, rectKey = '', physicalKey = '';
     root.dataset.artwork = 'raster';
     function diagnostics(values) { Object.assign(canvas.dataset, Object.fromEntries(Object.entries(values).map(([key,value]) => [key, typeof value === 'object' ? JSON.stringify(value) : String(value)]))); }
     function position() {
@@ -25,15 +25,22 @@ export function mountLiveArtwork(root, requestUpdate) {
         const next = [x,y,width,height].map(n=>Math.round(n)).join(',');
         if (next !== rectKey) {
             rectKey = next;
-            Object.assign(viewport.style,{ left:`${x}px`,top:`${y}px`,width:`${width}px`,height:`${height}px` });
+            composition = { x,y,width,height };
+            viewport.dataset.focusRect = JSON.stringify(composition);
+            controller?.setComposition(composition);
+        }
+        const physical = `${innerWidth},${innerHeight}`;
+        if (physical !== physicalKey) {
+            physicalKey = physical;
+            Object.assign(viewport.style,{ left:'0px',top:'0px',width:`${innerWidth}px`,height:`${innerHeight}px` });
             controller?.resize();
         }
-        diagnostics({ viewport: [x,y,width,height] });
+        diagnostics({ viewport:[0,0,innerWidth,innerHeight], focusRect:composition });
     }
     function activate() {
         if (!controller || !eligible || !state?.visible || disposed || root.dataset.artwork === 'live') return;
         // Do not expose the boot pose under a later chapter after a slow load.
-        if (!(Number(canvas.dataset.frames)>0) || Math.abs(Number(canvas.dataset.frame)-authoredFrame(state.phase,state.chapter))>.00001 || canvas.dataset.dark!==String(dark())) return;
+        if (!(Number(canvas.dataset.frames)>0) || Math.abs(Number(canvas.dataset.frame)-authoredFrame(state.phase,state.chapter))>.00001 || canvas.dataset.dark!==String(dark()) || canvas.dataset.composition!==JSON.stringify(composition) || canvas.dataset.portrait!==String(state.portrait)) return;
         root.dataset.artwork = 'live'; diagnostics({ state:'live' });
         root.querySelector('#runtime-status').textContent = 'Scroll to follow the story. Choose Reduce motion for a static version. Live artwork is a prototype.';
         requestUpdate();
@@ -56,9 +63,10 @@ export function mountLiveArtwork(root, requestUpdate) {
         try {
             const { createArtwork } = await import('./artwork.js');
             if (disposed || mine !== generation || abort.signal.aborted) return;
-            const artwork = await createArtwork({ canvas,viewport,assets:artworkAssets,signal:abort.signal,frame:authoredFrame(state.phase,state.chapter),portrait:state.portrait,dark:dark(),onMetrics:values=>{ if(mine===generation && !disposed) {diagnostics(values);activate();} },onError:fail });
+            const artwork = await createArtwork({ canvas,viewport,composition,assets:artworkAssets,signal:abort.signal,frame:authoredFrame(state.phase,state.chapter),portrait:state.portrait,dark:dark(),onMetrics:values=>{ if(mine===generation && !disposed) {diagnostics(values);activate();} },onError:fail });
             if (disposed || mine !== generation || abort.signal.aborted || !eligible) { artwork.dispose(); return; }
             controller = artwork; clearTimeout(timeout);
+            controller.setComposition(composition);
             controller.setFrame(authoredFrame(state.phase,state.chapter),state.portrait); controller.setTheme(dark()?'dark':'light'); controller.setVisible(state.visible && !document.hidden);
             activate(); requestUpdate();
         } catch (error) { if (mine === generation && !disposed && !abort.signal.aborted) fail(error); }

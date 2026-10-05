@@ -17,7 +17,8 @@ function loadRuntime(): Mount {
   const assets = load("asset-config.js");
   const scheduler = load("scheduler.js");
   const artwork = load("live3d-adapter.js");
-  return load("sequence.js", name => name.includes("live3d-adapter") ? artwork : name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
+  const composition = load("stage-composition.js");
+  return load("sequence.js", name => name.includes("stage-composition") ? composition : name.includes("live3d-adapter") ? artwork : name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
 }
 const ids = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"];
 function fixture() {
