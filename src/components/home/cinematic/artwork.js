@@ -1,9 +1,8 @@
-// App-owned WebGL lifecycle around the immutable renderer-r2 camera/studio handoff.
-import { expandProjection } from './stage-composition.js';
+// App-owned WebGL lifecycle around the immutable renderer-r3 camera/studio handoff.
 import * as T from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { createCameraDirector, createStudioRig } from './cinematic-runtime-r2.js';
+import { createCameraDirector, createStudioRig } from './cinematic-runtime-r3.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 function releaseScene(scene) {
@@ -58,9 +57,8 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
         const variant = currentPortrait ? 'portrait' : 'desktop';
         const sourceCamera = cameras[currentPortrait ? 1 : 0];
         const track = contract.tracks[variant][Math.min(191,Math.round(currentFrame))];
-        metrics.framing = director.apply({ camera,sourceCamera,frame:currentFrame,aspect:currentComposition.width/currentComposition.height,variant,track });
-        expandProjection(camera.projectionMatrix.elements,currentComposition,viewport.clientWidth,viewport.clientHeight);
-        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+        metrics.framing = director.apply({ camera,sourceCamera,frame:currentFrame,aspect:viewport.clientWidth/viewport.clientHeight,variant,track,compositionRect:[currentComposition.x/viewport.clientWidth,currentComposition.y/viewport.clientHeight,currentComposition.width/viewport.clientWidth,currentComposition.height/viewport.clientHeight] });
+        studio.setFrame(currentFrame);
         studio.setTheme(currentDark);
     }
     function draw(now) {
@@ -131,10 +129,12 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
             inspectFraming() {
                 scene.updateMatrixWorld(true); camera.updateMatrixWorld(true);
                 const point = new T.Vector3(), extent = {min:[Infinity,Infinity],max:[-Infinity,-Infinity],count:0,outside:0};
-                const weights=metrics.framing.weights,focus=weights.brain>0 ? 'Brain_Root' : weights.twin>0 ? 'Twin_Root' : null;
+                const weights=metrics.framing.weights;
+                const kinds=Object.entries(weights).filter(([,weight])=>weight>0).map(([kind])=>kind);
+                const selected=name=>kinds.includes('wide') || (kinds.includes('brain')&&name==='Brain_Root') || (kinds.includes('twin')&&(name==='Twin_Root'||name==='Studio_Authored_Details')) || (kinds.includes('sources')&&/^Source0[1-4]_Original/.test(name)) || (kinds.includes('body')&&/^Twin_Anatomical_Foundation|^Twin_Layers_/.test(name));
                 scene.traverse(node => {
                     if (!node.isMesh || node.userData.runtimeGround) return;
-                    let ancestor=node,member=!focus; while(ancestor) { if (!ancestor.visible) return; if(ancestor.name===focus || (focus==='Twin_Root' && ancestor.name==='Studio_Authored_Details'))member=true; ancestor=ancestor.parent; }
+                    let ancestor=node,member=false; while(ancestor) { if (!ancestor.visible) return; if(selected(ancestor.name))member=true; ancestor=ancestor.parent; }
                     if(!member)return;
                     for(let i=0;i<node.geometry.attributes.position.count;i++) {
                         node.getVertexPosition(i,point); point.applyMatrix4(node.matrixWorld);
@@ -144,7 +144,7 @@ export async function createArtwork({ canvas, viewport, composition, assets, sig
                         extent.max[0]=Math.max(extent.max[0],point.x);extent.max[1]=Math.max(extent.max[1],point.y);
                         if(Math.abs(point.x)>1 || Math.abs(point.y)>1 || point.z < -1 || point.z > 1)extent.outside++;
                     }
-                }); return extent;
+                }); return { ...extent,weights,kinds };
             },
             resize, dispose,
         };
