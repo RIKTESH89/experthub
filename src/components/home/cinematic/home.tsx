@@ -24,28 +24,28 @@ export function CinematicHome() {
     <header className="site-nav"><Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link><nav className="site-links" aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /><button id="motion" type="button" aria-pressed="false" disabled>Loading animation</button></nav></header>
     <div id="stage" aria-hidden="true"><Image id="stage-poster" src={`${assetRoot}assets/desktop/frame-000.webp`} alt="" width={1280} height={800} unoptimized priority /><canvas id="sequence" /><div className="shade" /></div>
     <p id="asset-status" className="asset-status" hidden role="status" /><noscript><p className="asset-status">Scroll animation needs JavaScript. The complete static story follows.</p></noscript>
-    <nav className="chapter-nav" aria-label="Story chapters">{chapterNames.map((name, i) => <Link key={name} href={`#${chapterIds[i]}`} aria-label={`${i + 1}. ${name}`}>{String(i + 1).padStart(2, "0")}</Link>)}</nav>
+    <nav className="chapter-nav" aria-label="Story navigation">{chapterNames.map((name, i) => <Link key={name} href={`#${chapterIds[i]}`} aria-label={name}>{name}</Link>)}</nav>
     <main id="story" tabIndex={-1}>
       <Chapter id="introduction" number={1} eyebrow="ExpertHub" title="Learn from expert Digital Twins." frame={0} caption="Expert knowledge, represented in AI.">
         <p className="lead">Read expert content and chat with an AI representation shaped by their work.</p>
         <div className="action-group"><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert <span aria-hidden="true">↗</span></Link></div>
       </Chapter>
-      <Chapter id="contributions" number={2} eyebrow="02 / Share" title="Start with what you know." frame={28} caption="01–04 / Fictional source records">
+      <Chapter id="contributions" number={2} eyebrow="Share" title="Start with what you know." frame={28} caption="01–04 / Fictional source records">
         <p>Add your posts and notes, or import text from supported PDFs and blog articles.</p><Link className="text-link" href="#source-01">Read the fictional source examples</Link>
       </Chapter>
-      <Chapter id="context" number={3} eyebrow="03 / Connect" title="Keep the context close." frame={53} caption="01 / A passage in context" liveCaption>
+      <Chapter id="context" number={3} eyebrow="Connect" title="Keep the context close." frame={53} caption="01 / A passage in context" liveCaption>
         <p>Relevant passages and related ideas give your twin context for a question.</p>
       </Chapter>
-      <Chapter id="construction" number={4} eyebrow="04 / Build" title="Your knowledge takes shape." frame={76} caption="A partial Digital Twin" liveCaption>
+      <Chapter id="construction" number={4} eyebrow="Build" title="Your knowledge takes shape." frame={76} caption="A partial Digital Twin" liveCaption>
         <p>Your shared content helps shape an AI twin that people can ask questions.</p>
       </Chapter>
-      <Chapter id="conversation" number={5} eyebrow="05 / Ask" title="Ask a question. Keep learning." frame={137} caption="Fictional conversation · not live AI" liveCaption>
+      <Chapter id="conversation" number={5} eyebrow="Ask" title="Ask a question. Keep learning." frame={137} caption="Fictional conversation · not live AI" liveCaption>
         <p>Ask follow-ups and check available sources behind the answers.</p><Link className="text-link" href="#sample-conversation">Read the fictional conversation · scripted, not live</Link>
       </Chapter>
-      <Chapter id="control" number={6} eyebrow="06 / Maintain" title="Keep your knowledge up to date." frame={151} caption="Shared sources remain distinct">
+      <Chapter id="control" number={6} eyebrow="Maintain" title="Keep your knowledge up to date." frame={151} caption="Shared sources remain distinct">
         <p>Add new material and correct your notes as your work and thinking change.</p>
       </Chapter>
-      <Chapter id="close" number={7} eyebrow="07 / Explore" title="Find your next conversation." frame={172} caption="Start exploring">
+      <Chapter id="close" number={7} eyebrow="Explore" title="Find your next conversation." frame={172} caption="Start exploring">
         <p className="lead">Choose an expert to learn from, or apply to share your own expertise.</p><div className="action-group"><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert <span aria-hidden="true">↗</span></Link></div>
       </Chapter>
     </main>

@@ -15,7 +15,8 @@ function loadRuntime(): Mount {
   };
   const timeline = load("timeline.js");
   const assets = load("asset-config.js");
-  return load("sequence.js", name => name.includes("asset-config") ? assets : timeline).mountSequence as Mount;
+  const scheduler = load("scheduler.js");
+  return load("sequence.js", name => name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
 }
 const ids = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"];
 function fixture() {
