@@ -93,9 +93,9 @@ export async function createArtwork({ canvas, viewport, assets, signal, onMetric
         const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parseAsync(data,new URL(assets.scene,location.origin).href);
         metrics.parseMs = performance.now()-parseStart;
         if (disposed || signal.aborted) { releaseScene(gltf.scene); ensureAlive(); }
-        const names = ['Brain_Root','Sources_Root','Twin_Root'];
+        const names = ['Brain_Root','Sources_Root','Twin_Root','Camera_Hero','Camera_Portrait'];
         if (names.some(name => !gltf.scene.getObjectByName(name)) || gltf.cameras.length < 2 || !gltf.animations.length) { releaseScene(gltf.scene); throw Error('Artwork hierarchy/camera/clip contract unavailable'); }
-        scene = new T.Scene(); scene.add(gltf.scene); cameras = gltf.cameras;
+        scene = new T.Scene(); scene.add(gltf.scene); cameras = ['Camera_Hero','Camera_Portrait'].map(name=>gltf.scene.getObjectByName(name));
         mixer = new T.AnimationMixer(gltf.scene);
         actions = gltf.animations.map(clip => { const action = mixer.clipAction(clip); action.setLoop(T.LoopOnce,1); action.clampWhenFinished = true; action.play(); return action; });
         renderer = new T.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});

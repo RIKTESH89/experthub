@@ -23,7 +23,7 @@ function updateScene(frame, canvasWidth, canvasHeight) {
   mixer.setTime(frame / 24);
   const aspect = canvasWidth / canvasHeight;
   const variant = aspect < .9 ? 'portrait' : 'desktop';
-  const sourceCamera = gltf.cameras[variant === 'portrait' ? 1 : 0];
+  const sourceCamera = gltf.scene.getObjectByName(variant === 'portrait' ? 'Camera_Portrait' : 'Camera_Hero');
   const track = contract.tracks[variant][Math.round(frame)];
   director.apply({camera, sourceCamera, frame, aspect, variant, track});
   renderer.render(scene, camera);

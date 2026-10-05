@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "ADAPTER-CONTRACT.md",
-      "bytes": 5042,
-      "sha256": "a57b4f323c765e50cb32d61b72ac55ada98998a1e385434969ae101c1e402d9d"
+      "bytes": 5084,
+      "sha256": "e0b28e5d36da8ff6a45c22a9de712056e37603c71907005f17fcb28cbde32aae"
     },
     {
       "path": "ASSET-HANDOFF-v7.md",
