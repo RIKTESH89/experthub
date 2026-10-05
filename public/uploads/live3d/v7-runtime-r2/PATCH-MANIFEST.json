@@ -1,0 +1,41 @@
+{
+  "version": "experthub-runtime-r2",
+  "assetSha256": "c602aa49df4785c6c80bf14c9c74b0874076b97424cd1611285b07899a2a5ea0",
+  "files": [
+    {
+      "path": "ADAPTER-CONTRACT.md",
+      "bytes": 5042,
+      "sha256": "a57b4f323c765e50cb32d61b72ac55ada98998a1e385434969ae101c1e402d9d"
+    },
+    {
+      "path": "ASSET-HANDOFF-v7.md",
+      "bytes": 1960,
+      "sha256": "be8f08df5231c816e46551a577f62e2548896955c7d515a4802a882626e1a24d"
+    },
+    {
+      "path": "ATTRIBUTION.md",
+      "bytes": 3077,
+      "sha256": "0535c6ee65cf67d7e9d511df9353993eb43aac1b544548ed354d0fa6b5ae88b4"
+    },
+    {
+      "path": "camera-contract.json",
+      "bytes": 213352,
+      "sha256": "dc211be9a69f10d669fa91935b87899f651a5838986d9d99900375a8422df8c9"
+    },
+    {
+      "path": "camera-envelope-r2.json",
+      "bytes": 245658,
+      "sha256": "dfb7a0a16c564ac76739de0f7fd9954e85113ba01ac394062e100c291ba9f108"
+    },
+    {
+      "path": "cinematic-runtime-r2.js",
+      "bytes": 5661,
+      "sha256": "465fe3b785c54f3d654a531f5d9dadfbc29052b54c74c038161148b455aad893"
+    },
+    {
+      "path": "source-registry.json",
+      "bytes": 3486,
+      "sha256": "22d81bc47ff1a1c361a45c4186eb365a5330a2dfce87f708da90ac9a91b072ce"
+    }
+  ]
+}

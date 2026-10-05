@@ -16,7 +16,8 @@ function loadRuntime(): Mount {
   const timeline = load("timeline.js");
   const assets = load("asset-config.js");
   const scheduler = load("scheduler.js");
-  return load("sequence.js", name => name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
+  const artwork = load("live3d-adapter.js");
+  return load("sequence.js", name => name.includes("live3d-adapter") ? artwork : name.includes("asset-config") ? assets : name.includes("scheduler") ? scheduler : timeline).mountSequence as Mount;
 }
 const ids = ["introduction", "contributions", "context", "construction", "conversation", "control", "close"];
 function fixture() {
@@ -138,3 +139,24 @@ test.each(["source-01", "source-04"])("source fragment %s opens its details befo
    expect(document.activeElement).toBe(target);
    cleanup();
  });
+
+test("rapid local fragments preserve synchronous history and existing router state", () => {
+  const root=fixture();
+  root.insertAdjacentHTML("beforeend", '<a href="#source-01">Source</a><footer><details><summary>Sources</summary><div id="source-01" tabindex="-1">Source words</div></details></footer>');
+  const target=root.querySelector('#source-01')!;
+  Object.defineProperty(target,'scrollIntoView',{configurable:true,value:jest.fn()});
+  history.replaceState({__NA:true,tree:'existing-router-tree'},'', '/');
+  const push=jest.spyOn(history,'pushState');
+  const cleanup=loadRuntime()(root);
+  const click=new MouseEvent('click',{bubbles:true,cancelable:true});
+  root.querySelector('a[href="#source-01"]')!.dispatchEvent(click);
+  expect(click.defaultPrevented).toBe(true);
+  expect(location.hash).toBe('#source-01');
+  expect(push).toHaveBeenCalledWith({__NA:true,tree:'existing-router-tree'},'', '#source-01');
+  root.querySelector('a[href="#source-01"]')!.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+  expect(push).toHaveBeenCalledTimes(1);
+  const modified=new MouseEvent('click',{bubbles:true,cancelable:true,ctrlKey:true});
+  root.querySelector('a[href="#source-01"]')!.dispatchEvent(modified);
+  expect(modified.defaultPrevented).toBe(false);
+  cleanup();history.replaceState(null,'','/');
+});

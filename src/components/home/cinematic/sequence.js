@@ -1,8 +1,10 @@
 import { frameAt, textOpacity, validateManifest, chapterProgress, chapterLengths } from './timeline.js';
+import { mountLiveArtwork } from './live3d-adapter.js';
 import { assetRoot } from './asset-config.js';
 import { frameWindow, nearestReadyFrame, canServeChapter } from './scheduler.js';
 export function mountSequence(root) {
     const lifecycle = new AbortController();
+    const artwork = mountLiveArtwork(root, () => schedule());
     let manifestController = new AbortController();
     let manifestTimer;
     let disposed = false;
@@ -34,7 +36,7 @@ export function mountSequence(root) {
     let blobBytes=0, latencyMs=100, scrollVelocity=0, previousScroll=scrollY, previousScrollTime=performance.now();
     let prepared, geometry, geometryDirty=true, posterObjectURL='', posterStarted=0;
     const metrics = { requests: 0, receivedBytes: 0, cachePeak: 0, decodedBytesPeak: 0, rendered: 0, missingDemands: 0, aborts: 0, errors: 0, blobHits:0, decoded:0, skippedDraws:0, crossChapterHides:0, lastFetchMs:0, lastDecodeMs:0, lastDrawMs:0, posterSwitches:0, posterLoads:0, posterErrors:0, posterBlobHits:0, lastPosterMs:0 };
-    function report() { Object.assign(canvas.dataset, { chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', reason: modeReason || 'none', cache: String(cache.size), pending: String(inflight.size), blobBytes:String(blobBytes), blobCache:String(blobs.size), posterPrimed:String(posterKeys().filter(k=>blobs.has(k)||primaryAvailable(k)).length), primerPending:String([...inflight.values()].filter(j=>j.primer).length), jobs:JSON.stringify([...inflight].map(([url,j])=>({frame:url,age:performance.now()-j.started,demanded:j.demanded,primer:j.primer,posterAnchor:j.posterAnchor}))), posterFrame:poster.dataset.frame??'', posterReady:String(!poster.hidden && poster.complete && poster.naturalWidth>0), posterAgeMs:String(posterStarted ? performance.now()-posterStarted : 0), visualChapter:lastDrawn ? chapters[active].id : '', visualPending:String(desired!==lastDrawn), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
+    function report() { Object.assign(canvas.dataset, { backend:root.dataset.artwork==='live'?'live3d':'raster', chapter: chapters[active].id, phase: local.toFixed(4), frame: desired, drawn: lastDrawn, mode: cinematic ? 'sequence' : 'static', reason: modeReason || 'none', cache: String(cache.size), pending: String(inflight.size), blobBytes:String(blobBytes), blobCache:String(blobs.size), posterPrimed:String(posterKeys().filter(k=>blobs.has(k)||primaryAvailable(k)).length), primerPending:String([...inflight.values()].filter(j=>j.primer).length), jobs:JSON.stringify([...inflight].map(([url,j])=>({frame:url,age:performance.now()-j.started,demanded:j.demanded,primer:j.primer,posterAnchor:j.posterAnchor}))), posterFrame:poster.dataset.frame??'', posterReady:String(!poster.hidden && poster.complete && poster.naturalWidth>0), posterAgeMs:String(posterStarted ? performance.now()-posterStarted : 0), visualChapter:root.dataset.artwork==='live'?'':lastDrawn ? chapters[active].id : '', visualPending:String(desired!==lastDrawn), ...Object.fromEntries(Object.entries(metrics).map(([k, v]) => [k, String(v)])) }); }
     function free(image) { image.close?.(); if (image instanceof HTMLImageElement)
         image.src = ''; }
     function clearFrames() { if(posterObjectURL){URL.revokeObjectURL(posterObjectURL);posterObjectURL='';}poster.hidden=true;delete poster.dataset.frame;generation++; inflight.forEach(v => v.controller.abort()); inflight.clear(); cache.forEach(v => free(v.image)); cache.clear(); bad.clear(); failedDemands.clear(); failures = 0; windowUrls = []; desired = ''; lastDrawn = ''; blobs.clear(); blobBytes=0; canvas.classList.remove('ready'); }
@@ -92,6 +94,7 @@ export function mountSequence(root) {
         button.disabled = Boolean(modeReason && !['user-choice', 'manifest-unavailable', 'image-unavailable'].includes(modeReason));
         button.setAttribute('aria-pressed', String(Boolean(modeReason)));
         button.textContent = cinematic ? 'Reduce motion' : modeReason === 'user-choice' ? 'Show animation' : ['manifest-unavailable', 'image-unavailable'].includes(modeReason) ? 'Retry animation' : modeReason === 'loading' ? 'Loading animation' : 'Static story';
+        artwork?.setMode(cinematic);
         status.textContent = cinematic ? 'Scroll to follow the story. Choose Reduce motion for a static version.' : messages[modeReason];
         warning.textContent = cinematic ? '' : messages[modeReason];
         warning.hidden = cinematic;
@@ -234,6 +237,7 @@ export function mountSequence(root) {
         ticket = 0;
         locate();
         if (!cinematic) {
+            artwork?.setMode(false);
             report();
             return;
         }
@@ -244,6 +248,10 @@ export function mountSequence(root) {
         }
         resize();
         const ch=variant.chapters[active], frames=prepared.get(variant)[active];
+        if (artwork?.update({ cinematic, chapter:ch, phase:local, portrait:portrait.matches, visible:!stage.classList.contains('off') })) {
+            metrics.aborts+=inflight.size; inflight.forEach(job => {job.cancelled=true;job.controller.abort();}); inflight.clear();
+            report(); return;
+        }
         const posterURL=new URL(ch.poster,assetBase).href;
         const availableBlob=blobs.get(posterURL);
         const pendingRemote=poster.dataset.frame===posterURL && !posterObjectURL && !(poster.complete && poster.naturalWidth>0);
@@ -334,7 +342,15 @@ export function mountSequence(root) {
         if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
     } schedule(); }
-    root.querySelectorAll('a[href^="#"]').forEach(a => listen(a, 'click', () => { const hash = a.getAttribute('href'); anchorTarget(hash, true, true); }));
+    root.querySelectorAll('a[href^="#"]').forEach(a => listen(a, 'click', event => {
+        if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const hash = a.getAttribute('href');
+        // Local fragment journeys are synchronous. Do not race a deferred router
+        // transition against a second keyboard activation in the same document.
+        event.preventDefault();
+        if (location.hash !== hash) history.pushState(history.state, '', hash);
+        anchorTarget(hash, true, true);
+    }));
     listen(window, 'hashchange', () => anchorTarget(location.hash, true, true));
     root.querySelectorAll('.static-visual img').forEach(img => listen(img,'load',schedule));
     root.querySelectorAll('.static-visual img').forEach(img => listen(img, 'error', () => { img.hidden = true; img.closest('figure').querySelector('figcaption').textContent = 'Scene image unavailable. The complete explanation follows in text.'; }));
@@ -403,5 +419,5 @@ export function mountSequence(root) {
     const observer='ResizeObserver' in window ? new ResizeObserver(()=>{geometryDirty=true;schedule();}) : null;
     if(observer){observer.observe(root.querySelector('#story'));chapters.forEach(ch=>observer.observe(ch));}
     start();
-    return () => { disposed = true; observer?.disconnect(); manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); chapters.forEach((_chapter,index)=>panelInteractive(index,true)); delete root.dataset.activeChapter; delete root.dataset.cinematic; };
+    return () => { disposed = true; artwork?.dispose(); observer?.disconnect(); manifestController.abort(); clearTimeout(manifestTimer); lifecycle.abort(); cancelAnimationFrame(ticket); ticket = 0; clearFrames(); chapters.forEach((_chapter,index)=>panelInteractive(index,true)); delete root.dataset.activeChapter; delete root.dataset.cinematic; };
 }

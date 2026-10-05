@@ -22,7 +22,7 @@ export function CinematicHome() {
   return <div className={styles.home} data-cinematic-home="" data-render-reason="javascript-not-initialized">
     <Link className="skip" href="#story">Skip to the story</Link>
     <header className="site-nav"><Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link><nav className="site-links" aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /><button id="motion" type="button" aria-pressed="false" disabled>Loading animation</button></nav></header>
-    <div id="stage" aria-hidden="true"><Image id="stage-poster" src={`${assetRoot}assets/desktop/frame-000.webp`} alt="" width={1280} height={800} unoptimized priority /><canvas id="sequence" /><div className="shade" /></div>
+    <div id="stage" aria-hidden="true"><Image id="stage-poster" src={`${assetRoot}assets/desktop/frame-000.webp`} alt="" width={1280} height={800} unoptimized priority /><canvas id="sequence" /><div id="live-art" hidden><canvas id="live-artwork" /></div><div className="shade" /></div>
     <p id="asset-status" className="asset-status" hidden role="status" /><noscript><p className="asset-status">Scroll animation needs JavaScript. The complete static story follows.</p></noscript>
     <nav className="chapter-nav" aria-label="Story navigation">{chapterNames.map((name, i) => <Link key={name} href={`#${chapterIds[i]}`} aria-label={name}>{name}</Link>)}</nav>
     <main id="story" tabIndex={-1}>
