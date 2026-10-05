@@ -171,14 +171,14 @@ export function mountSequence(root) {
             const timeout=setTimeout(()=>controller.abort(),8000);
             (async()=>{let decoded;
                 try {
-                    let blob=blobs.get(key);
+                    let blob=blobs.get(key),fetchDuration=0;
                     if(blob){metrics.blobHits++;blobs.delete(key);blobs.set(key,blob);}
                     else {
                         const started=performance.now();metrics.requests++;
                         const response=await fetch(key,{signal:controller.signal});
                         if(!response.ok)throw Error(`Image ${response.status}`);
                         blob=await response.blob();
-                        metrics.lastFetchMs=performance.now()-started;
+                        metrics.lastFetchMs=fetchDuration=performance.now()-started;
                         metrics.receivedBytes+=blob.size;
                         if(epoch!==generation || !cinematic)return;
                         retainBlob(key,blob);
@@ -188,7 +188,7 @@ export function mountSequence(root) {
                     metrics.lastDecodeMs=performance.now()-started;metrics.decoded++;
                     if(epoch!==generation || !cinematic || controller.signal.aborted){free(decoded);return;}
                     if(decoded.width!==variant.width || decoded.height!==variant.height){free(decoded);throw Error('Unexpected frame dimensions');}
-                    latencyMs=Math.max(24,Math.min(1000,latencyMs*.75+(metrics.lastFetchMs+metrics.lastDecodeMs)*.25));
+                    latencyMs=Math.max(24,Math.min(1000,latencyMs*.75+(fetchDuration+metrics.lastDecodeMs)*.25));
                     cache.set(key,{image:decoded,bytes:decoded.width*decoded.height*4});evict();
                     metrics.cachePeak=Math.max(metrics.cachePeak,cache.size);
                     metrics.decodedBytesPeak=Math.max(metrics.decodedBytesPeak,[...cache.values()].reduce((n,v)=>n+v.bytes,0));
