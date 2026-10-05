@@ -144,7 +144,11 @@
 .home[data-cinematic="true"][data-artwork="live"] :global(.title-lane)::before,
 .home[data-cinematic="true"][data-artwork="live"] :global(.body-lane)::before{
  content:"";position:absolute;inset:-40px -56px;z-index:-1;pointer-events:none;
- background:radial-gradient(ellipse at center,var(--bg) 66%,transparent 100%);border-radius:0
+ background:var(--bg);border-radius:0;
+ -webkit-mask-image:linear-gradient(to right,transparent,#000 56px,#000 calc(100% - 56px),transparent),linear-gradient(to bottom,transparent,#000 40px,#000 calc(100% - 40px),transparent);
+ -webkit-mask-composite:source-in;
+ mask-image:linear-gradient(to right,transparent,#000 56px,#000 calc(100% - 56px),transparent),linear-gradient(to bottom,transparent,#000 40px,#000 calc(100% - 40px),transparent);
+ mask-composite:intersect
 }
 
 /* Overscanning secondary objects fade before the opaque navigation boundary. */
