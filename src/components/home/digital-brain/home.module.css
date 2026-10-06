@@ -1,4 +1,6 @@
 .home { --paper:hsl(var(--background)); --ink:hsl(var(--foreground)); --accent:hsl(var(--primary)); --muted:hsl(var(--muted-foreground)); --line:hsl(var(--border)); --veil:247,246,242; background:var(--paper); color:var(--ink); font-family:var(--font-sans),Arial,sans-serif; }
+.home:global(.dark) { --veil:21,20,17; color-scheme:dark; min-height:100svh; }
+:global(html):has(.home), :global(body):has(.home) { background:#151411; color-scheme:dark; }
 :global(.dark) .home { --veil:21,20,17; }
 .home :global(*) { box-sizing:border-box; }
 .home :global(a), .home :global(button), .home :global(summary) { -webkit-tap-highlight-color:transparent; }

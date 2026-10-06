@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { ExpertApplicationSection } from "@/components/landing/expert-application-section";
 import { publicPricingTiers } from "@/lib/public-launch-copy";
 import { chapters } from "./timeline";
@@ -9,15 +8,15 @@ import { scenePerspectives } from "./source-perspectives";
 import styles from "./home.module.css";
 
 export function DigitalBrainHome() {
-  return <div className={styles.home} data-digital-brain-home="" data-renderer="static">
+  return <div className={`${styles.home} dark`} data-digital-brain-home="" data-home-theme="dark" data-renderer="static">
     <Link href="#story-reading" className="skip">Skip to the story</Link>
     <header className="site-nav">
       <Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link>
-      <nav aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /></nav>
+      <nav aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link></nav>
     </header>
     <BrainRuntime />
     <div className="viewport">
-      <Image className="poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={780} height={820} alt="" priority unoptimized />
+      <Image className="poster" src="/uploads/digital-brain-foundation/brain-poster-dark.png" width={780} height={820} alt="" priority unoptimized />
       <div className="artwork" data-artwork="" aria-hidden="true"><canvas data-brain-canvas="" /></div>
       <div className="visual-captions" aria-hidden="true">{scenePerspectives.map((perspective, index) => <div key={index} className={`source-caption source-${perspective.position}`} data-source-slot={index} data-caption-index={index}>
         <h2>{perspective.title}</h2><p>{perspective.subtitle}</p>
@@ -29,7 +28,7 @@ export function DigitalBrainHome() {
     <main>
       <section className="story-sequence" data-story-sequence="" aria-label="How shared knowledge becomes a Digital Twin">
         <div className="reading-story" id="story-reading" tabIndex={-1}>
-          <Image className="reading-poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={780} height={820} alt="A solid warm clay brain sculpture with fine brown threads, used as an illustration of shared knowledge." priority unoptimized />
+          <Image className="reading-poster" src="/uploads/digital-brain-foundation/brain-poster-dark.png" width={780} height={820} alt="A warm dark brain sculpture with fine brown threads, used as an illustration of shared knowledge." priority unoptimized />
           {chapters.map((chapter, index) => <section key={chapter.id} id={chapter.id} aria-labelledby={`heading-${chapter.id}`}>
             <p className="eyebrow">{chapter.label}</p>
             {index === 0 ? <h1 id={`heading-${chapter.id}`}>{chapter.title}</h1> : <h2 id={`heading-${chapter.id}`}>{chapter.title}</h2>}

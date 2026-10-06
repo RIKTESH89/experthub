@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { retargetView, type SourceVector } from "./source-retarget";
+import type { SourceVector } from "./source-retarget";
+import { sideAboveView } from "./source-camera";
 import type { createSourceMotion } from "./source-motion";
 import type { createBrainScene } from "./art/scene.js";
 
@@ -101,9 +102,8 @@ export function BrainRuntime() {
       if (rect.width && rect.height) scene?.resize(rect.width, rect.height);
       schedule();
     };
-    const theme = () => { scene?.setTheme(document.documentElement.classList.contains("dark")); schedule(); };
+    const theme = () => { scene?.setTheme(true); schedule(); };
     const observer = new ResizeObserver(resize);
-    const themeObserver = new MutationObserver(theme);
     const frame = (now: number) => {
       raf = 0;
       if (!alive || !scene || !motion || abort.signal.aborted || document.hidden) { lastTime = 0; return; }
@@ -113,7 +113,7 @@ export function BrainRuntime() {
       if (!visible) { lastTime = 0; return; }
       const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
       lastTime = now; elapsed += delta;
-      const { camera, target } = retargetView(motion.camera, motion.target, window.innerWidth / window.innerHeight);
+      const { camera, target } = sideAboveView(motion.progress(), window.innerWidth / window.innerHeight);
       scene.setSourcePose(camera, target);
       scene.render(delta, elapsed);
       const captions = motion.captions();
@@ -151,7 +151,6 @@ export function BrainRuntime() {
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", tabVisibility);
     canvas.addEventListener("webglcontextlost", contextLost);
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     observer.observe(canvas);
     (async () => {
       try {
@@ -166,7 +165,7 @@ export function BrainRuntime() {
         root.dataset.motionReady = "true";
         readingInteractive(false);
         followHash();
-        const initial = retargetView(motion.camera, motion.target, window.innerWidth / window.innerHeight);
+        const initial = sideAboveView(motion.progress(), window.innerWidth / window.innerHeight);
         scene.setSourcePose(initial.camera, initial.target); scene.render(0, 0);
         clearTimeout(deadline);
         setLoading(false); setStatus("Illustration ready. Scroll to follow the story.");
@@ -179,7 +178,7 @@ export function BrainRuntime() {
     })();
     return () => {
       alive = false; clearTimeout(deadline); abort.abort(); motion?.dispose(); cancelAnimationFrame(raf); scene?.dispose();
-      observer.disconnect(); themeObserver.disconnect();
+      observer.disconnect();
       window.removeEventListener("scroll", schedule); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", tabVisibility);
       canvas.removeEventListener("webglcontextlost", contextLost); reading.removeEventListener("focusin", enterReading);
       root.removeEventListener("click", anchor, true); window.removeEventListener("popstate", followHash);

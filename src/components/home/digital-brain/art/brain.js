@@ -333,6 +333,7 @@ export default class Brain {
       this.grooveParticlesMaterial,
     );
     this.grooveParticles.frustumCulled = false;
+    this.grooveParticles.visible = false;
 
     this.scene.add(this.grooveParticles);
 
