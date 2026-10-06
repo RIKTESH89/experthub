@@ -189,6 +189,15 @@ export function BrainRuntime() {
 
   return <div className="motion-toolbar" hidden={compact === true}>
     <p role="status" className={loading || failed ? "loading-status" : "sr-only"}>{status}</p>
-    <button type="button" aria-pressed={staticMode} onClick={() => { cancelAnimationFrame(readingFrame.current); if (failed) setAttempt(value => value + 1); setMode(staticMode || failed ? "animated" : "static"); window.scrollTo({ top: 0, behavior: "instant" }); }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
+    <button type="button" aria-pressed={staticMode} onClick={() => {
+      cancelAnimationFrame(readingFrame.current);
+      const animate = staticMode || failed;
+      // A deliberate restart begins at the opening shot. A stale source/hash
+      // anchor must not pull newly transformed content back into the static story.
+      if (animate && location.hash) history.replaceState(history.state, "", location.pathname + location.search);
+      if (failed) setAttempt(value => value + 1);
+      setMode(animate ? "animated" : "static");
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
   </div>;
 }

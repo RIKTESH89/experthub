@@ -3,7 +3,7 @@ import { createSourceMotion } from "../src/components/home/digital-brain/source-
 
 jest.mock("gsap", () => {
   const state = { resources: [] as { alive: boolean; kind: string }[], fail: "", splitCalls: 0, timelineCalls: 0, active: null as null | { owned: {alive:boolean;kind:string}[] } };
-  const resource = (kind: string) => { const r = { alive: true, kind }; state.resources.push(r); state.active?.owned.push(r); return r; };
+  const resource = (kind: string, contextOwned = true) => { const r = { alive: true, kind }; state.resources.push(r); if (contextOwned) state.active?.owned.push(r); return r; };
   const core = {
     registerPlugin: jest.fn(),
     context: () => { const ctx = { owned: [] as {alive:boolean;kind:string}[], add: (fn: () => void) => { state.active = ctx; try { fn(); } finally { state.active = null; } }, revert: () => ctx.owned.forEach(r => { r.alive = false; }) }; return ctx; },
@@ -14,7 +14,7 @@ jest.mock("gsap", () => {
   return { __esModule: true, default: core, __state: state, __resource: resource };
 });
 jest.mock("gsap/ScrollTrigger", () => ({ ScrollTrigger: {} }));
-jest.mock("gsap/ScrollSmoother", () => ({ ScrollSmoother: { create: () => { const m = jest.requireMock("gsap"); const r = m.__resource("smoother"); return { kill: () => { r.alive = false; }, scrollTo: jest.fn() }; } } }));
+jest.mock("gsap/ScrollSmoother", () => ({ ScrollSmoother: { create: () => { const m = jest.requireMock("gsap"); const r = m.__resource("smoother", false); return { kill: () => { r.alive = false; }, scrollTo: jest.fn() }; } } }));
 jest.mock("gsap/SplitText", () => ({ SplitText: class {
   chars: HTMLElement[] = [];
   private owned: {alive:boolean;kind:string};
