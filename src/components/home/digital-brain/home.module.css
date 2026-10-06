@@ -70,6 +70,7 @@
 .home :global(.motion-toolbar) { position:fixed; bottom:24px; right:5vw; z-index:35; display:flex; gap:10px; align-items:center; max-width:calc(100vw - 32px); }
 .home :global(.motion-toolbar[hidden]) { display:none; }
 :global(html):has(.home:not([data-renderer="ready"])) { scroll-behavior:auto; }
+:global(html):has(.home :focus-visible) { scroll-behavior:auto; }
 .home :global(.motion-toolbar button) { min-height:44px; padding:9px 16px; border:1px solid #a9b3a3; background:#242f25; color:#f2eddf; font-size:12px; cursor:pointer; border-radius:24px; white-space:nowrap; }
 .home :global(.loading-status) { padding:12px 16px; background:var(--paper); color:var(--ink); font-size:13px; line-height:1.5; border:1px solid var(--brass); max-width:260px; margin:0; }
 .home :global(.static-notice) { padding:24px 6vw; font-size:14px; }

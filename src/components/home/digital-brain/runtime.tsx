@@ -35,13 +35,29 @@ export function BrainRuntime() {
     const artwork = root?.querySelector<HTMLElement>("[data-artwork]");
     const reading = root?.querySelector<HTMLElement>("#story-reading");
     if (!root || !sequence || !canvas || !artwork || !reading || reduced === null || compact === null) return;
-    const enterReading = () => setMode("static");
-    reading.addEventListener("focus", enterReading);
+    const readingLinks = Array.from(reading.querySelectorAll<HTMLAnchorElement>("a[href]"));
+    const originalTabIndexes = new Map(readingLinks.map(link => [link, link.getAttribute("tabindex")]));
+    const readingInteractive = (enabled: boolean) => readingLinks.forEach(link => {
+      const original = originalTabIndexes.get(link);
+      if (!enabled) link.tabIndex = -1;
+      else if (original == null) link.removeAttribute("tabindex");
+      else link.setAttribute("tabindex", original);
+    });
+    const enterReading = (event: FocusEvent) => {
+      root.dataset.renderer = "static"; readingInteractive(true); setMode("static");
+      const target = event.target;
+      if (target instanceof HTMLElement && target !== reading) {
+        const rect = target.getBoundingClientRect();
+        if (rect.top < 80 || rect.bottom > window.innerHeight) target.scrollIntoView({ block: "center", behavior: "instant" });
+      }
+    };
+    reading.addEventListener("focusin", enterReading);
     if (staticMode) {
       root.dataset.renderer = "static";
+      readingInteractive(true);
       setReady(false); setLoading(false); setFailed(false);
       setStatus("The complete story is available without motion.");
-      return () => reading.removeEventListener("focus", enterReading);
+      return () => reading.removeEventListener("focusin", enterReading);
     }
     const abort = new AbortController();
     let scene: Scene | undefined, raf = 0, alive = true, visible = true;
@@ -52,11 +68,15 @@ export function BrainRuntime() {
     const actions = root.querySelector<HTMLElement>("[data-scene-actions]");
     setLoading(true); setReady(false); setFailed(false);
     root.dataset.renderer = "loading";
+    const failToReading = (message: string) => {
+      root.dataset.renderer = "error"; readingInteractive(true);
+      setLoading(false); setReady(false); setFailed(true); setStatus(message);
+      cancelAnimationFrame(raf); raf = 0; delete window.__expertHubBrain;
+      abort.abort();
+    };
     const deadline = window.setTimeout(() => {
       if (!alive || scene) return;
-      root.dataset.renderer = "error"; setLoading(false); setReady(false); setFailed(true);
-      setStatus("The illustration is taking longer to load. You can read the complete story below.");
-      abort.abort();
+      failToReading("The illustration is taking longer to load. You can read the complete story below.");
     }, 20000);
     const calculate = () => {
       offsetTop = sequence.getBoundingClientRect().top + window.scrollY;
@@ -72,7 +92,7 @@ export function BrainRuntime() {
     const visibility = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; root.dataset.onStory = String(visible); dirty = true; if (visible) schedule(); });
     const frame = (now: number) => {
       raf = 0;
-      if (!alive || !scene || document.hidden || !visible) { lastTime = 0; return; }
+      if (!alive || !scene || abort.signal.aborted || document.hidden || !visible) { lastTime = 0; return; }
       const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
       lastTime = now;
       elapsed += delta;
@@ -104,7 +124,7 @@ export function BrainRuntime() {
       }
       schedule();
     };
-    function schedule() { if (alive && scene && !raf && !document.hidden && visible) raf = requestAnimationFrame(frame); }
+    function schedule() { if (alive && scene && !abort.signal.aborted && !raf && !document.hidden && visible) raf = requestAnimationFrame(frame); }
     const tabVisibility = () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; lastTime = 0; } else { dirty = true; schedule(); } };
     const down = (event: PointerEvent) => { if (event.isPrimary) drag = { x: event.clientX, y: event.clientY, yaw: yawOffset, horizontal: false, id: event.pointerId }; };
     const move = (event: PointerEvent) => {
@@ -119,7 +139,7 @@ export function BrainRuntime() {
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); yawOffset += event.key === "ArrowLeft" ? -.15 : .15; dirty = true; }
       if (event.key === "Home") { event.preventDefault(); yawOffset = 0; dirty = true; }
     };
-    const contextLost = (event: Event) => { event.preventDefault(); if (alive && !abort.signal.aborted) { setFailed(true); setReady(false); setLoading(false); setStatus("The illustration is unavailable. You can read the complete story below."); root.dataset.renderer = "error"; abort.abort(); } };
+    const contextLost = (event: Event) => { event.preventDefault(); if (alive && !abort.signal.aborted) failToReading("The illustration is unavailable. You can read the complete story below."); };
     window.addEventListener("scroll", scroll, { passive: true });
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", tabVisibility);
@@ -134,6 +154,7 @@ export function BrainRuntime() {
         scene = await createBrainScene({ canvas, signal: abort.signal, onStage: message => { if (alive) setStatus(message); } });
         if (!alive) { scene.dispose(); return; }
         root.dataset.renderer = "ready";
+        readingInteractive(false);
         resize(); theme();
         const state = evaluateStory(progress);
         scene.setPose(state.pose, yawOffset); scene.render(0, 0);
@@ -143,9 +164,7 @@ export function BrainRuntime() {
       } catch {
         clearTimeout(deadline);
         if (!alive || abort.signal.aborted) return;
-        root.dataset.renderer = "error";
-        setLoading(false); setReady(false); setFailed(true);
-        setStatus("The illustration is unavailable. You can read the complete story below.");
+        failToReading("The illustration is unavailable. You can read the complete story below.");
       }
     })();
     return () => {
@@ -153,8 +172,8 @@ export function BrainRuntime() {
       observer.disconnect(); themeObserver.disconnect(); visibility.disconnect();
       window.removeEventListener("scroll", scroll); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", tabVisibility);
       canvas.removeEventListener("pointerdown", down); canvas.removeEventListener("pointermove", move); canvas.removeEventListener("pointerup", up); canvas.removeEventListener("pointercancel", up);
-      canvas.removeEventListener("webglcontextlost", contextLost); artwork.removeEventListener("keydown", keys); reading.removeEventListener("focus", enterReading);
-      root.dataset.renderer = "static"; delete window.__expertHubBrain;
+      canvas.removeEventListener("webglcontextlost", contextLost); artwork.removeEventListener("keydown", keys); reading.removeEventListener("focusin", enterReading);
+      root.dataset.renderer = "static"; readingInteractive(true); delete window.__expertHubBrain;
     };
   }, [mode, reduced, compact, staticMode, attempt]);
 
