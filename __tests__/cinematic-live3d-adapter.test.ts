@@ -37,7 +37,7 @@ function fixture() {
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
 function adapter(create: jest.Mock) {
-  return moduleAt('live3d-adapter.js',id=>id.includes('load-scene')?{prepareSceneBytes:()=>Promise.resolve({bytes:new ArrayBuffer(0),fetchMs:0})}:id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('narrative-clock')?clock:id.includes('b-chapter-map')?bMap:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
+  return moduleAt('live3d-adapter.js',id=>id.includes('loading-screen')?moduleAt('loading-screen.js'):id.includes('load-scene')?{prepareSceneBytes:()=>Promise.resolve({bytes:new ArrayBuffer(0),fetchMs:0})}:id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('narrative-clock')?clock:id.includes('b-chapter-map')?bMap:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
 }
 const state={cinematic:true,chapter:chapters[0],phase:.375,portrait:true,visible:true};
 test('static eligibility does not import/create WebGL and disposal aborts a late renderer',async()=>{
@@ -58,6 +58,13 @@ test('a readiness failure retains raster, and a fresh motion cycle can retry',as
   instance.update(state);await settle();expect(create).toHaveBeenCalledTimes(1);
   instance.setMode(false);instance.update(state);await settle();expect(root.dataset.artwork).toBe('live');expect(controller.setFrame).toHaveBeenCalled();
   instance.dispose();expect(controller.dispose).toHaveBeenCalledTimes(1);
+});
+test('an error callback from a disposed generation cannot replace a fresh live renderer',async()=>{
+  const callbacks:Array<(error:Error)=>void>=[];
+  const create=jest.fn((options:any)=>{callbacks.push(options.onError);options.onMetrics({frames:1,frame:options.frame,dark:false,composition:options.composition,portrait:options.portrait});return Promise.resolve({dispose:jest.fn(),setFrame:jest.fn(),setComposition:jest.fn(),setTheme:jest.fn(),setVisible:jest.fn(),resize:jest.fn()});});
+  const root=fixture(),instance=adapter(create)(root,jest.fn());instance.update(state);await settle();
+  instance.setMode(false);instance.update(state);await settle();expect(root.dataset.artwork).toBe('live');
+  callbacks[0](new Error('obsolete context'));expect(root.dataset.artwork).toBe('live');instance.dispose();
 });
 test('a decoded loading poster cannot revive after motion is disabled',async()=>{
   let ready:()=>void=()=>{};
