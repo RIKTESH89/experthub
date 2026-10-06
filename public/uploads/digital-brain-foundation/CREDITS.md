@@ -18,7 +18,7 @@ Source commit: `366cf81dad855ea238dec170fcc65579d6d9ba4b`.
 
 Copyright (c) 2026 Sahil K. Full notice: [licenses/sahil-MIT.txt](licenses/sahil-MIT.txt).
 
-Adapted code includes the solid-brain Fresnel/specular/electric shader, red-vertex surface sampling, groove particles, 20 × 6 curved neural threads, thread particles, sparkle particles, procedural sky and depth/vignette postprocessing. The raw GLSL is packaged as JavaScript strings without changing its formulas. Modifications: explicit scene context instead of the global Game singleton; scoped pointer listeners and disposal; duplicate particle construction removed; MT19937 recurrence implemented locally with the original seeds; radial sprite authored for ExpertHub; palette and particle-size tuning; seconds-based animation clock; weighted sampling of the same red vertex mask to reach the target 7,000 particles; corrected thread ring sampling; fixed-model particle positions computed once; bounded phone framing and raster tiers; readiness tied to a completed render; source audio and uncredited images excluded.
+Adapted code includes the solid-brain Fresnel/specular/electric shader, red-vertex surface sampling, groove particles, 20 × 6 curved neural threads, thread particles, sparkle particles, procedural sky and depth/vignette postprocessing. The raw GLSL is packaged as JavaScript strings without changing its formulas. Modifications: explicit scene context instead of the global Game singleton; scoped pointer listeners and disposal; duplicate particle construction removed; MT19937 recurrence implemented locally with the original seeds; radial sprite authored for ExpertHub; palette and particle-size tuning; seconds-based animation clock; weighted sampling of the same red vertex mask to allocate 7,000 groove particles, whose layer is now hidden while anatomical grooves remain; corrected thread ring sampling; fixed-model particle positions computed once; bounded phone framing and raster tiers; readiness tied to a completed render; source audio and uncredited images excluded. The homepage's warm dark presentation does not change the stored theme used by other app routes. Colour-study screenshots adjust actual material uniforms in memory for review and do not select a shipped material palette.
 
 ## Cinematic3DScroll variant 2: MIT demo grant
 
@@ -30,7 +30,7 @@ Demo: https://tympanus.net/Tutorials/Cinematic3DScroll/#/variant-2
 
 The repository README identifies MIT but its root LICENSE is absent at the pinned commit. Codrops explicitly licenses downloadable demos under MIT: https://tympanus.net/codrops/licensing/ (verified 2026-10-06). The published Codrops MIT notice is retained in [licenses/codrops-MIT.txt](licenses/codrops-MIT.txt). This notice documents that grant; it is not an invented upstream LICENSE file.
 
-The variant-2 ScrollSmoother engine, ten camera/target intervals, text positions and SplitText entry/hold/exit timelines are ported using the source's exact GSAP version. The unchanged brain replaces the building. A fixed per-axis bounds transform maps source targets into the brain scene. A uniform scale maps each source camera-to-target offset, preserving source viewing directions, pitch and distance ratios within a viewport. Absolute distance, target placement and pixel framing differ for the compact brain; source-space curves and timing remain unchanged. See `/uploads/digital-brain-foundation/SOURCE-PARITY.md` for the explicit deviations and parameters. No skyscraper model, study links, upstream audio or inspiration images are shipped.
+The variant-2 ScrollSmoother engine, ten unequal motion intervals, text positions and SplitText entry/hold/exit timelines are ported using the source's exact GSAP version. The unchanged brain replaces the building. The renderer samples that motion progress through the approved side/above orbit in source-camera.ts. Shape-preserving cubic interpolation retains continuous camera velocity and positive clearance above the anatomical model, with continuous phone framing and wide/macro zoom. Source viewing directions, pitch and distance ratios are intentionally replaced; the source scroll intervals and text choreography remain unchanged. See `/uploads/digital-brain-foundation/SOURCE-PARITY.md` for the explicit deviations and parameters. No skyscraper model, study links, upstream audio or inspiration images are shipped.
 
 ## Runtime dependencies
 
@@ -40,7 +40,7 @@ Three.js 0.186.1, Copyright © 2010–2026 Three.js authors, MIT. [licenses/thre
 
 Draco decoder distributed with the installed Three.js package; Google Draco, Apache License 2.0. [licenses/draco-Apache-2.0.txt](licenses/draco-Apache-2.0.txt). Decoder wrapper and WASM are self-hosted; no CDN request is required.
 
-The static poster is a capture of this same adapted scene. The radial particle sprite is generated in code. There is no audio.
+The dark static poster is an actual renderer capture of this same adapted scene with the groove particle layer hidden. The radial particle sprite is generated in code. There is no audio.
 
 ## Earlier studies
 

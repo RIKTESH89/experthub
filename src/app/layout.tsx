@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "@/components/auth/session-provider";
-import { Toaster } from "sonner";
+import { RouteToaster } from "@/components/layout/route-toaster";
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import * as Sentry from "@sentry/nextjs";
@@ -65,7 +65,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <StudioMotionProvider>{children}</StudioMotionProvider>
-            <Toaster richColors position="top-right" />
+            <RouteToaster />
             <PWAInstallPrompt />
             <ServiceWorkerRegister />
           </ThemeProvider>

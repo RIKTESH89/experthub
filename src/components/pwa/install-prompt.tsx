@@ -13,6 +13,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function PWAInstallPrompt() {
   const pathname = usePathname();
+  const homepageTheme = pathname === "/" ? "dark " : "";
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -69,7 +70,7 @@ export function PWAInstallPrompt() {
 
   return <>
     {/* In normal document flow, so it cannot cover mobile save/navigation controls. */}
-    <aside aria-label="Install ExpertHub" className="relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4">
+    <aside aria-label="Install ExpertHub" className={`${homepageTheme}relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4 text-foreground`}>
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true"><Smartphone size={20}/></span>
       <div className="min-w-0 flex-1">
         <p className="font-medium">Keep ExpertHub close</p>
@@ -82,7 +83,7 @@ export function PWAInstallPrompt() {
       <button type="button" aria-label="Dismiss install suggestion" onClick={handleDismiss} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"><X size={18}/></button>
     </aside>
     <Dialog open={showGuide} onOpenChange={setShowGuide}>
-      <DialogContent onCloseAutoFocus={event => { event.preventDefault(); installButtonRef.current?.focus(); }} className="max-h-[85svh] w-[calc(100%-2rem)] overflow-y-auto rounded-xl [&>button:last-child]:grid [&>button:last-child]:h-11 [&>button:last-child]:w-11 [&>button:last-child]:place-items-center">
+      <DialogContent onCloseAutoFocus={event => { event.preventDefault(); installButtonRef.current?.focus(); }} className={`${homepageTheme}max-h-[85svh] w-[calc(100%-2rem)] overflow-y-auto rounded-xl text-foreground [&>button:last-child]:grid [&>button:last-child]:h-11 [&>button:last-child]:w-11 [&>button:last-child]:place-items-center`}>
         <DialogTitle>{isIOS ? "Install on iOS" : "Install ExpertHub"}</DialogTitle>
         <DialogDescription>{isIOS ? "Use Safari’s Share menu to add ExpertHub to your home screen." : "Open your browser menu and look for Install app or Add to Home Screen. If neither option is available, your browser may not support installation."}</DialogDescription>
         <ol className="list-decimal space-y-3 pl-5 text-sm text-muted-foreground">
