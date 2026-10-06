@@ -1,0 +1,24 @@
+# ExpertHub variant-2 source port
+
+Source: JosephASG / Joseph Santaamaria, Cinematic3DScroll variant2, commit `7a56d1fdc12058e3a955348a7a9f3387a2bf57da`. Brain source: Sahil K, commit `366cf81dad855ea238dec170fcc65579d6d9ba4b`. Licenses and model credits are in CREDITS.md.
+
+## Preserved source configuration
+
+- GSAP3.13.0; ScrollSmoother wrapper/content with smooth4, smoothTouch2, effectsfalse; initialization after document.fonts.ready.
+- 900svh spacer. Fixed artwork, copy and progress overlay outside transformed content.
+- Camera trigger top top → bottom bottom, scrubtrue. Independent XYZ camera AND target tweens, ease none. Original initial camera(-20,0,0), target(0,15,0). No custom temporal filter, spherical orbit path or camera holds.
+- Ten intervals:0,11.9,23.7,35.6,45.8,52.5,62.7,69.5,77.9,84.7,100%. Original coordinates retained in source-perspectives.ts; one fixed bounds transform at render time.
+- Nine visible text pairs; index4 explicitly hidden. Placements: center, left, right, top-left, hidden top-right, center, bottom-right, bottom-left, top, center.
+- Source percentage text triggers `${start}% top` → `${end}% top`, scrub0.5. First exit x100/opacity0/duration1/stagger−.02/power2.in. Other entry x−100→0/opacity0→1/duration.25/stagger−.02/power2.out, hold.5, exit.25/stagger−.02/power2.in. Last entry.2/stagger−.01/hold1. Source character array ordering retained.
+- Source45-degree vertical FOV.
+
+## Explicit changes and limitations
+
+1. **Artwork and palette:** one unchanged detailed Versal brain with the Sahil shaders,7000 groove points,120 curved threads,480 thread particles,2000 sparkles and postprocessing replaces the tower. Warm ivory/clay/brown/charcoal colors replace forest/copper. Full renderer cost and output differ from the source's simpler tower lighting/fog. DPR budgets remain1.35phone/1.65desktop and2.5million pixels; no FPS-parity claim. Active rendering follows browser cadence; pauses outside the story/hidden tab.
+2. **Coordinate retarget:** source tower conservative geometry bounds at scale3 are(5.572935379,25.891032126,7.321799978), center(−.026283455,13.272128812,.317969838). Brain bounds are(1.058489323,1.123886704,1.316222429), center(.004501224,−.077294290,.049499929). Every camera and target point uses `brainCenter + (point − sourceCenter) * brainSize/sourceSize`, axis scales(.189933894921,.043408339187,.179767602681). This affine mapping preserves linear per-axis curves and all timing, but alters world angles and Euclidean distances because the illustration has different proportions. No per-shot invented positions, dynamic fit clamp or view offset. Near/far.01/100 accommodate brain units instead of original1/1000.
+3. **Copy and typography:** ExpertHub's full headings and explanation replace short source titles. Longer character counts affect stagger-derived total text-timeline duration. The installed Geist font replaces the Adobe source font. Desktop4vw title/1.25vw subtitle and source weight/leading remain. `smartWrap:true` prevents longer words splitting at line breaks; character ordering, tween durations and stagger remain the source's. Warm-palette shadows and subtitle color protect legibility over the material.
+4. **Phone text bounds:** vertical placements remain source-derived. Source mobile full-width plus20vh/80px horizontal offsets clip longer copy, so widths are bounded to viewport minus48px; left placement uses24px; bottom-left uses left48/right24, bottom-right uses right48/left24. Top-left/top-right retain source25vh/24px mobile positions. Subtitle minimum16px replaces the source's inherited12px `text-l` typo. These are deliberate readability deviations, not pixel-identical phone typography.
+5. **Application:** ExpertHub navigation and real actions replace the Codrops study frame. Pricing/application/footer follow the cinematic spacer inside content. No study links. App fragment links use the official ScrollSmoother.scrollTo API for an immediate, correctly offset jump, with history preserved; native Next hash offsets are incorrect inside transformed content. Semantic static story retains all seven required headings and real CTAs. Sample question/answer are clearly fictional/scripted; citations are not a correctness guarantee and source corrections are manual.
+6. **Accessibility and lifecycle:** reduced motion/noJS/error/static story, skip-to-story/history fixes and actual loading readiness remain. Owned GSAP context/timelines/SplitText/ScrollSmoother are disposed on mode/route/error/unmount; no global trigger kill. The original arbitrary1.5-second loader and optional study audio are omitted. These changes protect existing app use rather than claiming literal source-code identity.
+
+Source-engine/configuration parity and readable framing require separate browser checks. This document describes the implementation, not subjective smoothness or physical-device performance guarantees.

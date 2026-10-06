@@ -30,9 +30,11 @@ Demo: https://tympanus.net/Tutorials/Cinematic3DScroll/#/variant-2
 
 The repository README identifies MIT but its root LICENSE is absent at the pinned commit. Codrops explicitly licenses downloadable demos under MIT: https://tympanus.net/codrops/licensing/ (verified 2026-10-06). The published Codrops MIT notice is retained in [licenses/codrops-MIT.txt](licenses/codrops-MIT.txt). This notice documents that grant; it is not an invented upstream LICENSE file.
 
-The percentage scene timeline, animated camera/target choreography and caption entry/hold/exit pattern are ported to the installed Three.js/React stack. Building-specific coordinates are replaced with an orbit around the one brain. Seven chapters share one normalized scroll coordinate with reading holds, a text-free transition, and direction-independent evaluation. No global ScrollTrigger cleanup, fixed readiness timeout, numbered controls, bundled skyscraper art or inspiration images are copied. GSAP, R3F and drei are not added as dependencies.
+The variant-2 ScrollSmoother engine, ten camera/target intervals, text positions and SplitText entry/hold/exit timelines are ported using the source's exact GSAP version. The unchanged brain replaces the building. A single fixed per-axis bounds transform maps every source camera and target vector into the brain scene; this changes world-space angles and distances, while retaining the source-space curves and timing. See `/uploads/digital-brain-foundation/SOURCE-PARITY.md` for the explicit deviations and parameters. No skyscraper model, study links, upstream audio or inspiration images are shipped.
 
 ## Runtime dependencies
+
+GSAP 3.13.0, Copyright (c) 2008–2025 GreenSock. Official ScrollTrigger, ScrollSmoother and SplitText are used under the [standard no-charge license](https://gsap.com/community/standard-license/). Original package notices remain in the bundled dependency; [retained package notice](licenses/gsap-notice.txt). GSAP is not covered by the Codrops MIT notice.
 
 Three.js 0.186.1, Copyright © 2010–2026 Three.js authors, MIT. [licenses/three-MIT.txt](licenses/three-MIT.txt).
 

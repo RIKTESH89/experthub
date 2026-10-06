@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { evaluateStory, chapters } from "./timeline";
+import { retargetSource, type SourceVector } from "./source-retarget";
+import type { createSourceMotion } from "./source-motion";
 import type { createBrainScene } from "./art/scene.js";
 
 type Scene = Awaited<ReturnType<typeof createBrainScene>>;
 type Mode = "auto" | "static" | "animated";
-type Diagnostic = { progress: number; captionIndex: number; captionOpacity: number; pose: ReturnType<typeof evaluateStory>["pose"]; yawOffset: number; metrics: ReturnType<Scene["metrics"]>; status: string };
+type Motion = Awaited<ReturnType<typeof createSourceMotion>>;
+type Diagnostic = { progress: number; targetProgress: number; captionIndex: number; captionOpacity: number; captions: ReturnType<Motion["captions"]>; sourceCamera: SourceVector; sourceTarget: SourceVector; camera: SourceVector; target: SourceVector; metrics: ReturnType<Scene["metrics"]>; status: string };
 declare global { interface Window { __expertHubBrain?: Diagnostic } }
 
 export function BrainRuntime() {
@@ -38,9 +40,8 @@ export function BrainRuntime() {
     const root = document.querySelector<HTMLElement>("[data-digital-brain-home]");
     const sequence = root?.querySelector<HTMLElement>("[data-story-sequence]");
     const canvas = root?.querySelector<HTMLCanvasElement>("[data-brain-canvas]");
-    const artwork = root?.querySelector<HTMLElement>("[data-artwork]");
     const reading = root?.querySelector<HTMLElement>("#story-reading");
-    if (!root || !sequence || !canvas || !artwork || !reading || reduced === null || compact === null) return;
+    if (!root || !sequence || !canvas || !reading || reduced === null || compact === null) return;
     const readingLinks = Array.from(reading.querySelectorAll<HTMLAnchorElement>("a[href]"));
     const originalTabIndexes = new Map(readingLinks.map(link => [link, link.getAttribute("tabindex")]));
     const readingInteractive = (enabled: boolean) => readingLinks.forEach(link => {
@@ -79,106 +80,95 @@ export function BrainRuntime() {
       return () => reading.removeEventListener("focusin", enterReading);
     }
     const abort = new AbortController();
-    let scene: Scene | undefined, raf = 0, alive = true, visible = true;
-    let elapsed = 0, lastTime = 0, lastDraw = 0, yawOffset = 0, dirty = true;
-    let progress = 0, offsetTop = 0, travel = 1, activeCaption = -1;
-    let drag: { x: number; y: number; yaw: number; horizontal: boolean; id: number } | null = null;
-    const captions = Array.from(root.querySelectorAll<HTMLElement>("[data-caption-index]"));
-    const actions = root.querySelector<HTMLElement>("[data-scene-actions]");
+    let scene: Scene | undefined, motion: Motion | undefined, raf = 0, alive = true;
+    let elapsed = 0, lastTime = 0;
     setLoading(true); setFailed(false);
     root.dataset.renderer = "loading";
+    root.dataset.motionReady = "false";
+    root.dataset.onStory = "true";
     const failToReading = (message: string) => {
-      root.dataset.renderer = "error"; readingInteractive(true);
+      abort.abort(); motion?.dispose(); scene?.dispose();
+      root.dataset.renderer = "error"; root.dataset.motionReady = "false"; readingInteractive(true);
       setLoading(false); setFailed(true); setStatus(message);
       cancelAnimationFrame(raf); raf = 0; delete window.__expertHubBrain;
-      abort.abort();
     };
     const deadline = window.setTimeout(() => {
-      if (!alive || scene) return;
+      if (!alive || root.dataset.motionReady === "true") return;
       failToReading("The illustration is taking longer to load. You can read the complete story below.");
     }, 20000);
-    const calculate = () => {
-      offsetTop = sequence.getBoundingClientRect().top + window.scrollY;
-      travel = Math.max(1, sequence.offsetHeight - window.innerHeight);
-      progress = Math.max(0, Math.min(1, (window.scrollY - offsetTop) / travel));
-      dirty = true;
-    };
-    const resize = () => { const rect = canvas.getBoundingClientRect(); scene?.resize(rect.width, rect.height); calculate(); };
-    const scroll = () => { progress = Math.max(0, Math.min(1, (window.scrollY - offsetTop) / travel)); dirty = true; };
-    const theme = () => { scene?.setTheme(document.documentElement.classList.contains("dark")); dirty = true; };
-    const observer = new ResizeObserver(resize);
-    const themeObserver = new MutationObserver(theme);
-    const visibility = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; root.dataset.onStory = String(visible); dirty = true; if (visible) schedule(); });
-    const frame = (now: number) => {
-      raf = 0;
-      if (!alive || !scene || abort.signal.aborted || document.hidden || !visible) { lastTime = 0; return; }
-      const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
-      lastTime = now;
-      elapsed += delta;
-      const mobile = window.innerWidth < 760;
-      // Keep every source thread and particle. Only raster resolution/frame rate differ.
-      if (dirty || now - lastDraw >= (mobile ? 1000 / 30 : 1000 / 60)) {
-        const state = evaluateStory(progress);
-        if (mobile) {
-          const captionBottom = captions[state.captionIndex].getBoundingClientRect().bottom;
-          const actionBottom = actions ? parseFloat(getComputedStyle(actions).bottom) : 0;
-          const invitation = state.captionIndex === 0 || state.captionIndex === chapters.length - 1;
-          const availableBottom = invitation ? window.innerHeight - actionBottom - 44 - 12 : window.innerHeight - 72;
-          if (captionBottom > availableBottom + 2) { setMode("static"); return; }
-        }
-        scene.setPose(state.pose, yawOffset);
-        scene.render(lastDraw ? Math.min((now - lastDraw) / 1000, .05) : 0, elapsed);
-        if (activeCaption !== state.captionIndex) {
-          captions.forEach((caption, i) => { caption.style.opacity = "0"; caption.dataset.active = String(i === state.captionIndex); });
-          activeCaption = state.captionIndex;
-          root.dataset.captionSide = chapters[activeCaption].side;
-          if (actions) actions.hidden = activeCaption !== 0 && activeCaption !== chapters.length - 1;
-        }
-        const caption = captions[state.captionIndex];
-        caption.style.opacity = String(state.opacity);
-        caption.style.transform = `translate3d(${(1 - state.opacity) * (chapterDirection(state.captionIndex)) * 24}px,0,0)`;
-        if (actions) { actions.style.opacity = String(state.opacity); actions.inert = state.opacity < .8; }
-        window.__expertHubBrain = { progress, captionIndex: state.captionIndex, captionOpacity: state.opacity, pose: state.pose, yawOffset, metrics: scene.metrics(), status: "ready" };
-        lastDraw = now; dirty = false;
-      }
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width && rect.height) scene?.resize(rect.width, rect.height);
       schedule();
     };
-    function schedule() { if (alive && scene && !abort.signal.aborted && !raf && !document.hidden && visible) raf = requestAnimationFrame(frame); }
-    const tabVisibility = () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; lastTime = 0; } else { dirty = true; schedule(); } };
-    const down = (event: PointerEvent) => { if (event.isPrimary) drag = { x: event.clientX, y: event.clientY, yaw: yawOffset, horizontal: false, id: event.pointerId }; };
-    const move = (event: PointerEvent) => {
-      if (!drag || event.pointerId !== drag.id) return;
-      const x = event.clientX - drag.x, y = event.clientY - drag.y;
-      if (!drag.horizontal && Math.abs(y) > 10 && Math.abs(y) > Math.abs(x)) { drag = null; return; }
-      if (Math.abs(x) > 8 && Math.abs(x) > Math.abs(y)) { drag.horizontal = true; canvas.setPointerCapture(event.pointerId); }
-      if (drag.horizontal) { yawOffset = drag.yaw - x * .006; dirty = true; }
+    const theme = () => { scene?.setTheme(document.documentElement.classList.contains("dark")); schedule(); };
+    const observer = new ResizeObserver(resize);
+    const themeObserver = new MutationObserver(theme);
+    const frame = (now: number) => {
+      raf = 0;
+      if (!alive || !scene || !motion || abort.signal.aborted || document.hidden) { lastTime = 0; return; }
+      const rect = sequence.getBoundingClientRect();
+      const visible = rect.bottom >= window.innerHeight - 1 && rect.top < window.innerHeight;
+      root.dataset.onStory = String(visible);
+      if (!visible) { lastTime = 0; return; }
+      const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
+      lastTime = now; elapsed += delta;
+      const camera = retargetSource(motion.camera), target = retargetSource(motion.target);
+      scene.setSourcePose(camera, target);
+      scene.render(delta, elapsed);
+      const captions = motion.captions();
+      const active = captions.reduce((best, caption) => caption.opacity > best.opacity ? caption : best, captions[0]);
+      window.__expertHubBrain = {
+        progress: motion.progress(), targetProgress: Math.max(0, Math.min(1, window.scrollY / Math.max(1, sequence.offsetHeight - window.innerHeight))),
+        captionIndex: active.index, captionOpacity: active.opacity, captions,
+        sourceCamera: { x: motion.camera.x, y: motion.camera.y, z: motion.camera.z },
+        sourceTarget: { x: motion.target.x, y: motion.target.y, z: motion.target.z }, camera, target, metrics: scene.metrics(), status: "ready",
+      };
+      schedule();
     };
-    const up = () => { drag = null; };
-    const keys = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); yawOffset += event.key === "ArrowLeft" ? -.15 : .15; dirty = true; }
-      if (event.key === "Home") { event.preventDefault(); yawOffset = 0; dirty = true; }
-    };
+    function schedule() { if (alive && !abort.signal.aborted && !raf && !document.hidden) raf = requestAnimationFrame(frame); }
+    const tabVisibility = () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; lastTime = 0; } else schedule(); };
     const contextLost = (event: Event) => { event.preventDefault(); if (alive && !abort.signal.aborted) failToReading("The illustration is unavailable. You can read the complete story below."); };
-    window.addEventListener("scroll", scroll, { passive: true });
+    const followHash = () => {
+      if (!motion || !alive || location.pathname !== "/" || location.hash === "#story-reading") return;
+      const target = document.getElementById(location.hash.slice(1));
+      if (target) motion.scrollTo(target);
+    };
+    const anchor = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
+      const href = link?.getAttribute("href");
+      if (!motion || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !href || href === "#story-reading") return;
+      const target = document.getElementById(href.slice(1));
+      if (!target) return;
+      event.preventDefault(); event.stopPropagation();
+      history.pushState(history.state, "", href);
+      motion.scrollTo(target);
+      target.querySelector<HTMLElement>('h2[tabindex="-1"]')?.focus({ preventScroll: true });
+    };
+    root.addEventListener("click", anchor, true);
+    window.addEventListener("popstate", followHash);
+    window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", tabVisibility);
-    canvas.addEventListener("pointerdown", down); canvas.addEventListener("pointermove", move); canvas.addEventListener("pointerup", up); canvas.addEventListener("pointercancel", up);
-    canvas.addEventListener("webglcontextlost", contextLost); artwork.addEventListener("keydown", keys);
+    canvas.addEventListener("webglcontextlost", contextLost);
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    observer.observe(canvas); visibility.observe(canvas);
+    observer.observe(canvas);
     (async () => {
       try {
-        const { createBrainScene } = await import("./art/scene.js");
+        const [{ createBrainScene }, { createSourceMotion }] = await Promise.all([import("./art/scene.js"), import("./source-motion")]);
         if (!alive) return;
         scene = await createBrainScene({ canvas, signal: abort.signal, onStage: message => { if (alive) setStatus(message); } });
         if (!alive) { scene.dispose(); return; }
         root.dataset.renderer = "ready";
-        readingInteractive(false);
         resize(); theme();
-        const state = evaluateStory(progress);
-        scene.setPose(state.pose, yawOffset); scene.render(0, 0);
+        motion = await createSourceMotion(root, abort.signal, schedule);
+        if (!alive || abort.signal.aborted) { motion.dispose(); scene.dispose(); return; }
+        root.dataset.motionReady = "true";
+        readingInteractive(false);
+        followHash();
+        scene.setSourcePose(retargetSource(motion.camera), retargetSource(motion.target)); scene.render(0, 0);
         clearTimeout(deadline);
-        setLoading(false); setStatus("Illustration ready. Drag to rotate or scroll to follow the story.");
+        setLoading(false); setStatus("Illustration ready. Scroll to follow the story.");
         schedule();
       } catch {
         clearTimeout(deadline);
@@ -187,12 +177,12 @@ export function BrainRuntime() {
       }
     })();
     return () => {
-      alive = false; clearTimeout(deadline); abort.abort(); cancelAnimationFrame(raf); scene?.dispose();
-      observer.disconnect(); themeObserver.disconnect(); visibility.disconnect();
-      window.removeEventListener("scroll", scroll); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", tabVisibility);
-      canvas.removeEventListener("pointerdown", down); canvas.removeEventListener("pointermove", move); canvas.removeEventListener("pointerup", up); canvas.removeEventListener("pointercancel", up);
-      canvas.removeEventListener("webglcontextlost", contextLost); artwork.removeEventListener("keydown", keys); reading.removeEventListener("focusin", enterReading);
-      root.dataset.renderer = "static"; readingInteractive(true); delete window.__expertHubBrain;
+      alive = false; clearTimeout(deadline); abort.abort(); motion?.dispose(); cancelAnimationFrame(raf); scene?.dispose();
+      observer.disconnect(); themeObserver.disconnect();
+      window.removeEventListener("scroll", schedule); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", tabVisibility);
+      canvas.removeEventListener("webglcontextlost", contextLost); reading.removeEventListener("focusin", enterReading);
+      root.removeEventListener("click", anchor, true); window.removeEventListener("popstate", followHash);
+      root.dataset.renderer = "static"; root.dataset.motionReady = "false"; readingInteractive(true); delete window.__expertHubBrain;
     };
   }, [mode, reduced, compact, staticMode, attempt]);
 
@@ -201,4 +191,3 @@ export function BrainRuntime() {
     <button type="button" aria-pressed={staticMode} onClick={() => { cancelAnimationFrame(readingFrame.current); if (failed) setAttempt(value => value + 1); setMode(staticMode || failed ? "animated" : "static"); window.scrollTo({ top: 0, behavior: "instant" }); }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
   </div>;
 }
-function chapterDirection(index: number) { return chapters[index].side === "right" ? -1 : 1; }

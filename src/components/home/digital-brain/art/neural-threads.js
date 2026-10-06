@@ -603,9 +603,13 @@ export default class NeuralThreads {
   }
 
   setPalette(palette) {
-    this.threads.forEach(thread => thread.material.color.set(palette.thread));
+    this.threads.forEach(thread => {
+      thread.material.color.set(palette.thread);
+      thread.material.blending = palette.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
+    });
     this.threadParticles.particlesMaterial.uniforms.uColor1.value.set(palette.brass);
     this.threadParticles.particlesMaterial.uniforms.uColor2.value.set(palette.ivory);
+    this.threadParticles.particlesMaterial.blending = palette.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
   }
 
   dispose() {

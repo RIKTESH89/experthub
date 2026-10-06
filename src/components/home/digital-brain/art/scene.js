@@ -14,8 +14,8 @@ import { SparkleParticleSystem } from './sparkles.js';
 import { VignettePass } from './vignette.js';
 
 const palettes = {
-  light: { background: '#222723', brain: '#244b3d', rim: '#b4c8b9', electric: '#7c9d85', thread: '#b99a62', brass: '#b99254', ivory: '#f2eddf', sky: '#314537' },
-  dark: { background: '#141b17', brain: '#204536', rim: '#adc8b8', electric: '#659678', thread: '#b69860', brass: '#c29e5e', ivory: '#f2eddf', sky: '#223b2d' },
+  light: { background: '#f7f6f2', brain: '#b6a086', rim: '#eee7da', electric: '#877564', thread: '#796b59', brass: '#978773', ivory: '#eee7da', sky: '#b7a790', electricIntensity: .45, rimIntensity: .4, additive: false },
+  dark: { background: '#151411', brain: '#66503a', rim: '#eee7da', electric: '#9e8b73', thread: '#8f806a', brass: '#a5947e', ivory: '#eee7da', sky: '#665b49', electricIntensity: .65, rimIntensity: .55, additive: true },
 };
 // A canvas can retain a deliberately lost context between reading/animation modes.
 // Keep only a weak recovery handle; removed canvases remain collectible.
@@ -49,7 +49,7 @@ export async function createBrainScene({ canvas, signal, onStage }) {
   const rasterRatio = (width, height) => Math.min(window.devicePixelRatio || 1, width < 760 ? 1.35 : 1.65, Math.sqrt(2500000 / (width * height)));
   let pixelRatio = rasterRatio(window.innerWidth, window.innerHeight);
   const time = { delta: 0, elapsedTime: 0 };
-  let lastWidth = 1, lastHeight = 1, lastTheme = '', drawCount = 0;
+  let lastWidth = 1, lastHeight = 1, lastTheme = '', drawCount = 0, fittedDistance = 0, updateMilliseconds = 0, submitMilliseconds = 0;
   const dispose = () => {
     if (disposed) return;
     disposed = true;
@@ -163,53 +163,38 @@ export async function createBrainScene({ canvas, signal, onStage }) {
       const palette = palettes[theme];
       scene.background = new THREE.Color(palette.background);
       brain.setPalette(palette); sparkles.setPalette(palette);
-      sky.setTint(palette.sky); sky.setOpacity(dark ? .38 : .28);
+      sky.setTint(palette.sky); sky.setOpacity(dark ? .16 : .055);
       vignette.uniforms.color.value.set(palette.background);
     }
-    function setPose(pose, yawOffset = 0) {
+    function setSourcePose(position, target) {
       if (disposed) return;
-      const portrait = lastWidth < 760;
-      let distance = pose.distance * Math.max(1, (1 / camera.aspect) * .95);
-      const yaw = pose.yaw + yawOffset;
-      camera.position.set(Math.sin(yaw) * Math.cos(pose.pitch) * distance, Math.sin(pose.pitch) * distance, Math.cos(yaw) * Math.cos(pose.pitch) * distance);
-      camera.lookAt(0, -.015, 0);
-      const screenX = portrait ? .5 : pose.screenX;
-      const screenY = portrait ? (lastHeight < 740 ? .33 : .34) : .49;
-      camera.setViewOffset(lastWidth, lastHeight, -lastWidth * (screenX - .5), lastHeight * (.5 - screenY), lastWidth, lastHeight);
-      camera.updateMatrixWorld();
-      if (portrait) {
-        // Check the actual brain silhouette samples for each orbit angle.
-        // A single aspect multiplier clips its deeper profile on narrow phones.
-        const projected = new THREE.Vector3();
-        let widthExtent = 0;
-        for (const point of framingPoints) widthExtent = Math.max(widthExtent, Math.abs(projected.copy(point).project(camera).x));
-        if (widthExtent > .86) {
-          distance *= widthExtent / .86 * 1.025;
-          camera.position.set(Math.sin(yaw) * Math.cos(pose.pitch) * distance, Math.sin(pose.pitch) * distance, Math.cos(yaw) * Math.cos(pose.pitch) * distance);
-          camera.lookAt(0, -.015, 0); camera.updateMatrixWorld();
-        }
-      }
-      bokeh.uniforms.focus.value = distance;
+      camera.fov = 45;
+      // Source near/far values (1/1000) accommodate the retargeted unit scale.
+      camera.near = .01; camera.far = 100;
+      camera.clearViewOffset();
+      camera.position.set(position.x, position.y, position.z);
+      camera.lookAt(target.x, target.y, target.z);
+      camera.updateProjectionMatrix(); camera.updateMatrixWorld();
+      fittedDistance = camera.position.distanceTo(new THREE.Vector3(target.x, target.y, target.z));
+      bokeh.uniforms.focus.value = fittedDistance;
     }
     function render(delta, elapsed, animate = true) {
       if (disposed) return;
       time.delta = Math.min(delta, .05); time.elapsedTime = elapsed;
+      const started = performance.now();
       if (animate) { brain.update(); sparkles.update(elapsed * .5); sky.update(elapsed); }
+      updateMilliseconds = performance.now() - started;
       renderer.info.reset();
+      const submitted = performance.now();
       composer.render(delta);
+      submitMilliseconds = performance.now() - submitted;
       if (drawCount === 0 && renderer.info.programs.some(program => program.diagnostics?.runnable === false)) throw new Error('Illustration shader unavailable');
       drawCount++;
     }
     const bounds = new THREE.Box3().setFromObject(model.scene).getSize(new THREE.Vector3());
-    const framingPoints = [];
-    const positions = brain.brainMesh.geometry.getAttribute('position');
-    brain.brainMesh.updateMatrixWorld(true);
-    for (let i = 0, stride = Math.max(1, Math.floor(positions.count / 1024)); i < positions.count; i += stride) {
-      framingPoints.push(new THREE.Vector3().fromBufferAttribute(positions, i).applyMatrix4(brain.brainMesh.matrixWorld));
-    }
     let modelCount = 0;
     model.scene.traverse(object => { if (object.isMesh) modelCount++; });
-    return { resize, setTheme, setPose, render, dispose, metrics: () => ({ drawCount, modelCount, grooveParticles: brain.grooveParticlesCount, neuralThreads: brain.neuralThreads.threads.length, sparkleParticles: sparkles.params.count, pixelRatio, bounds: bounds.toArray(), triangles: renderer.info.render.triangles, calls: renderer.info.render.calls }) };
+    return { resize, setTheme, setSourcePose, render, dispose, metrics: () => ({ drawCount, modelCount, grooveParticles: brain.grooveParticlesCount, neuralThreads: brain.neuralThreads.threads.length, sparkleParticles: sparkles.params.count, pixelRatio, bounds: bounds.toArray(), triangles: renderer.info.render.triangles, calls: renderer.info.render.calls, fittedDistance, updateMilliseconds, submitMilliseconds }) };
   } catch (error) {
     dispose();
     throw error;

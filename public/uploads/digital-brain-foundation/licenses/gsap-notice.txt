@@ -1,0 +1,9 @@
+GSAP 3.13.0 and official ScrollTrigger, ScrollSmoother, SplitText
+https://gsap.com
+Copyright (c) 2008-2025, GreenSock. All rights reserved.
+Subject to the standard no-charge license: https://gsap.com/standard-license
+Current license page: https://gsap.com/community/standard-license/
+Official package: https://registry.npmjs.org/gsap/-/gsap-3.13.0.tgz
+Pinned package integrity: sha512-QL7MJ2WMjm1PHWsoFrAQH/J8wUeqZvMtHO58qdekHpCfhvhSL4gSiz6vJf5EeMP0LOn3ZCprL2ki/gjED8ghVw==
+Author: Jack Doyle, jack@greensock.com
+License is distinct from the source demo's MIT license.

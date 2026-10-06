@@ -401,9 +401,12 @@ export default class Brain {
     this.material.uniforms.uBaseColor.value.set(palette.brain);
     this.material.uniforms.uFresnelColor.value.set(palette.rim);
     this.material.uniforms.uElectricColor.value.set(palette.electric);
+    this.material.uniforms.uElectricIntensity.value = palette.electricIntensity;
+    this.material.uniforms.uFresnelIntensity.value = palette.rimIntensity;
     if (this.grooveParticlesMaterial) {
       this.grooveParticlesMaterial.uniforms.uColor1.value.set(palette.brass);
       this.grooveParticlesMaterial.uniforms.uColor2.value.set(palette.ivory);
+      this.grooveParticlesMaterial.blending = palette.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
     }
     this.neuralThreads?.setPalette(palette);
   }

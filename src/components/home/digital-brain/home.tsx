@@ -5,6 +5,7 @@ import { ExpertApplicationSection } from "@/components/landing/expert-applicatio
 import { publicPricingTiers } from "@/lib/public-launch-copy";
 import { chapters } from "./timeline";
 import { BrainRuntime } from "./runtime";
+import { scenePerspectives } from "./source-perspectives";
 import styles from "./home.module.css";
 
 export function DigitalBrainHome() {
@@ -14,18 +15,21 @@ export function DigitalBrainHome() {
       <Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link>
       <nav aria-label="Main navigation"><Link href="#plans">Pricing</Link><Link href="#apply-expert">Apply</Link><Link href="/login">Sign in</Link><ThemeToggle /></nav>
     </header>
+    <BrainRuntime />
+    <div className="viewport">
+      <Image className="poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={780} height={820} alt="" priority unoptimized />
+      <div className="artwork" data-artwork="" aria-hidden="true"><canvas data-brain-canvas="" /></div>
+      <div className="visual-captions" aria-hidden="true">{scenePerspectives.map((perspective, index) => <div key={index} className={`source-caption source-${perspective.position}`} data-source-slot={index} data-caption-index={index}>
+        <h2>{perspective.title}</h2><p>{perspective.subtitle}</p>
+      </div>)}</div>
+      <div className="scroll-hint" aria-hidden="true"><svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 4 L12 24 M12 24 L8 20 M12 24 L16 20" stroke="currentColor" strokeWidth=".5" fill="none" /></svg><i /></div>
+      <div className="source-progress" aria-hidden="true"><i className="corner left" /><i className="corner right" /><div className="progress-track"><div data-progress-bar="" /></div><span data-progress-text="">000%</span></div>
+    </div>
+    <div data-smooth-wrapper=""><div data-smooth-content="">
     <main>
       <section className="story-sequence" data-story-sequence="" aria-label="How shared knowledge becomes a Digital Twin">
-        <BrainRuntime />
-        <div className="viewport">
-          <Image className="poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={1470} height={900} alt="" priority unoptimized />
-          <div className="artwork" data-artwork="" role="group" aria-label="Interactive brain illustration. Drag horizontally, or focus here and use the left and right arrow keys to rotate." tabIndex={0}><canvas data-brain-canvas="" aria-hidden="true" /></div>
-          <div className="visual-captions" aria-hidden="true">{chapters.map((chapter, index) => <div key={chapter.id} className={`caption ${chapter.side}`} data-caption-index={index}><p className="eyebrow">{chapter.label}</p><p className="display-title">{chapter.title}</p><p className="caption-body">{chapter.body}</p></div>)}</div>
-          <div className="scene-actions" data-scene-actions=""><Link className="cta primary" href="/login">Sign in to explore <span aria-hidden="true">↗</span></Link><Link className="cta secondary" href="#apply-expert">Apply as an expert</Link></div>
-          <p className="orbit-hint" aria-hidden="true">Drag to explore · Scroll to follow the story</p>
-        </div>
         <div className="reading-story" id="story-reading" tabIndex={-1}>
-          <Image className="reading-poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={780} height={820} alt="A solid green brain sculpture with brass threads, used as an illustration of shared knowledge." priority unoptimized />
+          <Image className="reading-poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={780} height={820} alt="A solid warm clay brain sculpture with fine brown threads, used as an illustration of shared knowledge." priority unoptimized />
           {chapters.map((chapter, index) => <section key={chapter.id} id={chapter.id} aria-labelledby={`heading-${chapter.id}`}>
             <p className="eyebrow">{chapter.label}</p>
             {index === 0 ? <h1 id={`heading-${chapter.id}`}>{chapter.title}</h1> : <h2 id={`heading-${chapter.id}`}>{chapter.title}</h2>}
@@ -46,6 +50,7 @@ export function DigitalBrainHome() {
       </div>
       <div className="credits"><Link href="/about">About Digital Twins</Link><p>Brain Areas by <a href="https://sketchfab.com/3d-models/brain-areas-d64608a3978b47d8a39c5a15795ca8c4">Versal</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Materials, palette, particles and camera adapted for ExpertHub.</p><p>Digital Brain by Sahil K and camera choreography adapted from JosephASG / Codrops, under MIT.</p><a href="/uploads/digital-brain-foundation/CREDITS.md">Artwork credits, licenses and modifications</a></div>
     </footer>
+    </div></div>
     <noscript><style>{`[data-digital-brain-home] .motion-toolbar { display: none; }`}</style><p className="static-notice">The complete story is available above without animation.</p></noscript>
   </div>;
 }
