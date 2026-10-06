@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { evaluateStory, chapters } from "./timeline";
 import type { createBrainScene } from "./art/scene.js";
 
@@ -16,15 +16,21 @@ export function BrainRuntime() {
   const [status, setStatus] = useState("The complete story is available in text.");
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [ready, setReady] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const readingFrame = useRef(0);
   const staticMode = compact === true || mode === "static" || (mode === "auto" && reduced === true);
+
+  useEffect(() => () => cancelAnimationFrame(readingFrame.current), []);
 
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const height = matchMedia("(orientation: landscape) and (max-height: 580px)");
     const update = () => { setReduced(media.matches); setCompact(height.matches); };
     update(); media.addEventListener("change", update); height.addEventListener("change", update);
+    if (window.location.hash === "#story-reading") {
+      setMode("static");
+      readingFrame.current = requestAnimationFrame(() => document.getElementById("story-reading")?.focus({ preventScroll: true }));
+    }
     return () => { media.removeEventListener("change", update); height.removeEventListener("change", update); };
   }, []);
 
@@ -46,16 +52,29 @@ export function BrainRuntime() {
     const enterReading = (event: FocusEvent) => {
       root.dataset.renderer = "static"; readingInteractive(true); setMode("static");
       const target = event.target;
-      if (target instanceof HTMLElement && target !== reading) {
-        const rect = target.getBoundingClientRect();
-        if (rect.top < 80 || rect.bottom > window.innerHeight) target.scrollIntoView({ block: "center", behavior: "instant" });
-      }
+      cancelAnimationFrame(readingFrame.current);
+      // Next's hash navigation and the mode change both move layout. Position
+      // the focused story only after their updates have reached the browser.
+      readingFrame.current = requestAnimationFrame(() => {
+        readingFrame.current = requestAnimationFrame(() => {
+          readingFrame.current = 0;
+          if (!root.isConnected || root.dataset.renderer === "ready" || !(target instanceof HTMLElement)) return;
+          const headerBottom = root.querySelector("header")?.getBoundingClientRect().bottom || 0;
+          if (target === reading) {
+            const introduction = reading.querySelector("h1");
+            if (introduction) window.scrollTo({ top: window.scrollY + introduction.getBoundingClientRect().top - headerBottom - 16, behavior: "instant" });
+          } else {
+            const rect = target.getBoundingClientRect();
+            if (rect.top < headerBottom + 16 || rect.bottom > window.innerHeight - 16) target.scrollIntoView({ block: "center", behavior: "instant" });
+          }
+        });
+      });
     };
     reading.addEventListener("focusin", enterReading);
     if (staticMode) {
       root.dataset.renderer = "static";
       readingInteractive(true);
-      setReady(false); setLoading(false); setFailed(false);
+      setLoading(false); setFailed(false);
       setStatus("The complete story is available without motion.");
       return () => reading.removeEventListener("focusin", enterReading);
     }
@@ -66,11 +85,11 @@ export function BrainRuntime() {
     let drag: { x: number; y: number; yaw: number; horizontal: boolean; id: number } | null = null;
     const captions = Array.from(root.querySelectorAll<HTMLElement>("[data-caption-index]"));
     const actions = root.querySelector<HTMLElement>("[data-scene-actions]");
-    setLoading(true); setReady(false); setFailed(false);
+    setLoading(true); setFailed(false);
     root.dataset.renderer = "loading";
     const failToReading = (message: string) => {
       root.dataset.renderer = "error"; readingInteractive(true);
-      setLoading(false); setReady(false); setFailed(true); setStatus(message);
+      setLoading(false); setFailed(true); setStatus(message);
       cancelAnimationFrame(raf); raf = 0; delete window.__expertHubBrain;
       abort.abort();
     };
@@ -159,7 +178,7 @@ export function BrainRuntime() {
         const state = evaluateStory(progress);
         scene.setPose(state.pose, yawOffset); scene.render(0, 0);
         clearTimeout(deadline);
-        setLoading(false); setReady(true); setStatus("Illustration ready. Drag to rotate or scroll to follow the story.");
+        setLoading(false); setStatus("Illustration ready. Drag to rotate or scroll to follow the story.");
         schedule();
       } catch {
         clearTimeout(deadline);
@@ -179,7 +198,7 @@ export function BrainRuntime() {
 
   return <div className="motion-toolbar" hidden={compact === true}>
     <p role="status" className={loading || failed ? "loading-status" : "sr-only"}>{status}</p>
-    <button type="button" aria-pressed={staticMode} onClick={() => { if (failed) setAttempt(value => value + 1); setMode(staticMode || failed ? "animated" : "static"); if (ready) window.scrollTo({ top: 0, behavior: "instant" }); }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
+    <button type="button" aria-pressed={staticMode} onClick={() => { cancelAnimationFrame(readingFrame.current); if (failed) setAttempt(value => value + 1); setMode(staticMode || failed ? "animated" : "static"); window.scrollTo({ top: 0, behavior: "instant" }); }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
   </div>;
 }
 function chapterDirection(index: number) { return chapters[index].side === "right" ? -1 : 1; }

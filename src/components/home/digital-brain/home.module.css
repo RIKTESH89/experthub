@@ -68,6 +68,8 @@
 .home :global(summary) { min-height:44px; cursor:pointer; text-decoration:underline; text-underline-offset:5px; font-size:15px; }
 .home :global(details blockquote) { border-left:2px solid var(--brass); margin:20px 0; padding:4px 0 4px 20px; font-size:18px; line-height:1.55; }
 .home :global(.motion-toolbar) { position:fixed; bottom:24px; right:5vw; z-index:35; display:flex; gap:10px; align-items:center; max-width:calc(100vw - 32px); }
+.home:not([data-renderer="ready"]) :global(.motion-toolbar) { position:relative; inset:auto; z-index:auto; flex-wrap:wrap; width:100%; max-width:1240px; margin:auto; padding:104px 6vw 0; }
+.home:not([data-renderer="ready"]) :global(.loading-status) { position:static; width:auto; }
 .home :global(.motion-toolbar[hidden]) { display:none; }
 :global(html):has(.home:not([data-renderer="ready"])) { scroll-behavior:auto; }
 :global(html):has(.home :focus-visible) { scroll-behavior:auto; }
@@ -92,6 +94,7 @@
   .home :global(.scene-actions .primary) { min-height:44px; font-size:13px; padding:10px 16px; }
   .home :global(.orbit-hint) { left:24px; bottom:25px; width:120px; font-size:10px; line-height:1.5; }
   .home :global(.motion-toolbar) { right:18px; bottom:19px; }
+  .home:not([data-renderer="ready"]) :global(.motion-toolbar) { padding:84px 24px 0; }
   .home :global(.motion-toolbar button) { font-size:11px; padding:10px 12px; }
   .home :global(.loading-status) { position:absolute; right:0; bottom:53px; max-width:280px; width:240px; }
   .home :global(.reading-story) { padding:100px 24px 45px; }

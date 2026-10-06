@@ -16,6 +16,7 @@ export function DigitalBrainHome() {
     </header>
     <main>
       <section className="story-sequence" data-story-sequence="" aria-label="How shared knowledge becomes a Digital Twin">
+        <BrainRuntime />
         <div className="viewport">
           <Image className="poster" src="/uploads/digital-brain-foundation/brain-poster.webp" width={1470} height={900} alt="" priority unoptimized />
           <div className="artwork" data-artwork="" role="group" aria-label="Interactive brain illustration. Drag horizontally, or focus here and use the left and right arrow keys to rotate." tabIndex={0}><canvas data-brain-canvas="" aria-hidden="true" /></div>
@@ -45,7 +46,6 @@ export function DigitalBrainHome() {
       </div>
       <div className="credits"><Link href="/about">About Digital Twins</Link><p>Brain Areas by <a href="https://sketchfab.com/3d-models/brain-areas-d64608a3978b47d8a39c5a15795ca8c4">Versal</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Materials, palette, particles and camera adapted for ExpertHub.</p><p>Digital Brain by Sahil K and camera choreography adapted from JosephASG / Codrops, under MIT.</p><a href="/uploads/digital-brain-foundation/CREDITS.md">Artwork credits, licenses and modifications</a></div>
     </footer>
-    <BrainRuntime />
     <noscript><style>{`[data-digital-brain-home] .motion-toolbar { display: none; }`}</style><p className="static-notice">The complete story is available above without animation.</p></noscript>
   </div>;
 }
