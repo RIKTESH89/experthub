@@ -1,0 +1,49 @@
+# ExpertHub single-brain illustration
+
+This homepage uses one anatomical model as an illustration of shared knowledge. It is not a brain scan, access to private memories, or a claim of consciousness. No author endorsement is implied.
+
+## Brain model: Creative Commons Attribution 4.0
+
+“Brain Areas” by **Versal**: https://sketchfab.com/3d-models/brain-areas-d64608a3978b47d8a39c5a15795ca8c4 (original short link: https://skfb.ly/AFry).
+
+Licensed under **Creative Commons Attribution 4.0 International**: https://creativecommons.org/licenses/by/4.0/.
+
+The model is redistributed from Digital Brain’s `public/assets/models/brain_c.glb`, including its painted red vertex mask and Draco compression. ExpertHub changes the materials, palette, lighting, particles, camera, framing and surrounding presentation. Geometry is not replaced or duplicated. The upstream model notice is retained in [licenses/brain-areas-source.txt](licenses/brain-areas-source.txt).
+
+## Digital Brain: MIT
+
+**Sahil K**, Digital Brain: https://github.com/SahilK-027/Digital-Brain
+
+Source commit: `366cf81dad855ea238dec170fcc65579d6d9ba4b`.
+
+Copyright (c) 2026 Sahil K. Full notice: [licenses/sahil-MIT.txt](licenses/sahil-MIT.txt).
+
+Adapted code includes the solid-brain Fresnel/specular/electric shader, red-vertex surface sampling, groove particles, 20 × 6 curved neural threads, thread particles, sparkle particles, procedural sky and depth/vignette postprocessing. The raw GLSL is packaged as JavaScript strings without changing its formulas. Modifications: explicit scene context instead of the global Game singleton; scoped pointer listeners and disposal; duplicate particle construction removed; MT19937 recurrence implemented locally with the original seeds; radial sprite authored for ExpertHub; palette and particle-size tuning; seconds-based animation clock; weighted sampling of the same red vertex mask to reach the target 7,000 particles; corrected thread ring sampling; fixed-model particle positions computed once; bounded phone framing and raster tiers; readiness tied to a completed render; source audio and uncredited images excluded.
+
+## Cinematic3DScroll variant 2: MIT demo grant
+
+**JosephASG / Joseph Santaamaria**, Cinematic 3D Scroll Experiences: https://github.com/JosephASG/codrops-cinematic-scroll-animations
+
+Source commit: `7a56d1fdc12058e3a955348a7a9f3387a2bf57da`.
+
+Demo: https://tympanus.net/Tutorials/Cinematic3DScroll/#/variant-2
+
+The repository README identifies MIT but its root LICENSE is absent at the pinned commit. Codrops explicitly licenses downloadable demos under MIT: https://tympanus.net/codrops/licensing/ (verified 2026-10-06). The published Codrops MIT notice is retained in [licenses/codrops-MIT.txt](licenses/codrops-MIT.txt). This notice documents that grant; it is not an invented upstream LICENSE file.
+
+The percentage scene timeline, animated camera/target choreography and caption entry/hold/exit pattern are ported to the installed Three.js/React stack. Building-specific coordinates are replaced with an orbit around the one brain. Seven chapters share one normalized scroll coordinate with reading holds, a text-free transition, and direction-independent evaluation. No global ScrollTrigger cleanup, fixed readiness timeout, numbered controls, bundled skyscraper art or inspiration images are copied. GSAP, R3F and drei are not added as dependencies.
+
+## Runtime dependencies
+
+Three.js 0.186.1, Copyright © 2010–2026 Three.js authors, MIT. [licenses/three-MIT.txt](licenses/three-MIT.txt).
+
+Draco decoder distributed with the installed Three.js package; Google Draco, Apache License 2.0. [licenses/draco-Apache-2.0.txt](licenses/draco-Apache-2.0.txt). Decoder wrapper and WASM are self-hosted; no CDN request is required.
+
+The static poster is a capture of this same adapted scene. The radial particle sprite is generated in code. There is no audio.
+
+## Earlier studies
+
+Earlier ExpertHub sculpture studies and their attribution files remain archived in the existing source/assets. Those studies use BodyParts3D, © The Database Center for Life Science, licensed under CC BY 4.0. Their original notices and modification descriptions are preserved; that model is not used by this new renderer.
+
+## Sample content
+
+The homepage’s expandable question, answer and two source records are fictional, scripted examples, not a live AI response. They illustrate citation inspection; a citation is not a correctness guarantee. Source corrections described on this page are manual.

@@ -1,0 +1,4 @@
+// Adapted from Digital Brain, Copyright (c) 2026 Sahil K (MIT).
+// See /uploads/digital-brain-foundation/CREDITS.md for source, license and modifications.
+const shaderCode = "uniform float uTime;\nuniform float uPixelRatio;\nuniform float uSize;\nuniform sampler2D uTexture;\nattribute float aRandom;\nattribute vec3 aColor;\n\nvarying vec3 vColor;\nvarying vec2 vUv;\nvarying float vColorMix;\n\nvoid main() {\n  vColor = aColor;\n  vColorMix = aRandom;\n\n  vec3 pos = position;\n  pos.y += sin(uTime * 0.5 + aRandom * 10.0) * 0.1;\n  pos.x += cos(uTime * 0.3 + aRandom * 8.0) * 0.05;\n\n  vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);\n  float twinkle = sin(uTime * 5.0 + aRandom * 50.0) * 0.5 + 0.5;\n  twinkle = pow(twinkle, 3.0);\n\n  float size = (uSize + twinkle * 4.0 * uSize) * uPixelRatio;\n  size *= (20.0 / -mvPosition.z);\n\n  gl_PointSize = size;\n  gl_Position = projectionMatrix * mvPosition;\n}\n";
+export default shaderCode;

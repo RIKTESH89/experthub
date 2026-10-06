@@ -1,0 +1,4 @@
+// Adapted from Digital Brain, Copyright (c) 2026 Sahil K (MIT).
+// See /uploads/digital-brain-foundation/CREDITS.md for source, license and modifications.
+const shaderCode = "uniform float uTime;\nuniform float uSize;\nuniform float uPixelRatio;\n\nattribute float aRandom;\nattribute float aSize;\n\nvarying float vRandom;\n\nvoid main() {\n    vec4 modelPosition = modelMatrix * vec4(position, 1.0);\n    vec4 viewPosition = viewMatrix * modelPosition;\n    vec4 projectedPosition = projectionMatrix * viewPosition;\n\n    gl_Position = projectedPosition;\n\n    float sizeVariation = aSize * (0.5 + 0.5 * sin(uTime * 2.0 + aRandom * 6.28));\n    gl_PointSize = uSize * sizeVariation * uPixelRatio;\n    gl_PointSize *= (2.0 / -viewPosition.z);\n    gl_PointSize = max(gl_PointSize, 2.0);\n\n    vRandom = aRandom;\n}\n";
+export default shaderCode;
