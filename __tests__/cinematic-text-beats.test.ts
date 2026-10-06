@@ -3,7 +3,7 @@ const load=(name:string)=>{const x:Record<string,any>={};new Function('exports',
 const bMap=load('b-chapter-map.js'),clock=load('b-narrative-v9/narrative-clock.js');
 const api:Record<string,any>={};new Function('exports','require',ts.transpileModule(fs.readFileSync(path.join(process.cwd(),'src/components/home/cinematic/text-beats.js'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(api,(name:string)=>name.includes('b-chapter-map')?bMap:clock);
 test.each(['contributions','context','conversation'])('semantic %s clauses settle at authored reading poses and reverse identically',id=>{
- for(const [i,p]of [.1,.34,.59,.84].entries()){const beat=api.textBeat(id,p,'original');expect(beat.index).toBe(i);expect(beat.opacity).toBe(1);}
+ for(const [i,p]of Array.from([.1,.34,.59,.84].entries())){const beat=api.textBeat(id,p,'original');expect(beat.index).toBe(i);expect(beat.opacity).toBe(1);}
  for(const boundary of [.25,.5,.75]){const mid=api.textBeat(id,boundary,'original');expect(mid.opacity).toBe(1);expect(mid.weights.filter((w:number)=>w>0)).toEqual([1]);expect(api.textBeat(id,boundary-.0001,'original').index+1).toBe(api.textBeat(id,boundary+.0001,'original').index);}
  const positions=[.1,.23,.25,.28,.375,.5,.625,.75,.85];expect(positions.map(p=>api.textBeat(id,p,'original')).reverse()).toEqual(positions.slice().reverse().map(p=>api.textBeat(id,p,'original')));
 });
@@ -12,7 +12,7 @@ test('scripted source wording and original static copy remain distinct',()=>{
  expect(api.storyCopyLines('close','original')[0]).toBe('original');expect(api.textBeat('unknown',.9,'original').text).toBe('original');
 });
 test.each([2,3,4])('construction copy follows source %s reading, selection, copy, approach and seated identity',id=>{
- for(const [step,u]of [24,44,66,94,115].entries()){
+ for(const [step,u]of Array.from([24,44,66,94,115].entries())){
   const phase=.14+(id-2)*.28+.28*u/120,beat=api.textBeat('construction',phase,'original');
   expect(beat.index).toBe(2+(id-2)*5+step);expect(beat.text).toContain(String(id).padStart(2,'0')+' ·');
   expect(beat.weights.filter((value:number)=>value>0)).toEqual([1]);

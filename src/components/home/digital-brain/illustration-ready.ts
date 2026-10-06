@@ -19,7 +19,10 @@ export async function decodePoster(image: HTMLImageElement, signal: AbortSignal,
       const clean = () => { image.removeEventListener("load", loaded); image.removeEventListener("error", failed); signal.removeEventListener("abort", clean); };
       const loaded = () => { clean(); resolve(); };
       const failed = () => { clean(); reject(new Error("Illustration image unavailable")); };
-      if (image.complete) { image.naturalWidth ? loaded() : failed(); return; }
+      if (image.complete) {
+        if (image.naturalWidth) loaded(); else failed();
+        return;
+      }
       image.addEventListener("load", loaded, { once: true }); image.addEventListener("error", failed, { once: true });
       signal.addEventListener("abort", clean, { once: true });
     });
