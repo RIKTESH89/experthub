@@ -69,8 +69,8 @@ export function PWAInstallPrompt() {
   if (!showBanner || pathname?.startsWith("/embed/")) return null;
 
   return <>
-    {/* In normal document flow, so it cannot cover mobile save/navigation controls. */}
-    <aside aria-label="Install ExpertHub" className={`${homepageTheme}relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4 text-foreground`}>
+    {/* Keep document flow; the homepage banner owns its rectangle above the smooth story layer. */}
+    <aside aria-label="Install ExpertHub" className={`${homepageTheme}${pathname === "/" ? "z-40 " : ""}relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4 text-foreground`}>
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true"><Smartphone size={20}/></span>
       <div className="min-w-0 flex-1">
         <p className="font-medium">Keep ExpertHub close</p>
