@@ -28,7 +28,8 @@ export async function createSourceMotion(root: HTMLElement, signal: AbortSignal,
   const cancellation = () => signal.reason || new DOMException("Animation setup cancelled", "AbortError");
   const assertActive = () => { if (signal.aborted) throw cancellation(); };
   // Own the context and abort cleanup before creating any GSAP/SplitText resource.
-  // An exception inside context.add cannot prevent retaining its context handle.
+  // Retain the handle before setup; GSAP context.add restores its current
+  // context only when its callback returns normally.
   const context = gsap.context(() => {}, root);
   const dispose = () => {
     if (disposed) return;
@@ -47,61 +48,69 @@ export async function createSourceMotion(root: HTMLElement, signal: AbortSignal,
       if (signal.aborted) cancelled();
     });
     assertActive();
+    let setupFailed = false;
+    let setupError: unknown;
     context.add(() => {
-      smoother = ScrollSmoother.create({ wrapper, content, smooth: 4, effects: false, smoothTouch: 2 });
-      const setProgressWidth = gsap.quickSetter(root.querySelector("[data-progress-bar]"), "width", "%");
-      const setProgressText = gsap.quickSetter(root.querySelector("[data-progress-text]"), "textContent");
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container, start: "top top", end: "bottom bottom", scrub: true,
-          onUpdate: self => {
-            progress = self.progress;
-            wake();
-            setProgressWidth(progress * 100);
-            setProgressText(Math.round(progress * 100).toString().padStart(3, "0") + "%");
-          },
-        },
-      });
-      scenePerspectives.forEach(perspective => {
-        const start = perspective.scrollProgress.start / 100;
-        const end = perspective.scrollProgress.end / 100;
-        timeline.to(camera, { x: perspective.camera.x, y: perspective.camera.y, z: perspective.camera.z, duration: end - start, ease: "none" }, start);
-        timeline.to(target, { x: perspective.target.x, y: perspective.target.y, z: perspective.target.z, duration: end - start, ease: "none" }, start);
-        timeline.to(rotation, { useRotation: false, duration: end - start, ease: "none" }, start);
-      });
-      scenePerspectives.forEach((perspective, index) => {
-        const text = texts[index];
-        if (perspective.hideText) { gsap.set(text, { opacity: 0, pointerEvents: "none" }); return; }
-        const title = text.querySelector("h2")!;
-        const subtitle = text.querySelector("p")!;
-        const titleSplit = new SplitText(title, { type: "chars" });
-        splits.push(titleSplit);
-        const subtitleSplit = new SplitText(subtitle, { type: "chars" });
-        splits.push(subtitleSplit);
-        titleCharacters[index] = titleSplit.chars as HTMLElement[];
-        characterCounts[index] = titleSplit.chars.length + subtitleSplit.chars.length;
-        const textTimeline = gsap.timeline({
+      try {
+        smoother = ScrollSmoother.create({ wrapper, content, smooth: 4, effects: false, smoothTouch: 2 });
+        const setProgressWidth = gsap.quickSetter(root.querySelector("[data-progress-bar]"), "width", "%");
+        const setProgressText = gsap.quickSetter(root.querySelector("[data-progress-text]"), "textContent");
+        const timeline = gsap.timeline({
           scrollTrigger: {
-            trigger: container,
-            start: `${perspective.scrollProgress.start}% top`,
-            end: `${perspective.scrollProgress.end}% top`,
-            scrub: 0.5,
+            trigger: container, start: "top top", end: "bottom bottom", scrub: true,
+            onUpdate: self => {
+              progress = self.progress;
+              wake();
+              setProgressWidth(progress * 100);
+              setProgressText(Math.round(progress * 100).toString().padStart(3, "0") + "%");
+            },
           },
         });
-        textTimelines[index] = textTimeline;
-        if (index === 0) {
-          gsap.set([titleSplit.chars, subtitleSplit.chars], { x: 0, opacity: 1 });
-          textTimeline.to([subtitleSplit.chars, titleSplit.chars], { x: 100, opacity: 0, duration: 1, stagger: -0.02, ease: "power2.in" });
-        } else {
-          const last = index === scenePerspectives.length - 1;
-          textTimeline.fromTo(
-            [subtitleSplit.chars, titleSplit.chars], { x: -100, opacity: 0 },
-            { x: 0, opacity: 1, duration: last ? 0.2 : 0.25, stagger: last ? -0.01 : -0.02, ease: "power2.out" },
-          ).to({}, { duration: last ? 1.0 : 0.5 })
-            .to([subtitleSplit.chars, titleSplit.chars], { x: 100, opacity: 0, duration: 0.25, stagger: -0.02, ease: "power2.in" });
-        }
-      });
+        scenePerspectives.forEach(perspective => {
+          const start = perspective.scrollProgress.start / 100;
+          const end = perspective.scrollProgress.end / 100;
+          timeline.to(camera, { x: perspective.camera.x, y: perspective.camera.y, z: perspective.camera.z, duration: end - start, ease: "none" }, start);
+          timeline.to(target, { x: perspective.target.x, y: perspective.target.y, z: perspective.target.z, duration: end - start, ease: "none" }, start);
+          timeline.to(rotation, { useRotation: false, duration: end - start, ease: "none" }, start);
+        });
+        scenePerspectives.forEach((perspective, index) => {
+          const text = texts[index];
+          if (perspective.hideText) { gsap.set(text, { opacity: 0, pointerEvents: "none" }); return; }
+          const title = text.querySelector("h2")!;
+          const subtitle = text.querySelector("p")!;
+          const titleSplit = new SplitText(title, { type: "chars" });
+          splits.push(titleSplit);
+          const subtitleSplit = new SplitText(subtitle, { type: "chars" });
+          splits.push(subtitleSplit);
+          titleCharacters[index] = titleSplit.chars as HTMLElement[];
+          characterCounts[index] = titleSplit.chars.length + subtitleSplit.chars.length;
+          const textTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: container,
+              start: `${perspective.scrollProgress.start}% top`,
+              end: `${perspective.scrollProgress.end}% top`,
+              scrub: 0.5,
+            },
+          });
+          textTimelines[index] = textTimeline;
+          if (index === 0) {
+            gsap.set([titleSplit.chars, subtitleSplit.chars], { x: 0, opacity: 1 });
+            textTimeline.to([subtitleSplit.chars, titleSplit.chars], { x: 100, opacity: 0, duration: 1, stagger: -0.02, ease: "power2.in" });
+          } else {
+            const last = index === scenePerspectives.length - 1;
+            textTimeline.fromTo(
+              [subtitleSplit.chars, titleSplit.chars], { x: -100, opacity: 0 },
+              { x: 0, opacity: 1, duration: last ? 0.2 : 0.25, stagger: last ? -0.01 : -0.02, ease: "power2.out" },
+            ).to({}, { duration: last ? 1.0 : 0.5 })
+              .to([subtitleSplit.chars, titleSplit.chars], { x: 100, opacity: 0, duration: 0.25, stagger: -0.02, ease: "power2.in" });
+          }
+        });
+      } catch (error) {
+        setupFailed = true;
+        setupError = error;
+      }
     });
+    if (setupFailed) throw setupError;
     assertActive();
   } catch (error) {
     dispose();

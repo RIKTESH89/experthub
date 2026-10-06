@@ -6,7 +6,7 @@ jest.mock("gsap", () => {
   const resource = (kind: string, contextOwned = true) => { const r = { alive: true, kind }; state.resources.push(r); if (contextOwned) state.active?.owned.push(r); return r; };
   const core = {
     registerPlugin: jest.fn(),
-    context: () => { const ctx = { owned: [] as {alive:boolean;kind:string}[], add: (fn: () => void) => { state.active = ctx; try { fn(); } finally { state.active = null; } }, revert: () => ctx.owned.forEach(r => { r.alive = false; }) }; return ctx; },
+    context: () => { const ctx = { owned: [] as {alive:boolean;kind:string}[], add: (fn: () => void) => { const previous = state.active; state.active = ctx; fn(); state.active = previous; }, revert: () => ctx.owned.forEach(r => { r.alive = false; }) }; return ctx; },
     quickSetter: () => { if (state.fail === "after-smoother") throw new Error("setup setter failure"); return () => {}; },
     set: jest.fn(),
     timeline: () => { state.timelineCalls++; const r = resource("timeline"); const tl = { to: () => tl, fromTo: () => { if (state.fail === "text-tween") throw new Error("setup tween failure"); return tl; }, progress: () => 0, kill: () => { r.alive = false; } }; return tl; },
@@ -38,6 +38,7 @@ test.each(["after-smoother", "second-split", "later-split", "text-tween"])("rele
   await expect(createSourceMotion(fixture(),controller.signal,()=>{})).rejects.toThrow("setup");
   expect(state().resources.length).toBeGreaterThan(0);
   expect(state().resources.filter(r=>r.alive)).toEqual([]);
+  expect(state().active).toBeNull();
   expect(remove.mock.calls.filter(call=>call[0]==="abort")).toHaveLength(add.mock.calls.filter(call=>call[0]==="abort").length);
   controller.abort();
   expect(state().resources.filter(r=>r.alive)).toEqual([]);
