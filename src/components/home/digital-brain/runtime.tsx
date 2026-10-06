@@ -19,14 +19,13 @@ export function BrainRuntime() {
   const [attempt, setAttempt] = useState(0);
   const [phase, setPhase] = useState<Phase>({ state: "loading", message: "Loading" });
   const generation = useRef(0);
-  const focusReading = useRef(false);
 
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const height = matchMedia("(orientation: landscape) and (max-height: 580px)");
     const update = () => setPreferences({ reduced: media.matches, compact: height.matches });
     update(); media.addEventListener("change", update); height.addEventListener("change", update);
-    if (location.hash === "#story-reading") { focusReading.current = true; setReading(true); }
+    if (location.hash === "#story-reading") setReading(true);
     return () => { media.removeEventListener("change", update); height.removeEventListener("change", update); };
   }, []);
 
@@ -45,6 +44,7 @@ export function BrainRuntime() {
     const current = () => alive && run === generation.current && root.isConnected && !abort.signal.aborted;
     const readingLinks = Array.from(story.querySelectorAll<HTMLAnchorElement>("a[href]"));
     const originalTabIndexes = new Map(readingLinks.map(link => [link, link.getAttribute("tabindex")]));
+    const headingsMadeFocusable = new Set<HTMLElement>();
     const readingInteractive = (enabled: boolean) => readingLinks.forEach(link => {
       const original = originalTabIndexes.get(link);
       if (!enabled) link.tabIndex = -1;
@@ -72,11 +72,22 @@ export function BrainRuntime() {
     const positionReading = () => {
       cancelAnimationFrame(focusFrame);
       focusFrame = requestAnimationFrame(() => {
-        if (!current()) return;
+        if (!current() || location.pathname !== "/" || location.hash !== "#story-reading" || root.dataset.renderer !== "static" || root.dataset.illustrationReady !== "true") return;
         story.focus({ preventScroll: true });
         const heading = story.querySelector("h1");
         const headerBottom = root.querySelector("header")?.getBoundingClientRect().bottom || 0;
         if (heading) window.scrollTo({ top: scrollY + heading.getBoundingClientRect().top - headerBottom - 16, behavior: "instant" });
+      });
+    };
+    const positionStaticTarget = (target: HTMLElement, hash: string) => {
+      cancelAnimationFrame(focusFrame);
+      focusFrame = requestAnimationFrame(() => {
+        if (!current() || location.pathname !== "/" || location.hash !== hash || root.dataset.renderer !== "static" || root.dataset.illustrationReady !== "true" || !root.contains(target)) return;
+        const heading = target.querySelector<HTMLElement>("h1,h2,h3") || target;
+        if (!heading.hasAttribute("tabindex")) { heading.tabIndex = -1; headingsMadeFocusable.add(heading); }
+        heading.focus({ preventScroll: true });
+        const headerBottom = root.querySelector("header")?.getBoundingClientRect().bottom || 0;
+        window.scrollTo({ top: scrollY + heading.getBoundingClientRect().top - headerBottom - 16, behavior: "instant" });
       });
     };
     const reveal = (renderer: "ready" | "static") => {
@@ -85,8 +96,8 @@ export function BrainRuntime() {
       root.dataset.renderer = renderer; root.dataset.illustrationReady = "true";
       content.inert = false; readingInteractive(renderer === "static");
       setPhase({ state: "ready", message: "Illustration ready" });
-      if (renderer === "static" && focusReading.current) {
-        focusReading.current = false; positionReading();
+      if (renderer === "static") {
+        followHash();
       }
     };
     const resize = () => {
@@ -129,9 +140,16 @@ export function BrainRuntime() {
     };
     const followHash = () => {
       if (!current() || location.pathname !== "/") return;
-      if (location.hash === "#story-reading") { focusReading.current = true; setReading(true); return; }
+      if (location.hash === "#story-reading") {
+        if (root.dataset.renderer === "static" && root.dataset.illustrationReady === "true") positionReading();
+        else setReading(true);
+        return;
+      }
       const target = document.getElementById(location.hash.slice(1));
-      if (target) motion?.scrollTo(target);
+      if (target && root.contains(target)) {
+        if (motion) motion.scrollTo(target);
+        else if (root.dataset.renderer === "static" && root.dataset.illustrationReady === "true") positionStaticTarget(target, location.hash);
+      }
     };
     const anchor = (event: MouseEvent) => {
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
@@ -143,7 +161,7 @@ export function BrainRuntime() {
         event.preventDefault(); event.stopPropagation(); history.pushState(history.state, "", href);
         if (href === "#story-reading") {
           if (root.dataset.renderer === "static" && root.dataset.illustrationReady === "true") positionReading();
-          else { focusReading.current = true; setReading(true); }
+          else setReading(true);
         }
         else if (motion && root.dataset.illustrationReady === "true") {
           motion.scrollTo(target); target.querySelector<HTMLElement>('h2[tabindex="-1"]')?.focus({ preventScroll: true });
@@ -190,6 +208,8 @@ export function BrainRuntime() {
       document.removeEventListener("visibilitychange", tabVisibility); canvas.removeEventListener("webglcontextlost", contextLost);
       root.removeEventListener("click", anchor, true); window.removeEventListener("popstate", followHash);
       content.inert = false; readingInteractive(true);
+      headingsMadeFocusable.forEach(heading => heading.removeAttribute("tabindex"));
+      headingsMadeFocusable.clear();
       if (root.isConnected) { root.dataset.illustrationReady = "false"; root.dataset.renderer = "boot"; root.dataset.motionReady = "false"; }
     };
   }, [preferences, reading, attempt]);
