@@ -1,6 +1,6 @@
 import { chapters } from "../src/components/home/digital-brain/timeline";
 import { scenePerspectives } from "../src/components/home/digital-brain/source-perspectives";
-import { retargetSource, brainBounds, sourceBounds } from "../src/components/home/digital-brain/source-retarget";
+import { retargetSource, retargetView, cameraOffsetScale, brainBounds, sourceBounds } from "../src/components/home/digital-brain/source-retarget";
 
 test("the source's ten unequal slots retain one text-free elevation and nine visible pairs", () => {
   expect(scenePerspectives.map(slot => slot.scrollProgress.start)).toEqual([0, 11.9, 23.7, 35.6, 45.8, 52.5, 62.7, 69.5, 77.9, 84.7]);
@@ -12,12 +12,16 @@ test("the source's ten unequal slots retain one text-free elevation and nine vis
   expect(scenePerspectives.filter(slot => !slot.hideText && slot.title && slot.subtitle)).toHaveLength(9);
 });
 
-test("all seven required semantic headings appear in the source-shaped narrative", () => {
+test("full semantic headings remain while compact cinematic copy keeps source-like character counts", () => {
   expect(chapters).toHaveLength(7);
-  chapters.forEach(chapter => expect(scenePerspectives.some(slot => slot.title === chapter.title)).toBe(true));
-  expect(scenePerspectives[6].subtitle).toContain("Citations do not guarantee correctness");
-  expect(scenePerspectives[7].subtitle).toContain("manually correct");
-  expect(scenePerspectives[8].subtitle).toContain("unshared");
+  expect(chapters[0].title).toBe("Give your knowledge a new way to speak.");
+  expect(chapters[6].title).toBe("What you know can start a conversation.");
+  expect(scenePerspectives[1].subtitle).toContain("PDFs");
+  expect(scenePerspectives[3].subtitle).toContain("AI");
+  expect(scenePerspectives[7].subtitle).toContain("manually");
+  expect(scenePerspectives[8].subtitle).toContain("wrong");
+  const sourceCounts = [34, 26, 39, 34, 0, 23, 30, 25, 26, 20];
+  scenePerspectives.forEach((slot, i) => expect(Math.abs(slot.title.length + slot.subtitle.length - sourceCounts[i])).toBeLessThanOrEqual(6));
 });
 
 test("bounds retarget maps both centers and axis extents without deforming the model", () => {
@@ -38,4 +42,21 @@ test("one affine retarget preserves linear camera/target travel and exact revers
       }
     }
   }
+});
+
+test("camera retarget preserves every source viewing direction and distance ratio, including overhead", () => {
+  for (const aspect of [1470 / 900, 390 / 844, .75]) {
+    const scale = cameraOffsetScale * Math.max(1, Math.min(1.5, 1 / aspect));
+    for (const slot of scenePerspectives) {
+      const mapped = retargetView(slot.camera, slot.target, aspect);
+      for (const axis of ["x", "y", "z"] as const) expect(mapped.camera[axis] - mapped.target[axis]).toBeCloseTo((slot.camera[axis] - slot.target[axis]) * scale, 12);
+      const norm = (point: {x:number;y:number;z:number}) => Math.hypot(point.x, point.y, point.z);
+      const offset = {x: slot.camera.x-slot.target.x,y: slot.camera.y-slot.target.y,z: slot.camera.z-slot.target.z};
+      const transformed = {x:mapped.camera.x-mapped.target.x,y:mapped.camera.y-mapped.target.y,z:mapped.camera.z-mapped.target.z};
+      expect(norm(transformed)/norm(offset)).toBeCloseTo(scale,12);
+    }
+  }
+  const high = scenePerspectives[4], view = retargetView(high.camera, high.target, 1.5);
+  const pitch = Math.atan2(view.camera.y-view.target.y,Math.hypot(view.camera.x-view.target.x,view.camera.z-view.target.z))*180/Math.PI;
+  expect(pitch).toBeCloseTo(64.760598,5);
 });

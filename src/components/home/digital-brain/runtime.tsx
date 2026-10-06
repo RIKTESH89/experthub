@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { retargetSource, type SourceVector } from "./source-retarget";
+import { retargetView, type SourceVector } from "./source-retarget";
 import type { createSourceMotion } from "./source-motion";
 import type { createBrainScene } from "./art/scene.js";
 
@@ -113,7 +113,7 @@ export function BrainRuntime() {
       if (!visible) { lastTime = 0; return; }
       const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
       lastTime = now; elapsed += delta;
-      const camera = retargetSource(motion.camera), target = retargetSource(motion.target);
+      const { camera, target } = retargetView(motion.camera, motion.target, window.innerWidth / window.innerHeight);
       scene.setSourcePose(camera, target);
       scene.render(delta, elapsed);
       const captions = motion.captions();
@@ -166,7 +166,8 @@ export function BrainRuntime() {
         root.dataset.motionReady = "true";
         readingInteractive(false);
         followHash();
-        scene.setSourcePose(retargetSource(motion.camera), retargetSource(motion.target)); scene.render(0, 0);
+        const initial = retargetView(motion.camera, motion.target, window.innerWidth / window.innerHeight);
+        scene.setSourcePose(initial.camera, initial.target); scene.render(0, 0);
         clearTimeout(deadline);
         setLoading(false); setStatus("Illustration ready. Scroll to follow the story.");
         schedule();

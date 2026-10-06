@@ -1,7 +1,7 @@
 // The source scene is a tall tower; the unchanged brain is a compact volume.
-// Apply ONE fixed model-bounds affine transform to source camera AND target.
-// All source knots/XYZ curves stay unchanged in source space. This transforms
-// world angles and distances (documented), without inventing individual shots.
+// Map target locations into brain bounds; scale camera-to-target offsets
+// uniformly to preserve the source viewing direction, pitch and distance ratios.
+// Source coordinates and every timing interval remain unchanged.
 export type SourceVector = { x: number; y: number; z: number };
 export const sourceBounds = {
   center: [-.026283455190102556, 13.272128811726391, .3179698377374611],
@@ -17,5 +17,21 @@ export function retargetSource(point: SourceVector): SourceVector {
     x: brainBounds.center[0] + (point.x - sourceBounds.center[0]) * retargetScale[0],
     y: brainBounds.center[1] + (point.y - sourceBounds.center[1]) * retargetScale[1],
     z: brainBounds.center[2] + (point.z - sourceBounds.center[2]) * retargetScale[2],
+  };
+}
+
+// Calibrated model-bounds scale, constant for every shot. Compact volume replaces
+// a tall tower; no per-shot fit, clamps, view offsets or invented camera poses.
+export const cameraOffsetScale = Math.max(...brainBounds.size) / sourceBounds.size[1] * 1.8;
+export function retargetView(camera: SourceVector, target: SourceVector, aspect: number) {
+  const mappedTarget = retargetSource(target);
+  const scale = cameraOffsetScale * Math.max(1, Math.min(1.5, 1 / aspect));
+  return {
+    target: mappedTarget,
+    camera: {
+      x: mappedTarget.x + (camera.x - target.x) * scale,
+      y: mappedTarget.y + (camera.y - target.y) * scale,
+      z: mappedTarget.z + (camera.z - target.z) * scale,
+    },
   };
 }

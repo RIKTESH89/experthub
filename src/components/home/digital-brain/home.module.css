@@ -90,7 +90,7 @@
 /* Pinned variant-2 fixed overlay structure and placement utilities. */
 .home :global(.source-caption) { position:absolute; }
 .home :global(.source-caption h2) { font-size:4vw; font-weight:700; line-height:1.1; letter-spacing:-.025em; margin:0 0 8px; filter:drop-shadow(0 8px 12px rgba(var(--veil),.85)); }
-.home :global(.source-caption p) { font-size:1.25vw; font-weight:300; line-height:1.4; margin:0; color:var(--ink); opacity:.8; filter:drop-shadow(0 4px 8px rgba(var(--veil),.9)); }
+.home :global(.source-caption p) { font-size:max(16px,1.25vw); font-weight:300; line-height:1.4; margin:0; color:var(--ink); opacity:.8; filter:drop-shadow(0 4px 8px rgba(var(--veil),.9)); }
 .home :global(.source-center) { top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
 .home :global(.source-left) { left:20vh; top:50%; transform:translateY(-50%); }
 .home :global(.source-right) { right:80px; top:50%; transform:translateY(-50%); }
