@@ -8,7 +8,7 @@ import { scenePerspectives } from "./source-perspectives";
 import styles from "./home.module.css";
 
 export function DigitalBrainHome() {
-  return <div className={`${styles.home} dark`} data-digital-brain-home="" data-home-theme="dark" data-renderer="static">
+  return <div className={`${styles.home} dark`} data-digital-brain-home="" data-home-theme="dark" data-renderer="boot" data-illustration-ready="false">
     <Link href="#story-reading" className="skip">Skip to the story</Link>
     <header className="site-nav">
       <Link href="/" className="wordmark" aria-label="ExpertHub homepage">Expert<span>Hub</span><i aria-hidden="true">✳</i></Link>
@@ -27,7 +27,7 @@ export function DigitalBrainHome() {
     <main>
       <section className="story-sequence" data-story-sequence="" aria-label="Explore expert content and AI conversations">
         <div className="reading-story" id="story-reading" tabIndex={-1}>
-          <Image className="reading-poster" src="/uploads/digital-brain-foundation/brain-poster-dark.png" width={780} height={820} alt="A warm dark brain sculpture with fine brown threads, used as an illustration of shared knowledge." priority unoptimized />
+          <Image className="reading-poster" data-poster-src="/uploads/digital-brain-foundation/brain-poster-dark.png" src="/uploads/digital-brain-foundation/brain-poster-dark.png" width={780} height={820} alt="A warm dark brain sculpture with fine brown threads, used as an illustration of shared knowledge." priority unoptimized />
           {chapters.map((chapter, index) => <section key={chapter.id} id={chapter.id} aria-labelledby={`heading-${chapter.id}`}>
             <p className="eyebrow">{chapter.label}</p>
             {index === 0 ? <h1 id={`heading-${chapter.id}`}>{chapter.title}</h1> : <h2 id={`heading-${chapter.id}`}>{chapter.title}</h2>}
@@ -49,6 +49,6 @@ export function DigitalBrainHome() {
       <div className="credits"><Link href="/about">About Digital Twins</Link><p>Brain Areas by <a href="https://sketchfab.com/3d-models/brain-areas-d64608a3978b47d8a39c5a15795ca8c4">Versal</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Materials, palette, particles and camera adapted for ExpertHub.</p><p>Digital Brain by Sahil K and camera choreography adapted from JosephASG / Codrops, under MIT.</p><a href="/uploads/digital-brain-foundation/CREDITS.md">Artwork credits, licenses and modifications</a></div>
     </footer>
     </div></div>
-    <noscript><style>{`[data-digital-brain-home] .motion-toolbar { display: none; }`}</style><p className="static-notice">The complete story is available above without animation.</p></noscript>
+    <noscript><style>{`[data-digital-brain-home] .brain-load-screen { display: none; } [data-digital-brain-home] [data-smooth-wrapper] { visibility: visible !important; } html, body { overflow: auto !important; } [data-digital-brain-home] .skip { display: block !important; }`}</style><p className="static-notice">The illustrated story is available above without animation. If the image cannot load, its description and the story remain available.</p></noscript>
   </div>;
 }

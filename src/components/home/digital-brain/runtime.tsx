@@ -3,37 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import type { SourceVector } from "./source-retarget";
 import { sideAboveView } from "./source-camera";
+import { decodePoster, nextFrame } from "./illustration-ready";
 import type { createSourceMotion } from "./source-motion";
 import type { createBrainScene } from "./art/scene.js";
 
 type Scene = Awaited<ReturnType<typeof createBrainScene>>;
-type Mode = "auto" | "static" | "animated";
 type Motion = Awaited<ReturnType<typeof createSourceMotion>>;
+type Phase = { state: "loading" | "ready" | "error"; message: string };
 type Diagnostic = { progress: number; targetProgress: number; captionIndex: number; captionOpacity: number; captions: ReturnType<Motion["captions"]>; sourceCamera: SourceVector; sourceTarget: SourceVector; camera: SourceVector; target: SourceVector; metrics: ReturnType<Scene["metrics"]>; status: string };
 declare global { interface Window { __expertHubBrain?: Diagnostic } }
 
 export function BrainRuntime() {
-  const [mode, setMode] = useState<Mode>("auto");
-  const [reduced, setReduced] = useState<boolean | null>(null);
-  const [compact, setCompact] = useState<boolean | null>(null);
-  const [status, setStatus] = useState("The complete story is available in text.");
-  const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [preferences, setPreferences] = useState<{ reduced: boolean; compact: boolean } | null>(null);
+  const [reading, setReading] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const readingFrame = useRef(0);
-  const staticMode = compact === true || mode === "static" || (mode === "auto" && reduced === true);
-
-  useEffect(() => () => cancelAnimationFrame(readingFrame.current), []);
+  const [phase, setPhase] = useState<Phase>({ state: "loading", message: "Loading" });
+  const generation = useRef(0);
+  const focusReading = useRef(false);
 
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const height = matchMedia("(orientation: landscape) and (max-height: 580px)");
-    const update = () => { setReduced(media.matches); setCompact(height.matches); };
+    const update = () => setPreferences({ reduced: media.matches, compact: height.matches });
     update(); media.addEventListener("change", update); height.addEventListener("change", update);
-    if (window.location.hash === "#story-reading") {
-      setMode("static");
-      readingFrame.current = requestAnimationFrame(() => document.getElementById("story-reading")?.focus({ preventScroll: true }));
-    }
+    if (location.hash === "#story-reading") { focusReading.current = true; setReading(true); }
     return () => { media.removeEventListener("change", update); height.removeEventListener("change", update); };
   }, []);
 
@@ -41,9 +34,16 @@ export function BrainRuntime() {
     const root = document.querySelector<HTMLElement>("[data-digital-brain-home]");
     const sequence = root?.querySelector<HTMLElement>("[data-story-sequence]");
     const canvas = root?.querySelector<HTMLCanvasElement>("[data-brain-canvas]");
-    const reading = root?.querySelector<HTMLElement>("#story-reading");
-    if (!root || !sequence || !canvas || !reading || reduced === null || compact === null) return;
-    const readingLinks = Array.from(reading.querySelectorAll<HTMLAnchorElement>("a[href]"));
+    const story = root?.querySelector<HTMLElement>("#story-reading");
+    const content = root?.querySelector<HTMLElement>("[data-smooth-wrapper]");
+    const poster = story?.querySelector<HTMLImageElement>(".reading-poster");
+    if (!root || !sequence || !canvas || !story || !content || !poster || !preferences) return;
+    const run = ++generation.current;
+    const abort = new AbortController();
+    let alive = true, scene: Scene | undefined, motion: Motion | undefined, raf = 0, focusFrame = 0;
+    let elapsed = 0, lastTime = 0;
+    const current = () => alive && run === generation.current && root.isConnected && !abort.signal.aborted;
+    const readingLinks = Array.from(story.querySelectorAll<HTMLAnchorElement>("a[href]"));
     const originalTabIndexes = new Map(readingLinks.map(link => [link, link.getAttribute("tabindex")]));
     const readingInteractive = (enabled: boolean) => readingLinks.forEach(link => {
       const original = originalTabIndexes.get(link);
@@ -51,152 +51,160 @@ export function BrainRuntime() {
       else if (original == null) link.removeAttribute("tabindex");
       else link.setAttribute("tabindex", original);
     });
-    const enterReading = (event: FocusEvent) => {
-      root.dataset.renderer = "static"; readingInteractive(true); setMode("static");
-      const target = event.target;
-      cancelAnimationFrame(readingFrame.current);
-      // Next's hash navigation and the mode change both move layout. Position
-      // the focused story only after their updates have reached the browser.
-      readingFrame.current = requestAnimationFrame(() => {
-        readingFrame.current = requestAnimationFrame(() => {
-          readingFrame.current = 0;
-          if (!root.isConnected || root.dataset.renderer === "ready" || !(target instanceof HTMLElement)) return;
-          const headerBottom = root.querySelector("header")?.getBoundingClientRect().bottom || 0;
-          if (target === reading) {
-            const introduction = reading.querySelector("h1");
-            if (introduction) window.scrollTo({ top: window.scrollY + introduction.getBoundingClientRect().top - headerBottom - 16, behavior: "instant" });
-          } else {
-            const rect = target.getBoundingClientRect();
-            if (rect.top < headerBottom + 16 || rect.bottom > window.innerHeight - 16) target.scrollIntoView({ block: "center", behavior: "instant" });
-          }
-        });
+    const dispose = () => {
+      cancelAnimationFrame(raf); raf = 0;
+      motion?.dispose(); scene?.dispose();
+      delete window.__expertHubBrain;
+    };
+    root.dataset.illustrationReady = "false"; root.dataset.renderer = "loading";
+    root.dataset.motionReady = "false"; root.dataset.onStory = "true";
+    delete root.dataset.firstDraw; delete root.dataset.posterDecoded;
+    content.inert = true;
+    setPhase({ state: "loading", message: "Loading" });
+    const fail = (message: string) => {
+      if (!current()) return;
+      clearTimeout(deadline); abort.abort(); dispose();
+      root.dataset.renderer = "error"; root.dataset.motionReady = "false";
+      root.dataset.illustrationReady = "false"; content.inert = true;
+      setPhase({ state: "error", message });
+    };
+    const deadline = window.setTimeout(() => fail("The illustration is taking longer to load. Please try again."), 20000);
+    const positionReading = () => {
+      cancelAnimationFrame(focusFrame);
+      focusFrame = requestAnimationFrame(() => {
+        if (!current()) return;
+        story.focus({ preventScroll: true });
+        const heading = story.querySelector("h1");
+        const headerBottom = root.querySelector("header")?.getBoundingClientRect().bottom || 0;
+        if (heading) window.scrollTo({ top: scrollY + heading.getBoundingClientRect().top - headerBottom - 16, behavior: "instant" });
       });
     };
-    reading.addEventListener("focusin", enterReading);
-    if (staticMode) {
-      root.dataset.renderer = "static";
-      readingInteractive(true);
-      setLoading(false); setFailed(false);
-      setStatus("The complete story is available without motion.");
-      return () => reading.removeEventListener("focusin", enterReading);
-    }
-    const abort = new AbortController();
-    let scene: Scene | undefined, motion: Motion | undefined, raf = 0, alive = true;
-    let elapsed = 0, lastTime = 0;
-    setLoading(true); setFailed(false);
-    root.dataset.renderer = "loading";
-    root.dataset.motionReady = "false";
-    root.dataset.onStory = "true";
-    const failToReading = (message: string) => {
-      abort.abort(); motion?.dispose(); scene?.dispose();
-      root.dataset.renderer = "error"; root.dataset.motionReady = "false"; readingInteractive(true);
-      setLoading(false); setFailed(true); setStatus(message);
-      cancelAnimationFrame(raf); raf = 0; delete window.__expertHubBrain;
+    const reveal = (renderer: "ready" | "static") => {
+      if (!current()) return;
+      clearTimeout(deadline);
+      root.dataset.renderer = renderer; root.dataset.illustrationReady = "true";
+      content.inert = false; readingInteractive(renderer === "static");
+      setPhase({ state: "ready", message: "Illustration ready" });
+      if (renderer === "static" && focusReading.current) {
+        focusReading.current = false; positionReading();
+      }
     };
-    const deadline = window.setTimeout(() => {
-      if (!alive || root.dataset.motionReady === "true") return;
-      failToReading("The illustration is taking longer to load. You can read the complete story below.");
-    }, 20000);
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       if (rect.width && rect.height) scene?.resize(rect.width, rect.height);
       schedule();
     };
-    const theme = () => { scene?.setTheme(true); schedule(); };
     const observer = new ResizeObserver(resize);
     const frame = (now: number) => {
       raf = 0;
-      if (!alive || !scene || !motion || abort.signal.aborted || document.hidden) { lastTime = 0; return; }
+      if (!current() || !scene || !motion || document.hidden) { lastTime = 0; return; }
       const rect = sequence.getBoundingClientRect();
-      const visible = rect.bottom >= window.innerHeight - 1 && rect.top < window.innerHeight;
+      const visible = rect.bottom >= innerHeight - 1 && rect.top < innerHeight;
       root.dataset.onStory = String(visible);
       if (!visible) { lastTime = 0; return; }
       const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
       lastTime = now; elapsed += delta;
-      const { camera, target } = sideAboveView(motion.progress(), window.innerWidth / window.innerHeight);
-      scene.setSourcePose(camera, target);
-      scene.render(delta, elapsed);
+      const { camera, target } = sideAboveView(motion.progress(), innerWidth / innerHeight);
+      try {
+        scene.setSourcePose(camera, target); scene.render(delta, elapsed);
+      } catch { fail("The illustration is unavailable. Please try again."); return; }
       const captions = motion.captions();
       const active = captions.reduce((best, caption) => caption.opacity > best.opacity ? caption : best, captions[0]);
       window.__expertHubBrain = {
-        progress: motion.progress(), targetProgress: Math.max(0, Math.min(1, window.scrollY / Math.max(1, sequence.offsetHeight - window.innerHeight))),
+        progress: motion.progress(), targetProgress: Math.max(0, Math.min(1, scrollY / Math.max(1, sequence.offsetHeight - innerHeight))),
         captionIndex: active.index, captionOpacity: active.opacity, captions,
         sourceCamera: { x: motion.camera.x, y: motion.camera.y, z: motion.camera.z },
         sourceTarget: { x: motion.target.x, y: motion.target.y, z: motion.target.z }, camera, target, metrics: scene.metrics(), status: "ready",
       };
       schedule();
     };
-    function schedule() { if (alive && !abort.signal.aborted && !raf && !document.hidden) raf = requestAnimationFrame(frame); }
+    function schedule() { if (current() && motion && !raf && !document.hidden) raf = requestAnimationFrame(frame); }
     const tabVisibility = () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; lastTime = 0; } else schedule(); };
-    const contextLost = (event: Event) => { event.preventDefault(); if (alive && !abort.signal.aborted) failToReading("The illustration is unavailable. You can read the complete story below."); };
+    const contextLost = (event: Event) => {
+      event.preventDefault();
+      // Disposing a preceding animated attempt deliberately loses its context
+      // asynchronously. It cannot invalidate this attempt's decoded poster
+      // or scene that has not yet been handed to this runtime.
+      if (scene) fail("The illustration is unavailable. Please try again.");
+    };
     const followHash = () => {
-      if (!motion || !alive || location.pathname !== "/" || location.hash === "#story-reading") return;
+      if (!current() || location.pathname !== "/") return;
+      if (location.hash === "#story-reading") { focusReading.current = true; setReading(true); return; }
       const target = document.getElementById(location.hash.slice(1));
-      if (target) motion.scrollTo(target);
+      if (target) motion?.scrollTo(target);
     };
     const anchor = (event: MouseEvent) => {
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
       const href = link?.getAttribute("href");
-      if (!motion || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !href || href === "#story-reading") return;
+      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !href) return;
       const target = document.getElementById(href.slice(1));
       if (!target) return;
-      event.preventDefault(); event.stopPropagation();
-      history.pushState(history.state, "", href);
-      motion.scrollTo(target);
-      target.querySelector<HTMLElement>('h2[tabindex="-1"]')?.focus({ preventScroll: true });
+      if (href === "#story-reading" || motion || root.dataset.illustrationReady !== "true") {
+        event.preventDefault(); event.stopPropagation(); history.pushState(history.state, "", href);
+        if (href === "#story-reading") {
+          if (root.dataset.renderer === "static" && root.dataset.illustrationReady === "true") positionReading();
+          else { focusReading.current = true; setReading(true); }
+        }
+        else if (motion && root.dataset.illustrationReady === "true") {
+          motion.scrollTo(target); target.querySelector<HTMLElement>('h2[tabindex="-1"]')?.focus({ preventScroll: true });
+        }
+      }
     };
-    root.addEventListener("click", anchor, true);
-    window.addEventListener("popstate", followHash);
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", resize);
-    document.addEventListener("visibilitychange", tabVisibility);
-    canvas.addEventListener("webglcontextlost", contextLost);
-    observer.observe(canvas);
+    window.addEventListener("scroll", schedule, { passive: true }); window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", tabVisibility); canvas.addEventListener("webglcontextlost", contextLost);
+    root.addEventListener("click", anchor, true); window.addEventListener("popstate", followHash); observer.observe(canvas);
     (async () => {
       try {
+        if (preferences.reduced || preferences.compact || reading) {
+          setPhase({ state: "loading", message: "Loading" });
+          await decodePoster(poster, abort.signal, attempt);
+          if (!current()) return;
+          root.dataset.posterDecoded = "true"; reveal("static"); return;
+        }
         const [{ createBrainScene }, { createSourceMotion }] = await Promise.all([import("./art/scene.js"), import("./source-motion")]);
-        if (!alive) return;
-        scene = await createBrainScene({ canvas, signal: abort.signal, onStage: message => { if (alive) setStatus(message); } });
-        if (!alive) { scene.dispose(); return; }
-        root.dataset.renderer = "ready";
-        resize(); theme();
-        motion = await createSourceMotion(root, abort.signal, schedule);
-        if (!alive || abort.signal.aborted) { motion.dispose(); scene.dispose(); return; }
-        root.dataset.motionReady = "true";
-        readingInteractive(false);
-        followHash();
-        const initial = sideAboveView(motion.progress(), window.innerWidth / window.innerHeight);
+        if (!current()) return;
+        const prepared = await createBrainScene({ canvas, signal: abort.signal, onStage: () => {} });
+        if (!current()) { prepared.dispose(); return; }
+        scene = prepared;
+        // Build the unchanged GSAP layout behind the loading screen. Asset
+        // completion alone must never expose a blank canvas or the story.
+        root.dataset.renderer = "preparing"; resize(); scene.setTheme(true);
+        const preparedMotion = await createSourceMotion(root, abort.signal, schedule);
+        if (!current()) { preparedMotion.dispose(); scene.dispose(); return; }
+        motion = preparedMotion;
+        const initial = sideAboveView(motion.progress(), innerWidth / innerHeight);
         scene.setSourcePose(initial.camera, initial.target); scene.render(0, 0);
-        clearTimeout(deadline);
-        setLoading(false); setStatus("Illustration ready. Scroll to follow the story.");
-        schedule();
-      } catch {
-        clearTimeout(deadline);
-        if (!alive || abort.signal.aborted) return;
-        failToReading("The illustration is unavailable. You can read the complete story below.");
-      }
+        const metrics = scene.metrics();
+        if (!metrics.drawCount || !metrics.modelCount || !metrics.triangles || !metrics.calls) throw new Error("Illustration did not draw");
+        root.dataset.firstDraw = String(metrics.drawCount);
+        // Give the successfully submitted frame a paint opportunity before
+        // atomically exposing the illustration and its real headline/body.
+        await nextFrame(abort.signal);
+        if (!current()) return;
+        root.dataset.motionReady = "true"; reveal("ready"); followHash(); schedule();
+      } catch { if (current()) fail("The illustration couldn’t load. Please try again."); }
     })();
     return () => {
-      alive = false; clearTimeout(deadline); abort.abort(); motion?.dispose(); cancelAnimationFrame(raf); scene?.dispose();
-      observer.disconnect();
-      window.removeEventListener("scroll", schedule); window.removeEventListener("resize", resize); document.removeEventListener("visibilitychange", tabVisibility);
-      canvas.removeEventListener("webglcontextlost", contextLost); reading.removeEventListener("focusin", enterReading);
+      alive = false; clearTimeout(deadline); abort.abort(); dispose(); cancelAnimationFrame(focusFrame);
+      observer.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", tabVisibility); canvas.removeEventListener("webglcontextlost", contextLost);
       root.removeEventListener("click", anchor, true); window.removeEventListener("popstate", followHash);
-      root.dataset.renderer = "static"; root.dataset.motionReady = "false"; readingInteractive(true); delete window.__expertHubBrain;
+      content.inert = false; readingInteractive(true);
+      if (root.isConnected) { root.dataset.illustrationReady = "false"; root.dataset.renderer = "boot"; root.dataset.motionReady = "false"; }
     };
-  }, [mode, reduced, compact, staticMode, attempt]);
+  }, [preferences, reading, attempt]);
 
-  return <div className="motion-toolbar" hidden={compact === true}>
-    <p role="status" className={loading || failed ? "loading-status" : "sr-only"}>{status}</p>
-    <button type="button" aria-pressed={staticMode} onClick={() => {
-      cancelAnimationFrame(readingFrame.current);
-      const animate = staticMode || failed;
-      // A deliberate restart begins at the opening shot. A stale source/hash
-      // anchor must not pull newly transformed content back into the static story.
-      if (animate && location.hash) history.replaceState(history.state, "", location.pathname + location.search);
-      if (failed) setAttempt(value => value + 1);
-      setMode(animate ? "animated" : "static");
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }}>{staticMode || failed ? "View animation" : "Read without motion"}</button>
+  return <div className="brain-load-screen" data-load-state={phase.state} hidden={phase.state === "ready"}>
+    <div className="brain-loader-art" aria-hidden="true"><svg viewBox="0 0 280 280" fill="none">
+      <circle cx="140" cy="140" r="89" />
+      <g className="loader-orbit"><ellipse cx="140" cy="140" rx="89" ry="32" /><ellipse cx="140" cy="140" rx="89" ry="32" transform="rotate(60 140 140)" /><ellipse cx="140" cy="140" rx="89" ry="32" transform="rotate(120 140 140)" /></g>
+      <circle className="loader-center" cx="140" cy="140" r="7" /><circle className="loader-satellite" cx="140" cy="51" r="3" />
+    </svg></div>
+    <div className="brain-loader-copy"><p className="eyebrow">EXPERT DIGITAL TWINS</p>
+      <h2>{phase.state === "error" ? "A moment out of view." : "Bringing ExpertHub\nto you"}</h2>
+      <p role={phase.state === "error" ? "alert" : "status"}>{phase.message}</p>
+      {phase.state === "error" && <button className="brain-retry" type="button" onClick={() => { window.scrollTo({ top: 0, behavior: "instant" }); setAttempt(value => value + 1); }}>Try again <span aria-hidden="true">↗</span></button>}
+    </div>
+    <p className="brain-loader-note">Expert ideas. New perspectives.</p>
   </div>;
 }

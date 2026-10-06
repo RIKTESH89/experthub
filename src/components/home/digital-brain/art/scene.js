@@ -180,7 +180,7 @@ export async function createBrainScene({ canvas, signal, onStage }) {
       bokeh.uniforms.focus.value = fittedDistance;
     }
     function render(delta, elapsed, animate = true) {
-      if (disposed) return;
+      if (disposed || renderer.getContext().isContextLost()) throw new Error('Illustration context unavailable');
       time.delta = Math.min(delta, .05); time.elapsedTime = elapsed;
       const started = performance.now();
       if (animate) { brain.update(); sparkles.update(elapsed * .5); sky.update(elapsed); }
@@ -188,6 +188,7 @@ export async function createBrainScene({ canvas, signal, onStage }) {
       renderer.info.reset();
       const submitted = performance.now();
       composer.render(delta);
+      if (renderer.getContext().isContextLost()) throw new Error('Illustration context unavailable');
       submitMilliseconds = performance.now() - submitted;
       if (drawCount === 0 && renderer.info.programs.some(program => program.diagnostics?.runnable === false)) throw new Error('Illustration shader unavailable');
       drawCount++;
