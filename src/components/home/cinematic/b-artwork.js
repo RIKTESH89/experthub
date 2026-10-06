@@ -1,9 +1,9 @@
 // Experimental B runtime adapter. App owns scroll/text/lifecycle and raster fallback.
 import { createNarrativeRuntime } from './b-narrative-v8/narrative-runtime.js';
 
-export async function createArtwork({canvas,viewport,composition,assets,signal,onMetrics,onError,frame=0,portrait=false,dark=false}) {
+export async function createArtwork({canvas,viewport,composition,assets,signal,preparedAssetPromise,onMetrics,onError,frame=0,portrait=false,dark=false}) {
     let runtime,disposed=false,ticket=0,visible=true,dirty=true,currentFrame=frame,currentPortrait=portrait,currentDark=dark,currentComposition=composition;
-    const metrics={version:'b-narrative-v8-preparation',frames:0};
+    const metrics={version:'b-narrative-v8-cache-preparation',frames:0};
     function alive(){if(disposed||signal.aborted)throw new DOMException('Aborted','AbortError');}
     function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(ticket);ticket=0;signal.removeEventListener('abort',dispose);canvas.removeEventListener('webglcontextlost',lost);runtime?.dispose();}
     function lost(event){event.preventDefault();dispose();onError?.(new Error('webgl-context-lost'));}
@@ -18,8 +18,8 @@ export async function createArtwork({canvas,viewport,composition,assets,signal,o
     function request(){if(!ticket&&!disposed&&visible&&!document.hidden&&runtime)ticket=requestAnimationFrame(draw);}
     async function readRegistry(){const r=await fetch(assets.registry,{signal});if(!r.ok)throw Error('Narrative source registry '+r.status);return r.json();}
     try {
-        alive();const response=await fetch(assets.framing,{signal});if(!response.ok)throw Error('B pose envelope '+response.status);const envelope=await response.json();alive();
-        const result=await createNarrativeRuntime({canvas,envelope,signal,initialDark:dark,assetMode:'b-local-v8',assetUrl:assets.scene,assetSha256:assets.sha256,sourceRegistry:await readRegistry(),copyHoldScale:.95});
+        alive();const [envelope,sourceRegistry]=await Promise.all([fetch(assets.framing,{signal}).then(response=>{if(!response.ok)throw Error('B pose envelope '+response.status);return response.json();}),readRegistry()]);alive();
+        const result=await createNarrativeRuntime({canvas,envelope,signal,initialDark:dark,assetMode:'b-local-v8',assetUrl:assets.scene,assetSha256:assets.sha256,sourceRegistry,preparedAssetPromise,copyHoldScale:.95});
         if(disposed||signal.aborted){result.dispose();alive();}runtime=result;draw();
         return {
             setFrame(value,isPortrait=currentPortrait){value=Math.max(0,Math.min(551,value));if(value!==currentFrame||isPortrait!==currentPortrait){currentFrame=value;currentPortrait=isPortrait;dirty=true;request();}},

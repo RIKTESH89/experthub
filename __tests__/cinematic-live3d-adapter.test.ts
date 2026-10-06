@@ -37,7 +37,7 @@ function fixture() {
 }
 async function settle(){for(let i=0;i<12;i++)await Promise.resolve();}
 function adapter(create: jest.Mock) {
-  return moduleAt('live3d-adapter.js',id=>id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('narrative-clock')?clock:id.includes('b-chapter-map')?bMap:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
+  return moduleAt('live3d-adapter.js',id=>id.includes('load-scene')?{prepareSceneBytes:()=>Promise.resolve({bytes:new ArrayBuffer(0),fetchMs:0})}:id.includes('config')?{artworkAssets:{version:'test'}}:id.includes('narrative-clock')?clock:id.includes('b-chapter-map')?bMap:id.includes('timeline')?timeline:{createArtwork:create}).mountLiveArtwork;
 }
 const state={cinematic:true,chapter:chapters[0],phase:.375,portrait:true,visible:true};
 test('static eligibility does not import/create WebGL and disposal aborts a late renderer',async()=>{

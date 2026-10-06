@@ -1,3 +1,5 @@
+Current transport candidate: http://127.0.0.1:3927/, branch `integration/b-v8-cache-transport`. See [CACHE-INTEGRATION.md](CACHE-INTEGRATION.md) for this candidate’s actual checks and delivery results. The following document records the unchanged V8 geometry baseline at3917; its monolithic transport measurements are historical, not this candidate’s measurements.
+
 # Four-contribution homepage integration preparation
 
 Local review: http://127.0.0.1:3917/. Branch `integration/b-v8-connected-growth`, based on V7 integration `58b568175f974c3c03fb123ab424da8361ee5c36`. This is a V8 progress-preview candidate. Publication is authorized for the separate study site after parent integration checks; this candidate is not published or visually accepted.

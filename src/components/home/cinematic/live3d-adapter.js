@@ -1,3 +1,4 @@
+import { prepareSceneBytes } from './cache-delivery-v8/load-scene.js';
 import { narrativeState } from './b-narrative-v8/narrative-clock.js';
 import { artworkAssets } from './live3d-config.js';
 import { bChapterFrame as authoredFrame, portraitWidthPerHeight } from './b-chapter-map.js';
@@ -87,10 +88,11 @@ export function mountLiveArtwork(root, requestUpdate) {
         viewport.hidden = false; root.dataset.artwork = 'loading'; diagnostics({ state:'loading',version:artworkAssets.version }); position();
         root.querySelector('#runtime-status').textContent='Loading experimental artwork. A static B composition is shown while the live scene prepares.';
         timeout = setTimeout(()=> { if (mine === generation) fail(new Error('artwork-readiness-timeout')); },20000);
+        const preparedAssetPromise = prepareSceneBytes({manifest:artworkAssets.delivery,signal:abort.signal}).catch(error=>({error}));
         try {
             const { createArtwork } = await import('./b-artwork.js');
             if (disposed || mine !== generation || abort.signal.aborted) return;
-            const artwork = await createArtwork({ canvas,viewport,composition,assets:artworkAssets,signal:abort.signal,frame:authoredFrame(state.phase,state.chapter),portrait:state.portrait,dark:dark(),onMetrics:values=>{ if(mine===generation && !disposed) {diagnostics(values);activate();} },onError:fail });
+            const artwork = await createArtwork({ canvas,viewport,composition,assets:artworkAssets,signal:abort.signal,preparedAssetPromise,frame:authoredFrame(state.phase,state.chapter),portrait:state.portrait,dark:dark(),onMetrics:values=>{ if(mine===generation && !disposed) {diagnostics(values);activate();} },onError:fail });
             if (disposed || mine !== generation || abort.signal.aborted || !eligible) { artwork.dispose(); return; }
             controller = artwork; clearTimeout(timeout);
             controller.setComposition(composition);
