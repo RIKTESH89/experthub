@@ -15,7 +15,7 @@ const nextConfig = {
     ...(localUi ? { AUTH_URL: localUi.origin, NEXTAUTH_URL: localUi.origin, NEXT_PUBLIC_APP_URL: localUi.origin } : {}),
   },
   // Frozen static asset only: HTTP decodes Brotli before the runtime verifies SHA.
-  async headers() { return [{ source:'/uploads/live3d/b-cache-v8/part-:hash.bin.br', headers:[{key:'Content-Encoding',value:'br'},{key:'Content-Type',value:'application/octet-stream'},{key:'Cache-Control',value:'public, max-age=31536000, immutable'},{key:'Vary',value:'Accept-Encoding'}] }]; },
+  async headers() { return [{ source:'/uploads/live3d/b-narrative-v9/part-:hash.bin.br', headers:[{key:'Content-Encoding',value:'br'},{key:'Content-Type',value:'application/octet-stream'},{key:'Cache-Control',value:'public, max-age=31536000, immutable'},{key:'Vary',value:'Accept-Encoding'}] }]; },
   images: {
     remotePatterns: [
       {

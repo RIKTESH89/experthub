@@ -11,7 +11,7 @@ function moduleAt(name: string, requireModule: (id: string) => unknown = () => (
 }
 const chapters = JSON.parse(fs.readFileSync(path.join(process.cwd(),'public/uploads/cinematic-homepage/copy-alignment-v2-03cf60b6/frame-manifest.json'),'utf8')).variants.desktop.chapters;
 const timeline = moduleAt('live3d-timeline.js');
-const bMap = moduleAt('b-chapter-map.js'),clock=moduleAt('b-narrative-v8/narrative-clock.js');
+const bMap = moduleAt('b-chapter-map.js'),clock=moduleAt('b-narrative-v9/narrative-clock.js');
 const raster = moduleAt('timeline.js');
 test('live frame mapping preserves all seven authored ranges, shared seams and reading holds',()=>{
   expect(chapters).toHaveLength(7);

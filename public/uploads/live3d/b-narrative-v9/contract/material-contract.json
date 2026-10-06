@@ -1,0 +1,123 @@
+{
+  "version": "experthub-b-shared-v1",
+  "website": {
+    "light": {
+      "bg": "#f7f6f2",
+      "ink": "#2a302b",
+      "muted": "#5b655e",
+      "accent": "#665039",
+      "line": "#c6c7bd"
+    },
+    "dark": {
+      "bg": "#151411",
+      "ink": "#eee7da",
+      "muted": "#c5bcab",
+      "accent": "#caa775",
+      "line": "#665b49"
+    }
+  },
+  "materialRoles": {
+    "mineralMind": {
+      "lightBase": "#9b7e5c",
+      "darkBase": "#af8f65",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "folioLinen": {
+      "base": "#393b30",
+      "roughness": 0.92,
+      "metalness": 0
+    },
+    "paperFace": {
+      "base": "#eee7da",
+      "roughness": 0.85,
+      "metalness": 0
+    },
+    "paperEdge": {
+      "base": "#b2a58e",
+      "roughness": 0.69,
+      "metalness": 0
+    },
+    "selectedSource01Edge": {
+      "base": "#9a7542",
+      "scope": "Only source01 cut edge during selection/read/join, no whole-face colored band"
+    },
+    "copperIndex": {
+      "base": "#9a763d",
+      "roughness": 0.32,
+      "metalness": 0.68
+    },
+    "recess": {
+      "base": "#4a4031",
+      "roughness": 0.72
+    },
+    "citationSeam": {
+      "lightBase": "#8e6a3f",
+      "darkBase": "#caa775",
+      "roughness": 0.42,
+      "metalness": 0.65
+    },
+    "ink": {
+      "baseline": "#2a302b",
+      "authorTarget": "#141715",
+      "note": "Raise actual lit contrast; avoid emissive text/paper. Small copy context line uses charcoal rather than pale accent."
+    }
+  },
+  "inkSurfaceConvention": {
+    "paperPlane": "localXZ, +Y facing normal; +X text right, page top toward local-Z",
+    "source01BaselinePrint": {
+      "size": [
+        0.96,
+        0.72
+      ],
+      "localYOffset": 0.09,
+      "texturePixels": [
+        512,
+        384
+      ]
+    },
+    "copy01BaselinePrint": {
+      "size": [
+        0.94,
+        0.353
+      ],
+      "localYOffset": 0.09,
+      "texturePixels": [
+        512,
+        192
+      ]
+    },
+    "requirements": [
+      "Attach/bend glyph surface with physical source/copy mesh; no detached billboard.",
+      "Original full_source and copied selected_fragment from source-registry exact, Source01 identity persists.",
+      "Baseline dimensions are feasibility reference; author may improve surface geometry with native pixel revalidation."
+    ]
+  },
+  "lightingBaseline": {
+    "toneMapping": "ACESFilmic",
+    "exposureLight": 1.02,
+    "exposureDark": 1.1,
+    "environmentIntensityLight": 0.32,
+    "environmentIntensityDark": 0.38,
+    "key": {
+      "color": "#ffe8cc",
+      "intensity": 3.5,
+      "position": [
+        -3,
+        5,
+        6
+      ]
+    },
+    "rim": {
+      "color": "#e1d5ba",
+      "intensityLight": 1.7,
+      "intensityDark": 2.2,
+      "position": [
+        3,
+        2,
+        -4
+      ]
+    },
+    "shadow": "1024VSM,normalBias.004; local cue is stylized, not physically derived AO"
+  }
+}

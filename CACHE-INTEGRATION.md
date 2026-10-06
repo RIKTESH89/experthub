@@ -1,3 +1,5 @@
+Historical V8 cache baseline at3927. Current V9 release is documented in [V9-INTEGRATION.md](V9-INTEGRATION.md); no V8 speed result substitutes for its actual measurements.
+
 # V8 cache transport integration
 
 Local candidate http://127.0.0.1:3927/, branch `integration/b-v8-cache-transport`, base58cb0b40f61136ebc97b7c9f966ee8428fd06684. The original V8 review instance remains unchanged at3917. This changes only transport/startup concurrency. No V9/Q12 adoption, app/backend/auth/provider/source geometry changes, installs, push or publication.

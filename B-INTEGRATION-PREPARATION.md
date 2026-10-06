@@ -1,3 +1,5 @@
+Current V9 candidate: http://127.0.0.1:3937/, branch `integration/b-v9-cap-repair`. See [V9-INTEGRATION.md](V9-INTEGRATION.md) for authoritative current identity and checks. The following records the preserved V8/cache baselines; their identities and measurements are historical.
+
 Current transport candidate: http://127.0.0.1:3927/, branch `integration/b-v8-cache-transport`. See [CACHE-INTEGRATION.md](CACHE-INTEGRATION.md) for this candidate’s actual checks and delivery results. The following document records the unchanged V8 geometry baseline at3917; its monolithic transport measurements are historical, not this candidate’s measurements.
 
 # Four-contribution homepage integration preparation

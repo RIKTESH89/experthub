@@ -1,9 +1,9 @@
 // Experimental B runtime adapter. App owns scroll/text/lifecycle and raster fallback.
-import { createNarrativeRuntime } from './b-narrative-v8/narrative-runtime.js';
+import { createNarrativeRuntime } from './b-narrative-v9/narrative-runtime.js';
 
 export async function createArtwork({canvas,viewport,composition,assets,signal,preparedAssetPromise,onMetrics,onError,frame=0,portrait=false,dark=false}) {
     let runtime,disposed=false,ticket=0,visible=true,dirty=true,currentFrame=frame,currentPortrait=portrait,currentDark=dark,currentComposition=composition;
-    const metrics={version:'b-narrative-v8-cache-preparation',frames:0};
+    const metrics={version:'b-narrative-v9-cache-preparation',frames:0};
     function alive(){if(disposed||signal.aborted)throw new DOMException('Aborted','AbortError');}
     function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(ticket);ticket=0;signal.removeEventListener('abort',dispose);canvas.removeEventListener('webglcontextlost',lost);runtime?.dispose();}
     function lost(event){event.preventDefault();dispose();onError?.(new Error('webgl-context-lost'));}
