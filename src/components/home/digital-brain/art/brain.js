@@ -47,6 +47,11 @@ export default class Brain {
         uFresnelIntensity: { value: 1.2 },
 
         uSpecularIntensity: { value: 0.6 },
+        uHighlightColor: { value: new THREE.Color(0xffffff) },
+        uEdgeIntensity: { value: .3 },
+        uDiffuseFloor: { value: .3 },
+        uDiffuseIntensity: { value: 1 },
+        uOcclusionFloor: { value: .6 },
         uSpecularShininess: { value: 32.0 },
         uRoughness: { value: 0.3 },
 
@@ -404,6 +409,13 @@ export default class Brain {
     this.material.uniforms.uElectricColor.value.set(palette.electric);
     this.material.uniforms.uElectricIntensity.value = palette.electricIntensity;
     this.material.uniforms.uFresnelIntensity.value = palette.rimIntensity;
+    this.material.uniforms.uHighlightColor.value.set(palette.highlight ?? '#ffffff');
+    this.material.uniforms.uSpecularIntensity.value = palette.specularIntensity ?? .6;
+    this.material.uniforms.uRoughness.value = palette.roughness ?? .3;
+    this.material.uniforms.uEdgeIntensity.value = palette.edgeIntensity ?? .3;
+    this.material.uniforms.uDiffuseFloor.value = palette.diffuseFloor ?? .3;
+    this.material.uniforms.uDiffuseIntensity.value = palette.diffuseIntensity ?? 1;
+    this.material.uniforms.uOcclusionFloor.value = palette.occlusionFloor ?? .6;
     if (this.grooveParticlesMaterial) {
       this.grooveParticlesMaterial.uniforms.uColor1.value.set(palette.brass);
       this.grooveParticlesMaterial.uniforms.uColor2.value.set(palette.ivory);

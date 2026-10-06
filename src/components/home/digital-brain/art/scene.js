@@ -12,10 +12,11 @@ import Brain from './brain.js';
 import SkyDome from './sky.js';
 import { SparkleParticleSystem } from './sparkles.js';
 import { VignettePass } from './vignette.js';
+import { acceptedBrownBlackMaterial } from './accepted-material.js';
 
 const palettes = {
   light: { background: '#f7f6f2', brain: '#b6a086', rim: '#eee7da', electric: '#877564', thread: '#796b59', brass: '#978773', ivory: '#eee7da', sky: '#b7a790', electricIntensity: .45, rimIntensity: .4, additive: false },
-  dark: { background: '#151411', brain: '#66503a', rim: '#eee7da', electric: '#9e8b73', thread: '#8f806a', brass: '#a5947e', ivory: '#eee7da', sky: '#665b49', electricIntensity: .65, rimIntensity: .55, additive: true },
+  dark: { background: '#151411', ...acceptedBrownBlackMaterial, thread: '#432d23', brass: '#231814', ivory: '#573829', sky: '#2c1f19', sparkleBrightness: .65, additive: false },
 };
 // A canvas can retain a deliberately lost context between reading/animation modes.
 // Keep only a weak recovery handle; removed canvases remain collectible.

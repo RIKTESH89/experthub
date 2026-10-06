@@ -113,6 +113,7 @@ export class SparkleParticleSystem {
   setPalette(palette) {
     this.params.skyBlueColor = palette.ivory;
     this.params.orangeColor = palette.brass;
+    this.material.uniforms.uBrightness.value = palette.sparkleBrightness ?? this.params.brightness;
     this.material.blending = palette.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
     this.regenerateParticles();
   }

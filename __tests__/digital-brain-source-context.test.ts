@@ -20,7 +20,7 @@ test("failed setup restores real GSAP context and cannot capture an unrelated tw
   expect(gsap.version).toBe("3.13.0");
   Object.defineProperty(document, "fonts", { configurable: true, value: { ready: Promise.resolve() } });
   const root = document.createElement("div");
-  root.innerHTML = '<div data-smooth-wrapper><div data-smooth-content><div data-story-sequence></div></div></div><div data-progress-bar></div><span data-progress-text></span>';
+  root.innerHTML = '<div data-smooth-wrapper><div data-smooth-content><div data-story-sequence></div></div></div>';
   document.body.append(root);
   const actualCore = gsap.core as typeof gsap.core & { context: () => gsap.Context | undefined };
   const previous = actualCore.context();
@@ -30,7 +30,7 @@ test("failed setup restores real GSAP context and cannot capture an unrelated tw
     owned = contextFactory(callback, scope);
     return owned;
   });
-  const setterSpy = jest.spyOn(gsap, "quickSetter").mockImplementation(() => { throw new Error("injected setup failure"); });
+  const timelineSpy = jest.spyOn(gsap, "timeline").mockImplementation(() => { throw new Error("injected setup failure"); });
   let unrelated: gsap.core.Tween | undefined;
   try {
     await expect(createSourceMotion(root, new AbortController().signal, () => {})).rejects.toThrow("injected setup failure");
@@ -47,7 +47,7 @@ test("failed setup restores real GSAP context and cannot capture an unrelated tw
   } finally {
     unrelated?.kill();
     owned?.revert();
-    setterSpy.mockRestore();
+    timelineSpy.mockRestore();
     contextSpy.mockRestore();
     gsap.ticker.sleep();
     root.remove();

@@ -53,16 +53,12 @@ export async function createSourceMotion(root: HTMLElement, signal: AbortSignal,
     context.add(() => {
       try {
         smoother = ScrollSmoother.create({ wrapper, content, smooth: 4, effects: false, smoothTouch: 2 });
-        const setProgressWidth = gsap.quickSetter(root.querySelector("[data-progress-bar]"), "width", "%");
-        const setProgressText = gsap.quickSetter(root.querySelector("[data-progress-text]"), "textContent");
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: container, start: "top top", end: "bottom bottom", scrub: true,
             onUpdate: self => {
               progress = self.progress;
               wake();
-              setProgressWidth(progress * 100);
-              setProgressText(Math.round(progress * 100).toString().padStart(3, "0") + "%");
             },
           },
         });

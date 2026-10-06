@@ -7,9 +7,8 @@ jest.mock("gsap", () => {
   const core = {
     registerPlugin: jest.fn(),
     context: () => { const ctx = { owned: [] as {alive:boolean;kind:string}[], add: (fn: () => void) => { const previous = state.active; state.active = ctx; fn(); state.active = previous; }, revert: () => ctx.owned.forEach(r => { r.alive = false; }) }; return ctx; },
-    quickSetter: () => { if (state.fail === "after-smoother") throw new Error("setup setter failure"); return () => {}; },
     set: jest.fn(),
-    timeline: () => { state.timelineCalls++; const r = resource("timeline"); const tl = { to: () => tl, fromTo: () => { if (state.fail === "text-tween") throw new Error("setup tween failure"); return tl; }, progress: () => 0, kill: () => { r.alive = false; } }; return tl; },
+    timeline: () => { if (state.fail === "after-smoother") throw new Error("setup timeline failure"); state.timelineCalls++; const r = resource("timeline"); const tl = { to: () => tl, fromTo: () => { if (state.fail === "text-tween") throw new Error("setup tween failure"); return tl; }, progress: () => 0, kill: () => { r.alive = false; } }; return tl; },
   };
   return { __esModule: true, default: core, __state: state, __resource: resource };
 });
@@ -26,7 +25,7 @@ type MockState = { resources: {alive:boolean;kind:string}[]; fail:string; splitC
 const state = () => jest.requireMock("gsap").__state as MockState;
 function fixture() {
   const root = document.createElement("div");
-  root.innerHTML = '<div data-smooth-wrapper><div data-smooth-content><div data-story-sequence></div></div></div><div data-progress-bar></div><span data-progress-text></span>' + Array.from({length:10},(_,i)=>`<div data-source-slot="${i}"><h2>Title</h2><p>Subtitle</p></div>`).join("");
+  root.innerHTML = '<div data-smooth-wrapper><div data-smooth-content><div data-story-sequence></div></div></div>' + Array.from({length:10},(_,i)=>`<div data-source-slot="${i}"><h2>Title</h2><p>Subtitle</p></div>`).join("");
   document.body.append(root); return root;
 }
 beforeEach(() => { document.body.innerHTML = ""; Object.assign(state(), {resources:[],fail:"",splitCalls:0,timelineCalls:0,active:null}); Object.defineProperty(document,"fonts",{configurable:true,value:{ready:Promise.resolve()}}); });

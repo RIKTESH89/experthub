@@ -12,16 +12,15 @@ test("the source's ten unequal slots retain one text-free elevation and nine vis
   expect(scenePerspectives.filter(slot => !slot.hideText && slot.title && slot.subtitle)).toHaveLength(9);
 });
 
-test("full semantic headings remain while compact cinematic copy keeps source-like character counts", () => {
+test("subscriber story retains seven semantic sections and sparse AI-identified cinematic copy", () => {
   expect(chapters).toHaveLength(7);
-  expect(chapters[0].title).toBe("Give your knowledge a new way to speak.");
-  expect(chapters[6].title).toBe("What you know can start a conversation.");
-  expect(scenePerspectives[1].subtitle).toContain("PDFs");
+  expect(chapters[0].title).toBe("Learn from expert Digital Twins.");
+  expect(chapters[6].title).toBe("Start your next conversation.");
+  expect(scenePerspectives[0].subtitle).toContain("AI twin");
   expect(scenePerspectives[3].subtitle).toContain("AI");
-  expect(scenePerspectives[7].subtitle).toContain("manually");
-  expect(scenePerspectives[8].subtitle).toContain("wrong");
-  const sourceCounts = [34, 26, 39, 34, 0, 23, 30, 25, 26, 20];
-  scenePerspectives.forEach((slot, i) => expect(Math.abs(slot.title.length + slot.subtitle.length - sourceCounts[i])).toBeLessThanOrEqual(6));
+  expect(scenePerspectives[8].subtitle).toContain("access");
+  expect(scenePerspectives.filter(slot => !slot.hideText).flatMap(slot => `${slot.title} ${slot.subtitle}`.split(/\s+/))).toHaveLength(87);
+  scenePerspectives.filter(slot => !slot.hideText).forEach(slot => expect(slot.title.length + slot.subtitle.length).toBeLessThanOrEqual(56));
 });
 
 test("bounds retarget maps both centers and axis extents without deforming the model", () => {

@@ -1,11 +1,11 @@
 // Semantic seven-chapter copy. Cinematic motion and ten text slots use the
 // pinned source engine in source-motion.ts and source-perspectives.ts.
 export const chapters = [
-  { id: "introduction", label: "ExpertHub", title: "Give your knowledge a new way to speak.", body: "An AI Digital Twin, shaped by the work you choose to share.", side: "left" },
-  { id: "contributions", label: "Share", title: "Begin with what you’ve put into words.", body: "Bring together your notes, PDFs, blog articles and posts.", side: "left" },
-  { id: "context", label: "Connect", title: "An idea means more in context.", body: "Selected passages and related ideas keep the question connected to your work.", side: "right" },
-  { id: "construction", label: "Represent", title: "Your shared knowledge, taking a new shape.", body: "One AI representation. Built from what you contribute, with the sources kept distinct.", side: "left" },
-  { id: "conversation", label: "Ask", title: "Ask a question. Follow the answer back.", body: "Explore an answer, ask a follow-up and check its available sources.", side: "right" },
-  { id: "control", label: "Keep it current", title: "You shape what it represents.", body: "Add new material and manually correct your shared notes as your thinking changes.", side: "left" },
-  { id: "close", label: "Start a conversation", title: "What you know can start a conversation.", body: "Learn from an expert’s Digital Twin, or apply to share your own expertise.", side: "left" },
+  { id: "introduction", label: "ExpertHub", title: "Learn from expert Digital Twins.", body: "Read their work. Talk to their AI twin.", side: "left" },
+  { id: "contributions", label: "Discover", title: "Find your expert.", body: "Find experts on topics you care about.", side: "left" },
+  { id: "context", label: "Read", title: "Read their work.", body: "Explore the posts and ideas they share.", side: "right" },
+  { id: "construction", label: "AI Digital Twin", title: "Meet their AI Digital Twin.", body: "AI shaped by the expert’s shared knowledge.", side: "left" },
+  { id: "conversation", label: "Ask", title: "Ask a question. Keep talking.", body: "Bring a question, ask a follow-up and explore another angle.", side: "right" },
+  { id: "control", label: "Access", title: "Choose a plan.", body: "Review their plan for available access.", side: "left" },
+  { id: "close", label: "Start", title: "Start your next conversation.", body: "Choose an expert. Start with a question.", side: "left" },
 ] as const;
