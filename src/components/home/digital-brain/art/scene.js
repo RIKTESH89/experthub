@@ -17,6 +17,9 @@ const palettes = {
   light: { background: '#222723', brain: '#244b3d', rim: '#b4c8b9', electric: '#7c9d85', thread: '#b99a62', brass: '#b99254', ivory: '#f2eddf', sky: '#314537' },
   dark: { background: '#141b17', brain: '#204536', rim: '#adc8b8', electric: '#659678', thread: '#b69860', brass: '#c29e5e', ivory: '#f2eddf', sky: '#223b2d' },
 };
+// A canvas can retain a deliberately lost context between reading/animation modes.
+// Keep only a weak recovery handle; removed canvases remain collectible.
+const recovery = new WeakMap();
 
 function originalSprite() {
   // Original radial light sprite replaces the upstream uncredited JPEG.
@@ -37,7 +40,7 @@ function originalSprite() {
 
 /** @param {{canvas:HTMLCanvasElement,signal:AbortSignal,onStage:(stage:string)=>void}} options */
 export async function createBrainScene({ canvas, signal, onStage }) {
-  let renderer, composer, brain, sky, sparkles, sprite, bokeh, renderPass, vignette, output;
+  let renderer, composer, brain, sky, sparkles, sprite, bokeh, renderPass, vignette, output, contextGL;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, .01, 100);
   const decoder = new DRACOLoader();
@@ -54,13 +57,36 @@ export async function createBrainScene({ canvas, signal, onStage }) {
     brain?.dispose(); sky?.dispose(); sparkles?.dispose(); sprite?.dispose();
     renderPass?.dispose(); bokeh?.dispose(); vignette?.dispose(); output?.dispose();
     composer?.dispose(); decoder.dispose();
-    renderer?.dispose(); renderer?.forceContextLoss();
+    renderer?.dispose();
+    if (contextGL && !contextGL.isContextLost()) {
+      // Context loss is delivered asynchronously, after the runtime has detached.
+      // Prevent its default here so an explicitly requested retry can restore it.
+      const allowRestore = event => { event.preventDefault(); canvas.removeEventListener('webglcontextlost', allowRestore); };
+      canvas.addEventListener('webglcontextlost', allowRestore, { once: true });
+      if (renderer) renderer.forceContextLoss(); else recovery.get(canvas)?.loseContext();
+    }
   };
   signal.addEventListener('abort', dispose, { once: true });
   try {
     signal.throwIfAborted();
     onStage('Preparing the illustration');
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    contextGL = canvas.getContext('webgl2', { antialias: true, alpha: false, depth: true, stencil: false, powerPreference: 'high-performance' });
+    if (!contextGL) throw new Error('Illustration context unavailable');
+    if (contextGL.isContextLost()) {
+      const extension = recovery.get(canvas);
+      if (!extension) throw new Error('Illustration context cannot be restored');
+      await new Promise((resolve, reject) => {
+        const cleanup = () => { canvas.removeEventListener('webglcontextrestored', restored); signal.removeEventListener('abort', cancelled); };
+        const restored = () => { cleanup(); resolve(); };
+        const cancelled = () => { cleanup(); reject(signal.reason); };
+        canvas.addEventListener('webglcontextrestored', restored, { once: true });
+        signal.addEventListener('abort', cancelled, { once: true });
+        try { extension.restoreContext(); } catch (error) { cleanup(); reject(error); }
+      });
+      signal.throwIfAborted();
+    }
+    recovery.set(canvas, contextGL.getExtension('WEBGL_lose_context'));
+    renderer = new THREE.WebGLRenderer({ canvas, context: contextGL, antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setPixelRatio(pixelRatio);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;

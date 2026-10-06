@@ -22,7 +22,7 @@ export function BrainRuntime() {
 
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
-    const height = matchMedia("(max-height: 580px)");
+    const height = matchMedia("(orientation: landscape) and (max-height: 580px)");
     const update = () => { setReduced(media.matches); setCompact(height.matches); };
     update(); media.addEventListener("change", update); height.addEventListener("change", update);
     return () => { media.removeEventListener("change", update); height.removeEventListener("change", update); };
@@ -80,6 +80,13 @@ export function BrainRuntime() {
       // Keep every source thread and particle. Only raster resolution/frame rate differ.
       if (dirty || now - lastDraw >= (mobile ? 1000 / 30 : 1000 / 60)) {
         const state = evaluateStory(progress);
+        if (mobile) {
+          const captionBottom = captions[state.captionIndex].getBoundingClientRect().bottom;
+          const actionBottom = actions ? parseFloat(getComputedStyle(actions).bottom) : 0;
+          const invitation = state.captionIndex === 0 || state.captionIndex === chapters.length - 1;
+          const availableBottom = invitation ? window.innerHeight - actionBottom - 44 - 12 : window.innerHeight - 72;
+          if (captionBottom > availableBottom + 2) { setMode("static"); return; }
+        }
         scene.setPose(state.pose, yawOffset);
         scene.render(lastDraw ? Math.min((now - lastDraw) / 1000, .05) : 0, elapsed);
         if (activeCaption !== state.captionIndex) {
