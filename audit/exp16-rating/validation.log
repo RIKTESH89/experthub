@@ -1,0 +1,25 @@
+$ node_modules/.bin/jest --runInBand __tests__/exp16
+PASS __tests__/exp16/rating-route.test.ts
+PASS __tests__/exp16/rating-review.test.ts
+PASS __tests__/exp16/page.test.ts
+PASS __tests__/exp16/routes.test.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       43 passed, 43 total
+Snapshots:   0 total
+Time:        0.341 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp16/i.
+
+exit=0
+
+$ node_modules/.bin/next lint --file src/lib/corrections/rating.ts --file src/lib/corrections/service.ts --file src/app/api/chat/sessions/[sessionId]/messages/[messageId]/rate/route.ts --file src/components/corrections/review-workspace.tsx --file __tests__/exp16/rating-review.test.ts --file __tests__/exp16/rating-route.test.ts
+✔ No ESLint warnings or errors
+
+exit=0
+
+$ git diff --check
+
+exit=0
+
+$ node_modules/.bin/tsc --noEmit --incremental false
+Final separate execution: exit=0, no diagnostics.

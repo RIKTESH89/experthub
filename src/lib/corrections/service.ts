@@ -13,9 +13,14 @@ function reviewValue(row:Review):Review { return {id:row.id,expertProfileId:row.
 async function event(tx:Store,review:Review,actorId:string,key:string,hash:string,action:string,detail:unknown) {
  await tx.$executeRaw`INSERT INTO "CorrectionEvent" ("id","reviewId","expertProfileId","actorId","operationKey","requestHash","action","version","detail") VALUES (${randomUUID()},${review.id},${review.expertProfileId},${actorId},${key},${hash},${action},${review.version},${JSON.stringify(detail)}::jsonb)`;
 }
-export async function submitCorrection(input:{expertProfileId:string;actorId:string;submissionKey:string;proposal:Proposal;messageId?:string}) {
+type Submission={expertProfileId:string;actorId:string;submissionKey:string;proposal:Proposal;messageId?:string};
+export async function submitCorrection(input:Submission) {
+ if(input.submissionKey.startsWith("rating:"))throw new ReviewError(400,"Rating submission keys are reserved");
+ return prisma.$transaction(tx=>submitCorrectionInTransaction(tx,input));
+}
+/** Internal adapter entry point: caller owns the transaction; provenance is server-derived. */
+export async function submitCorrectionInTransaction(tx:Store,input:Submission,provenance?:unknown) {
  const proposal=proposalSchema.parse(input.proposal), hash=manifestHash({...input,proposal});
- return prisma.$transaction(async tx=>{
   // Serialize submissions and owner decisions per expert; no belief writes on submission.
   const owners=await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${input.expertProfileId} FOR UPDATE`;
   if(!owners.length)throw new ReviewError(404,"Expert not found");
@@ -28,9 +33,8 @@ export async function submitCorrection(input:{expertProfileId:string;actorId:str
   if(previous.length){if(previous[0].requestHash!==hash)throw new ReviewError(409,"Idempotency key reused");return reviewValue(previous[0]);}
   const review:Review={id:randomUUID(),expertProfileId:input.expertProfileId,submittedBy:input.actorId,requestHash:hash,proposal,state:"PENDING",version:1};
   await tx.$executeRaw`INSERT INTO "CorrectionReview" ("id","expertProfileId","submittedBy","submissionKey","requestHash","messageId","proposal") VALUES (${review.id},${input.expertProfileId},${input.actorId},${input.submissionKey},${hash},${input.messageId||null},${JSON.stringify(proposal)}::jsonb)`;
-  await event(tx,review,input.actorId,`submit:${review.id}`,hash,"SUBMIT",{proposal,messageId:input.messageId||null});
+  await event(tx,review,input.actorId,`submit:${review.id}`,hash,"SUBMIT",{proposal,messageId:input.messageId||null,...(provenance?{provenance}:{})});
   return review;
- });
 }
 export async function decideCorrection(input:{expertProfileId:string;actorId:string;reviewId:string;expectedVersion:number;operationKey:string;action:"ACCEPT"|"REJECT"|"REVISE";proposal?:Proposal;reason:string}) {
  const hash=manifestHash(input);
