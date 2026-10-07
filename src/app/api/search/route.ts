@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { isFullSiteStaging } from "@/lib/staging-testing";
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest) {
           role: "EXPERT",
           isActive: true,
           isBanned: false,
+          ...(isFullSiteStaging() ? { expertProfile: { isNot: null } } : {}),
           OR: [
             { name: { contains: query, mode: "insensitive" } },
             {

@@ -1,4 +1,4 @@
-import { previewOriginFromHost } from "../../preview-environment.cjs";
+import { previewOriginFromEnvironment, validatePreviewOrigin } from "../../preview-environment.cjs";
 import { assertLocalUiContext, localOriginFromUrl } from "../../local-ui-isolation.cjs";
 /** Only next.config can derive this client marker after validating synthetic env. */
 export function isLocalUiIsolated(): boolean {
@@ -24,9 +24,7 @@ export function previewCanonicalOrigin(): string | undefined {
   if (!isPreviewIsolated()) return undefined;
   const origin = process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ORIGIN;
   if (origin) {
-    const validated = previewOriginFromHost(origin.replace(/^https:\/\//, ""));
-    if (origin !== validated) throw new Error("Invalid Preview canonical origin");
-    return validated;
+    return validatePreviewOrigin(origin);
   }
-  return previewOriginFromHost(process.env.VERCEL_BRANCH_URL);
+  return previewOriginFromEnvironment();
 }

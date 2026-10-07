@@ -2,7 +2,6 @@
 const { previewOriginFromHost } = require('./preview-environment.cjs');
 const BRANCH = 'exp25-26-launch-auth-payments';
 const HOST = 'experthub-git-exp25-26-launch-au-e842c4-riktesh-singhs-projects.vercel.app';
-const APPROVED_EMAIL = 'rikteshsingh28801@gmail.com';
 /** @param {Record<string, string | undefined>} env */
 function stagingGoogleConfig(env = process.env) {
  if(env.VERCEL_ENV !== 'preview' || env.VERCEL_GIT_COMMIT_REF !== BRANCH || env.EXPERTHUB_STAGING_GOOGLE_ENABLED !== '1')return null;
@@ -17,8 +16,9 @@ function stagingGoogleConfig(env = process.env) {
 function approvedStagingGoogleIdentity(email, profile, env = process.env) {
  if(!stagingGoogleConfig(env) || !profile || typeof profile!=='object')return false;
  const p=/** @type {{email?:unknown,email_verified?:unknown,sub?:unknown}} */(profile);
- if(email!==APPROVED_EMAIL || p.email!==APPROVED_EMAIL || p.email_verified!==true || typeof p.sub!=='string' || !p.sub)return false;
- const approvedSubject=env.EXPERTHUB_STAGING_GOOGLE_APPROVED_SUBJECT;
- return !approvedSubject || p.sub===approvedSubject;
+ // The approved staging policy admits verified Google identities, not a single person.
+ // Auth.js verifies the provider response; this gate validates the required identity claims.
+ return typeof email==='string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+   p.email===email && p.email_verified===true && typeof p.sub==='string' && Boolean(p.sub.trim());
 }
 module.exports={stagingGoogleConfig,approvedStagingGoogleIdentity};

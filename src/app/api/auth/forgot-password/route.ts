@@ -5,12 +5,14 @@ import crypto from "crypto";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/resend";
 import { passwordResetEmail } from "@/lib/email/templates";
+import { isFullSiteStaging } from "@/lib/staging-testing";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email(),
 });
 
 export async function POST(request: NextRequest) {
+  if (isFullSiteStaging()) return NextResponse.json({ message: "Sign in with Google. Password recovery is not available.", code: "PASSWORD_RECOVERY_RETIRED" }, { status: 410 });
   try {
     const body = await request.json();
     const validation = forgotPasswordSchema.safeParse(body);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { isFullSiteStaging } from "@/lib/staging-testing";
 
 const applicationSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -22,6 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, email, specialty, reason } = validation.data;
+    const staging = isFullSiteStaging();
+    const accepted = () => NextResponse.json({ message: "Application submitted successfully" }, { status: 201 });
 
     // Check if they already have a pending or approved application
     const existing = await prisma.expertApplication.findFirst({
@@ -32,6 +35,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existing) {
+      if (staging) return accepted();
       if (existing.status === "APPROVED") {
         return NextResponse.json(
           { error: "This email has already been approved. Please sign in with Google." },
@@ -50,6 +54,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser?.role === "EXPERT") {
+      if (staging) return accepted();
       return NextResponse.json(
         { error: "This email is already registered as an expert. Please sign in with Google." },
         { status: 409 }
@@ -60,10 +65,7 @@ export async function POST(request: NextRequest) {
       data: { name, email, specialty, reason },
     });
 
-    return NextResponse.json(
-      { message: "Application submitted successfully" },
-      { status: 201 }
-    );
+    return accepted();
   } catch (error) {
     console.error("Expert application error:", error);
     return NextResponse.json(

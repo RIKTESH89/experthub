@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "../auth-forms.module.css";
+import { GoogleRecovery } from "@/components/auth/google-recovery";
 
 import { useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -33,6 +34,7 @@ const resetPasswordSchema = z
 type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordPage() {
+  if (process.env.NEXT_PUBLIC_EXPERTHUB_FULL_SITE_STAGING === "true") return <GoogleRecovery className={styles.form} />;
   return (
     <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
       <ResetPasswordForm />

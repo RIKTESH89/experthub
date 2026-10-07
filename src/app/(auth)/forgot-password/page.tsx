@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "../auth-forms.module.css";
+import { GoogleRecovery } from "@/components/auth/google-recovery";
 
 import { useState, useRef } from "react";
 import Link from "next/link";
@@ -60,6 +61,8 @@ export default function ForgotPasswordPage() {
       setIsLoading(false);
     }
   }
+
+  if (process.env.NEXT_PUBLIC_EXPERTHUB_FULL_SITE_STAGING === "true") return <GoogleRecovery className={styles.form} />;
 
   if (isSubmitted) {
     return (

@@ -1,4 +1,4 @@
-import { previewOriginFromHost } from '../../preview-environment.cjs';
+import { previewOriginFromHost, previewOriginFromEnvironment, isStagingPreview } from '../../preview-environment.cjs';
 import { previewCanonicalOrigin } from '@/lib/preview-isolation';
 afterEach(() => { for(const key of ['VERCEL_ENV','VERCEL_BRANCH_URL','NEXT_PUBLIC_EXPERTHUB_PREVIEW_ORIGIN','NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED']) delete process.env[key]; });
 test.each([undefined,'','https://project.vercel.app','production.example.com','project.vercel.app/path','project.vercel.app:443','project.vercel.app.evil.invalid','user@project.vercel.app',' project.vercel.app','-project.vercel.app','a'.repeat(64)+'.vercel.app'])('invalid/missing system hostname fails closed %p', host => { expect(() => previewOriginFromHost(host)).toThrow('VERCEL_BRANCH_URL'); });
@@ -26,4 +26,23 @@ test('actual Next build config overrides inherited production origins and reject
  const missing = {...env,VERCEL_BRANCH_URL:''};
  const check = `const assert=(await import('node:assert/strict')).default; await assert.rejects(import('./next.config.mjs'),/VERCEL_BRANCH_URL/);console.log('PASS missing host rejected');`;
  expect(execFileSync(process.execPath,['--input-type=module','-e',check],{env:missing,encoding:'utf8',timeout:15000}).trim()).toBe('PASS missing host rejected');
+});
+test('only exact deployment metadata selects the fixed public staging origin', () => {
+ const env={VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:'exp25-26-launch-auth-payments',VERCEL_BRANCH_URL:'experthub-git-exp25-26-launch-au-e842c4-riktesh-singhs-projects.vercel.app'};
+ expect(previewOriginFromEnvironment(env)).toBe('https://stgtesting.experthub.co.in');
+ for(const override of [{VERCEL_GIT_COMMIT_REF:'master'},{VERCEL_ENV:'production'},{VERCEL_BRANCH_URL:'other.vercel.app'}]) {
+  expect(isStagingPreview({...env,...override})).toBe(false);
+  expect(previewOriginFromEnvironment({...env,...override})).not.toBe('https://stgtesting.experthub.co.in');
+ }
+ expect(()=>previewOriginFromEnvironment({...env,VERCEL_BRANCH_URL:'stgtesting.experthub.co.in'})).toThrow();
+ expect(previewOriginFromEnvironment({...env,AUTH_URL:'https://attacker.invalid',HTTP_HOST:'attacker.invalid'})).toBe('https://stgtesting.experthub.co.in');
+});
+
+test('noindex response header applies only to exact full-site staging', async () => {
+ const { execFileSync } = require('child_process') as typeof import('child_process');
+ const script = `const {default:config}=await import('./next.config.mjs'); console.log(JSON.stringify(await config.headers()));`;
+ const env={PATH:process.env.PATH,NODE_ENV:'test' as const,VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:'exp25-26-launch-auth-payments',VERCEL_BRANCH_URL:'experthub-git-exp25-26-launch-au-e842c4-riktesh-singhs-projects.vercel.app'};
+ const read=(overrides:Record<string,string>)=>JSON.parse(execFileSync(process.execPath,['--input-type=module','-e',script],{env:{...env,...overrides},encoding:'utf8',timeout:15000}));
+ expect(read({})).toContainEqual({source:'/:path*',headers:[{key:'X-Robots-Tag',value:'noindex, nofollow'}]});
+ expect(read({VERCEL_GIT_COMMIT_REF:'other'})).not.toContainEqual({source:'/:path*',headers:[{key:'X-Robots-Tag',value:'noindex, nofollow'}]});
 });

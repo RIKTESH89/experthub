@@ -1,13 +1,14 @@
-import { previewOriginFromHost } from "./preview-environment.cjs";
+import { previewOriginFromEnvironment, isStagingPreview } from "./preview-environment.cjs";
 import { stagingGoogleConfig } from "./staging-google.cjs";
 import { withSentryConfig } from "@sentry/nextjs";
 import { localUiConfig } from "./local-ui-isolation.cjs";
 /** @type {import('next').NextConfig} */
 const previewIsolated = process.env.VERCEL_ENV === "preview";
-const previewOrigin = previewIsolated ? previewOriginFromHost(process.env.VERCEL_BRANCH_URL) : undefined;
+const previewOrigin = previewIsolated ? previewOriginFromEnvironment() : undefined;
 const localUi = localUiConfig(process.env, { networkGuardLoaded: globalThis[Symbol.for("experthub.local-ui-network-guard")] === true });
 const nextConfig = {
   env: { NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED: String(previewIsolated),
+    NEXT_PUBLIC_EXPERTHUB_FULL_SITE_STAGING: String(isStagingPreview()),
     NEXT_PUBLIC_EXPERTHUB_LOCAL_UI_ISOLATED: String(Boolean(localUi)),
     NEXT_PUBLIC_EXPERTHUB_LOCAL_UI_ORIGIN: localUi?.origin || "",
     NEXT_PUBLIC_EXPERTHUB_STAGING_GOOGLE_ENABLED: String(Boolean(stagingGoogleConfig())),
@@ -15,7 +16,7 @@ const nextConfig = {
     ...(localUi ? { AUTH_URL: localUi.origin, NEXTAUTH_URL: localUi.origin, NEXT_PUBLIC_APP_URL: localUi.origin } : {}),
   },
   // Frozen static asset only: HTTP decodes Brotli before the runtime verifies SHA.
-  async headers() { return [{ source:'/uploads/live3d/b-v9-q12/part-:hash.bin.br', headers:[{key:'Content-Encoding',value:'br'},{key:'Content-Type',value:'application/octet-stream'},{key:'Cache-Control',value:'public, max-age=31536000, immutable'},{key:'Vary',value:'Accept-Encoding'}] }]; },
+  async headers() { return [...(isStagingPreview() ? [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }] : []), { source:'/uploads/live3d/b-v9-q12/part-:hash.bin.br', headers:[{key:'Content-Encoding',value:'br'},{key:'Content-Type',value:'application/octet-stream'},{key:'Cache-Control',value:'public, max-age=31536000, immutable'},{key:'Vary',value:'Accept-Encoding'}] }]; },
   images: {
     remotePatterns: [
       {
