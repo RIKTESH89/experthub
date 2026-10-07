@@ -110,7 +110,7 @@ export function BrainRuntime() {
       raf = 0;
       if (!current() || !scene || !motion || document.hidden) { lastTime = 0; return; }
       const rect = sequence.getBoundingClientRect();
-      const visible = rect.bottom >= innerHeight - 1 && rect.top < innerHeight;
+      const visible = rect.bottom > 0 && rect.top < innerHeight;
       root.dataset.onStory = String(visible);
       if (!visible) { lastTime = 0; return; }
       const delta = lastTime ? Math.min((now - lastTime) / 1000, .05) : 0;
