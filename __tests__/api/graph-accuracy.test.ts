@@ -515,6 +515,13 @@ describe("POST /api/expert/accuracy-score", () => {
 // =============================================================================
 
 describe("POST /api/chat/sessions/.../messages/.../rate", () => {
+  beforeEach(() => {
+    // The reviewed route persists ratings and pending audit candidates atomically.
+    mockPrisma.$queryRaw.mockImplementation(async (parts: TemplateStringsArray) =>
+      parts.join("?").includes('FROM "ExpertProfile"') ? [{ id: "expert-1", userId: "expert-owner" }] : []
+    );
+    mockPrisma.$executeRaw.mockResolvedValue(1);
+  });
   it("returns 401 when not authenticated", async () => {
     mockAuth.mockResolvedValue(null);
 
@@ -534,7 +541,7 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
     const data = await res.json();
 
     expect(res.status).toBe(400);
-    expect(data.error).toContain("Invalid rating");
+    expect(data.error).toBe("Invalid request");
   });
 
   it("returns 400 for invalid rating value 2", async () => {
@@ -545,7 +552,7 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
     const data = await res.json();
 
     expect(res.status).toBe(400);
-    expect(data.error).toContain("Invalid rating");
+    expect(data.error).toBe("Invalid request");
   });
 
   it("returns 400 for invalid rating value string", async () => {
@@ -556,7 +563,7 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
     const data = await res.json();
 
     expect(res.status).toBe(400);
-    expect(data.error).toContain("Invalid rating");
+    expect(data.error).toBe("Invalid request");
   });
 
   it("successfully rates an assistant message with thumbs up (1)", async () => {
@@ -571,6 +578,8 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
       id: "msg-1",
       chatSessionId: "session-1",
       role: "assistant",
+      sources: [],
+      chatSession: { subscriberId: "subscriber-id-1", expertProfileId: "expert-1" },
     });
 
     mockPrisma.chatMessage.update.mockResolvedValue({
@@ -584,6 +593,9 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
 
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
+    expect(data.reviewState).toBe("PENDING");
+    expect(data.auditOperationKey).toBe(`submit:${data.reviewId}`);
+    expect(mockPrisma.$executeRaw).toHaveBeenCalledTimes(2);
     expect(data.rating).toBe(1);
     expect(mockPrisma.chatMessage.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -605,6 +617,8 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
       id: "msg-1",
       chatSessionId: "session-1",
       role: "assistant",
+      sources: [],
+      chatSession: { subscriberId: "subscriber-id-1", expertProfileId: "expert-1" },
     });
 
     mockPrisma.chatMessage.update.mockResolvedValue({
@@ -618,6 +632,9 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
 
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
+    expect(data.reviewState).toBe("PENDING");
+    expect(data.auditOperationKey).toBe(`submit:${data.reviewId}`);
+    expect(mockPrisma.$executeRaw).toHaveBeenCalledTimes(2);
     expect(data.rating).toBe(-1);
     expect(mockPrisma.chatMessage.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -639,20 +656,26 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
     expect(data.error).toContain("not found");
   });
 
-  it("returns 401 when session belongs to different user", async () => {
+  it("returns 403 when session belongs to different user", async () => {
     mockAuth.mockResolvedValue(mockSession.subscriber);
 
     mockPrisma.chatSession.findUnique.mockResolvedValue({
       id: "session-1",
       subscriberId: "different-user-id",
     });
+    mockPrisma.chatMessage.findUnique.mockResolvedValue({
+      id: "msg-1", chatSessionId: "session-1", role: "assistant",
+      chatSession: { subscriberId: "different-user-id", expertProfileId: "expert-1" },
+    });
 
     const req = createPOST("/api/chat/sessions/session-1/messages/msg-1/rate", { rating: 1 });
     const res = await rateMessage(req, messageParams("session-1", "msg-1"));
     const data = await res.json();
 
-    expect(res.status).toBe(401);
-    expect(data.error).toBe("Unauthorized");
+    expect(res.status).toBe(403);
+    expect(data.error).toBe("Message access denied");
+    expect(mockPrisma.$executeRaw).not.toHaveBeenCalled();
+    expect(mockPrisma.chatMessage.update).not.toHaveBeenCalled();
   });
 
   it("returns 404 when message not found", async () => {
@@ -685,6 +708,7 @@ describe("POST /api/chat/sessions/.../messages/.../rate", () => {
       id: "msg-1",
       chatSessionId: "session-1",
       role: "user",
+      chatSession: { subscriberId: "subscriber-id-1", expertProfileId: "expert-1" },
     });
 
     const req = createPOST("/api/chat/sessions/session-1/messages/msg-1/rate", { rating: 1 });

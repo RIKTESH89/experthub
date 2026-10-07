@@ -867,7 +867,8 @@ describe("SECTION 3: Error Handling Across All New Routes", () => {
       const data = await res.json();
 
       expect(res.status).toBe(404);
-      expect(data.error).toBe("Session not found");
+      expect(data.error).toBe("Message not found in session");
+      expect(mockPrisma.chatMessage.update).not.toHaveBeenCalled();
     });
   });
 });
