@@ -20,7 +20,8 @@ test("subscriber story retains seven semantic sections and sparse AI-identified 
   expect(scenePerspectives[3].subtitle).toContain("AI");
   expect(scenePerspectives[8].subtitle).toContain("access");
   expect(scenePerspectives.filter(slot => !slot.hideText).flatMap(slot => `${slot.title} ${slot.subtitle}`.split(/\s+/))).toHaveLength(87);
-  scenePerspectives.filter(slot => !slot.hideText).forEach(slot => expect(slot.title.length + slot.subtitle.length).toBeLessThanOrEqual(56));
+  // The approved opening uses longer words at the same word count.
+  scenePerspectives.filter(slot => !slot.hideText).forEach(slot => expect(slot.title.length + slot.subtitle.length).toBeLessThanOrEqual(slot === scenePerspectives[0] ? 64 : 56));
 });
 
 test("bounds retarget maps both centers and axis extents without deforming the model", () => {

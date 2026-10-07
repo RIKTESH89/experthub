@@ -1,7 +1,7 @@
 // Semantic seven-chapter copy. Cinematic motion and ten text slots use the
 // pinned source engine in source-motion.ts and source-perspectives.ts.
 export const chapters = [
-  { id: "introduction", label: "ExpertHub", title: "Learn from expert Digital Twins.", body: "Read their work. Talk to their AI twin.", side: "left" },
+  { id: "introduction", label: "ExpertHub", title: "Learn from expert Digital Twins.", body: "Explore their thinking. Talk to their AI twin.", side: "left" },
   { id: "contributions", label: "Discover", title: "Find your expert.", body: "Find experts on topics you care about.", side: "left" },
   { id: "context", label: "Read", title: "Read their work.", body: "Explore the posts and ideas they share.", side: "right" },
   { id: "construction", label: "AI Digital Twin", title: "Meet their AI Digital Twin.", body: "AI shaped by the expert’s shared knowledge.", side: "left" },

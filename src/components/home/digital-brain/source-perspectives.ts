@@ -25,7 +25,7 @@ export interface ScenePerspective {
 export const scenePerspectives: ScenePerspective[] = [
   {
     title: 'EXPERT AI TWINS',
-    subtitle: 'Read their work. Talk to their AI twin.',
+    subtitle: 'Explore their thinking. Talk to their AI twin.',
     position: 'center',
     camera: { x: 0, y: 2, z: 10 },
     target: { x: 0, y: 5, z: 0 },
