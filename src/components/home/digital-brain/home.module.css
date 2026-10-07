@@ -49,9 +49,9 @@
 .home :global(.pricing-plans p:not(.eyebrow)), .home :global(.pricing-plans li) { font-size:15px; line-height:1.65; color:var(--muted); }
 .home :global(.pricing-plans ul) { list-style:disc; padding-left:18px; margin:24px 0; }
 .home :global(.pricing-plans li) { margin:12px 0; }
-.home :global(footer) { padding:100px 6vw 110px; background:var(--paper); border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent); }
-.home :global(footer p) { font-size:15px; line-height:1.75; color:var(--muted); }
-.home :global(footer a) { text-decoration:underline; text-underline-offset:4px; }
+.home :global(footer) { padding:24px 6vw 32px; background:var(--paper); border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent); }
+.home :global(.footer-nav) { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; }
+.home :global(footer a) { display:inline-flex; align-items:center; min-height:44px; font-size:15px; text-decoration:underline; text-underline-offset:4px; }
 :global(html):has(.home:not([data-renderer="ready"])) { scroll-behavior:auto; }
 :global(html):has(.home :focus-visible) { scroll-behavior:auto; }
 .home[data-illustration-ready="false"] :global([data-smooth-wrapper]), .home[data-illustration-ready="false"] :global(.viewport) { visibility:hidden; }
@@ -87,7 +87,7 @@
   .home :global(.reading-story section>p:not(.eyebrow)) { font-size:16px; }
   .home :global(.product-continuation) { padding:75px 24px 0; }
   .home :global(.pricing-plans) { grid-template-columns:1fr; gap:14px; margin:50px 0 60px; }
-  .home :global(footer) { padding:70px 24px 105px; display:block; }
+  .home :global(footer) { padding:24px 24px 32px; }
 }
 @media (orientation:landscape) and (max-height:580px) {
   .home :global(.brain-load-screen) { display:grid; grid-template-columns:auto minmax(0,430px); align-content:center; gap:32px; padding:84px 7vw 48px; }

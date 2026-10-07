@@ -43,7 +43,7 @@ export function DigitalBrainHome() {
       </section>
     </main>
     <footer>
-      <div className="credits"><Link href="/about">About Digital Twins</Link><p>Brain Areas by <a href="https://sketchfab.com/3d-models/brain-areas-d64608a3978b47d8a39c5a15795ca8c4">Versal</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Materials, palette, particles and camera adapted for ExpertHub.</p><p>Digital Brain by Sahil K and camera choreography adapted from JosephASG / Codrops, under MIT.</p><a href="/uploads/digital-brain-foundation/CREDITS.md">Artwork credits, licenses and modifications</a></div>
+      <nav className="footer-nav" aria-label="Footer navigation"><Link href="/about">About</Link><Link href="/pricing">Pricing</Link><Link href="/login">Sign in</Link></nav>
     </footer>
     </div></div>
     <noscript><style>{`[data-digital-brain-home] .brain-load-screen { display: none; } [data-digital-brain-home] [data-smooth-wrapper] { visibility: visible !important; } html, body { overflow: auto !important; } [data-digital-brain-home] .skip { display: block !important; }`}</style><p className="static-notice">The illustrated story is available above without animation. If the image cannot load, its description and the story remain available.</p></noscript>
