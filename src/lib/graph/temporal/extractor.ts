@@ -1,5 +1,11 @@
 import { hashEvidence } from "../evidence-extractor";
+// Serving and persona manifests remain on v1 until coverage and release compatibility are approved.
 export const TEMPORAL_EXTRACTOR_VERSION = "literal-temporal-decision-v1";
+export const TEMPORAL_PROJECTION_CANDIDATE_VERSION = "literal-temporal-decision-v2";
+export type TemporalProjectionVersion = typeof TEMPORAL_EXTRACTOR_VERSION | typeof TEMPORAL_PROJECTION_CANDIDATE_VERSION;
+export function assertTemporalProjectionVersion(version: TemporalProjectionVersion): void {
+ if (version !== TEMPORAL_EXTRACTOR_VERSION && version !== TEMPORAL_PROJECTION_CANDIDATE_VERSION) throw new Error("Unsupported temporal projection version");
+}
 export type Origin = "expert-authored" | "third-party-description" | "quote" | "unattributed-upload" | "visitor-claim";
 export interface TemporalExtraction {
  start:number; end:number; text:string; speakerId:string|null; speakerRole:"author"|"quoted"|"unknown";
@@ -15,9 +21,12 @@ function date(value:string):string|null {
 /** Literal, bounded English grammar only; no topic -> personality inference or inferred biography.
  * Optional source phrases: From/As of DATE [until DATE], In DOMAIN, For CONTEXT,
  * followed by I prefer/recommend/choose/chose, My principle is, or I will not.
+ * v2 also retains the decision fields of literal "I do not prefer". Its case action
+ * is the literal object; the linked stance remains negative, never a positive choice.
  * Because and labeled constraints/alternatives/tradeoffs/exceptions are copied verbatim.
  */
-export function extractTemporal(content:string, authorId:string|null, ownerId:string):TemporalExtraction[] {
+export function extractTemporal(content:string, authorId:string|null, ownerId:string, version:TemporalProjectionVersion=TEMPORAL_EXTRACTOR_VERSION):TemporalExtraction[] {
+ assertTemporalProjectionVersion(version);
  const out:TemporalExtraction[]=[];
  for(const m of Array.from(content.matchAll(/[^\r\n]+/g))){
   const text=m[0];if(text.length>2000)continue;
@@ -51,8 +60,8 @@ export function extractTemporal(content:string, authorId:string|null, ownerId:st
    category:verb==="principle is"?"principle":verb==="will not"?"boundary":["choose","chose"].includes(verb)?"decision":"preference",
    polarity:verb==="do not prefer"||verb==="will not"?"negative":"positive",action:main,reasons,constraints,alternatives,tradeoffs,exceptions,supersedes,
    validFrom,validUntil,certainty:!speakerId?"unknown":endorsedByOwner?"source-explicit":"source-reported",
-   kind:speakerId?"explicit":"unknown",endorsedByOwner,decisionType:verb==="chose"?"documented-choice":["prefer","recommend","choose"].includes(verb)?"recommendation":null});
+   kind:speakerId?"explicit":"unknown",endorsedByOwner,decisionType:verb==="chose"?"documented-choice":(["prefer","recommend","choose"].includes(verb)||(version===TEMPORAL_PROJECTION_CANDIDATE_VERSION&&verb==="do not prefer"))?"recommendation":null});
  }
  return out;
 }
-export function temporalIdentity(revisionId:string,spanId:string,value:TemporalExtraction){return hashEvidence([revisionId,spanId,TEMPORAL_EXTRACTOR_VERSION,value]);}
+export function temporalIdentity(revisionId:string,spanId:string,value:TemporalExtraction,version:TemporalProjectionVersion=TEMPORAL_EXTRACTOR_VERSION){assertTemporalProjectionVersion(version);return hashEvidence([revisionId,spanId,version,value]);}

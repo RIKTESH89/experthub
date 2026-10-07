@@ -1,0 +1,242 @@
+{
+  "base": "9f1d718",
+  "extractorSha256": "4862a7d0be703a4069bff88714de1595e065275a6b10a3290f13033f6f088cee",
+  "cases": [
+    {
+      "content": "In messaging, For small teams, I prefer JetStream because capacity; constraints: two engineers; exceptions: audited workloads.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 126,
+          "text": "In messaging, For small teams, I prefer JetStream because capacity; constraints: two engineers; exceptions: audited workloads.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": "messaging",
+          "context": "small teams",
+          "category": "preference",
+          "polarity": "positive",
+          "action": "JetStream",
+          "reasons": "capacity",
+          "constraints": "two engineers",
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": "audited workloads",
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": "recommendation"
+        }
+      ],
+      "identities": [
+        "9b3abbfd4853952952092560b3f6f919ddf295d869994f359acb66313e470309"
+      ]
+    },
+    {
+      "content": "In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 136,
+          "text": "In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": "messaging",
+          "context": "small teams",
+          "category": "preference",
+          "polarity": "negative",
+          "action": "JetStream",
+          "reasons": "maintenance",
+          "constraints": "two engineers",
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": "audited workloads",
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": null
+        }
+      ],
+      "identities": [
+        "16d3b4ff66e5347f859ad38e5e3aa6f276f0af4eb5036595c17e3d13c561134a"
+      ]
+    },
+    {
+      "content": "I do not prefer JetStream.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 26,
+          "text": "I do not prefer JetStream.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": null,
+          "context": null,
+          "category": "preference",
+          "polarity": "negative",
+          "action": "JetStream",
+          "reasons": null,
+          "constraints": null,
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": null,
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": null
+        }
+      ],
+      "identities": [
+        "9f770de41a8f1ea7e54bf0382dbcc58929ba784a0de1f51029c07201ae9bcd85"
+      ]
+    },
+    {
+      "content": "I will not disclose secrets; constraints: contractual duty; exceptions: authorized disclosure.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 94,
+          "text": "I will not disclose secrets; constraints: contractual duty; exceptions: authorized disclosure.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": null,
+          "context": null,
+          "category": "boundary",
+          "polarity": "negative",
+          "action": "disclose secrets",
+          "reasons": null,
+          "constraints": "contractual duty",
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": "authorized disclosure",
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": null
+        }
+      ],
+      "identities": [
+        "cbaa34d45531a7f63913f8c2fabde713973a27f93abcabacdc38fe2eeab794d0"
+      ]
+    },
+    {
+      "content": "I might not prefer JetStream.\nWe dislike JetStream.\nI do not recommend JetStream.\nQuantum orchids are interesting.",
+      "extraction": [],
+      "identities": []
+    },
+    {
+      "content": "From 2025-01-01 until 2026-01-01, In architecture, For small teams, I chose a monolith because capacity; alternatives: services; tradeoff: release independence.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 160,
+          "text": "From 2025-01-01 until 2026-01-01, In architecture, For small teams, I chose a monolith because capacity; alternatives: services; tradeoff: release independence.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": "architecture",
+          "context": "small teams",
+          "category": "decision",
+          "polarity": "positive",
+          "action": "a monolith",
+          "reasons": "capacity",
+          "constraints": null,
+          "alternatives": "services",
+          "tradeoffs": "release independence",
+          "exceptions": null,
+          "supersedes": null,
+          "validFrom": "2025-01-01T00:00:00.000Z",
+          "validUntil": "2026-01-01T00:00:00.000Z",
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": "documented-choice"
+        }
+      ],
+      "identities": [
+        "da67662151f8849777ee81dbff12eed4dc4d52a0e8f71a930dbdcc300bca035d"
+      ]
+    },
+    {
+      "content": "My principle is reversible decisions.",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 37,
+          "text": "My principle is reversible decisions.",
+          "speakerId": "owner",
+          "speakerRole": "author",
+          "origin": "expert-authored",
+          "domain": null,
+          "context": null,
+          "category": "principle",
+          "polarity": "positive",
+          "action": "reversible decisions",
+          "reasons": null,
+          "constraints": null,
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": null,
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-explicit",
+          "kind": "explicit",
+          "endorsedByOwner": true,
+          "decisionType": null
+        }
+      ],
+      "identities": [
+        "9d2864f878cca0221c5ceaec742105101a3783119c6cba8976f449e917cc241a"
+      ]
+    },
+    {
+      "content": "Visitor claimed: \"In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.\"",
+      "extraction": [
+        {
+          "start": 0,
+          "end": 155,
+          "text": "Visitor claimed: \"In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.\"",
+          "speakerId": "quoted:Visitor",
+          "speakerRole": "quoted",
+          "origin": "visitor-claim",
+          "domain": "messaging",
+          "context": "small teams",
+          "category": "preference",
+          "polarity": "negative",
+          "action": "JetStream",
+          "reasons": "maintenance",
+          "constraints": "two engineers",
+          "alternatives": null,
+          "tradeoffs": null,
+          "exceptions": "audited workloads",
+          "supersedes": null,
+          "validFrom": null,
+          "validUntil": null,
+          "certainty": "source-reported",
+          "kind": "explicit",
+          "endorsedByOwner": false,
+          "decisionType": null
+        }
+      ],
+      "identities": [
+        "1c04a33e2a6179986f3e9a4ae49b6b5b08a9d3b55a4119cc8830704e7691dcea"
+      ]
+    }
+  ]
+}
