@@ -18,7 +18,7 @@
 .home :global(.site-nav button) { min-width:44px; min-height:44px; }
 .home :global(.viewport) { display:none; }
 .home:is([data-renderer="ready"],[data-renderer="preparing"]) :global(.story-sequence) { height:900svh; position:relative; background:transparent; }
-.home:is([data-renderer="ready"],[data-renderer="preparing"]) :global(.viewport) { display:block; position:fixed; top:0; width:100%; height:100svh; overflow:hidden; color:var(--ink); isolation:isolate; }
+.home:is([data-renderer="ready"],[data-renderer="preparing"]) :global(.viewport) { display:block; position:fixed; top:0; width:100%; height:100vh; height:100dvh; overflow:hidden; color:var(--ink); isolation:isolate; }
 .home :global(.artwork), .home :global(.poster) { position:absolute; inset:0; width:100%; height:100%; }
 .home :global(.poster) { object-fit:cover; }
 .home :global(.artwork) { z-index:1; }
