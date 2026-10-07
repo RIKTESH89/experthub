@@ -2,6 +2,7 @@ import type { RetrievalScope } from "@/lib/knowledge/access";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import type { EvidenceTrace } from "@/lib/graph/evidence-store";
 import type { TemporalRetrievalResult, TemporalStanceTrace } from "@/lib/graph/temporal/retriever";
+import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 import { READ_CONTRACT_VERSION, RETRIEVAL_BUDGET, terms, type RetrievalPlan } from "./intent";
 export interface EvidenceBundle {
   version: typeof READ_CONTRACT_VERSION; plan: RetrievalPlan; sources: RetrievalResult[];
@@ -45,13 +46,16 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
     // Full provenance stays in the typed bundle. Avoid redundant transport fields in prompt.
     const {chunkIds,sourceUpdatedAt,uploaderId,...sourceRow} = c.row;
     const row: Record<string,unknown> = {...sourceRow};
-    // Retained storage identities stay in typed traces; prompt carries the replay basis/version.
-    if ("storedStanceId" in row) delete row.storedStanceId;
-    if ("storedExtractorVersion" in row) delete row.storedExtractorVersion;
-    // Replayed cases must leave room for counterevidence relations within the fixed cap.
-    // Exact duplicate context/action values remain explicit once and complete in typed traces.
-    if ("situation" in row && "context" in row && row.situation === row.context) delete row.situation;
-    if ("chosenAction" in row && "action" in row && row.chosenAction === row.action) delete row.chosenAction;
+    // Compaction is part of the new read policy only. Retained v1 serialization and
+    // its budget selection must remain byte-for-byte unchanged, including near the cap.
+    if (timeline.readVersion === TEMPORAL_READ_VERSION) {
+      // Retained storage identities stay in typed traces; prompt carries replay basis/version.
+      if ("storedStanceId" in row) delete row.storedStanceId;
+      if ("storedExtractorVersion" in row) delete row.storedExtractorVersion;
+      // Exact duplicate context/action values remain explicit once and complete in typed traces.
+      if ("situation" in row && "context" in row && row.situation === row.context) delete row.situation;
+      if ("chosenAction" in row && "action" in row && row.chosenAction === row.action) delete row.chosenAction;
+    }
     void chunkIds; void sourceUpdatedAt; void uploaderId;
     const data = {type:c.type,...row,ingestedAt:"recordedAt" in row ? undefined : row.ingestedAt};
     return JSON.stringify(data,(_key,value)=>value === null ? undefined : value)+"\n";

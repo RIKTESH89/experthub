@@ -147,7 +147,7 @@ test("retained native row fixture with real-length identities still fits opposit
  const chunkIds=Array.from(new Set(rows.flatMap(s=>s.chunkIds)));
  const s={expertProfileId:"exp14-synthetic-expert",namespace:"synthetic",isOwner:false,allowedVectorIds:chunkIds};
  const plan=planQuestion("Should I choose JetStream for small teams?",{mode:"current",now:new Date("2026-10-07")});
- const result=assembleBundle(s,plan,chunkIds.map(vectorId=>({content:"",score:0,metadata:{vectorId,expertProfileId:s.expertProfileId}})),[],resolveTimeline(rows,plan.temporal));
+ const result=assembleBundle(s,plan,chunkIds.map(vectorId=>({content:"",score:0,metadata:{vectorId,expertProfileId:s.expertProfileId}})),[],{...resolveTimeline(rows,plan.temporal),readVersion:TEMPORAL_READ_VERSION});
  expect(result.temporalTrace.stances).toHaveLength(2);expect(result.temporalTrace.relations).toHaveLength(1);expect(result.prompt).toContain('"recordType":"relation"');expect(result.trace.truncated).toBe(false);expect(result.trace.tokenUpperBound).toBeLessThanOrEqual(4096);
  writeFileSync("audit/exp14/active-negative-projection/prior-native-row-replay.json",JSON.stringify({method:"Offline replay of retained prior native rows; no new native SQL run",bundle:result},null,2)+"\n");
 });

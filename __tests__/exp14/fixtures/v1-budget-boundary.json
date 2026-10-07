@@ -1,0 +1,28 @@
+{
+  "method": "Pure bundle comparison: retained v1 trace from unchanged literal extractor; baseline 3f83786 versus candidate a58e35e. No SQL/provider calls.",
+  "reasonLength": 766,
+  "sourceLength": 884,
+  "baseline": {
+    "candidates": 1,
+    "selected": 0,
+    "tokenUpperBound": 801,
+    "hops": 1,
+    "truncated": true,
+    "retrievalMs": 0,
+    "failures": []
+  },
+  "candidate": {
+    "candidates": 1,
+    "selected": 1,
+    "tokenUpperBound": 3020,
+    "hops": 1,
+    "truncated": false,
+    "retrievalMs": 0,
+    "failures": []
+  },
+  "baselineStanceIds": [],
+  "candidateStanceIds": [
+    "1c518c17504c0384a6d6606692fe1596dc558564fe46a2f7e6f1e965390ec1d3"
+  ],
+  "source": "In messaging, For small teams, I prefer JetStream because xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx; constraints: two engineers; exceptions: audited workloads."
+}

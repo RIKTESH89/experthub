@@ -10,6 +10,8 @@ The active reader policy is `literal-temporal-authorized-replay-v2`. After `auth
 
 A matching replay gets a deterministic v2 view identity and exact literal situation/constraints/reasons/alternatives/tradeoffs/exceptions, with polarity still negative. Typed traces retain `storedStanceId`, `storedExtractorVersion` and `projectionBasis=authorized-span-replay`. Timeline output explicitly carries the **read policy**, not a false claim of persisted v2 coverage. Positive v1 rows remain v1; the policy describes this compatible read view. No rows are written and no versions are read twice.
 
+**Review correction:** compaction below applies only when the timeline explicitly uses `literal-temporal-authorized-replay-v2`. Pinned v1 and unlabeled legacy timelines retain the original serialization and budget behavior. See [../v1-budget-review-fix/review-response.md](../v1-budget-review-fix/review-response.md) for the boundary regression and latest 305-test validation.
+
 Prompt serialization retains storage identities in typed traces and includes the replay basis/version. It omits exact duplicate situation/context and chosenAction/action transport values to leave room for the conflict relation. Complete typed fields and provenance remain available for citations/revalidation. Candidate/evidence/token/hop limits are unchanged at 100 / 12 / 4096 conservative UTF-8 units / one hop. Oversized evidence can still truncate with observable bounded gaps.
 
 RecordedAt remains source ingestion time, and current/as-of/knownAt semantics are unchanged. This is a current deterministic interpretation of retained source bytes, not computation-time history or proof that an earlier system had already interpreted the negative fields.
