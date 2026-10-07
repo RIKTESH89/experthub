@@ -21,8 +21,11 @@ export function savedRatingLinks(sources: unknown, expertProfileId: string): Rat
       const trace = record(value);
       if (!trace || !id(trace.itemId) || !id(trace.revisionId) || !id(trace.spanId) || !id(trace.assertionId) ||
           !Number.isSafeInteger(trace.sourceVersion) || (trace.sourceVersion as number) < 1 ||
-          trace.itemId !== metadata.knowledgeItemId || trace.sourceVersion !== metadata.sourceVersion ||
+          ("knowledgeItemId" in metadata && trace.itemId !== metadata.knowledgeItemId) ||
+          ("sourceVersion" in metadata && trace.sourceVersion !== metadata.sourceVersion) ||
           !Array.isArray(trace.chunkIds) || !trace.chunkIds.includes(metadata.vectorId)) continue;
+      // Default authorized-neighbor retrieval stores item/version only in the trace.
+      // Explicit outer pins, when present, must still agree; SQL validates the full tuple.
       const link = { itemId: trace.itemId, sourceVersion: trace.sourceVersion as number, revisionId: trace.revisionId,
         spanId: trace.spanId, assertionId: trace.assertionId, vectorId: metadata.vectorId };
       links.set(manifestHash(link), link);

@@ -1,12 +1,27 @@
 $ node_modules/.bin/jest --runInBand __tests__/exp16 __tests__/chat-failure-recovery.test.ts __tests__/chat-input-accessibility.test.ts
-Observed final execution: 8 suites passed; 72 tests passed; exit=0.
-Native SQL evidence is recorded separately in native-validation.log.
+PASS __tests__/exp16/rating-controls.test.ts
+PASS __tests__/chat-failure-recovery.test.ts
+PASS __tests__/exp16/rating-retrieval-compat.test.ts
+PASS __tests__/exp16/routes.test.ts
+PASS __tests__/exp16/rating-chat-interface.test.ts
+PASS __tests__/chat-input-accessibility.test.ts
+PASS __tests__/exp16/page.test.ts
+PASS __tests__/exp16/rating-route.test.ts
+PASS __tests__/exp16/rating-review.test.ts
+
+Test Suites: 9 passed, 9 total
+Tests:       79 passed, 79 total
+Snapshots:   0 total
+Time:        1.093 s, estimated 2 s
+Ran all test suites matching /__tests__\/exp16|__tests__\/chat-failure-recovery.test.ts|__tests__\/chat-input-accessibility.test.ts/i.
+
+exit=0
 
 $ node_modules/.bin/tsc --noEmit --incremental false
 
 exit=0
 
-$ node_modules/.bin/next lint --file src/components/chat/chat-interface.tsx --file src/components/chat/chat-message.tsx --file src/components/chat/rating-controls.tsx --file src/components/chat/save-message-rating.ts --file src/components/corrections/review-workspace.tsx --file src/lib/corrections/rating.ts --file src/lib/corrections/service.ts --file __tests__/exp16/rating-controls.test.ts --file __tests__/exp16/rating-chat-interface.test.ts --file __tests__/exp16/rating-review.test.ts --file __tests__/exp16/rating-route.test.ts --file scripts/exp16-rating/rating.integration.ts --file scripts/exp16-rating/setup.cjs --file scripts/exp16-rating/jest.config.cjs
+$ node_modules/.bin/next lint --file src/components/chat/chat-interface.tsx --file src/components/chat/chat-message.tsx --file src/components/chat/rating-controls.tsx --file src/components/chat/save-message-rating.ts --file src/components/corrections/review-workspace.tsx --file src/lib/corrections/rating.ts --file src/lib/corrections/service.ts --file __tests__/exp16/rating-controls.test.ts --file __tests__/exp16/rating-chat-interface.test.ts --file __tests__/exp16/rating-review.test.ts --file __tests__/exp16/rating-route.test.ts --file __tests__/exp16/rating-retrieval-compat.test.ts --file scripts/exp16-rating/rating.integration.ts --file scripts/exp16-rating/setup.cjs --file scripts/exp16-rating/jest.config.cjs
 ✔ No ESLint warnings or errors
 
 exit=0

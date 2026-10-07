@@ -114,3 +114,11 @@ test('native direct feedback refuses message reparenting after locking its old s
  try{await waitForLock("ChatMessage");}finally{release.open();await writer;}
  expect(await outcome).toEqual({status:403});expect(await counts()).toEqual([{reviews:0,events:0,rating:null}]);
 });
+test('native trace-only fallback links validated support and excludes a foreign assertion without duplicated outer pins',async()=>{
+ const fallback=[{metadata:{expertProfileId:'expert',vectorId:'chunk',source:'authorized-temporal-neighbor',generationAudience:'viewer',evidenceTrace:[trace,{...trace,assertionId:'foreign-assertion'}]}}];
+ await prisma.$executeRaw`UPDATE "ChatMessage" SET "sources"=${JSON.stringify(fallback)}::jsonb WHERE "id"='message'`;
+ const result=await rateMessageForReview(input);expect(result.reviewState).toBe('PENDING');
+ const rows=await prisma.$queryRaw<{detail:{provenance:{evidenceLinks:unknown[]}}}[]>`SELECT "detail" FROM "CorrectionEvent"`;
+ expect(rows[0].detail.provenance.evidenceLinks).toEqual([{itemId:'source',sourceVersion:1,revisionId:'revision',spanId:'span',assertionId:'assertion',vectorId:'chunk'}]);
+ expect(await counts()).toEqual([{reviews:1,events:1,rating:-1}]);
+});
