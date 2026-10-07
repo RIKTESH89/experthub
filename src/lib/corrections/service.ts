@@ -26,8 +26,14 @@ export async function submitCorrectionInTransaction(tx:Store,input:Submission,pr
   if(!owners.length)throw new ReviewError(404,"Expert not found");
   if(owners[0].userId!==input.actorId){
    if(!input.messageId || proposal.itemId || proposal.sourceVersion || proposal.title || proposal.content)throw new ReviewError(403,"Visitor feedback must reference your own assistant message");
-   const message=await tx.chatMessage.findUnique({where:{id:input.messageId},include:{chatSession:true}});
+   let message=await tx.chatMessage.findUnique({where:{id:input.messageId},include:{chatSession:true}});
    if(!message || message.role!=="assistant" || message.chatSession.subscriberId!==input.actorId || message.chatSession.expertProfileId!==input.expertProfileId)throw new ReviewError(403,"Message access denied");
+   // Session authorization must remain stable until the candidate commits. Match deletion's parent-first order.
+   const messageSessionId=message.chatSessionId;
+   await tx.$queryRaw`SELECT "id" FROM "ChatSession" WHERE "id"=${messageSessionId} FOR UPDATE`;
+   await tx.$queryRaw`SELECT "id" FROM "ChatMessage" WHERE "id"=${input.messageId} FOR UPDATE`;
+   message=await tx.chatMessage.findUnique({where:{id:input.messageId},include:{chatSession:true}});
+   if(!message || message.chatSessionId!==messageSessionId || message.role!=="assistant" || message.chatSession.subscriberId!==input.actorId || message.chatSession.expertProfileId!==input.expertProfileId)throw new ReviewError(403,"Message access changed");
   }
   const previous=await tx.$queryRaw<Review[]>`SELECT * FROM "CorrectionReview" WHERE "expertProfileId"=${input.expertProfileId} AND "submittedBy"=${input.actorId} AND "submissionKey"=${input.submissionKey}`;
   if(previous.length){if(previous[0].requestHash!==hash)throw new ReviewError(409,"Idempotency key reused");return reviewValue(previous[0]);}

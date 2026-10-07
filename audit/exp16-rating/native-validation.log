@@ -1,0 +1,59 @@
+$ /opt/homebrew/opt/postgresql@18/bin/initdb -D /tmp/exp16-rating-fixture-gfz8ij01/data -U exp16_fixture --auth=trust --no-locale --encoding=UTF8
+The files belonging to this database system will be owned by user "rikteshs20".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+creating directory /tmp/exp16-rating-fixture-gfz8ij01/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Kolkata
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/exp16-rating-fixture-gfz8ij01/data -l logfile start
+
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/pg_ctl -D /tmp/exp16-rating-fixture-gfz8ij01/data -l /tmp/exp16-rating-fixture-gfz8ij01/postgres.log -o -h "" -p 55498 -k /tmp/exp16-rating-fixture-gfz8ij01/socket -w start
+waiting for server to start.... done
+server started
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/createdb -h /tmp/exp16-rating-fixture-gfz8ij01/socket -p 55498 -U exp16_fixture exp16_rating_fixture
+
+exit=0
+$ node_modules/.bin/jest --config scripts/exp16-rating/jest.config.cjs --runInBand
+PASS scripts/exp16-rating/rating.integration.ts
+  ✓ native simultaneous repeats create one candidate and one immutable supported audit (41 ms)
+  ✓ native polarity races plus reviewer decisions preserve one terminal review per polarity (19 ms)
+  ✓ native tenant joins reject foreign assertion or revision support, even when foreign support FK exists (8 ms)
+  ✓ native rollback removes candidate and audit when final rating update fails (10 ms)
+  ✓ native session authorization change while rating waits fails closed (8 ms)
+  ✓ native session authorization change while direct-feedback waits fails closed (18 ms)
+  ✓ native parent-first deletion and rating have no child-parent deadlock or orphan candidate (19 ms)
+  ✓ native unique review keys and composite event tenant FK reject duplicates and cross-tenant audit injection (10 ms)
+  ✓ native direct feedback refuses message reparenting after locking its old session (17 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        0.49 s, estimated 1 s
+Ran all test suites.
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/pg_ctl -D /tmp/exp16-rating-fixture-gfz8ij01/data -m fast -w stop
+waiting for server to shut down.... done
+server stopped
+
+exit=0
+Owned server stopped and runtime removed: /tmp/exp16-rating-fixture-gfz8ij01

@@ -59,6 +59,7 @@ export async function rateMessageForReview(input: { actorId: string; sessionId: 
     const expertProfileId = message.chatSession.expertProfileId;
     // Same expert-first lock order as the existing review workflow.
     await tx.$queryRaw`SELECT "id" FROM "ExpertProfile" WHERE "id"=${expertProfileId} FOR UPDATE`;
+    await tx.$queryRaw`SELECT "id" FROM "ChatSession" WHERE "id"=${input.sessionId} FOR UPDATE`;
     await tx.$queryRaw`SELECT "id" FROM "ChatMessage" WHERE "id"=${input.messageId} FOR UPDATE`;
     message = await tx.chatMessage.findUnique({ where: { id: input.messageId }, include: { chatSession: true } });
     if (!message || message.chatSessionId !== input.sessionId || message.role !== "assistant" ||

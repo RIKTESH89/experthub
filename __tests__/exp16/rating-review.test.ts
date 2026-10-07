@@ -28,6 +28,7 @@ beforeEach(() => {
   $queryRaw:jest.fn(async (parts:TemplateStringsArray,...values:unknown[])=>{
    const sql=parts.join('?');
    if(sql.includes('FROM "ExpertProfile"'))return values[0]==='expert'?[{userId:'owner',id:'expert'}]:[];
+   if(sql.includes('FROM "ChatSession"'))return [{id:'session'}];
    if(sql.includes('FROM "ChatMessage"'))return [{id:'message'}];
    if(sql.includes('FROM "EvidenceRevision"'))return validSupport && values[0]==='expert' && values[1]==='expert' && values.slice(2).join('|')===['source',1,'revision','span','assertion','chunk'].join('|')?[{id:'revision'}]:[];
    if(sql.includes('FROM "CorrectionReview"'))return sql.includes('"submissionKey"')?reviews.filter(r=>r.expertProfileId===values[0]&&r.submittedBy===values[1]&&r.submissionKey===values[2]):reviews.filter(r=>r.id===values[0]&&r.expertProfileId===values[1]);
@@ -105,4 +106,29 @@ test('direct correction requests cannot preempt the reserved rating idempotency 
 test('tenant changes after locking fail closed without a rating or candidate',async()=>{
  let reads=0;tx.chatMessage.findUnique.mockImplementation(async()=>{reads++;return {...message,chatSession:{...message.chatSession,expertProfileId:reads===1?'expert':'foreign'}};});
  await expect(rateMessageForReview(input)).rejects.toMatchObject({status:403});expect(reviews).toEqual([]);expect(tx.chatMessage.update).not.toHaveBeenCalled();
+});
+test.each(['rating','direct-feedback'])('session subscriber reassignment during authorization locking rejects %s before audit',async path=>{
+ const query=tx.$queryRaw.getMockImplementation()!;
+ tx.$queryRaw.mockImplementation(async(parts:TemplateStringsArray,...values:unknown[])=>{
+  if(parts.join('?').includes('FROM "ChatSession"'))message.chatSession.subscriberId='stranger';
+  return query(parts,...values);
+ });
+ const request=path==='rating'?rateMessageForReview(input):submitCorrection({expertProfileId:'expert',actorId:'visitor',messageId:'message',submissionKey:'feedback',proposal:{feedback:'Synthetic feedback'}});
+ await expect(request).rejects.toMatchObject({status:403});expect(reviews).toEqual([]);expect(events).toEqual([]);expect(tx.chatMessage.update).not.toHaveBeenCalled();
+});
+test('session deletion while waiting for authorization lock leaves no orphan review',async()=>{
+ const query=tx.$queryRaw.getMockImplementation()!;
+ tx.$queryRaw.mockImplementation(async(parts:TemplateStringsArray,...values:unknown[])=>{
+  if(parts.join('?').includes('FROM "ChatSession"'))tx.chatMessage.findUnique.mockResolvedValue(null);
+  return query(parts,...values);
+ });
+ await expect(rateMessageForReview(input)).rejects.toMatchObject({status:403});expect(reviews).toEqual([]);expect(events).toEqual([]);
+});
+test('direct visitor feedback refuses a message moved to another session after parent locking',async()=>{
+ const query=tx.$queryRaw.getMockImplementation()!;
+ tx.$queryRaw.mockImplementation(async(parts:TemplateStringsArray,...values:unknown[])=>{
+  if(parts.join('?').includes('FROM "ChatMessage"'))message.chatSessionId='another-session';
+  return query(parts,...values);
+ });
+ await expect(submitCorrection({expertProfileId:'expert',actorId:'visitor',messageId:'message',submissionKey:'feedback',proposal:{feedback:'Synthetic'}})).rejects.toMatchObject({status:403});expect(reviews).toEqual([]);expect(events).toEqual([]);
 });

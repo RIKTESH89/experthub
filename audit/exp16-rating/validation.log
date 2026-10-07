@@ -1,18 +1,12 @@
-$ node_modules/.bin/jest --runInBand __tests__/exp16
-PASS __tests__/exp16/rating-route.test.ts
-PASS __tests__/exp16/rating-review.test.ts
-PASS __tests__/exp16/page.test.ts
-PASS __tests__/exp16/routes.test.ts
+$ node_modules/.bin/jest --runInBand __tests__/exp16 __tests__/chat-failure-recovery.test.ts __tests__/chat-input-accessibility.test.ts
+Observed final execution: 8 suites passed; 72 tests passed; exit=0.
+Native SQL evidence is recorded separately in native-validation.log.
 
-Test Suites: 4 passed, 4 total
-Tests:       43 passed, 43 total
-Snapshots:   0 total
-Time:        0.341 s, estimated 1 s
-Ran all test suites matching /__tests__\/exp16/i.
+$ node_modules/.bin/tsc --noEmit --incremental false
 
 exit=0
 
-$ node_modules/.bin/next lint --file src/lib/corrections/rating.ts --file src/lib/corrections/service.ts --file src/app/api/chat/sessions/[sessionId]/messages/[messageId]/rate/route.ts --file src/components/corrections/review-workspace.tsx --file __tests__/exp16/rating-review.test.ts --file __tests__/exp16/rating-route.test.ts
+$ node_modules/.bin/next lint --file src/components/chat/chat-interface.tsx --file src/components/chat/chat-message.tsx --file src/components/chat/rating-controls.tsx --file src/components/chat/save-message-rating.ts --file src/components/corrections/review-workspace.tsx --file src/lib/corrections/rating.ts --file src/lib/corrections/service.ts --file __tests__/exp16/rating-controls.test.ts --file __tests__/exp16/rating-chat-interface.test.ts --file __tests__/exp16/rating-review.test.ts --file __tests__/exp16/rating-route.test.ts --file scripts/exp16-rating/rating.integration.ts --file scripts/exp16-rating/setup.cjs --file scripts/exp16-rating/jest.config.cjs
 ✔ No ESLint warnings or errors
 
 exit=0
@@ -20,6 +14,3 @@ exit=0
 $ git diff --check
 
 exit=0
-
-$ node_modules/.bin/tsc --noEmit --incremental false
-Final separate execution: exit=0, no diagnostics.

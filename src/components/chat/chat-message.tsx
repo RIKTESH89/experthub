@@ -3,7 +3,8 @@
 import { cn, getInitials, formatRelativeDate } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SourceCitation } from "./source-citation";
-import { ThumbsUp, ThumbsDown, Clock } from "lucide-react";
+import { RatingControls } from "./rating-controls";
+import { Clock } from "lucide-react";
 import { motion } from "motion/react";
 
 import type { MessageSource } from "@/lib/ai/citations";
@@ -24,7 +25,7 @@ interface ChatMessageProps {
   expertImage?: string | null;
   userName?: string;
   userImage?: string | null;
-  onRate?: (messageId: string, rating: 1 | -1) => void;
+  onRate?: (messageId: string, rating: 1 | -1) => void | Promise<void>;
 }
 
 export function ChatMessage({
@@ -106,41 +107,7 @@ export function ChatMessage({
           </motion.div>
         )}
 
-        {/* Rating buttons */}
-        {!isUser && (
-          <div className="flex items-center gap-0.5 mt-0.5">
-            <motion.button
-              type="button"
-              onClick={() => onRate?.(message.id, 1)}
-              className={cn(
-                "inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 transition-colors duration-200",
-                message.rating === 1
-                  ? "bg-emerald-500/10 text-emerald-500"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              )}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Thumbs up"
-            >
-              <ThumbsUp className="h-3.5 w-3.5" />
-            </motion.button>
-            <motion.button
-              type="button"
-              onClick={() => onRate?.(message.id, -1)}
-              className={cn(
-                "inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 transition-colors duration-200",
-                message.rating === -1
-                  ? "bg-red-500/10 text-red-500"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              )}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Thumbs down"
-            >
-              <ThumbsDown className="h-3.5 w-3.5" />
-            </motion.button>
-          </div>
-        )}
+        {!isUser ? <RatingControls rating={message.rating} onRate={onRate ? rating => onRate(message.id, rating) : undefined} /> : null}
       </div>
     </motion.div>
   );

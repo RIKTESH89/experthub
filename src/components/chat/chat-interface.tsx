@@ -1,5 +1,6 @@
 "use client";
 
+import { saveMessageRating } from "./save-message-rating";
 import { readChatResponse } from "./read-chat-response";
 import { toMessageSources } from "@/lib/ai/citations";
 
@@ -57,7 +58,6 @@ export function ChatInterface({
   const [memoryCount, setMemoryCount] = useState(0);
   const [thinkingSteps, setThinkingSteps] = useState<string[]>([]);
   const [isThinkingComplete, setIsThinkingComplete] = useState(false);
-  const [ratedMessages, setRatedMessages] = useState<Record<string, number>>({});
   const [sessionHistory, setSessionHistory] = useState<{
     id: string;
     title?: string;
@@ -137,12 +137,13 @@ export function ChatInterface({
         if (fullRes.ok) {
           const fullSession = await fullRes.json();
           const loadedMessages: Message[] = (fullSession.messages ?? []).map(
-            (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown }) => ({
+            (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown; rating?: number | null }) => ({
               id: msg.id,
               role: msg.role as "user" | "assistant",
               content: msg.content,
               createdAt: msg.createdAt,
               sources: toMessageSources(msg.sources),
+              rating: msg.rating,
             })
           );
           setMessages(loadedMessages);
@@ -198,12 +199,13 @@ export function ChatInterface({
           if (sessionRes.ok) {
             const fullSession = await sessionRes.json();
             const loadedMessages: Message[] = (fullSession.messages ?? []).map(
-              (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown }) => ({
+              (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown; rating?: number | null }) => ({
                 id: msg.id,
                 role: msg.role as "user" | "assistant",
                 content: msg.content,
                 createdAt: msg.createdAt,
                 sources: toMessageSources(msg.sources),
+                rating: msg.rating,
               })
             );
             setMessages(loadedMessages);
@@ -296,12 +298,13 @@ export function ChatInterface({
       if (!res.ok) throw new Error("Failed to load session");
       const fullSession = await res.json();
       const loadedMessages: Message[] = (fullSession.messages ?? []).map(
-        (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown }) => ({
+        (msg: { id: string; role: string; content: string; createdAt: string; sources?: unknown; rating?: number | null }) => ({
           id: msg.id,
           role: msg.role as "user" | "assistant",
           content: msg.content,
           createdAt: msg.createdAt,
           sources: toMessageSources(msg.sources),
+          rating: msg.rating,
         })
       );
       setSessionId(targetSessionId);
@@ -498,27 +501,10 @@ export function ChatInterface({
     finally { recoveryRef.current = false; setIsRecovering(false); }
   }, [sendFailure, expertId]);
 
-  const handleRate = useCallback(
-    async (messageId: string, rating: 1 | -1) => {
-      if (!sessionId) return;
-      setRatedMessages((prev) => ({ ...prev, [messageId]: rating }));
-      try {
-        await fetch(`/api/chat/sessions/${sessionId}/messages/${messageId}/rate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rating }),
-        });
-      } catch {
-        // Revert on failure
-        setRatedMessages((prev) => {
-          const next = { ...prev };
-          delete next[messageId];
-          return next;
-        });
-      }
-    },
-    [sessionId]
-  );
+  const handleRate = useCallback(async (messageId: string, rating: 1 | -1) => {
+    if (!sessionId) throw new Error("Conversation unavailable");
+    await saveMessageRating(sessionId, messageId, rating);
+  }, [sessionId]);
 
   const handleForceScrollToBottom = useCallback(() => {
     userScrolledUp.current = false;
@@ -734,8 +720,8 @@ export function ChatInterface({
           <div className="space-y-5">
             {messages.map((message) => (
               <ChatMessage
-                key={message.id}
-                message={{ ...message, rating: ratedMessages[message.id] ?? message.rating }}
+                key={`${sessionId}:${message.id}`}
+                message={message}
                 expertName={expertName}
                 expertImage={expertImage}
                 userName={currentUserName}
