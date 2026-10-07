@@ -7,6 +7,7 @@ import ErrorView from "@/app/error";
 import NotFoundView from "@/app/not-found";
 import admin from "@/app/(dashboard)/admin/admin-studio.module.css";
 import { Button } from "@/components/ui/button";
+import { AdminReviewFixture } from "@/components/admin/admin-review-fixture";
 import { Input } from "@/components/ui/input";
 const expert = { id:"synthetic-profile",name:"Sam Example",displayName:"Sam Example",image:null,bio:"Synthetic profile for layout review. This expert studies how teams document decisions and make knowledge easier to find.\n\nA longer biography tests the reading measure, spacing, and mobile layout.",headline:"Knowledge systems & team learning",specialty:["Knowledge systems","Team learning"],socialLinks:null,monthlyPrice:0,isVerified:false,subscriberCount:0,postCount:0,twinGreeting:null };
 export function PublicAdminFixture() {
@@ -15,8 +16,9 @@ export function PublicAdminFixture() {
  return <>
   <aside className="border-b border-border bg-card p-4 space-y-3">
    <p className="text-sm font-medium">LOCAL SYNTHETIC PRESENTATION FIXTURE · No account, AI, payments or admin access</p>
-   <div className="flex flex-wrap gap-2">{["Profile","Transcript","Admin","Error","Missing"].map(v=><Button key={v} variant={v===view?"default":"outline"} onClick={()=>setView(v)}>{v}</Button>)}<Button variant="outline" onClick={()=>setTheme(resolvedTheme==="dark"?"light":"dark")}>Toggle theme</Button></div>
+   <div className="flex flex-wrap gap-2">{["Profile","Transcript","Admin","Analytics","Applications","Error","Missing"].map(v=><Button key={v} variant={v===view?"default":"outline"} onClick={()=>setView(v)}>{v}</Button>)}<Button variant="outline" onClick={()=>setTheme(resolvedTheme==="dark"?"light":"dark")}>Toggle theme</Button></div>
   </aside>
+  {(view==="Analytics"||view==="Applications")&&<AdminReviewFixture key={view} view={view}/>}
   {view==="Profile"&&<PublicExpertProfileView expert={expert}/>}
   {view==="Transcript"&&<SharedConversationView expert={{...expert,user:{name:expert.name,image:null}}} messages={[{id:"q",role:"user",content:"How can a team make its decisions easier to revisit?",createdAt:"2026-10-04T00:00:00Z"},{id:"a",role:"assistant",content:"Synthetic response for presentation review only. Record the decision, the context, and the alternatives considered. Keep ownership and a review date visible.\n\nThis fixture does not represent a real AI response or source citation.",createdAt:"2026-10-04T00:00:00Z"}]}/>}
   {view==="Error"&&<><p className="p-4 text-sm">Fixture reset count: {resets}</p><ErrorView error={{name:"Error",message:"Synthetic",digest:"fixture-only"}} reset={()=>setResets(n=>n+1)}/></>}

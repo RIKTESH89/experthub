@@ -1,0 +1,32 @@
+import { NextRequest } from "next/server";
+const mockAuth = jest.fn();
+const mockPrisma = { expertApplication: { findUnique: jest.fn(), findMany: jest.fn(), update: jest.fn() }, user: { findUnique: jest.fn(), update: jest.fn(), create: jest.fn() }, expertProfile: { create: jest.fn() } };
+const mockEmail = jest.fn();
+jest.mock("@/lib/auth", () => ({ auth: mockAuth }));
+jest.mock("@/lib/prisma", () => ({ __esModule: true, default: mockPrisma }));
+jest.mock("@/lib/email/resend", () => ({ sendEmail: mockEmail }));
+import { PATCH } from "@/app/api/admin/expert-applications/[id]/route";
+import { GET } from "@/app/api/admin/expert-applications/route";
+const request = (action = "approve") => new NextRequest("http://localhost/api/admin/expert-applications/synthetic", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+const params = { params: Promise.resolve({ id: "synthetic" }) };
+beforeEach(() => { jest.resetAllMocks(); });
+it.each([null, { user: { id: "synthetic", role: "SUBSCRIBER" } }, { user: { id: "synthetic", role: "EXPERT" } }])("retains server authorization before any approval data access: %j", async session => {
+  mockAuth.mockResolvedValue(session);
+  expect((await PATCH(request(), params)).status).toBe(401);
+  expect((await GET()).status).toBe(401);
+  expect(mockPrisma.expertApplication.findUnique).not.toHaveBeenCalled();
+  expect(mockPrisma.expertApplication.findMany).not.toHaveBeenCalled();
+  expect(mockPrisma.user.update).not.toHaveBeenCalled();
+  expect(mockEmail).not.toHaveBeenCalled();
+});
+it("rejects invalid actions, missing applications and already-processed applications without granting access", async () => {
+  mockAuth.mockResolvedValue({ user: { id: "admin-synthetic", role: "ADMIN" } });
+  expect((await PATCH(request("invalid"), params)).status).toBe(400);
+  mockPrisma.expertApplication.findUnique.mockResolvedValueOnce(null);
+  expect((await PATCH(request(), params)).status).toBe(404);
+  mockPrisma.expertApplication.findUnique.mockResolvedValueOnce({ id: "synthetic", status: "APPROVED" });
+  expect((await PATCH(request(), params)).status).toBe(400);
+  expect(mockPrisma.user.update).not.toHaveBeenCalled();
+  expect(mockPrisma.user.create).not.toHaveBeenCalled();
+  expect(mockEmail).not.toHaveBeenCalled();
+});
