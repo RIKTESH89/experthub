@@ -8,6 +8,10 @@ import prisma from "@/lib/prisma";
  * token budget may discard invalidations. Reads are bounded and permission-gated.
  * Corpus-wide temporal completeness is unavailable above the existing store budget. */
 export async function revalidateDialogueEvidence(scope: RetrievalScope, original: EvidenceBundle): Promise<EvidenceBundle> {
+  const readVersion = original.temporalTrace.readVersion;
+  if (readVersion && scope.temporalReadVersion && readVersion !== scope.temporalReadVersion) throw new Error("Temporal read policy changed during revalidation");
+  // Fresh scope supplies access; original bundle pins interpretation across generation/revalidation.
+  const temporalScope = readVersion ? {...scope,temporalReadVersion:readVersion} : scope;
   const oldRows = [...original.evidenceTrace,...original.temporalTrace.stances];
   if (!oldRows.length) return {...original,sources:[],evidenceTrace:[],temporalTrace:{...original.temporalTrace,stances:[],supersededStances:[],relations:[]}};
   const oldSpans = new Set(oldRows.map(r => r.spanId));
@@ -19,7 +23,7 @@ export async function revalidateDialogueEvidence(scope: RetrievalScope, original
   const exact = exactCovered ? selectedIds.map(candidate) : [];
   const temporalCandidates = corpusCovered ? Array.from(allowed).sort().map(candidate) : exact;
   const [assertions,timeline,coverageSpans] = await Promise.all([
-    retrieveEvidenceTrace(scope,exact), retrieveTemporalEvidence(scope,temporalCandidates,original.plan.temporal),
+    retrieveEvidenceTrace(scope,exact), retrieveTemporalEvidence(temporalScope,temporalCandidates,original.plan.temporal),
     authorizedEvidenceSpans(scope,temporalCandidates),
   ]);
   const unchanged = (row: typeof oldRows[number]) => oldRows.some(old => old.spanId === row.spanId && old.revisionId === row.revisionId && old.contentHash === row.contentHash && old.sourceVersion === row.sourceVersion && old.text === row.text);

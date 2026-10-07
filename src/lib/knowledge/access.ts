@@ -8,6 +8,8 @@ export interface RetrievalScope {
   viewerId?: string;
   isOwner: boolean;
   allowedVectorIds: string[];
+  /** Internal release pin; never supplied by public request JSON. Missing means current read policy. */
+  temporalReadVersion?: string;
 }
 
 export function isEntitled(subscription: SubscriptionAccess | null, now = new Date()): boolean {

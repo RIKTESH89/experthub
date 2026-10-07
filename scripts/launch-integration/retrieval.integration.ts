@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 import {syncPostSource,removeKnowledgeItem} from "@/lib/knowledge/lifecycle";
 import {resolveRetrievalScope} from "@/lib/knowledge/access";
 import {retrieveIntentEvidence} from "@/lib/retrieval/retrieve";
+import {TEMPORAL_EXTRACTOR_VERSION} from "@/lib/graph/temporal/extractor";
+import {TEMPORAL_READ_VERSION} from "@/lib/graph/temporal/read-policy";
 import {RETRIEVAL_BUDGET} from "@/lib/retrieval/intent";
 import {syntheticPaidPeriod} from "../../__tests__/helpers/paid-period";
 import {writeFileSync} from "fs";
@@ -70,15 +72,20 @@ test("source prompt injection stays quoted source data, with no hidden-audience 
 });
 
 
-test("document negative-stance projection loss without inferring missing decision fields",async()=>{
+test("active read replay repairs negative fields while retained v1 remains unchanged",async()=>{
  const positive="In messaging, For small teams, I prefer JetStream because capacity; constraints: two engineers; exceptions: audited workloads.";
  const negative="In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.";
  await post("projection-positive",positive);await post("projection-negative",negative);
  const raw=await prisma.temporalStance.findFirstOrThrow({where:{polarity:"negative"}}),span=await prisma.evidenceSpan.findUniqueOrThrow({where:{id:raw.spanId}}),decision=await prisma.evidenceDecisionCase.findUnique({where:{stanceId:raw.id}});
  expect(span.text).toBe(negative);expect(decision).toBeNull();
  const r=await read("Should I choose JetStream for small teams?");const n=r.temporalTrace.stances.find(s=>s.polarity==="negative")!;
- expect(n.constraints).toBeNull();expect(n.documentedReasons).toBeNull();expect(n.exceptions).toBeNull();expect(r.temporalTrace.relations).toEqual([]);
- writeFileSync("audit/launch-integration/exp14-native/projection-limitation.json",JSON.stringify({positiveSource:positive,negativeSource:negative,persistedNegativeStance:raw,rawSpan:span,decisionCase:decision,retrieved:r.temporalTrace,effect:"Raw opposite-polarity sources have the same declared constraints, but negative structured constraints are null. Timeline grouping does not manufacture a contradiction across null versus explicit constraints. Missing negative reasons/exceptions remain unknown.",proposedFollowup:"Parent review: persist negative-preference decision fields under a versioned literal projection, then rebuild approved synthetic/current sources through existing source-CAS publication. Do not infer missing fields in retrieval or alter shared schema here."},null,2)+"\n");
+ expect(r.temporalTrace.readVersion).toBe(TEMPORAL_READ_VERSION);
+ expect(n).toMatchObject({constraints:"two engineers",documentedReasons:"maintenance",exceptions:"audited workloads",polarity:"negative",projectionBasis:"authorized-span-replay",storedStanceId:raw.id});
+ expect(r.temporalTrace.relations[0]).toMatchObject({type:"contradiction",kind:"inferred"});
+ const retained=await retrieveIntentEvidence({...await scope(),temporalReadVersion:TEMPORAL_EXTRACTOR_VERSION},"Should I choose JetStream for small teams?");
+ expect(retained.temporalTrace.stances.find(s=>s.polarity==="negative")!.constraints).toBeNull();expect(retained.temporalTrace.relations).toEqual([]);
+ expect(await prisma.evidenceDecisionCase.findUnique({where:{stanceId:raw.id}})).toBeNull();
+ writeFileSync("audit/launch-integration/exp14-native/active-projection-repair.json",JSON.stringify({positiveSource:positive,negativeSource:negative,persistedNegativeStance:raw,rawSpan:span,decisionCase:decision,retrieved:r.temporalTrace,retainedV1:retained.temporalTrace,effect:"Default authorized-span replay retains exact negative decision fields without changing persisted v1 rows. Retained v1 interpretation remains available through its explicit read policy."},null,2)+"\n");
 });
 
 test("real SQL candidate saturation remains bounded and reports coverage loss",async()=>{

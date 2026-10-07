@@ -1,6 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import { createHash } from "crypto";
 import type { RetrievalScope } from "@/lib/knowledge/access";
+import { supportedTemporalReadVersion } from "@/lib/graph/temporal/read-policy";
+import { EXTRACTOR_VERSION } from "@/lib/graph/evidence-extractor";
 export const MANIFEST_VERSION = "persona-release-v1";
 export type PersonaConfig = { twinPersonality: string | null; twinGreeting: string | null; twinOpinions: string | null; twinFramework: string | null; twinBoundaries: string | null; ragEnabled: boolean; personalityProfile: Prisma.JsonValue | null };
 export type SourcePin = { itemId: string; sourceVersion: number; revisionId: string; contentHash: string; snapshotHash: string; extractorVersion: string; vectorIds: string[] };
@@ -19,8 +21,8 @@ export function sortedPins(pins: SourcePin[]): SourcePin[] {
 /** EXP14 read contract: intersection only. Caller must resolve a fresh live scope and
  * fresh current pins per request. Never treat a historical release as access authority. */
 export function scopeForRelease(scope: RetrievalScope, manifest: PersonaManifest, currentPins: SourcePin[]): RetrievalScope {
-  if (scope.expertProfileId !== manifest.expertProfileId) return {...scope,allowedVectorIds:[]};
+  if (scope.expertProfileId !== manifest.expertProfileId || manifest.algorithms.evidence !== EXTRACTOR_VERSION || !supportedTemporalReadVersion(manifest.algorithms.temporal)) return {...scope,allowedVectorIds:[]};
   const current = new Map(currentPins.map(p=>[p.itemId,p]));
   const ids = new Set(manifest.sources.filter(p=>canonical(p)===canonical(current.get(p.itemId))).flatMap(p=>p.vectorIds));
-  return {...scope,allowedVectorIds:scope.allowedVectorIds.filter(id=>ids.has(id))};
+  return {...scope,allowedVectorIds:scope.allowedVectorIds.filter(id=>ids.has(id)),temporalReadVersion:manifest.algorithms.temporal};
 }

@@ -1,5 +1,7 @@
 # EXP-14 negative-preference projection candidate
 
+Historical first-stage report for commit `3f83786`. Its unused-candidate limitation is superseded by the active local read integration in [../active-negative-projection/integration-report.md](../active-negative-projection/integration-report.md). Prior evidence below is retained as the first-stage record.
+
 Base: `9f1d718548567fca3f1b66f89f77eb44ea1e818a`, the accepted homepage checkout. Isolated local clone and branch: `repair/exp14-negative-projection`. The original accepted checkout was clean and was not modified.
 
 `c60a2ca8e8ecf3c42b3f4a940a71b38132208137` exists in local Git objects but is **not an ancestor** of this accepted base. Its repair plan was read through `git show`. The extractor, publisher, reader and timeline at that commit and the accepted base are identical (`git diff` for these four files is empty), so its causal reproduction applies here. No plan commit was cherry-picked.

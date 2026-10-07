@@ -43,7 +43,15 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   let prompt = header, truncated = candidateTruncated;
   const record = (c: Candidate) => {
     // Full provenance stays in the typed bundle. Avoid redundant transport fields in prompt.
-    const {chunkIds,sourceUpdatedAt,uploaderId,...row} = c.row;
+    const {chunkIds,sourceUpdatedAt,uploaderId,...sourceRow} = c.row;
+    const row: Record<string,unknown> = {...sourceRow};
+    // Retained storage identities stay in typed traces; prompt carries the replay basis/version.
+    if ("storedStanceId" in row) delete row.storedStanceId;
+    if ("storedExtractorVersion" in row) delete row.storedExtractorVersion;
+    // Replayed cases must leave room for counterevidence relations within the fixed cap.
+    // Exact duplicate context/action values remain explicit once and complete in typed traces.
+    if ("situation" in row && "context" in row && row.situation === row.context) delete row.situation;
+    if ("chosenAction" in row && "action" in row && row.chosenAction === row.action) delete row.chosenAction;
     void chunkIds; void sourceUpdatedAt; void uploaderId;
     const data = {type:c.type,...row,ingestedAt:"recordedAt" in row ? undefined : row.ingestedAt};
     return JSON.stringify(data,(_key,value)=>value === null ? undefined : value)+"\n";
