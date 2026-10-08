@@ -74,3 +74,19 @@ test('production verified Google enrollment retains existing behavior for other 
  mockPrisma.user.findUnique.mockResolvedValue(null);mockPrisma.user.create.mockResolvedValue({id:'production-synthetic'});
  try{expect(await signIn({account:{provider:'google'},user:{email:'synthetic-production@example.invalid',name:'Synthetic'},profile:{email_verified:true}} as Parameters<typeof signIn>[0])).toBe(true);expect(mockPrisma.user.create).toHaveBeenCalledWith({data:{name:'Synthetic',email:'synthetic-production@example.invalid',image:undefined,role:'SUBSCRIBER'}});}finally{process.env=saved;}
 });
+
+test.each([undefined, '', 42])('identity-less or malformed JWT ID %p never queries account state', async id => {
+  expect(await jwt({ token: { id, role: 'ADMIN' } } as unknown as Parameters<typeof jwt>[0])).toBeNull();
+  expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
+});
+test('missing Google application identity cannot inherit a prior token identity', async () => {
+  mockPrisma.user.findUnique.mockResolvedValueOnce(null).mockResolvedValue({ role: 'ADMIN', isBanned: false, isActive: true });
+  expect(await jwt({ token: { id: 'previous-admin', role: 'ADMIN' }, account: { provider: 'google' }, user: { id: 'google-subject', email: 'deleted@example.invalid' } } as unknown as Parameters<typeof jwt>[0])).toBeNull();
+  expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
+  expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({ where: { email: 'deleted@example.invalid' } });
+});
+test('Google subject and claimed role cannot replace persisted application ID and role', async () => {
+  mockPrisma.user.findUnique.mockResolvedValueOnce({ id: 'application-subscriber', role: 'SUBSCRIBER' }).mockResolvedValueOnce({ role: 'EXPERT', isBanned: false, isActive: true });
+  expect(await jwt({ token: { id: 'previous-admin', role: 'ADMIN' }, account: { provider: 'google' }, user: { id: 'google-subject', role: 'ADMIN', email: 'subscriber@example.invalid' } } as unknown as Parameters<typeof jwt>[0])).toMatchObject({ id: 'application-subscriber', role: 'EXPERT' });
+  expect(mockPrisma.user.findUnique).toHaveBeenLastCalledWith({ where: { id: 'application-subscriber' }, select: { role: true, isBanned: true, isActive: true } });
+});

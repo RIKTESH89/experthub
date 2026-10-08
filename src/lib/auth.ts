@@ -53,10 +53,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.role = dbUser.role;
-        }
+        // A failed identity lookup must not retain an ID from another token.
+        if (!dbUser) return null;
+        token.id = dbUser.id;
+        token.role = dbUser.role;
       } else if (user) {
         token.id = user.id as string;
         token.role = (user as { role?: string }).role as string;
