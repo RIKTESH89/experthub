@@ -13,7 +13,7 @@ type Row = ReturnType<typeof makeRow>;
 let row: Row | null; // State-machine fixture, never a database.
 const makeRow=()=>({id:"source",expertProfileId:"ada",title:"Title",content:"Old text",sourceType:"manual",sourceId:null as string | null,sourceVersion:1,indexedVersion:null as number | null,isIndexed:false,indexingError:null as string | null,vectorIds:[] as string[],metadata:{audience:"public"},expertProfile:{vectorNamespace:"ada-ns"}});
 beforeEach(()=>{
- resetAllMocks();index.mockReset();remove.mockReset();row=makeRow();
+ resetAllMocks();prisma.$queryRaw.mockResolvedValue([{userId:"ada-owner"}]);index.mockReset();remove.mockReset();row=makeRow();
  prisma.knowledgeLifecycleJob.upsert.mockImplementation(async({create}:{create:object})=>create);
  prisma.knowledgeLifecycleJob.updateMany.mockResolvedValue({count:1});
  prisma.knowledgeLifecycleJob.findUnique.mockImplementation(async()=>null);

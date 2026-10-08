@@ -167,20 +167,20 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
-  if (servingPersona.releaseId) {
-    try {
-      const current = await prisma.expertProfile.findUnique({where:{userId:expertId}});
-      if (!current || current.id !== expert.id || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
-      const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
-      const currentPersona = await resolveServingPersona(currentScope,current.ragEnabled ?? true);
-      if (currentPersona.releaseId !== servingPersona.releaseId || currentScope.isOwner !== scope.isOwner ||
-          retrievalScope.allowedVectorIds.some(id => !currentPersona.scope.allowedVectorIds.includes(id))) {
-        throw new Error("Persona release or access changed during generation");
-      }
-    } catch (error) {
-      await response.body.cancel().catch(() => {});
-      throw error;
+  // Recheck nullable heads too: the first publication invalidates a draft generation.
+  try {
+    const current = await prisma.expertProfile.findUnique({where:{userId:expertId}});
+    if (!current || current.id !== expert.id || current.userId !== expert.userId || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
+    const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
+    const currentPersona = await resolveServingPersona(currentScope,current.ragEnabled ?? true);
+    checkSignal(options.signal);
+    if (currentPersona.releaseId !== servingPersona.releaseId || currentScope.isOwner !== scope.isOwner || (current.ragEnabled ?? true) !== ragEnabled ||
+        retrievalScope.allowedVectorIds.some(id => !currentPersona.scope.allowedVectorIds.includes(id))) {
+      throw new Error("Persona release or access changed during generation");
     }
+  } catch (error) {
+    await response.body.cancel().catch(() => {});
+    throw error;
   }
 
   return {

@@ -90,24 +90,39 @@ export async function syncPostSource(postId: string) {
   if (!post) return;
   const expert = await prisma.expertProfile.findUnique({ where: { userId: post.authorId } });
   if (!expert) return;
-  const key = { expertProfileId: expert.id, sourceType: "post", sourceId: postId };
-  const existing = await prisma.knowledgeItem.findUnique({ where: { expertProfileId_sourceType_sourceId: key } });
-  if (!post.isRagEnabled) {
-    if (existing) await removeKnowledgeItem(expert.id, existing.id);
-    return;
-  }
-  const title = post.title || "Untitled Post";
-  const content = post.content || "";
-  const metadata = { postId, status: post.status, isHidden: post.isHidden, isPremiumOnly: post.isPremiumOnly };
-  const oldMetadata = existing?.metadata as Record<string, unknown> | null;
-  const changed = existing && (existing.title !== title || existing.content !== content ||
-    oldMetadata?.postId !== postId || oldMetadata?.status !== post.status || oldMetadata?.isHidden !== post.isHidden || oldMetadata?.isPremiumOnly !== post.isPremiumOnly);
-  const item = await prisma.knowledgeItem.upsert({
-    where: { expertProfileId_sourceType_sourceId: key },
-    create: { ...key, title, content, metadata },
-    update: changed ? { title, content, metadata, sourceVersion: { increment: 1 }, isIndexed: false, indexingError: null } : {sourceId:postId},
+  // Initial reads discover the tenant only. Never publish their content snapshot.
+  // Match correction/release ordering: expert -> knowledge source -> authoritative post.
+  const itemId = await prisma.$transaction(async tx => {
+    const owners = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expert.id} FOR UPDATE`;
+    if (owners[0]?.userId !== post.authorId) throw new Error("Post source owner changed");
+    const key = { expertProfileId: expert.id, sourceType: "post", sourceId: postId };
+    const found = await tx.knowledgeItem.findUnique({where:{expertProfileId_sourceType_sourceId:key}});
+    if (found) await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${found.id} AND "expertProfileId"=${expert.id} FOR UPDATE`;
+    await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "id"=${postId} AND "authorId"=${post.authorId} FOR UPDATE`;
+    const currentPost = await tx.post.findUnique({where:{id:postId}});
+    if (currentPost && currentPost.authorId !== post.authorId) throw new Error("Post source owner changed");
+    const existing = await tx.knowledgeItem.findUnique({where:{expertProfileId_sourceType_sourceId:key}});
+    if (!currentPost || !currentPost.isRagEnabled) {
+      if (existing) {
+        await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId:expert.id,itemId:existing.id,sourceVersion:existing.sourceVersion,namespace:expert.vectorNamespace,vectorIds:existing.vectorIds},tx);
+        await retireEvidence(tx,expert.id,existing.id);
+        await tx.knowledgeItem.deleteMany({where:{id:existing.id,expertProfileId:expert.id}});
+      }
+      return null;
+    }
+    const title = currentPost.title || "Untitled Post";
+    const content = currentPost.content || "";
+    const metadata = {postId,status:currentPost.status,isHidden:currentPost.isHidden,isPremiumOnly:currentPost.isPremiumOnly};
+    const oldMetadata = existing?.metadata as Record<string, unknown> | null;
+    const changed = existing && (existing.title !== title || existing.content !== content ||
+      oldMetadata?.postId !== postId || oldMetadata?.status !== currentPost.status || oldMetadata?.isHidden !== currentPost.isHidden || oldMetadata?.isPremiumOnly !== currentPost.isPremiumOnly);
+    const item = await tx.knowledgeItem.upsert({
+      where:{expertProfileId_sourceType_sourceId:key},create:{...key,title,content,metadata},
+      update:changed ? {title,content,metadata,sourceVersion:{increment:1},isIndexed:false,indexingError:null} : {sourceId:postId},
+    });
+    return item.id;
   });
-  await syncKnowledgeItem(expert.id, item.id);
+  if (itemId) await syncKnowledgeItem(expert.id,itemId);
 }
 
 export async function removePostSource(postId: string, authorId: string) {
@@ -135,8 +150,13 @@ export async function drainLifecycleJobs(expertProfileId: string, limit = 20, no
 /** Persist a post projection event atomically with the post mutation. */
 export async function withPostOutbox<T extends {id:string}>(authorId:string, mutate:(tx:Prisma.TransactionClient)=>Promise<T>):Promise<T> {
   return prisma.$transaction(async(tx)=>{
-    const post = await mutate(tx);
     const expert = await tx.expertProfile.findUnique({where:{userId:authorId}});
+    // Acquire the parent lock before a post write/outbox FK can reverse sync's lock order.
+    if (expert) {
+      const owners = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expert.id} FOR UPDATE`;
+      if (owners[0]?.userId !== authorId) throw new Error("Post source owner changed");
+    }
+    const post = await mutate(tx);
     if (expert) await enqueueLifecycleJob({kind:"POST_SYNC",expertProfileId:expert.id,itemId:post.id,sourceVersion:null,namespace:expert.vectorNamespace,vectorIds:[]},tx);
     return post;
   });
