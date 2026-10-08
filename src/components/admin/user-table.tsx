@@ -241,7 +241,7 @@ export function UserTable() {
       setDeleteTarget(null);
       toast.success("User deleted successfully");
     } catch (error) {
-      setDeleteError(error instanceof Error ? error.message : "Deletion was not confirmed. Review the user list before retrying.");
+      setDeleteError(error instanceof Error && error.name !== "TypeError" ? error.message : "Deletion was not confirmed. Review the user list before retrying.");
     } finally {
       mutationInFlight.current = false;
       setActionLoading(null);

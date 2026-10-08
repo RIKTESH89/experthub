@@ -276,7 +276,7 @@ export function KnowledgeForm({
           </CardContent>
 
           {saveError ? <p role="alert" className="mx-6 mb-4 text-sm text-destructive">{saveError}</p> : null}
-          {saved ? <p role="status" className="mx-6 mb-4 text-sm">Knowledge item saved.</p> : null}
+          {saved && !isDirty ? <p role="status" className="mx-6 mb-4 text-sm">Knowledge item saved.</p> : null}
           {isSubmitting ? <p role="status" className="mx-6 mb-4 text-sm">Saving knowledge item…</p> : null}
           <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-card px-6 py-4">
             {onCancel && (

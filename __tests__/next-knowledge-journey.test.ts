@@ -17,3 +17,7 @@ it('suppresses repeated save and cancel while pending',async()=>{
 it('does not navigate after an unmounted save resolves',async()=>{
  let resolve:(x:unknown)=>void=()=>{};global.fetch=jest.fn().mockImplementation(()=>new Promise(r=>resolve=r));const success=jest.fn();const view=render(React.createElement(KnowledgeForm,{initialData:draft,onSuccess:success}));fireEvent.click(screen.getByRole('button',{name:'Update'}));await waitFor(()=>expect(global.fetch).toHaveBeenCalledTimes(1));const signal=(global.fetch as jest.Mock).mock.calls[0][1].signal;view.unmount();expect(signal.aborted).toBe(true);await act(async()=>resolve({ok:true}));expect(success).not.toHaveBeenCalled();
 });
+
+it('does not announce saved after the user changes the retained draft',async()=>{
+ global.fetch=jest.fn().mockResolvedValue({ok:true});render(React.createElement(KnowledgeForm,{initialData:draft}));fireEvent.click(screen.getByRole('button',{name:'Update'}));await screen.findByText('Knowledge item saved.');fireEvent.change(screen.getByLabelText('Title'),{target:{value:'Unsaved revised title'}});await waitFor(()=>expect(screen.queryByText('Knowledge item saved.')).toBeNull());expect((screen.getByRole('button',{name:'Update'}) as HTMLButtonElement).disabled).toBe(false);
+});

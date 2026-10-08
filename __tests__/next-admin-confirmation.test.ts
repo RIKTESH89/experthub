@@ -23,3 +23,7 @@ it('locks pending deletion, ignores repeated clicks/Escape, then focuses search 
 it('keeps the selected user on permission failure and retries the confirmed operation',async()=>{
  global.fetch=jest.fn().mockResolvedValueOnce(loaded).mockResolvedValueOnce({ok:false,status:403}).mockResolvedValueOnce({ok:true});await open();fireEvent.click(screen.getByRole('button',{name:'Confirm deletion'}));await screen.findByRole('alert');expect(screen.getByRole('alertdialog')).toBeTruthy();expect(screen.getByText('Synthetic reader')).toBeTruthy();fireEvent.click(screen.getByRole('button',{name:'Retry deleting user'}));await waitFor(()=>expect(screen.queryByRole('alertdialog')).toBeNull());expect((global.fetch as jest.Mock).mock.calls[2][0]).toBe('/api/admin/users/synthetic-reader');expect((global.fetch as jest.Mock).mock.calls[2][1].method).toBe('DELETE');
 });
+
+it('keeps uncertain deletion reviewable with explicit review-before-retry guidance',async()=>{
+ global.fetch=jest.fn().mockResolvedValueOnce(loaded).mockRejectedValueOnce(new TypeError('Failed to fetch'));await open();fireEvent.click(screen.getByRole('button',{name:'Confirm deletion'}));await screen.findByText(/Deletion was not confirmed/);expect(screen.getByRole('alertdialog')).toBeTruthy();expect(screen.getByText('Synthetic reader')).toBeTruthy();expect(screen.getByRole('button',{name:'Retry deleting user'})).toBeTruthy();
+});

@@ -31,23 +31,29 @@ export function SubscriptionList() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    const request = new AbortController();
+    setIsLoading(true);
+    setLoadError(false);
     async function fetchSubscriptions() {
       try {
-        const res = await fetch("/api/subscriptions");
+        const res = await fetch("/api/subscriptions", { signal: request.signal });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setSubscriptions(data.subscriptions ?? data);
+        if (!request.signal.aborted) setSubscriptions(data.subscriptions ?? data);
       } catch {
+        if (request.signal.aborted) return;
         setLoadError(true);
         toast.error("Failed to load subscriptions");
       } finally {
-        setIsLoading(false);
+        if (!request.signal.aborted) setIsLoading(false);
       }
     }
     fetchSubscriptions();
-  }, []);
+    return () => request.abort();
+  }, [attempt]);
 
   const handleCancel = useCallback(async (subscriptionId: string) => {
     const subscription = subscriptions.find((sub) => sub.id === subscriptionId);
@@ -78,7 +84,7 @@ export function SubscriptionList() {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
+      <div role="status" aria-label="Loading subscriptions" className="space-y-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="flex items-center gap-4 rounded-lg border border-border p-4">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -94,7 +100,7 @@ export function SubscriptionList() {
     );
   }
 
-  if (loadError) return <div className={styles.notice} role="alert"><strong>Subscriptions could not be loaded</strong><p>Reload to review your plans and access.</p><Button variant="outline" onClick={() => window.location.reload()}>Try again</Button></div>;
+  if (loadError) return <div className={styles.notice} role="alert"><strong>Subscriptions could not be loaded</strong><p>Try again to review your plans and access.</p><Button variant="outline" onClick={() => setAttempt(value => value + 1)}>Try again</Button></div>;
 
   if (subscriptions.length === 0) {
     return (
