@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Loader2, Save, FileText, Upload, MessageSquare } from "lucide-react";
 import { motion } from "motion/react";
@@ -54,14 +54,20 @@ export function KnowledgeForm({
   onCancel,
 }: KnowledgeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inFlight = useRef(false);
+  const requestRef = useRef<AbortController | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+  useEffect(() => () => requestRef.current?.abort(), []);
   const isEditing = !!initialData;
 
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<KnowledgeFormValues>({
     defaultValues: {
       title: initialData?.title ?? "",
@@ -74,7 +80,13 @@ export function KnowledgeForm({
   const currentSource = sourceTypeOptions.find((s) => s.value === sourceType);
 
   const onSubmit = async (data: KnowledgeFormValues) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    const request = new AbortController();
+    requestRef.current = request;
     setIsSubmitting(true);
+    setSaveError(null);
+    setSaved(false);
     try {
       const url = isEditing
         ? `/api/knowledge/${initialData.id}`
@@ -85,18 +97,23 @@ export function KnowledgeForm({
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        signal: request.signal,
       });
 
-      if (!res.ok) throw new Error("Failed to save");
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your expert session cannot save this knowledge item. Your draft is kept here." : "Knowledge item could not be saved. Your draft is kept here; try again.");
+      if (request.signal.aborted) return;
+      reset(data);
+      setSaved(true);
 
       toast.success(
         isEditing ? "Knowledge item updated" : "Knowledge item created"
       );
       onSuccess?.();
-    } catch {
-      toast.error("Failed to save knowledge item");
+    } catch (error) {
+      if (!request.signal.aborted) setSaveError(error instanceof Error && !["TypeError", "SyntaxError"].includes(error.name) ? error.message : "Save response could not be confirmed. Check your library before retrying an interrupted save.");
     } finally {
-      setIsSubmitting(false);
+      inFlight.current = false;
+      if (!request.signal.aborted) setIsSubmitting(false);
     }
   };
 
@@ -128,7 +145,7 @@ export function KnowledgeForm({
           </div>
         </CardHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} aria-busy={isSubmitting}>
           <CardContent className="space-y-5">
             {/* Title field */}
             <motion.div
@@ -145,6 +162,9 @@ export function KnowledgeForm({
               </Label>
               <Input
                 id="title"
+                disabled={isSubmitting}
+                aria-invalid={!!errors.title}
+                aria-describedby={errors.title ? "knowledge-title-error" : undefined}
                 placeholder="Enter a descriptive title..."
                 className={cn(
                   "h-11 rounded-lg border-border/50 bg-card px-4 font-sans transition-all duration-200",
@@ -152,10 +172,10 @@ export function KnowledgeForm({
                   "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10",
                   errors.title && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
-                {...register("title", { required: "Title is required" })}
+                {...register("title", { required: "Title is required", validate: value => !!value.trim() || "Title is required" })}
               />
               {errors.title && (
-                <motion.p
+                <motion.p id="knowledge-title-error" role="alert"
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-xs font-medium font-sans text-destructive"
@@ -178,13 +198,13 @@ export function KnowledgeForm({
               >
                 Source Type
               </Label>
-              <Select
+              <Select disabled={isSubmitting}
                 value={sourceType}
                 onValueChange={(value: "manual" | "document" | "post") =>
-                  setValue("sourceType", value)
+                  setValue("sourceType", value, { shouldDirty: true, shouldValidate: true })
                 }
               >
-                <SelectTrigger
+                <SelectTrigger id="sourceType"
                   className={cn(
                     "h-11 cursor-pointer rounded-lg border-border/50 bg-card font-sans transition-all duration-200",
                     "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10"
@@ -231,6 +251,9 @@ export function KnowledgeForm({
               </Label>
               <Textarea
                 id="content"
+                disabled={isSubmitting}
+                aria-invalid={!!errors.content}
+                aria-describedby={errors.content ? "knowledge-content-error" : undefined}
                 placeholder="Enter the knowledge content..."
                 className={cn(
                   "min-h-[200px] resize-y rounded-lg border-border/50 bg-card px-4 py-3 font-sans transition-all duration-200",
@@ -238,10 +261,10 @@ export function KnowledgeForm({
                   "focus:border-primary/50 focus:bg-background focus:ring-2 focus:ring-primary/10",
                   errors.content && "border-destructive/50 focus:border-destructive/50 focus:ring-destructive/10"
                 )}
-                {...register("content", { required: "Content is required" })}
+                {...register("content", { required: "Content is required", validate: value => !!value.trim() || "Content is required" })}
               />
               {errors.content && (
-                <motion.p
+                <motion.p id="knowledge-content-error" role="alert"
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-xs font-medium font-sans text-destructive"
@@ -252,6 +275,9 @@ export function KnowledgeForm({
             </motion.div>
           </CardContent>
 
+          {saveError ? <p role="alert" className="mx-6 mb-4 text-sm text-destructive">{saveError}</p> : null}
+          {saved ? <p role="status" className="mx-6 mb-4 text-sm">Knowledge item saved.</p> : null}
+          {isSubmitting ? <p role="status" className="mx-6 mb-4 text-sm">Saving knowledge item…</p> : null}
           <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-card px-6 py-4">
             {onCancel && (
               <Button
@@ -266,7 +292,7 @@ export function KnowledgeForm({
             )}
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (saved && !isDirty)}
               className="cursor-pointer rounded-lg bg-primary px-6 font-sans text-primary-foreground transition-colors duration-200 hover:bg-primary"
             >
               {isSubmitting ? (
@@ -274,7 +300,7 @@ export function KnowledgeForm({
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              {isEditing ? "Update" : "Create"}
+              {isSubmitting ? "Saving…" : saveError ? "Retry saving knowledge" : isEditing ? "Update" : "Create"}
             </Button>
           </CardFooter>
         </form>

@@ -20,26 +20,30 @@ interface ProfileData {
 export default function SubscriberProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchProfile() {
+      setIsLoading(true);
       try {
-        const res = await fetch("/api/users/me");
+        const res = await fetch("/api/users/me", { signal: controller.signal });
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setProfile(data);
+        if (!controller.signal.aborted) setProfile(data);
       } catch {
-        toast.error("Failed to load profile");
+        if (!controller.signal.aborted) toast.error("Failed to load profile");
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
     fetchProfile();
-  }, []);
+    return () => controller.abort();
+  }, [attempt]);
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-2xl space-y-6 font-sans">
+      <div role="status" aria-label="Loading profile" className="mx-auto max-w-2xl space-y-6 font-sans">
         {/* Header skeleton */}
         <div className="relative overflow-hidden rounded-2xl border bg-card p-6">
           <div className="flex items-center gap-4">
@@ -74,7 +78,7 @@ export default function SubscriberProfilePage() {
   if (!profile) {
     return (
       <PageTransition className={styles.page}>
-        <div className="flex flex-col items-center justify-center py-20 font-sans">
+        <div role="alert" className="flex flex-col items-center justify-center py-20 font-sans">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
               <circle cx="12" cy="12" r="10" />
@@ -84,7 +88,7 @@ export default function SubscriberProfilePage() {
           </div>
           <p className="mt-4 text-sm font-medium text-muted-foreground">Failed to load profile</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => setAttempt(value => value + 1)}
             className="mt-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-200 cursor-pointer"
           >
             Try again

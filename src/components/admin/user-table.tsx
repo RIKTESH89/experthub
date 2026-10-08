@@ -1,7 +1,7 @@
 "use client";
 import { userRowStatus } from "./user-row-state";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Eye,
@@ -45,6 +45,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { FadeIn, motion } from "@/components/ui/motion";
 
@@ -154,6 +155,14 @@ export function UserTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const mutationInFlight = useRef(false);
+  const actionButtons = useRef(new Map<string, HTMLButtonElement>());
+  const returnFocus = useRef<HTMLButtonElement | null>(null);
+  const openingDeletion = useRef(false);
+  const cancelDeletion = useRef<HTMLButtonElement | null>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -189,6 +198,8 @@ export function UserTable() {
   }, [users, searchQuery, roleFilter]);
 
   const handleBanToggle = useCallback(async (userId: string, currentlyBanned: boolean) => {
+    if (mutationInFlight.current) return;
+    mutationInFlight.current = true;
     setActionLoading(userId);
     try {
       const action = currentlyBanned ? "unban" : "ban";
@@ -211,22 +222,28 @@ export function UserTable() {
     } catch {
       toast.error("Failed to update user status");
     } finally {
+      mutationInFlight.current = false;
       setActionLoading(null);
     }
   }, []);
 
   const handleDelete = useCallback(async (userId: string) => {
+    if (mutationInFlight.current) return;
+    mutationInFlight.current = true;
     setActionLoading(userId);
+    setDeleteError(null);
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to delete");
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your admin session cannot delete this user. Nothing was confirmed deleted; sign in again and review the user." : "Deletion was not confirmed. Review the user list before retrying an interrupted request.");
       setUsers((prev) => prev.filter((u) => u.id !== userId));
+      setDeleteTarget(null);
       toast.success("User deleted successfully");
-    } catch {
-      toast.error("Failed to delete user");
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Deletion was not confirmed. Review the user list before retrying.");
     } finally {
+      mutationInFlight.current = false;
       setActionLoading(null);
     }
   }, []);
@@ -245,6 +262,7 @@ export function UserTable() {
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200" />
             <Input
+              ref={searchInput}
               aria-label="Search users by name or email"
               placeholder="Search by name or email..."
               value={searchQuery}
@@ -442,7 +460,7 @@ export function UserTable() {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button aria-label={`Actions for ${user.name || user.email}`}
+                            <Button ref={element => { if (element) actionButtons.current.set(user.id, element); else actionButtons.current.delete(user.id); }} aria-label={`Actions for ${user.name || user.email}`}
                               variant="ghost"
                               size="icon"
                               className={cn(
@@ -451,7 +469,7 @@ export function UserTable() {
                                 "hover:bg-muted/80",
                                 "transition-all duration-200"
                               )}
-                              disabled={actionLoading === user.id}
+                              disabled={actionLoading !== null}
                             >
                               {actionLoading === user.id ? (
                                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
@@ -461,6 +479,7 @@ export function UserTable() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
+                            onCloseAutoFocus={event => { if (openingDeletion.current) event.preventDefault(); }}
                             align="end"
                             className={cn(
                               "w-48 rounded-xl border-border",
@@ -491,7 +510,12 @@ export function UserTable() {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               className="rounded-lg gap-2.5 py-2.5 px-3 cursor-pointer text-sm text-destructive focus:text-destructive focus:bg-destructive/10"
-                              onClick={() => handleDelete(user.id)}
+                              onClick={() => {
+                                openingDeletion.current = true;
+                                returnFocus.current = actionButtons.current.get(user.id) || null;
+                                setDeleteError(null);
+                                setDeleteTarget(user);
+                              }}
                             >
                               <Trash2 className="h-4 w-4" />
                               <span>Delete User</span>
@@ -506,6 +530,21 @@ export function UserTable() {
             </TableBody>
           </Table>
         </div>
+
+        <AlertDialog open={!!deleteTarget} onOpenChange={open => { if (!open && !mutationInFlight.current) { setDeleteTarget(null); setDeleteError(null); } }}>
+          <AlertDialogContent onOpenAutoFocus={event => { event.preventDefault(); cancelDeletion.current?.focus(); }} onEscapeKeyDown={event => { if (mutationInFlight.current) event.preventDefault(); }} onCloseAutoFocus={event => { event.preventDefault(); openingDeletion.current = false; (returnFocus.current?.isConnected ? returnFocus.current : searchInput.current)?.focus(); }}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete user?</AlertDialogTitle>
+              <AlertDialogDescription>Delete {deleteTarget?.name || deleteTarget?.email} ({deleteTarget?.email})? This permanently removes the user account. Review the selected user before confirming.</AlertDialogDescription>
+            </AlertDialogHeader>
+            {deleteError ? <p role="alert" className="text-sm text-destructive">{deleteError}</p> : null}
+            {actionLoading ? <p role="status">Deleting user…</p> : null}
+            <AlertDialogFooter>
+              <Button ref={cancelDeletion} variant="outline" disabled={actionLoading !== null} onClick={() => { setDeleteTarget(null); setDeleteError(null); }}>Cancel</Button>
+              <Button variant="destructive" disabled={actionLoading !== null} onClick={() => { if (deleteTarget) handleDelete(deleteTarget.id); }}>{actionLoading ? "Deleting…" : deleteError ? "Retry deleting user" : "Confirm deletion"}</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Footer count */}
         <div className="flex items-center justify-between">

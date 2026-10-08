@@ -237,18 +237,20 @@ export function KnowledgeTable({ onEdit, onAdd }: KnowledgeTableProps) {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1 opacity-60 transition-opacity duration-200 group-hover:opacity-100">
-                      <Button
+                      {onEdit ? <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
-                        onClick={() => onEdit?.(item)}
+                        aria-label={`Edit knowledge item ${item.title}`}
+                        className="h-11 w-11 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
+                        onClick={() => onEdit(item)}
                       >
                         <Pencil className="h-3.5 w-3.5" />
-                      </Button>
+                      </Button> : null}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-destructive/10 hover:text-destructive"
+                        aria-label={`Delete knowledge item ${item.title}`}
+                        className="h-11 w-11 cursor-pointer rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-destructive/10 hover:text-destructive"
                         onClick={() => handleDelete(item.id)}
                         disabled={deletingId === item.id}
                       >
