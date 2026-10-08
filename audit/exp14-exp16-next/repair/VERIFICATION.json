@@ -1,0 +1,21 @@
+{
+  "codeCommit": "58b768e3433e8f98f8f431d8d663f2b6e69cb04d",
+  "recordedAt": "2026-10-08T07:46:29.896774+00:00",
+  "aggregateSuites": 130,
+  "aggregateTestsPassed": 1616,
+  "nativeTestsPassed": 30,
+  "nativePostgreSQL": 18,
+  "pg16": "unrun - not available in inspected installed Homebrew binaries",
+  "writerDefault": "v1; v2 requires exact EXP16_ENABLE_V2_WRITES=1",
+  "nativeDeployedV1ReaderProof": true,
+  "receiptMandatoryAtApiAndStore": true,
+  "tscExit": 0,
+  "changedProductionEslintExit": 0,
+  "diffCheckExit": 0,
+  "ownedNativeRuntimeStoppedRemoved": true,
+  "deployment": "not performed",
+  "logs": {
+    "aggregate-tests.log": "4ecd21a94f22b7fef9622b85562dd4fcac259b42babe8245e62a22de01065d6e",
+    "native-validation.log": "e357079ed53c155d732118668b1a59533b4d23e3777e329471db9bdda19f046c"
+  }
+}
