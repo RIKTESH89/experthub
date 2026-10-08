@@ -137,3 +137,16 @@ test("expired paid interval and future disjoint interval never invent unpaid cov
  expect(result.outcome).toBe("applied"); expect(hasPaidAccess(await sub())).toBe(false);
  expect(hasPaidAccess(await sub(), at(baseTime+999))).toBe(false); expect(hasPaidAccess(await sub(), at(baseTime+1000))).toBe(true);
 });
+
+test('another subscriber cannot inspect or cancel a known provider subscription', async () => {
+ await prisma.user.create({data:{id:'other-subscriber',email:'other@example.invalid'}});
+ await prisma.expertSubscription.create({data:{id:'other-subscription',subscriberId:'other-subscriber',expertProfileId:'synthetic-expert',tier:'PREMIUM',price:10,status:'PENDING',razorpaySubscriptionId:'other-provider'}});
+ const request=(body:unknown)=>new NextRequest('http://localhost/api/payments/verify',{method:'POST',body:JSON.stringify(body)});
+ expect((await verify(request({razorpaySubscriptionId:'other-provider'}))).status).toBe(404);
+ expect((await cancel(request({subscriptionId:'other-subscription'}))).status).toBe(403);
+ expect(mockFetch).not.toHaveBeenCalled();expect(mockCancel).not.toHaveBeenCalled();
+ const row=await prisma.expertSubscription.findUniqueOrThrow({where:{id:'other-subscription'}});
+ expect(row.status).toBe('PENDING');expect(row.renewalCancelledAt).toBeNull();
+ expect(await prisma.$queryRaw`SELECT "id" FROM "BillingOutbox"`).toHaveLength(0);
+ expect(await prisma.$queryRaw`SELECT "id" FROM "ExpertSubscription" WHERE "billingVersion"<>0`).toHaveLength(0);
+});
