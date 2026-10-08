@@ -44,20 +44,22 @@ export async function releasePersona(input: {expertProfileId:string; actorId:str
     const sourceCount=await tx.knowledgeItem.count({where:{expertProfileId:input.expertProfileId}});
     if(sources.length!==sourceCount)throw new ReviewError(409,"Every source must have a current supported evidence revision before release");
     let chosen=config, temporalReadVersion:string=ACTIVE_TEMPORAL_READ_VERSION;
+    let replayManifest: PersonaManifest | null = null;
     if(input.rollbackTo) {
       const targets=await tx.$queryRaw<Release[]>`SELECT * FROM "PersonaRelease" WHERE "expertProfileId"=${input.expertProfileId} AND "id"=${input.rollbackTo}`;
       const target=targets[0];
       if(!target) throw new ReviewError(404,"Release not found");
-      if(target.manifestHash!==manifestHash(target.manifest) || !sourcePinsEqual(target.manifest.sources,sources)) throw new ReviewError(409,"Rollback evidence is no longer current; create a new release");
+      if(target.manifest.format!==MANIFEST_VERSION || target.manifest.expertProfileId!==input.expertProfileId || target.manifestHash!==manifestHash(target.manifest) || !sourcePinsEqual(target.manifest.sources,sources)) throw new ReviewError(409,"Rollback evidence is no longer current; create a new release");
       if(target.manifest.algorithms.evidence!==EXTRACTOR_VERSION || !supportedTemporalReadVersion(target.manifest.algorithms.temporal)) throw new ReviewError(409,"Rollback algorithm is unsupported");
       temporalReadVersion=target.manifest.algorithms.temporal;
       if(target.manifest.config.ragEnabled !== expert.ragEnabled) throw new ReviewError(409,"Rollback cannot change current RAG permission");
       chosen=target.manifest.config;
+      replayManifest=target.manifest;
       await tx.expertProfile.update({where:{id:expert.id},data:{...chosen,personalityProfile:chosen.personalityProfile===null?Prisma.DbNull:chosen.personalityProfile}});
     }
     const enhancements={opinions:chosen.twinOpinions,framework:chosen.twinFramework,boundaries:chosen.twinBoundaries};
-    const renderedPersona={visitor:getDigitalTwinSystemPrompt(expert.displayName,chosen.twinPersonality||undefined,null,enhancements),owner:getDigitalTwinSystemPrompt(expert.displayName,chosen.twinPersonality||undefined,chosen.personalityProfile as unknown as PersonalityProfile|null,enhancements)};
-    const manifest:PersonaManifest={format:MANIFEST_VERSION,expertProfileId:expert.id,config:chosen,sources,identity:{displayName:expert.displayName,specialty:expert.specialty},renderedPersona,algorithms:{evidence:EXTRACTOR_VERSION,temporal:temporalReadVersion},parentReleaseId:input.expectedHead,rollbackOf:input.rollbackTo||null};
+    const renderedPersona=replayManifest?.renderedPersona ?? {visitor:getDigitalTwinSystemPrompt(expert.displayName,chosen.twinPersonality||undefined,null,enhancements),owner:getDigitalTwinSystemPrompt(expert.displayName,chosen.twinPersonality||undefined,chosen.personalityProfile as unknown as PersonalityProfile|null,enhancements)};
+    const manifest:PersonaManifest={format:MANIFEST_VERSION,expertProfileId:expert.id,config:chosen,sources,identity:replayManifest?.identity ?? {displayName:expert.displayName,specialty:expert.specialty},renderedPersona,algorithms:{evidence:EXTRACTOR_VERSION,temporal:temporalReadVersion},parentReleaseId:input.expectedHead,rollbackOf:input.rollbackTo||null};
     const id=randomUUID(), hash=manifestHash(manifest);
     await tx.$executeRaw`INSERT INTO "PersonaRelease" ("id","expertProfileId","actorId","operationKey","requestHash","manifestHash","manifest") VALUES (${id},${expert.id},${input.actorId},${input.operationKey},${requestHash},${hash},${JSON.stringify(manifest)}::jsonb)`;
     await tx.$executeRaw`INSERT INTO "PersonaReleaseHead" ("expertProfileId","releaseId") VALUES (${expert.id},${id}) ON CONFLICT ("expertProfileId") DO UPDATE SET "releaseId"=EXCLUDED."releaseId","generation"="PersonaReleaseHead"."generation"+1`;
@@ -78,7 +80,7 @@ export async function previewPersonaRollback(input:{expertProfileId:string;actor
   const expert=await tx.expertProfile.findUniqueOrThrow({where:{id:input.expertProfileId}});
   const fields=(Object.keys(target.manifest.config) as (keyof PersonaConfig)[]).filter(field=>manifestHash(target.manifest.config[field])!==manifestHash(expert[field]));
   const reason=currentHead!==input.expectedHead?"Release head changed. Refresh before previewing again.":
-   target.manifestHash!==manifestHash(target.manifest)?"The target manifest failed its integrity check.":
+   target.manifest.format!==MANIFEST_VERSION || target.manifest.expertProfileId!==input.expertProfileId || target.manifestHash!==manifestHash(target.manifest)?"The target manifest failed its integrity check.":
    target.manifest.algorithms.evidence!==EXTRACTOR_VERSION || !supportedTemporalReadVersion(target.manifest.algorithms.temporal)?"The target algorithm is unsupported. Rollback is blocked.":
    expert.ragEnabled !== target.manifest.config.ragEnabled?"RAG permission changed. Rollback cannot change current access.":
    count!==pins.length || !sourcePinsEqual(target.manifest.sources,pins)?"Evidence has changed, been removed, restricted, or still needs recomputation. Rollback is blocked.":null;

@@ -1,3 +1,4 @@
+import { resolveServingPersona } from "@/lib/persona/serving";
 import { createProviderStreamState } from "@/lib/ai/provider-stream";
 import { checkSignal } from "./request-lifecycle";
 import { retrieveLocalEvaluationEvidence } from "./dialogue/structured/local-retrieval";
@@ -82,14 +83,15 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   if (!expert) throw new Error("Expert profile not found");
   const scope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId);
 
-  const expertName = expert?.displayName || expert?.user?.name || "Expert";
+  const servingPersona = await resolveServingPersona(scope, expert.ragEnabled ?? true);
+  const expertName = servingPersona.displayName ?? (expert?.displayName || expert?.user?.name || "Expert");
   const ragEnabled = expert?.ragEnabled ?? true;
 
   // Step 1: Retrieve context from vector store (only if RAG is enabled)
   let retrievalResults: RetrievalResult[] = [];
   let contextTexts: string[] = [];
 
-  const effectiveScope=ragEnabled?scope:{...scope,allowedVectorIds:[]};
+  const effectiveScope=servingPersona.scope;
   const evidenceBundle = options.structuredEvaluationAdapters
     ? await retrieveLocalEvaluationEvidence(effectiveScope,query,temporalQuery)
     : options.signal
@@ -115,14 +117,16 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   if (options.structuredEvaluationAdapters) {
     let audience: "owner" | "viewer" = scope.isOwner ? "owner" : "viewer";
     const structuredEvaluation = await runStructuredDialogue({expertId:expert.userId,query,
-      history:authorizedHistory(chatHistory,scope),bundle:evidenceBundle,
+      history:authorizedHistory(chatHistory,effectiveScope),bundle:evidenceBundle,
       adapters:{...options.structuredEvaluationAdapters,evidence:{revalidate:async(original,signal)=>{
         if(signal.aborted)throw new Error("evaluation aborted");
         const current=await prisma.expertProfile.findUnique({where:{userId:expertId}});
         if(!current||current.id!==expert.id||current.userId!==expert.userId||current.vectorNamespace!==expert.vectorNamespace)throw new Error("Expert identity changed");
         const currentScope=await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
         audience=currentScope.isOwner?"owner":"viewer";
-        return revalidateDialogueEvidence(current.ragEnabled===false?{...currentScope,allowedVectorIds:[]}:currentScope,original);
+        const currentPersona = await resolveServingPersona(currentScope, current.ragEnabled ?? true);
+        if (currentPersona.releaseId !== servingPersona.releaseId) throw new Error("Persona release changed during generation");
+        return revalidateDialogueEvidence(currentPersona.scope,original);
       }}},
     });
     const release=structuredEvaluation.releaseBundle||evidenceBundle;
@@ -131,7 +135,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     checkSignal(options.signal);
     return {stream,sources,thinkingSteps:[...thinkingSteps,"Structured synthetic evaluation; semantic behavior is unvalidated"],evidenceTrace,temporalTrace,
       evidenceBundle:{...release,sources,evidenceTrace,temporalTrace,prompt:JSON.stringify({evidenceTrace,temporalTrace})},
-      dialogueState:buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),release),groundedStyle:groundedStyle(release,expert.userId),structuredEvaluation};
+      dialogueState:buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,effectiveScope),release),groundedStyle:groundedStyle(release,expert.userId),structuredEvaluation};
   }
 
   // Step 3: Retrieve subscriber memories
@@ -157,16 +161,16 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   thinkingSteps.push("Formulating response...");
 
   // Build system prompt with all context
-  const dialogueState = buildDialogueState(expert.userId, query, authorizedHistory(chatHistory, scope), evidenceBundle);
+  const dialogueState = buildDialogueState(expert.userId, query, authorizedHistory(chatHistory, effectiveScope), evidenceBundle);
   const style = groundedStyle(evidenceBundle, expert.userId);
   const systemPrompt =
-    getDigitalTwinSystemPrompt(expertName) + dialoguePrompt(dialogueState) + stylePrompt(style) +
+    (servingPersona.systemPrompt ?? getDigitalTwinSystemPrompt(expertName)) + dialoguePrompt(dialogueState) + stylePrompt(style) +
     getMemoryPrompt(memories) +
     getContextPrompt(contextTexts, webResults, graphContext) + verificationPrompt;
 
   const messages: ChatMessage[] = [
     { role: "system", content: systemPrompt },
-    ...authorizedHistory(chatHistory, scope),
+    ...authorizedHistory(chatHistory, effectiveScope),
     { role: "user", content: query },
   ];
 
@@ -221,11 +225,13 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     if (!current || current.id !== expert.id || current.userId !== expert.userId || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
     const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
     releaseAudience = currentScope.isOwner ? "owner" : "viewer";
-    releaseBundle = await revalidateDialogueEvidence(current.ragEnabled === false ? {...currentScope,allowedVectorIds:[]} : currentScope,evidenceBundle);
+    const currentPersona = await resolveServingPersona(currentScope, current.ragEnabled ?? true);
+    if (currentPersona.releaseId !== servingPersona.releaseId) throw new Error("Persona release changed during generation");
+    releaseBundle = await revalidateDialogueEvidence(currentPersona.scope,evidenceBundle);
   } catch {
     malformed = true;
   }
-  const releaseState = buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,scope),releaseBundle);
+  const releaseState = buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,effectiveScope),releaseBundle);
   const releaseStyle = groundedStyle(releaseBundle,expert.userId);
   const verification = verifyPersonResponse(malformed ? "" : draft,releaseState,releaseBundle,releaseStyle);
   const {sources,evidenceTrace,temporalTrace} = acceptedEvidence(releaseBundle,verification.acceptedSpanIds,releaseAudience);

@@ -1,3 +1,4 @@
+import { resolveServingPersona } from "@/lib/persona/serving";
 import { checkSignal } from "./request-lifecycle";
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import type { RetrievalResult } from "@/lib/vector/retriever";
@@ -61,7 +62,8 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   if (!expert) throw new Error("Expert profile not found");
   const scope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId);
 
-  const expertName = expert?.displayName || expert?.user?.name || "Expert";
+  const servingPersona = await resolveServingPersona(scope, expert.ragEnabled ?? true);
+  const expertName = servingPersona.displayName ?? (expert?.displayName || expert?.user?.name || "Expert");
   const personality = expert?.twinPersonality || undefined;
   const personalityProfile = scope.isOwner && expert?.personalityProfile
     ? (expert.personalityProfile as unknown as PersonalityProfile)
@@ -77,7 +79,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   let retrievalResults: RetrievalResult[] = [];
   let contextTexts: string[] = [];
 
-  const retrievalScope = ragEnabled ? scope : {...scope, allowedVectorIds: []};
+  const retrievalScope = servingPersona.scope;
   const evidenceBundle = options.signal
     ? await retrieveIntentEvidence(retrievalScope, query, temporalQuery, options.signal)
     : await retrieveIntentEvidence(retrievalScope, query, temporalQuery);
@@ -130,13 +132,13 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
 
   // Build system prompt with all context
   const systemPrompt =
-    getDigitalTwinSystemPrompt(expertName, personality, personalityProfile, enhancements) +
+    (servingPersona.systemPrompt ?? getDigitalTwinSystemPrompt(expertName, personality, personalityProfile, enhancements)) +
     getMemoryPrompt(memories) +
     getContextPrompt(contextTexts, webResults, graphContext);
 
   const messages: ChatMessage[] = [
     { role: "system", content: systemPrompt },
-    ...authorizedHistory(chatHistory, scope),
+    ...authorizedHistory(chatHistory, retrievalScope),
     { role: "user", content: query },
   ];
 
@@ -163,6 +165,22 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   if (!response.ok || !response.body) {
     await response.body?.cancel().catch(() => {});
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+  }
+
+  if (servingPersona.releaseId) {
+    try {
+      const current = await prisma.expertProfile.findUnique({where:{userId:expertId}});
+      if (!current || current.id !== expert.id || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
+      const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
+      const currentPersona = await resolveServingPersona(currentScope,current.ragEnabled ?? true);
+      if (currentPersona.releaseId !== servingPersona.releaseId || currentScope.isOwner !== scope.isOwner ||
+          retrievalScope.allowedVectorIds.some(id => !currentPersona.scope.allowedVectorIds.includes(id))) {
+        throw new Error("Persona release or access changed during generation");
+      }
+    } catch (error) {
+      await response.body.cancel().catch(() => {});
+      throw error;
+    }
   }
 
   return {

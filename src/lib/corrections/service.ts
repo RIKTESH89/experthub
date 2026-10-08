@@ -60,14 +60,24 @@ export async function decideCorrection(input:{expertProfileId:string;actorId:str
    if(!p.itemId || !p.sourceVersion || !p.title || !p.content)throw new ReviewError(400,"Expert must revise feedback into a complete source correction first");
    await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${p.itemId} AND "expertProfileId"=${input.expertProfileId} FOR UPDATE`;
    const item=await tx.knowledgeItem.findUnique({where:{id:p.itemId},include:{expertProfile:true}});
-   if(!item || item.expertProfileId!==input.expertProfileId || item.sourceType!=="manual" || item.sourceVersion!==p.sourceVersion)throw new ReviewError(409,"Source deleted, changed, or not a manual source");
+   if(!item || item.expertProfileId!==input.expertProfileId || !["manual","post"].includes(item.sourceType) || item.sourceVersion!==p.sourceVersion)throw new ReviewError(409,"Source deleted, changed, or unsupported");
    if(item.title===p.title && item.content===p.content)throw new ReviewError(400,"Correction does not change source");
+   // Posts are authoritative; correct both rows atomically without changing publication/access.
+   if(item.sourceType==="post") {
+    if(!item.sourceId)throw new ReviewError(409,"Post source missing");
+    await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "id"=${item.sourceId} AND "authorId"=${input.actorId} FOR UPDATE`;
+    const post=await tx.post.findUnique({where:{id:item.sourceId}});
+    if(!post || post.authorId!==input.actorId || !post.isRagEnabled ||
+       item.title!==(post.title||"Untitled Post") || item.content!==(post.content||""))throw new ReviewError(409,"Post source changed or access revoked");
+    // The locks and current copy comparison prevent a stale proposal overwriting a newer post.
+    await tx.post.update({where:{id:post.id},data:{title:p.title,content:p.content}});
+   }
    const changed=await tx.knowledgeItem.updateMany({where:{id:item.id,expertProfileId:input.expertProfileId,sourceVersion:p.sourceVersion},data:{title:p.title,content:p.content,sourceVersion:{increment:1},isIndexed:false,indexingError:null}});
    if(changed.count!==1)throw new ReviewError(409,"Source changed");
    await retireEvidence(tx,input.expertProfileId,item.id);
    const version=p.sourceVersion+1;
    await enqueueLifecycleJob({kind:"INDEX",expertProfileId:input.expertProfileId,itemId:item.id,sourceVersion:version,namespace:item.expertProfile.vectorNamespace,vectorIds:plannedVectorIds(input.expertProfileId,item.id,version,`${p.title}\n\n${p.content}`)},tx);
-   sourceChange={itemId:item.id,fromVersion:p.sourceVersion,toVersion:version,before:{title:item.title,content:item.content,metadata:item.metadata},beforeHash:manifestHash([item.title,item.content]),afterHash:manifestHash([p.title,p.content])};
+   sourceChange={sourceType:item.sourceType,sourceId:item.sourceId,itemId:item.id,fromVersion:p.sourceVersion,toVersion:version,before:{title:item.title,content:item.content,metadata:item.metadata},beforeHash:manifestHash([item.title,item.content]),afterHash:manifestHash([p.title,p.content])};
   }
   review.version++;review.state=input.action==="ACCEPT"?"ACCEPTED":input.action==="REJECT"?"REJECTED":"PENDING";
   await tx.$executeRaw`UPDATE "CorrectionReview" SET "proposal"=${JSON.stringify(review.proposal)}::jsonb,"state"=${review.state},"version"=${review.version} WHERE "id"=${review.id} AND "expertProfileId"=${input.expertProfileId}`;

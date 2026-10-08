@@ -59,3 +59,12 @@ test("rollback retains adapter targets and blocks unknown algorithms before conf
  await expect(releasePersona({expertProfileId:"tenant-a",actorId:"owner",operationKey:"rollback",expectedHead:"head",rollbackTo:"old"})).rejects.toThrow("Rollback algorithm is unsupported");
  expect(update).not.toHaveBeenCalled();expect(writes).toEqual([]);
 });
+
+test("behavioral rollback replays target rendered prompts and identity even when current identity differs",async()=>{
+ target.identity={displayName:"Prior approved identity",specialty:["prior specialty"]};
+ target.renderedPersona={visitor:"Prior approved visitor",owner:"Prior approved owner"};
+ const result=await releasePersona({expertProfileId:"tenant-a",actorId:"owner",operationKey:"behavioral-rollback",expectedHead:"head",rollbackTo:"old"});
+ expect(result.manifest.identity).toEqual(target.identity);
+ expect(result.manifest.renderedPersona).toEqual(target.renderedPersona);
+ expect(result.manifest.config).toEqual(target.config);
+});
