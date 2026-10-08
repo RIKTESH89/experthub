@@ -1,11 +1,12 @@
 const transaction=jest.fn();
 jest.mock("@/lib/prisma",()=>({__esModule:true,default:{$transaction:transaction}}));
 jest.mock("@/lib/ai/prompts",()=>({getDigitalTwinSystemPrompt:()=>"Synthetic persona"}));
-import { releasePersona, previewPersonaRollback } from "@/lib/persona/store";
+import { releasePersona as activatePersona, previewPersonaActivation, previewPersonaRollback } from "@/lib/persona/store";
 import { manifestHash, scopeForRelease, type PersonaManifest } from "@/lib/persona/manifest";
 import { TEMPORAL_EXTRACTOR_VERSION as V1 } from "@/lib/graph/temporal/extractor";
 import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 import { EXTRACTOR_VERSION } from "@/lib/graph/evidence-extractor";
+async function releasePersona(input:Parameters<typeof activatePersona>[0]) {const preview=await previewPersonaActivation(input);return activatePersona({...input,...(preview.approvalHash?{approvalHash:preview.approvalHash}:{})});}
 const config={twinPersonality:null,twinGreeting:null,twinOpinions:null,twinFramework:null,twinBoundaries:null,ragEnabled:true,personalityProfile:null};
 const pins=[{itemId:"p",sourceVersion:1,revisionId:"r-p",contentHash:"hash",snapshotHash:"snapshot",extractorVersion:EXTRACTOR_VERSION,vectorIds:["tenant-a:p:v1:chunk_0"]}];
 const old:PersonaManifest={format:"persona-release-v1",expertProfileId:"tenant-a",config,sources:pins,identity:{displayName:"Ada",specialty:[]},renderedPersona:{visitor:"old",owner:"old"},algorithms:{evidence:EXTRACTOR_VERSION,temporal:V1},parentReleaseId:null,rollbackOf:null};

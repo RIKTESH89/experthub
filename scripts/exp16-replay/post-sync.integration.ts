@@ -57,6 +57,7 @@ beforeAll(async()=>{
 beforeEach(async()=>{
  delete process.env.OPENAI_MODEL;
  await prisma.expertProfile.update({where:{id:'expert'},data:{ragEnabled:true,twinGreeting:null}});
+ approvals.clear();
  jest.mocked(indexDocument).mockClear();jest.mocked(removeDocument).mockClear();
  await prisma.$executeRawUnsafe('TRUNCATE "PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
  await prisma.post.create({data:{id:'post',authorId:'owner',title:'Advice',content:'Old statement',isRagEnabled:true,isPremiumOnly:true,isHidden:true,status:'DRAFT'}});
@@ -280,7 +281,12 @@ import { releasePersona,previewPersonaRollback } from '@/lib/persona/store';
 import { resolveReleasedPresentation } from '@/lib/persona/serving';
 import { manifestHash } from '@/lib/persona/manifest';
 async function emptySources(){await prisma.$executeRawUnsafe('TRUNCATE "KnowledgeItem","EvidenceRevision","EvidenceAssertion","EvidenceSpan","EvidenceSupport","EvidenceDecisionCase","TemporalStance"');}
-const publish=(operationKey:string,expectedHead:string|null,rollbackTo?:string)=>releasePersona({expertProfileId:'expert',actorId:'owner',operationKey,expectedHead,rollbackTo});
+const approvals=new Map<string,string>();
+async function publish(operationKey:string,expectedHead:string|null,rollbackTo?:string){
+ const input={expertProfileId:'expert',actorId:'owner',operationKey,expectedHead,rollbackTo};
+ if(!approvals.has(operationKey)){const p=await previewPersonaActivation(input);if(p.approvalHash)approvals.set(operationKey,p.approvalHash);}
+ return releasePersona({...input,approvalHash:approvals.get(operationKey)});
+}
 test('native v2 rollback restores captured model, persona, null greeting and widget without restoring live widget settings',async()=>{
  await emptySources();process.env.OPENAI_MODEL='synthetic-model-A';
  await prisma.widgetConfig.create({data:{id:'widget',expertProfileId:'expert',greeting:'Widget A'}});
@@ -330,4 +336,33 @@ test('native expert revision captures new import target while preserving origina
  const revised=await decideCorrection({...decision,reviewId:review.id,action:'REVISE',proposal:{feedback:'Revised',itemId:'item',sourceVersion:1,title:'Updated',content:'Proposed'}});expect(revised).toMatchObject({state:'PENDING',version:2});
  const events=await prisma.$queryRaw<{action:string,detail:any}[]>`SELECT "action","detail" FROM "CorrectionEvent" WHERE "reviewId"=${review.id} ORDER BY "version"`;
  expect(events[0].detail.importedSource).toBeUndefined();expect(events[1].detail.importedSource).toMatchObject({sourceType:'pdf',snapshot:{content:'Old statement'}});expect(await prisma.knowledgeItem.findUnique({where:{id:'item'}})).toMatchObject({content:'Old statement',sourceVersion:1,isIndexed:true});
+});
+
+import { previewPersonaActivation } from '@/lib/persona/store';
+import { resolveServingPersona as legacyServing } from './legacy-serving.fixture';
+const preview=(expectedHead:string|null,rollbackTo?:string)=>previewPersonaActivation({expertProfileId:'expert',actorId:'owner',expectedHead,rollbackTo});
+test('native equal-config rollback discloses model/widget delta and binds exact reviewed activation',async()=>{
+ await emptySources();process.env.OPENAI_MODEL='A';await prisma.widgetConfig.create({data:{id:'widget',expertProfileId:'expert',greeting:'Greeting A'}});const a=await publish('a',null);
+ process.env.OPENAI_MODEL='B';await prisma.widgetConfig.update({where:{id:'widget'},data:{greeting:'Greeting B'}});const b=await publish('b',a.id);
+ const p=await preview(b.id,a.id);expect(p.allowed).toBe(true);expect(p.changes).toEqual(expect.arrayContaining([{field:'effective.runtime.generation.model',before:'B',after:'A'},{field:'effective.greetings.widget',before:'Greeting B',after:'Greeting A'}]));
+ const result=await releasePersona({expertProfileId:'expert',actorId:'owner',operationKey:'approved',expectedHead:b.id,rollbackTo:a.id,approvalHash:p.approvalHash!});
+ const {approval,...payload}=result.manifest;expect(payload).toEqual(p.activation);expect(approval).toMatchObject({hash:p.approvalHash,before:p.reviewed!.before,after:p.reviewed!.after});
+});
+test.each(['model','widget','identity','draft'])('native new-release approval refuses changed %s without publishing a head',async field=>{
+ await emptySources();await prisma.widgetConfig.create({data:{id:'widget',expertProfileId:'expert',greeting:'A'}});const p=await preview(null);
+ if(field==='model')process.env.OPENAI_MODEL='changed';if(field==='widget')await prisma.widgetConfig.update({where:{id:'widget'},data:{greeting:'Changed'}});if(field==='identity')await prisma.expertProfile.update({where:{id:'expert'},data:{displayName:'Changed'}});if(field==='draft')await prisma.expertProfile.update({where:{id:'expert'},data:{twinBoundaries:'Changed'}});
+ await expect(releasePersona({expertProfileId:'expert',actorId:'owner',operationKey:'stale-preview',expectedHead:null,approvalHash:p.approvalHash!})).rejects.toThrow('Reviewed payload changed');expect(await prisma.$queryRaw`SELECT * FROM "PersonaReleaseHead"`).toEqual([]);
+});
+test('native gated writer stays v1-readable by exact deployed reader; v2 readers remain enabled with gate off',async()=>{
+ await emptySources();const a=await publish('v2',null);delete process.env.EXP16_ENABLE_V2_WRITES;
+ try{
+  expect(await resolveReleasedPresentation('expert')).toMatchObject({releaseId:a.id,format:'persona-release-v2'});
+  const p=await preview(a.id);expect(p.activation!.format).toBe('persona-release-v1');const b=await releasePersona({expertProfileId:'expert',actorId:'owner',operationKey:'gated-v1',expectedHead:a.id,approvalHash:p.approvalHash!});
+  expect(b.manifest.format).toBe('persona-release-v1');expect(await legacyServing({expertProfileId:'expert',namespace:'synthetic-ns',isOwner:false,allowedVectorIds:[]},true)).toMatchObject({releaseId:b.id,displayName:b.manifest.identity.displayName});
+  expect(await preview(b.id,a.id)).toMatchObject({allowed:false,reason:'V2 writes are gated pending a compatible downgrade target'});await expect(publish('blocked-v2',b.id,a.id)).rejects.toThrow('gated');
+  expect(await prisma.$queryRaw`SELECT COUNT(*)::int AS count FROM "PersonaRelease"`).toEqual([{count:2}]);
+ }finally{process.env.EXP16_ENABLE_V2_WRITES='1';}
+});
+test('native store rejects activation without receipt before any release/config write',async()=>{
+ await emptySources();await expect(releasePersona({expertProfileId:'expert',actorId:'owner',operationKey:'missing',expectedHead:null})).rejects.toThrow('approval receipt required');expect(await prisma.$queryRaw`SELECT * FROM "PersonaReleaseHead"`).toEqual([]);
 });

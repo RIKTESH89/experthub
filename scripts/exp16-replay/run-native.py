@@ -11,6 +11,7 @@ owned = Path(tempfile.mkdtemp(prefix='exp16-replay-fixture-', dir='/tmp'))
 port = 55510
 env = {key: os.environ[key] for key in ['PATH', 'LANG', 'LC_ALL', 'TMPDIR'] if key in os.environ}
 env['DOTENV_CONFIG_PATH'] = '/dev/null'
+env['EXP16_ENABLE_V2_WRITES'] = '1'
 env.update(DATABASE_URL=f'postgresql://exp16_fixture@localhost:{port}/exp16_replay_fixture?host={owned}/socket', EXP16_OWNED_SYNTHETIC_CLUSTER='1')
 env['DIRECT_URL'] = env['DATABASE_URL']
 started = False
@@ -42,5 +43,5 @@ finally:
             log.append('Cleanup blocked: owned runtime retained at ' + str(owned))
     else:
         shutil.rmtree(owned)
-    (app/'audit/exp14-exp16-next/native-validation.log').write_text('\n'.join(log)+'\n')
+    (app/'audit/exp14-exp16-next/repair/native-validation.log').write_text('\n'.join(log)+'\n')
 raise SystemExit(exit_code)

@@ -32,8 +32,8 @@ test("decision requires explicit reason, expected version and safe key",async()=
 test("release requires an explicit expected head and derives tenant from auth",async()=>{
  expect((await release(request({operationKey:"release"}))).status).toBe(400);
  jest.mocked(releasePersona).mockResolvedValue({id:"release"} as never);
- expect((await release(request({operationKey:"release",expectedHead:null}))).status).toBe(201);
- expect(releasePersona).toHaveBeenCalledWith({expertProfileId:"expert",actorId:"owner",operationKey:"release",expectedHead:null});
+ expect((await release(request({operationKey:"release",expectedHead:null,approvalHash:"a".repeat(64)}))).status).toBe(201);
+ expect(releasePersona).toHaveBeenCalledWith({expertProfileId:"expert",actorId:"owner",operationKey:"release",expectedHead:null,approvalHash:"a".repeat(64)});
 });
 test("visitor endpoint accepts feedback only and authenticated actor identity",async()=>{
  const body={expertProfileId:"expert",messageId:"message",submissionKey:"feedback",feedback:"Synthetic disagreement"};
@@ -41,4 +41,7 @@ test("visitor endpoint accepts feedback only and authenticated actor identity",a
  jest.mocked(submitCorrection).mockResolvedValue({state:"PENDING"} as never);
  expect((await feedback(request(body))).status).toBe(201);
  expect(submitCorrection).toHaveBeenCalledWith({expertProfileId:"expert",messageId:"message",submissionKey:"feedback",actorId:"owner",proposal:{feedback:"Synthetic disagreement"}});
+});
+test('activation without a reviewed receipt is denied before store invocation',async()=>{
+ await expect(release(request({operationKey:'new',expectedHead:null}))).resolves.toHaveProperty('status',400);expect(releasePersona).not.toHaveBeenCalled();
 });
