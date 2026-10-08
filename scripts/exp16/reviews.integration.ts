@@ -1,6 +1,8 @@
+import {createReviewedFixturePublisher} from '../launch-integration/reviewed-persona-fixture';
+const releasePersona=createReviewedFixturePublisher();
 import prisma from "@/lib/prisma";
 import { submitCorrection, decideCorrection, type Review } from "@/lib/corrections/service";
-import { releasePersona, currentSourcePins, previewPersonaRollback } from "@/lib/persona/store";
+import { currentSourcePins, previewPersonaRollback } from "@/lib/persona/store";
 import { publishEvidence } from "@/lib/graph/evidence-store";
 import { manifestHash, scopeForRelease, canonical } from "@/lib/persona/manifest";
 // Providers are prohibited. Planned IDs alone remain the real deterministic implementation.
@@ -21,6 +23,7 @@ beforeAll(async()=>{
  await prisma.expertProfile.create({data:{id:expertProfileId,userId:actorId,displayName:"Synthetic Expert",specialty:[],vectorNamespace:"exp16-synthetic"}});
 });
 beforeEach(async()=>{
+ releasePersona.clear();
  await prisma.$executeRaw`DELETE FROM "PersonaReleaseHead" WHERE "expertProfileId"=${expertProfileId}`;
  await prisma.$executeRaw`DELETE FROM "PersonaRelease" WHERE "expertProfileId"=${expertProfileId}`;
  await prisma.$executeRaw`DELETE FROM "CorrectionReview" WHERE "expertProfileId"=${expertProfileId}`;

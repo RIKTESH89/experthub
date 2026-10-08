@@ -1,8 +1,9 @@
+import {createReviewedFixturePublisher} from '../launch-integration/reviewed-persona-fixture';
+const releasePersona=createReviewedFixturePublisher();
 import prisma from '@/lib/prisma';
 import { enqueueLifecycleJob, runLifecycleJob } from '@/lib/knowledge/outbox';
 import { removeKnowledgeItem } from '@/lib/knowledge/lifecycle';
 import { publishEvidence } from '@/lib/graph/evidence-store';
-import { releasePersona } from '@/lib/persona/store';
 import { resolveRetrievalScope } from '@/lib/knowledge/access';
 import { rateLimit } from '@/lib/rate-limit';
 import { createLocalScheduler } from '@/lib/knowledge/local-scheduler';

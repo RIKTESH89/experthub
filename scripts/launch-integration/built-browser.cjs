@@ -7,7 +7,7 @@ require.extensions['.ts']=(m,file)=>m._compile(ts.transpileModule(fs.readFileSyn
 const {chromium}=require('@playwright/test'),{spawn}=require('child_process'),{PrismaClient}=require('@prisma/client');
 const url='postgresql://integration_synthetic@127.0.0.1:55447/integration_fresh';process.env.DATABASE_URL=url;process.env.DIRECT_URL=url;
 const prisma=new PrismaClient({datasources:{db:{url}}});
-const {publishEvidence}=require('../../src/lib/graph/evidence-store.ts'),{submitCorrection}=require('../../src/lib/corrections/service.ts'),{releasePersona}=require('../../src/lib/persona/store.ts');
+const {publishEvidence}=require('../../src/lib/graph/evidence-store.ts'),{submitCorrection}=require('../../src/lib/corrections/service.ts');const releasePersona=require('./reviewed-persona-fixture.ts').createReviewedFixturePublisher();
 const host='experthub-git-exp25-26-launch-au-e842c4-riktesh-singhs-projects.vercel.app',canonical='https://'+host,base='http://127.0.0.1:3357',secret='synthetic-integration-only';
 const owner='integration-browser-owner',expert='integration-browser-expert',viewer='integration-browser-viewer';
 let browser,server;const checks=[],errors=[],external=[];

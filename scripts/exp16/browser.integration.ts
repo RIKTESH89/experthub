@@ -1,10 +1,11 @@
+import {createReviewedFixturePublisher} from '../launch-integration/reviewed-persona-fixture';
+const releasePersona=createReviewedFixturePublisher();
 import {chromium,type Browser,type Page} from "@playwright/test";
 import {createServer,type Server} from "http";
 import {readFileSync} from "fs";
 import {NextRequest} from "next/server";
 import prisma from "@/lib/prisma";
 import {submitCorrection} from "@/lib/corrections/service";
-import {releasePersona} from "@/lib/persona/store";
 import {publishEvidence} from "@/lib/graph/evidence-store";
 let viewer="exp16-ui-owner", role="EXPERT", writes=0;
 jest.mock("@/lib/auth",()=>({auth:async()=>({user:{id:viewer,role}})}));
@@ -37,6 +38,7 @@ beforeAll(async()=>{
  browser=await chromium.launch({channel:'chrome',headless:true});console.info('Existing Chrome:',browser.version());
 });
 beforeEach(async()=>{
+ releasePersona.clear();
  viewer=owner;role="EXPERT";writes=0;errors.length=0;
  await prisma.user.deleteMany({where:{id:owner}});
  await prisma.user.create({data:{id:owner,email:'ui-owner@example.test',role:'EXPERT',expertProfile:{create:{id:expert,displayName:'Synthetic expert',specialty:[],vectorNamespace:'exp16-ui'}}}});
@@ -45,7 +47,7 @@ beforeEach(async()=>{
  await submitCorrection({expertProfileId:expert,actorId:owner,submissionKey:'ui-feedback',proposal:{feedback:'Synthetic correction to review',itemId:'ui-source',sourceVersion:1,title:'Manual advice',content:'I prefer coffee.'}});
 });
 afterAll(async()=>{await browser?.close();if(server)await new Promise<void>(resolve=>server.close(()=>resolve()));await prisma.user.deleteMany({where:{id:owner}});await prisma.$disconnect();});
-async function page(width=1100){const context=await browser.newContext({viewport:{width,height:900}});await context.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(`${base}/expert/reviews`);return {p,context};}
+async function page(width=1100){const context=await browser.newContext({viewport:{width,height:900}});await context.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());const p=await context.newPage();p.setDefaultTimeout(8000);p.on('pageerror',e=>errors.push(e.message));await p.goto(`${base}/expert/reviews`);return {p,context};}
 async function loaded(p:Page){await p.getByRole('heading',{name:'Correction queue'}).waitFor();}
 test('owner sees status/audit and mobile/desktop layout; cancel sends no write',async()=>{
  const {p,context}=await page();await loaded(p);
@@ -82,19 +84,19 @@ test('release create and rollback preview/cancel/confirm never restore a revoked
  const first=await releasePersona({expertProfileId:expert,actorId:owner,operationKey:'first',expectedHead:null});
  await prisma.expertProfile.update({where:{id:expert},data:{twinOpinions:'Synthetic change'}});
  const {p,context}=await page();await loaded(p);await p.getByRole('button',{name:'Create release',exact:true}).click();await p.getByRole('button',{name:'Cancel release'}).click();expect(writes).toBe(0);
- await p.getByRole('button',{name:'Create release',exact:true}).click();await p.getByRole('button',{name:'Confirm new release'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});await p.getByRole('status').filter({hasText:'Persona release created'}).waitFor();expect(writes).toBe(1);
+ await p.getByRole('button',{name:'Create release',exact:true}).click();await p.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>b.textContent==='Confirm new release'&&!b.disabled));await p.getByRole('button',{name:'Confirm new release'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});await p.getByRole('status').filter({hasText:'Reviewed release activated'}).waitFor();expect(writes).toBe(1);
  const firstCard=p.locator('li').filter({has:p.getByText(first.id,{exact:true})});await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('region',{name:'Rollback preview'}).waitFor();expect(writes).toBe(1);
- await p.getByRole('button',{name:'Cancel rollback'}).click();expect(writes).toBe(1);
+ await p.getByRole('button',{name:'Cancel release'}).click();expect(writes).toBe(1);
  await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('button',{name:'Confirm rollback'}).waitFor();
  await prisma.knowledgeItem.update({where:{id:'ui-source'},data:{metadata:{authorId:owner,audience:'private'}}});
  await p.getByRole('button',{name:'Confirm rollback'}).click();await p.getByRole('alert').filter({hasText:'Conflict:'}).waitFor();expect(writes).toBe(2);expect(await p.getByRole('button',{name:'Confirm rollback'}).isDisabled()).toBe(true);
  expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:expert}})).twinOpinions).toBe('Synthetic change');
- await p.getByRole('button',{name:'Cancel rollback'}).click();await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('alert').filter({hasText:'Rollback is blocked'}).waitFor();expect(await p.getByRole('button',{name:'Confirm rollback'}).isDisabled()).toBe(true);await context.close();
+ await p.getByRole('button',{name:'Cancel release'}).click();await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('alert').filter({hasText:'Every source must have a current supported evidence revision'}).waitFor();expect(await p.getByRole('button',{name:'Confirm rollback'}).isDisabled()).toBe(true);await context.close();
 });
 test('unsupported source is excluded from correction choices',async()=>{
  await prisma.knowledgeItem.create({data:{expertProfileId:expert,title:'Imported document',content:'Synthetic PDF',sourceType:'document',isIndexed:true,sourceVersion:1,indexedVersion:1,vectorIds:[]}});
  const {p,context}=await page();await loaded(p);await p.getByText('1 source(s) require an unsupported adapter.',{exact:false}).waitFor();await p.getByRole('button',{name:'Revise',exact:true}).click();expect(await p.getByRole('option',{name:/Imported document/}).count()).toBe(0);
- await p.getByRole('button',{name:'Cancel and return to reviews'}).click();await p.getByRole('button',{name:'Create release',exact:true}).click();await p.getByRole('button',{name:'Confirm new release'}).click();await p.getByRole('alert').filter({hasText:'supported evidence revision'}).waitFor();await context.close();
+ await p.getByRole('button',{name:'Cancel and return to reviews'}).click();await p.getByRole('button',{name:'Create release',exact:true}).click();await p.getByRole('alert').filter({hasText:'supported evidence revision'}).waitFor();expect(await p.getByRole('button',{name:'Confirm new release'}).isDisabled()).toBe(true);await context.close();
 });
 test('visitor cannot load owner data or use owner endpoints',async()=>{
  viewer='exp16-ui-visitor';role='SUBSCRIBER';const {p,context}=await page();await p.getByRole('alert').filter({hasText:'Expert owner access required'}).waitFor();expect(await p.getByText('Synthetic correction to review').count()).toBe(0);
@@ -103,15 +105,15 @@ test('visitor cannot load owner data or use owner endpoints',async()=>{
 test('rollback preview cannot re-enable currently disabled RAG access',async()=>{
  const first=await releasePersona({expertProfileId:expert,actorId:owner,operationKey:'rag-first',expectedHead:null});
  await prisma.expertProfile.update({where:{id:expert},data:{ragEnabled:false}});
- const {p,context}=await page();await loaded(p);await p.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('alert').filter({hasText:'cannot re-enable disabled access'}).waitFor();expect(await p.getByRole('button',{name:'Confirm rollback'}).isDisabled()).toBe(true);expect(writes).toBe(0);expect(first.manifest.config.ragEnabled).toBe(true);await context.close();
+ const {p,context}=await page();await loaded(p);await p.getByRole('button',{name:'Preview rollback'}).click();await p.getByRole('alert').filter({hasText:'cannot change current RAG permission'}).waitFor();expect(await p.getByRole('button',{name:'Confirm rollback'}).isDisabled()).toBe(true);expect(writes).toBe(0);expect(first.manifest.config.ragEnabled).toBe(true);await context.close();
 });
 test('safe rollback confirmation restores settings as a new release only',async()=>{
  const first=await releasePersona({expertProfileId:expert,actorId:owner,operationKey:'safe-first',expectedHead:null});
  await prisma.expertProfile.update({where:{id:expert},data:{twinOpinions:'Synthetic newer opinion'}});
  await releasePersona({expertProfileId:expert,actorId:owner,operationKey:'safe-second',expectedHead:first.id});
  const {p,context}=await page();await loaded(p);
- const firstCard=p.locator('li').filter({has:p.getByText(first.id,{exact:true})});await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByText('Opinions after rollback',{exact:true}).waitFor();
- expect(writes).toBe(0);await p.getByRole('button',{name:'Confirm rollback'}).click();await p.getByRole('status').filter({hasText:'Rollback recorded as a new release'}).waitFor();expect(writes).toBe(1);
+ const firstCard=p.locator('li').filter({has:p.getByText(first.id,{exact:true})});await firstCard.getByRole('button',{name:'Preview rollback'}).click();await p.getByText('Draft Opinions',{exact:true}).waitFor();
+ expect(writes).toBe(0);await p.getByRole('button',{name:'Confirm rollback'}).click();await p.getByRole('status').filter({hasText:'Reviewed release activated'}).waitFor();expect(writes).toBe(1);
  expect((await prisma.expertProfile.findUniqueOrThrow({where:{id:expert}})).twinOpinions).toBe(null);
  expect(await prisma.knowledgeItem.findUnique({where:{id:'ui-source'}})).toMatchObject({sourceVersion:1,content:'I prefer tea.'});
  await p.screenshot({path:'audit/exp16/ui-release-history.png',fullPage:true});expect(errors).toEqual([]);await context.close();
