@@ -1,0 +1,10 @@
+PASS __tests__/continuation-settings-route.test.ts
+  ✓ round-trips preferences through actual handlers with session-scoped in-memory persistence across two subscribers (6 ms)
+  ✓ denies anonymous preference reads and writes before the mocked store is touched (1 ms)
+  ✓ rejects invalid digest without changing the mocked preferences (2 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.285 s
+Ran all test suites matching /__tests__\/continuation-settings-route.test.ts/i.

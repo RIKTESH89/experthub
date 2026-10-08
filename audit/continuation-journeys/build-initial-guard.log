@@ -1,0 +1,14 @@
+ ⨯ Failed to load next.config.mjs, see more info here https://nextjs.org/docs/messages/next-config-error
+
+> Build error occurred
+Error: Local UI test isolation is forbidden outside local development/test
+    at assertLocalUiContext (/Users/rikteshs20/Documents/Codex/2026-10-08/task/product-journeys-continuation/local-ui-isolation.cjs:14:11)
+    at localUiConfig (/Users/rikteshs20/Documents/Codex/2026-10-08/task/product-journeys-continuation/local-ui-isolation.cjs:21:3)
+    at file:///Users/rikteshs20/Documents/Codex/2026-10-08/task/product-journeys-continuation/next.config.mjs:8:17
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async loadConfig (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/config.js:711:36)
+    at async Span.traceAsyncFn (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/trace/trace.js:154:20)
+    at async /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/build/index.js:374:28
+    at async Span.traceAsyncFn (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/trace/trace.js:154:20)
+    at async build (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/build/index.js:368:9)
