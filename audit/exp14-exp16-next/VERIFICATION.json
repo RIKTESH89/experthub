@@ -1,0 +1,24 @@
+{
+  "base": "8897903fb7820532994a9f0f72c210449a46afb2",
+  "implementation": "4e62b5450091145519b1c41a55c9122b5b6b225e",
+  "recordedAt": "2026-10-08T07:18:30.737199+00:00",
+  "aggregate": {
+    "suites": 129,
+    "tests": 1612,
+    "passed": true,
+    "logSha256": "075a3bd32b7459e6f324739d072c122295c341bb2a6476032ca09e3833df0341"
+  },
+  "native": {
+    "PostgreSQLMajor": 18,
+    "tests": 23,
+    "passed": true,
+    "privateSocketOnly": true,
+    "runtimeStoppedAndRemoved": true,
+    "logSha256": "540a59f7df3ea41c68656079ab6cef81472d46fd4d9ecae437ffbe766522b99d"
+  },
+  "tscExit": 0,
+  "eslintChangedRuntimeExit": 0,
+  "diffCheckExit": 0,
+  "hostedAcceptance": "unrun",
+  "productionOrDeploymentActions": false
+}

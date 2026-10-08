@@ -1,0 +1,73 @@
+$ /opt/homebrew/opt/postgresql@18/bin/initdb -D /tmp/exp16-replay-fixture-d8bubkbl/data -U exp16_fixture --auth=trust --no-locale --encoding=UTF8
+The files belonging to this database system will be owned by user "rikteshs20".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+creating directory /tmp/exp16-replay-fixture-d8bubkbl/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Kolkata
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/exp16-replay-fixture-d8bubkbl/data -l logfile start
+
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/pg_ctl -D /tmp/exp16-replay-fixture-d8bubkbl/data -l /tmp/exp16-replay-fixture-d8bubkbl/postgres.log -o -h "" -p 55510 -k /tmp/exp16-replay-fixture-d8bubkbl/socket -w start
+waiting for server to start.... done
+server started
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/createdb -h /tmp/exp16-replay-fixture-d8bubkbl/socket -p 55510 -U exp16_fixture exp16_replay_fixture
+
+exit=0
+$ node_modules/.bin/jest --config scripts/exp16-replay/jest.config.cjs --runInBand
+PASS scripts/exp16-replay/post-sync.integration.ts
+  ✓ native delayed discovery cannot republish the pre-acceptance post snapshot (40 ms)
+  ✓ native opposite transaction interleavings complete without deadlock: correction-first (58 ms)
+  ✓ native opposite transaction interleavings complete without deadlock: sync-first (50 ms)
+  ✓ native failed audit insertion rolls back authoritative post, projection, retirement and outbox (35 ms)
+  ✓ native post mutation acquires expert parent before post/outbox writes (26 ms)
+  ✓ native RAG revocation retracts projection/evidence and preserves post visibility (18 ms)
+  ✓ native simultaneous first projection publication creates one source without duplicate versions (20 ms)
+  ✓ native real evidence FK/projection completes in both rebuild/sync orders: rebuild-first (41 ms)
+  ✓ native real evidence FK/projection completes in both rebuild/sync orders: sync-first (37 ms)
+  ✓ native index/removal with the same deterministic cleanup job has no cycle: index-first (38 ms)
+  ✓ native index/removal with the same deterministic cleanup job has no cycle: remove-first (37 ms)
+  ✓ native index/RAG retraction preserves revocation and cleanup in both orders: index-first (41 ms)
+  ✓ native index/RAG retraction preserves revocation and cleanup in both orders: retraction-first (38 ms)
+  ✓ native evidence publication failure rolls back source/revision and durably cleans staged vectors (27 ms)
+  ✓ native index finishing after accepted correction cannot publish stale evidence or retire new state (20 ms)
+  ✓ native removal cleanup failure rolls back revocation, then retry captures and drains final IDs (24 ms)
+  ✓ native v2 rollback restores captured model, persona, null greeting and widget without restoring live widget settings (46 ms)
+  ✓ native release head CAS permits exactly one concurrent owner publication (23 ms)
+  ✓ native legacy rollback preserves v1 and unsupported v2 is rejected before mutation (33 ms)
+  ✓ native pdf submission captures immutable parsed provenance without changing beliefs; retry survives deletion (22 ms)
+  ✓ native blog submission captures immutable parsed provenance without changing beliefs; retry survives deletion (22 ms)
+  ✓ native stale/foreign/oversized import submissions leave no review audit or source mutation (21 ms)
+  ✓ native expert revision captures new import target while preserving original submission event (18 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       23 passed, 23 total
+Snapshots:   0 total
+Time:        1.264 s
+Ran all test suites.
+
+exit=0
+$ /opt/homebrew/opt/postgresql@18/bin/pg_ctl -D /tmp/exp16-replay-fixture-d8bubkbl/data -m fast -w stop
+waiting for server to shut down.... done
+server stopped
+
+exit=0
+Owned server stopped and runtime removed: /tmp/exp16-replay-fixture-d8bubkbl
