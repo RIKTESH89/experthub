@@ -42,5 +42,5 @@ finally:
             log.append('Cleanup blocked: owned runtime retained at ' + str(owned))
     else:
         shutil.rmtree(owned)
-    (app/'audit/exp14-exp16-release-serving/repair/native-validation.log').write_text('\n'.join(log)+'\n')
+    (app/'audit/exp14-exp16-release-serving/r3/native-validation.log').write_text('\n'.join(log)+'\n')
 raise SystemExit(exit_code)

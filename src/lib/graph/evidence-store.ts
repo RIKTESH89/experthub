@@ -1,3 +1,4 @@
+import { lockExpertSourceWrites } from "@/lib/knowledge/write-lock";
 import prisma from "@/lib/prisma";
 import {publishTemporal} from "./temporal/publisher";
 import type { KnowledgeItem, Prisma } from "@prisma/client";
@@ -25,7 +26,9 @@ async function snapshot(tx: Store, item: KnowledgeItem, ownerId: string): Promis
     publicationTimeBasis:typeof metadata?.publishedAt === "string" && !Number.isNaN(Date.parse(metadata.publishedAt)) ? "source-declared" : "unavailable",sourceUpdatedAt:item.updatedAt};
 }
 
-/** Call in source-publication transaction. Identical rebuilds cannot increment support. */
+/** Call after expert -> source (and authoritative post) locks in the publication transaction.
+ * Evidence FKs take parent locks too; callers must never enter from source-first writes.
+ * Identical rebuilds cannot increment support. */
 export async function publishEvidence(tx: Store, item: KnowledgeItem, ownerId: string): Promise<string | null> {
   const value = await snapshot(tx,item,ownerId);
   if (!value) return null;
@@ -56,9 +59,13 @@ export async function retireEvidence(tx: Store, expertProfileId: string, itemId:
 /** Explicit bounded backfill/rebuild; tenant lock serializes with indexing/deletion. */
 export async function rebuildEvidenceSource(expertProfileId: string, itemId: string) {
   return prisma.$transaction(async tx => {
+    await lockExpertSourceWrites(tx,expertProfileId);
     await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${itemId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
     const item = await tx.knowledgeItem.findUnique({where:{id:itemId},include:{expertProfile:true}});
     if (!item || item.expertProfileId !== expertProfileId || !item.isIndexed || item.indexedVersion !== item.sourceVersion) return null;
+    if (item.sourceType === "post" && item.sourceId) {
+      await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "id"=${item.sourceId} AND "authorId"=${item.expertProfile.userId} FOR UPDATE`;
+    }
     return publishEvidence(tx,item,item.expertProfile.userId);
   });
 }

@@ -1,3 +1,4 @@
+import { lockExpertSourceWrites } from "./write-lock";
 import prisma from "@/lib/prisma";
 import { publishEvidence, retireEvidence } from "@/lib/graph/evidence-store";
 import { indexDocument, plannedVectorIds } from "@/lib/vector/indexer";
@@ -38,6 +39,7 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
   }
   if (item.isIndexed && item.indexedVersion === item.sourceVersion) return;
   const version = item.sourceVersion;
+  let stagedVectorIds: string[] | null = null;
   try {
     const vectorIds = await indexDocument(item.expertProfile.vectorNamespace, item.id,
       `${item.title}\n\n${item.content}`, {
@@ -45,15 +47,29 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
         title: item.title, sourceType: item.sourceType, sourceId: item.sourceId,
         expertProfileId, knowledgeItemId: item.id, sourceVersion: version,
       });
+    stagedVectorIds = vectorIds;
     // Compare-and-set prevents delayed/reordered jobs from publishing an old revision.
     // Persist cleanup and publication in one transaction: crashes cannot lose old IDs.
     const published = await prisma.$transaction(async (tx) => {
-      await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:item.vectorIds},tx);
+      await lockExpertSourceWrites(tx,expertProfileId);
+      await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${itemId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
+      const current = await tx.knowledgeItem.findUnique({where:{id:itemId},include:{expertProfile:true}});
+      if (!current || current.expertProfileId !== expertProfileId || current.sourceVersion !== version ||
+          current.expertProfile.vectorNamespace !== item.expertProfile.vectorNamespace ||
+          (current.isIndexed && current.indexedVersion === version)) return {count:0};
+      if (current.sourceType === "post") {
+        if (!current.sourceId) return {count:0};
+        await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "id"=${current.sourceId} AND "authorId"=${current.expertProfile.userId} FOR UPDATE`;
+        const post = await tx.post.findUnique({where:{id:current.sourceId}});
+        if (!post || post.authorId !== current.expertProfile.userId || !post.isRagEnabled ||
+            current.title !== (post.title || "Untitled Post") || current.content !== (post.content || "")) return {count:0};
+      }
+      await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:current.vectorIds},tx);
       const published = await tx.knowledgeItem.updateMany({
-      where: { id: item.id, expertProfileId, sourceVersion: version },
-      data: { vectorIds, isIndexed: true, indexedVersion: version, indexingError: null },
-    });
-      if (published.count) await publishEvidence(tx, item, item.expertProfile.userId);
+        where:{id:itemId,expertProfileId,sourceVersion:version},
+        data:{vectorIds,isIndexed:true,indexedVersion:version,indexingError:null},
+      });
+      if (published.count) await publishEvidence(tx,current,current.expertProfile.userId);
       return published;
     });
     if (!published.count) {
@@ -62,9 +78,16 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
     }
     // Durable cleanup is drained independently; serving uses only this manifest.
   } catch (error) {
-    await prisma.knowledgeItem.updateMany({
-      where: { id: item.id, expertProfileId, sourceVersion: version, OR: [{ indexedVersion: null }, { indexedVersion: { not: version } }] },
-      data: { isIndexed: false, indexingError: error instanceof Error ? error.message : "Indexing failed" },
+    // Publication rolled back, but vector work may have completed. Keep cleanup durable,
+    // and do not invalidate a newer/successfully published source while recording failure.
+    await prisma.$transaction(async tx => {
+      await lockExpertSourceWrites(tx,expertProfileId);
+      await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${itemId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
+      if (stagedVectorIds) await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:stagedVectorIds},tx);
+      await tx.knowledgeItem.updateMany({
+        where:{id:item.id,expertProfileId,sourceVersion:version,OR:[{indexedVersion:null},{indexedVersion:{not:version}}]},
+        data:{isIndexed:false,indexingError:error instanceof Error?error.message:"Indexing failed"},
+      });
     });
     throw error;
   }
@@ -75,7 +98,8 @@ export async function removeKnowledgeItem(expertProfileId: string, itemId: strin
   if (!item || item.expertProfileId !== expertProfileId) return;
   // Revoke retrieval eligibility before cleanup; failed cleanup cannot expose the source.
   await prisma.$transaction(async (tx) => {
-    // Serialize manifest publication/deletion so cleanup captures the final IDs.
+    // Serialize parent first, then source/job writes, matching rebuild/publication.
+    await lockExpertSourceWrites(tx,expertProfileId);
     await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id" = ${itemId} AND "expertProfileId" = ${expertProfileId} FOR UPDATE`;
     const current = await tx.knowledgeItem.findUnique({where:{id:itemId},include:{expertProfile:true}});
     if (!current || current.expertProfileId !== expertProfileId) return;
@@ -151,7 +175,7 @@ export async function drainLifecycleJobs(expertProfileId: string, limit = 20, no
 export async function withPostOutbox<T extends {id:string}>(authorId:string, mutate:(tx:Prisma.TransactionClient)=>Promise<T>):Promise<T> {
   return prisma.$transaction(async(tx)=>{
     const expert = await tx.expertProfile.findUnique({where:{userId:authorId}});
-    // Acquire the parent lock before a post write/outbox FK can reverse sync's lock order.
+    // Join the expert-first protocol before authoritative post/outbox writes.
     if (expert) {
       const owners = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expert.id} FOR UPDATE`;
       if (owners[0]?.userId !== authorId) throw new Error("Post source owner changed");
