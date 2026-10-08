@@ -28,6 +28,7 @@ beforeEach(() => {
   $queryRaw:jest.fn(async (parts:TemplateStringsArray,...values:unknown[])=>{
    const sql=parts.join('?');
    if(sql.includes('FROM "ExpertProfile"'))return values[0]==='expert'?[{userId:'owner',id:'expert'}]:[];
+   if(sql.includes('FROM "KnowledgeItem"'))return [{id:'source'}];
    if(sql.includes('FROM "ChatSession"'))return [{id:'session'}];
    if(sql.includes('FROM "ChatMessage"'))return [{id:'message'}];
    if(sql.includes('FROM "EvidenceRevision"'))return validSupport && values[0]==='expert' && values[1]==='expert' && values.slice(2).join('|')===['source',1,'revision','span','assertion','chunk'].join('|')?[{id:'revision'}]:[];
@@ -70,6 +71,7 @@ test.each(['visitor','foreign-owner'])('only owning expert may decide: %s',async
 });
 test('owning expert can revise and decision retries are audited once; revised source still needs separate acceptance',async()=>{
  const r=await rateMessageForReview(input);
+ tx.knowledgeItem.findUnique.mockResolvedValue({id:'source',expertProfileId:'expert',sourceType:'manual'});
  const extra={proposal:{feedback:'Verified independently',itemId:'source',sourceVersion:1,title:'Advice',content:'I prefer coffee.'}};
  const a=await decide(r.reviewId,'owner','REVISE',extra),b=await decide(r.reviewId,'owner','REVISE',extra);
  expect(a).toEqual(b);expect(a.state).toBe('PENDING');expect(a.version).toBe(2);expect(events).toHaveLength(2);expect(events[0].detail.provenance.evidenceLinks).toEqual([link]);expect(tx.knowledgeItem.updateMany).not.toHaveBeenCalled();

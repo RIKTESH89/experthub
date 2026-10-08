@@ -1,3 +1,4 @@
+import { currentRuntimePolicy } from "@/lib/persona/runtime";
 import { resolveServingPersona } from "@/lib/persona/serving";
 import { createProviderStreamState } from "@/lib/ai/provider-stream";
 import { checkSignal } from "./request-lifecycle";
@@ -84,6 +85,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   const scope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId);
 
   const servingPersona = await resolveServingPersona(scope, expert.ragEnabled ?? true);
+  const runtime=servingPersona.runtime ?? currentRuntimePolicy();
   const expertName = servingPersona.displayName ?? (expert?.displayName || expert?.user?.name || "Expert");
   const ragEnabled = expert?.ragEnabled ?? true;
 
@@ -142,7 +144,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   let memories: { fact: string; category: string }[] = [];
   if (expert?.id && subscriberId) {
     try {
-      memories = await getMemories(subscriberId, expert.id, 15);
+      memories = await getMemories(subscriberId, expert.id, runtime.memory.limit);
       if (memories.length > 0) {
         thinkingSteps.push(`Recalling ${memories.length} things about you...`);
       }
@@ -153,7 +155,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
 
   // Step 4: Optional web search
   let webResults: string[] = [];
-  if (enableWebSearch) {
+  if (enableWebSearch && runtime.web.allowed) {
     thinkingSteps.push("Searching the web for additional context...");
     webResults = await searchWeb(`${expertName} ${query}`, options.signal);
   }
@@ -185,11 +187,11 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      model: runtime.generation.model,
       messages,
       stream: true,
-      temperature: 0.5,
-      max_tokens: 2048,
+      temperature: runtime.generation.temperature,
+      max_tokens: runtime.generation.maxTokens,
     }),
   });
 

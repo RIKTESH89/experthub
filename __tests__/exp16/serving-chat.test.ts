@@ -73,3 +73,26 @@ test('unchanged null head preserves baseline compatibility but still rechecks ac
  expect(scope).toHaveBeenCalledTimes(2);
  expect(prisma.$queryRaw).toHaveBeenCalledTimes(2);
 });
+
+test.each(['source','rag','audience','head','first-head','permission-error'])('baseline refuses mid-stream %s change before next chunk',async mode=>{
+ if(mode==='first-head')prisma.$queryRaw.mockResolvedValue([]);
+ const cancel=jest.fn();let count=0;
+ global.fetch=jest.fn(async()=>new Response(new ReadableStream({pull(c){c.enqueue(new TextEncoder().encode(`chunk-${count++}`));},cancel},{highWaterMark:0})));
+ const result=await runChatEngine({expertId:'owner',query:'question',chatHistory:[]});const reader=result.stream.getReader();
+ expect(new TextDecoder().decode((await reader.read()).value)).toBe('chunk-0');
+ if(mode==='source')pins.mockResolvedValue([]);
+ if(mode==='rag')prisma.expertProfile.findUnique.mockResolvedValue({id:'expert',userId:'owner',vectorNamespace:'ns',ragEnabled:false});
+ if(mode==='audience')scope.mockResolvedValue({expertProfileId:'expert',namespace:'ns',isOwner:true,allowedVectorIds:['approved']});
+ if(mode==='head'||mode==='first-head')prisma.$queryRaw.mockResolvedValue([{id:'new-head',expertProfileId:'expert',manifest,manifestHash:manifestHash(manifest)}]);
+ if(mode==='permission-error')scope.mockRejectedValue(new Error('permission unavailable'));
+ await expect(reader.read()).rejects.toThrow();expect(cancel).toHaveBeenCalledTimes(1);
+});
+test('active v2 model remains captured across process setting changes',async()=>{
+ const {currentRuntimePolicy}=await import('@/lib/persona/runtime');const original=process.env.OPENAI_MODEL;
+ try{
+  process.env.OPENAI_MODEL='synthetic-A';const v2={...manifest,format:'persona-release-v2',runtime:currentRuntimePolicy(),greetings:{chat:'Approved',widget:null}};process.env.OPENAI_MODEL='synthetic-B';
+  prisma.$queryRaw.mockResolvedValue([{id:'head',expertProfileId:'expert',manifest:v2,manifestHash:manifestHash(v2)}]);
+  const result=await runChatEngine({expertId:'owner',query:'question',chatHistory:[]});
+  expect(JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body)).toMatchObject({model:'synthetic-A',temperature:0.5,max_tokens:2048});await result.stream.cancel();
+ }finally{if(original===undefined)delete process.env.OPENAI_MODEL;else process.env.OPENAI_MODEL=original;}
+});

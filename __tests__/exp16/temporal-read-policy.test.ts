@@ -25,6 +25,7 @@ beforeEach(()=>{
    return [];
   }),
   $executeRaw:jest.fn(async(_parts:TemplateStringsArray,...values:unknown[])=>{writes.push(values);return 1;}),
+  widgetConfig:{findUnique:jest.fn(async()=>null)},
   knowledgeItem:{count:jest.fn(async(arg:{where:{OR?:unknown}})=>arg.where.OR?0:1)},
   expertProfile:{findUniqueOrThrow:jest.fn(async()=>({id:"tenant-a",userId:"owner",displayName:"Ada",specialty:[],...config})),update},
  };

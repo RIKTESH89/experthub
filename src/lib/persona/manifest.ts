@@ -1,12 +1,15 @@
+import type { RuntimePolicy } from "./runtime";
 import type { Prisma } from "@prisma/client";
 import { createHash } from "crypto";
 import type { RetrievalScope } from "@/lib/knowledge/access";
 import { supportedTemporalReadVersion } from "@/lib/graph/temporal/read-policy";
 import { EXTRACTOR_VERSION } from "@/lib/graph/evidence-extractor";
 export const MANIFEST_VERSION = "persona-release-v1";
+export const ACTIVE_MANIFEST_VERSION = "persona-release-v2";
+export const supportedManifestVersion = (format:unknown) => format===MANIFEST_VERSION || format===ACTIVE_MANIFEST_VERSION;
 export type PersonaConfig = { twinPersonality: string | null; twinGreeting: string | null; twinOpinions: string | null; twinFramework: string | null; twinBoundaries: string | null; ragEnabled: boolean; personalityProfile: Prisma.JsonValue | null };
 export type SourcePin = { itemId: string; sourceVersion: number; revisionId: string; contentHash: string; snapshotHash: string; extractorVersion: string; vectorIds: string[] };
-export type PersonaManifest = { format: typeof MANIFEST_VERSION; expertProfileId: string; config: PersonaConfig; sources: SourcePin[]; identity: { displayName: string; specialty: string[] }; renderedPersona: { visitor: string; owner: string }; algorithms: { evidence: string; temporal: string }; parentReleaseId: string | null; rollbackOf: string | null };
+export type PersonaManifest = { format: typeof MANIFEST_VERSION | typeof ACTIVE_MANIFEST_VERSION; runtime?:RuntimePolicy; greetings?:{chat:string|null;widget:string|null}; expertProfileId: string; config: PersonaConfig; sources: SourcePin[]; identity: { displayName: string; specialty: string[] }; renderedPersona: { visitor: string; owner: string }; algorithms: { evidence: string; temporal: string }; parentReleaseId: string | null; rollbackOf: string | null };
 /** Stable serialization recursively sorts object keys; array ordering is intentional. */
 export function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;

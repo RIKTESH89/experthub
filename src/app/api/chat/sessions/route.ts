@@ -1,3 +1,5 @@
+import { lockExpertSourceWrites } from "@/lib/knowledge/write-lock";
+import { resolveReleasedPresentation } from "@/lib/persona/serving";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -121,36 +123,45 @@ export async function POST(request: NextRequest) {
       isTrial = true;
     }
 
-    const chatSession = await prisma.chatSession.create({
-      data: {
-        subscriberId: session.user.id,
-        expertProfileId: expertProfile.id,
-        isTrial,
-        title:
-          title ||
-          `Chat with ${expertProfile.displayName || expertProfile.user.name}`,
-      },
-      include: {
-        expertProfile: {
-          select: {
-            displayName: true,
-            twinGreeting: true,
-            user: { select: { id: true, name: true, image: true } },
+    const chatSession=await prisma.$transaction(async tx=>{
+      await lockExpertSourceWrites(tx,expertProfile.id);
+      const current=await tx.expertProfile.findUnique({where:{id:expertProfile.id}});
+      if(!current || current.userId!==expertProfile.userId)throw new Error("Expert identity changed");
+      const released=await resolveReleasedPresentation(expertProfile.id,tx);
+      const greeting=released ? released.greeting : current.twinGreeting;
+      const chatSession = await tx.chatSession.create({
+        data: {
+          subscriberId: session.user.id,
+          expertProfileId: expertProfile.id,
+          isTrial,
+          title:
+            title ||
+            `Chat with ${expertProfile.displayName || expertProfile.user.name}`,
+        },
+        include: {
+          expertProfile: {
+            select: {
+              displayName: true,
+              twinGreeting: true,
+              user: { select: { id: true, name: true, image: true } },
+            },
           },
         },
-      },
-    });
-
-    // Add greeting message if configured
-    if (expertProfile.twinGreeting) {
-      await prisma.chatMessage.create({
-        data: {
-          chatSessionId: chatSession.id,
-          role: "assistant",
-          content: expertProfile.twinGreeting,
-        },
       });
-    }
+
+      // Add greeting message if configured
+      if (greeting) {
+        await tx.chatMessage.create({
+          data: {
+            chatSessionId: chatSession.id,
+            role: "assistant",
+            content: greeting,
+          },
+        });
+      }
+
+      return {...chatSession,expertProfile:{...chatSession.expertProfile,twinGreeting:greeting}};
+    });
 
     return NextResponse.json(chatSession, { status: 201 });
   } catch (error) {

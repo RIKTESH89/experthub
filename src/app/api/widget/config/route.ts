@@ -1,3 +1,5 @@
+import { resolveReleasedPresentation } from "@/lib/persona/serving";
+import { ACTIVE_MANIFEST_VERSION } from "@/lib/persona/manifest";
 import { previewCanonicalOrigin } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
@@ -56,13 +58,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const released=await resolveReleasedPresentation(widgetConfig.expertProfileId);
+    const greeting=released?.format===ACTIVE_MANIFEST_VERSION ? released.widgetGreeting : (widgetConfig.greeting || released?.greeting || widgetConfig.expertProfile.twinGreeting);
     const platformUrl = previewCanonicalOrigin() || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "";
 
     return NextResponse.json(
       {
-        expertName: widgetConfig.expertProfile.displayName || widgetConfig.expertProfile.user.name,
+        expertName: released?.displayName ?? (widgetConfig.expertProfile.displayName || widgetConfig.expertProfile.user.name),
         expertImage: widgetConfig.expertProfile.user.image,
-        greeting: widgetConfig.greeting || widgetConfig.expertProfile.twinGreeting || "Hello! Ask me anything.",
+        greeting: greeting || "Hello! Ask me anything.",
         primaryColor: widgetConfig.primaryColor,
         position: widgetConfig.position,
         freeQuestions: widgetConfig.freeQuestions,

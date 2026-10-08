@@ -1,3 +1,4 @@
+import { importedSnapshot } from "./import-provenance";
 import prisma from "@/lib/prisma";
 import { randomUUID } from "crypto";
 import { z } from "zod";
@@ -12,6 +13,15 @@ export type Review={id:string;expertProfileId:string;submittedBy:string;requestH
 function reviewValue(row:Review):Review { return {id:row.id,expertProfileId:row.expertProfileId,submittedBy:row.submittedBy,requestHash:row.requestHash,proposal:row.proposal,state:row.state,version:row.version}; }
 async function event(tx:Store,review:Review,actorId:string,key:string,hash:string,action:string,detail:unknown) {
  await tx.$executeRaw`INSERT INTO "CorrectionEvent" ("id","reviewId","expertProfileId","actorId","operationKey","requestHash","action","version","detail") VALUES (${randomUUID()},${review.id},${review.expertProfileId},${actorId},${key},${hash},${action},${review.version},${JSON.stringify(detail)}::jsonb)`;
+}
+async function captureImportedProposal(tx:Store,expertProfileId:string,proposal:Proposal,ownerId:string) {
+ if(!proposal.itemId || !proposal.sourceVersion)return null;
+ await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${proposal.itemId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
+ const source=await tx.knowledgeItem.findUnique({where:{id:proposal.itemId}});
+ if(!source || source.expertProfileId!==expertProfileId)throw new ReviewError(409,"Source deleted or changed");
+ if(!['pdf','blog'].includes(source.sourceType))return null;
+ if(source.sourceVersion!==proposal.sourceVersion)throw new ReviewError(409,"Imported source version changed");
+ try{return importedSnapshot(source,ownerId);}catch{throw new ReviewError(413,"Imported snapshot exceeds review audit bound");}
 }
 type Submission={expertProfileId:string;actorId:string;submissionKey:string;proposal:Proposal;messageId?:string};
 export async function submitCorrection(input:Submission) {
@@ -37,9 +47,10 @@ export async function submitCorrectionInTransaction(tx:Store,input:Submission,pr
   }
   const previous=await tx.$queryRaw<Review[]>`SELECT * FROM "CorrectionReview" WHERE "expertProfileId"=${input.expertProfileId} AND "submittedBy"=${input.actorId} AND "submissionKey"=${input.submissionKey}`;
   if(previous.length){if(previous[0].requestHash!==hash)throw new ReviewError(409,"Idempotency key reused");return reviewValue(previous[0]);}
+  const imported=owners[0].userId===input.actorId ? await captureImportedProposal(tx,input.expertProfileId,proposal,owners[0].userId) : null;
   const review:Review={id:randomUUID(),expertProfileId:input.expertProfileId,submittedBy:input.actorId,requestHash:hash,proposal,state:"PENDING",version:1};
   await tx.$executeRaw`INSERT INTO "CorrectionReview" ("id","expertProfileId","submittedBy","submissionKey","requestHash","messageId","proposal") VALUES (${review.id},${input.expertProfileId},${input.actorId},${input.submissionKey},${hash},${input.messageId||null},${JSON.stringify(proposal)}::jsonb)`;
-  await event(tx,review,input.actorId,`submit:${review.id}`,hash,"SUBMIT",{proposal,messageId:input.messageId||null,...(provenance?{provenance}:{})});
+  await event(tx,review,input.actorId,`submit:${review.id}`,hash,"SUBMIT",{proposal,messageId:input.messageId||null,...(provenance?{provenance}:{}),...(imported?{importedSource:imported}:{})});
   return review;
 }
 export async function decideCorrection(input:{expertProfileId:string;actorId:string;reviewId:string;expectedVersion:number;operationKey:string;action:"ACCEPT"|"REJECT"|"REVISE";proposal?:Proposal;reason:string}) {
@@ -54,6 +65,7 @@ export async function decideCorrection(input:{expertProfileId:string;actorId:str
   if(review.state!=="PENDING" || review.version!==input.expectedVersion)throw new ReviewError(409,"Review changed or already decided");
   if(input.action==="REVISE") {if(!input.proposal)throw new ReviewError(400,"Revised proposal required");review.proposal=proposalSchema.parse(input.proposal);}
   else if(input.proposal)throw new ReviewError(400,"Revise before accepting a changed proposal");
+  const imported=input.action==="REVISE" ? await captureImportedProposal(tx,input.expertProfileId,review.proposal,input.actorId) : null;
   let sourceChange:unknown=null;
   if(input.action==="ACCEPT") {
    const p=review.proposal;
@@ -81,7 +93,7 @@ export async function decideCorrection(input:{expertProfileId:string;actorId:str
   }
   review.version++;review.state=input.action==="ACCEPT"?"ACCEPTED":input.action==="REJECT"?"REJECTED":"PENDING";
   await tx.$executeRaw`UPDATE "CorrectionReview" SET "proposal"=${JSON.stringify(review.proposal)}::jsonb,"state"=${review.state},"version"=${review.version} WHERE "id"=${review.id} AND "expertProfileId"=${input.expertProfileId}`;
-  await event(tx,review,input.actorId,input.operationKey,hash,input.action,{reason:input.reason,proposal:review.proposal,sourceChange,result:review});
+  await event(tx,review,input.actorId,input.operationKey,hash,input.action,{reason:input.reason,proposal:review.proposal,sourceChange,result:review,...(imported?{importedSource:imported}:{})});
   return review;
  });
 }

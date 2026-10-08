@@ -1,3 +1,5 @@
+import { revalidatedStream } from "./revalidated-stream";
+import { currentRuntimePolicy } from "@/lib/persona/runtime";
 import { resolveServingPersona } from "@/lib/persona/serving";
 import { checkSignal } from "./request-lifecycle";
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
@@ -63,6 +65,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   const scope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId);
 
   const servingPersona = await resolveServingPersona(scope, expert.ragEnabled ?? true);
+  const runtime=servingPersona.runtime ?? currentRuntimePolicy();
   const expertName = servingPersona.displayName ?? (expert?.displayName || expert?.user?.name || "Expert");
   const personality = expert?.twinPersonality || undefined;
   const personalityProfile = scope.isOwner && expert?.personalityProfile
@@ -112,7 +115,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   let memories: { fact: string; category: string }[] = [];
   if (expert?.id && subscriberId) {
     try {
-      memories = await getMemories(subscriberId, expert.id, 15);
+      memories = await getMemories(subscriberId, expert.id, runtime.memory.limit);
       if (memories.length > 0) {
         thinkingSteps.push(`Recalling ${memories.length} things about you...`);
       }
@@ -123,7 +126,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
 
   // Step 4: Optional web search
   let webResults: string[] = [];
-  if (enableWebSearch) {
+  if (enableWebSearch && runtime.web.allowed) {
     thinkingSteps.push("Searching the web for additional context...");
     webResults = await searchWeb(`${expertName} ${query}`, options.signal);
   }
@@ -153,11 +156,11 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      model: runtime.generation.model,
       messages,
       stream: true,
-      temperature: 0.5,
-      max_tokens: 2048,
+      temperature: runtime.generation.temperature,
+      max_tokens: runtime.generation.maxTokens,
     }),
   });
 
@@ -167,8 +170,8 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
-  // Recheck nullable heads too: the first publication invalidates a draft generation.
-  try {
+  // Recheck nullable heads at handoff and every demand-driven chunk/EOF boundary.
+  const authorize=async()=>{
     const current = await prisma.expertProfile.findUnique({where:{userId:expertId}});
     if (!current || current.id !== expert.id || current.userId !== expert.userId || current.vectorNamespace !== expert.vectorNamespace) throw new Error("Expert identity changed");
     const currentScope = await resolveRetrievalScope(current.id,current.vectorNamespace,current.userId,subscriberId);
@@ -178,13 +181,11 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
         retrievalScope.allowedVectorIds.some(id => !currentPersona.scope.allowedVectorIds.includes(id))) {
       throw new Error("Persona release or access changed during generation");
     }
-  } catch (error) {
-    await response.body.cancel().catch(() => {});
-    throw error;
-  }
+  };
+  try {await authorize();}catch(error){await response.body.cancel().catch(()=>{});throw error;}
 
   return {
-    stream: response.body,
+    stream: revalidatedStream(response.body,authorize,options.signal),
     sources: retrievalResults,
     thinkingSteps,
     evidenceTrace,

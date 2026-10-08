@@ -1,7 +1,7 @@
 import { assertExternalServiceAllowed } from "@/lib/preview-isolation";
 import { checkSignal } from "@/lib/ai/request-lifecycle";
-export const EMBEDDING_DIMENSIONS = 1536;
-export const EMBEDDING_MODEL = "text-embedding-3-small";
+import { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from "./embedding-policy";
+export { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from "./embedding-policy";
 
 export function validateEmbedding(values: unknown): asserts values is number[] {
   if (!Array.isArray(values) || values.length !== EMBEDDING_DIMENSIONS ||

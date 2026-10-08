@@ -1,3 +1,4 @@
+import { resolveReleasedPresentation } from "@/lib/persona/serving";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -18,6 +19,7 @@ export async function GET(
         headline: true,
         expertProfile: {
           select: {
+            id: true,
             displayName: true,
             specialty: true,
             socialLinks: true,
@@ -39,6 +41,7 @@ export async function GET(
       return NextResponse.json({ error: "Expert not found" }, { status: 404 });
     }
 
+    const released=await resolveReleasedPresentation(expert.expertProfile.id);
     return NextResponse.json({
       id: expert.id,
       name: expert.name,
@@ -52,7 +55,8 @@ export async function GET(
       isVerified: expert.expertProfile.isVerified,
       subscriberCount: expert.expertProfile.totalSubscribers,
       postCount: expert._count.posts,
-      twinGreeting: expert.expertProfile.twinGreeting,
+      twinGreeting: released ? released.greeting : expert.expertProfile.twinGreeting,
+      twinDisplayName: released?.displayName ?? expert.expertProfile.displayName,
     });
   } catch (error) {
     console.error("Public expert profile error:", error);
