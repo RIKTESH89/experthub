@@ -1,0 +1,50 @@
+{
+  "reviewFinding": "H1/P2",
+  "candidateStatus": "repair complete; independent re-review pending",
+  "base": "8897903fb7820532994a9f0f72c210449a46afb2",
+  "previousCandidate": "e2542359d39d692cb8d48faa0bee2938cf8d1521",
+  "native": {
+    "numPassedTests": 105,
+    "numFailedTests": 0,
+    "numPassedTestSuites": 10,
+    "success": true
+  },
+  "exp26": {
+    "numPassedTests": 199,
+    "numFailedTests": 0,
+    "numPassedTestSuites": 12,
+    "success": true
+  },
+  "observed": {
+    "H1_ACTOR_LOCK": {
+      "state": "returned",
+      "elapsedMs": 1010
+    },
+    "H1_TABLE_LOCK": {
+      "state": "rejected",
+      "elapsedMs": 1005
+    },
+    "H1_STATEMENT_BUDGET": {
+      "state": "rejected",
+      "elapsedMs": 4508
+    },
+    "INDEPENDENT_BUDGET_OBSERVATION": {
+      "result": {
+        "state": "rejected"
+      },
+      "elapsedMs": 1007
+    }
+  },
+  "dbPolicy": {
+    "statementBudgetMs": 4500,
+    "lockWaitMs": 1000,
+    "idleTransactionMs": 5000,
+    "prismaTimeoutMs": 5000,
+    "prismaAcquisitionWaitMs": 2000
+  },
+  "cleanup": "actor update succeeds after cancel; no aborted-idle transaction or active billing read; SET LOCAL resets; owned cluster stopped",
+  "typecheck": "pass",
+  "schemaValidation": "pass",
+  "lint": "pass",
+  "externalActions": "none"
+}

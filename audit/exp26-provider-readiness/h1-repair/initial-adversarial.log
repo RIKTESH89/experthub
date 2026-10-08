@@ -1,0 +1,58 @@
+FAIL scripts/exp32-34-continuation/health-timeout.test.ts (6.882 s)
+  ● Console
+
+    console.log
+      H1_ACTOR_LOCK {"state":"returned","elapsedMs":1020}
+
+      at scripts/exp32-34-continuation/health-timeout.test.ts:44:11
+
+    console.log
+      H1_TABLE_LOCK {"state":"rejected","elapsedMs":1008}
+
+      at scripts/exp32-34-continuation/health-timeout.test.ts:60:11
+
+    console.log
+      H1_STATEMENT_BUDGET {"state":"rejected","elapsedMs":4506}
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/health-timeout.test.ts:79:11)
+
+  ● slow sequential scans share the remaining statement budget and roll back before returning
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      83 |   await assertActorLockReleased();
+      84 |   const active=await prisma.$queryRaw<{count:number}[]>`SELECT count(*)::int AS count FROM pg_stat_activity WHERE datname=current_database() AND state='active' AND query LIKE '%FROM "Billing%'`;
+    > 85 |   expect(active[0].count).toBe(0);
+         |                           ^
+      86 |  } finally {
+      87 |   // Await cancellation/rollback even when assertions fail, before restoring fixture schema.
+      88 |   if(check)await check.observed;
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/health-timeout.test.ts:85:27)
+
+PASS scripts/exp32-34-continuation/health-independent-review.test.ts
+  ● Console
+
+    console.log
+      INDEPENDENT_BUDGET_OBSERVATION {"result":{"state":"rejected"},"elapsedMs":1008}
+
+      at Object.<anonymous> (scripts/exp32-34-continuation/health-independent-review.test.ts:26:145)
+
+PASS scripts/exp32-34-continuation/database.test.ts
+PASS scripts/exp32-34-continuation/payments-regression.test.ts
+PASS scripts/exp32-34-continuation/health.test.ts
+PASS scripts/exp32-34-continuation/adapters.test.ts
+PASS scripts/exp32-34-continuation/review-body.test.ts
+PASS scripts/exp32-34/contracts.test.ts
+PASS scripts/exp32-34-continuation/review-freshness.test.ts
+PASS scripts/exp32-34-continuation/provider-lifecycle.test.ts
+
+Test Suites: 1 failed, 9 passed, 10 total
+Tests:       1 failed, 104 passed, 105 total
+Snapshots:   0 total
+Time:        10.355 s
+Ran all test suites.
+Test results written to: audit/exp32-34-continuation/tests.json
