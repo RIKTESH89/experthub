@@ -43,23 +43,29 @@ export function ImportHistoryTable() {
   const [data, setData] = useState<HistoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [attempt, setAttempt] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchHistory() {
       setIsLoading(true);
+      setLoadError(null);
       try {
-        const res = await fetch(`/api/knowledge/import/history?page=${page}&limit=20`);
-        if (!res.ok) throw new Error("Failed to fetch");
+        const res = await fetch(`/api/knowledge/import/history?page=${page}&limit=20`, { signal: controller.signal });
+        if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your expert session cannot access import history. Sign in with an expert account and try again." : "Import history could not be loaded. Try again.");
         const json = await res.json();
-        setData(json);
-      } catch {
-        setData(null);
+        if (!Array.isArray(json.items)) throw new Error("Import history could not be loaded. Try again.");
+        if (!controller.signal.aborted) setData(json);
+      } catch (error) {
+        if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : "Import history could not be loaded. Try again.");
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
     fetchHistory();
-  }, [page]);
+    return () => controller.abort();
+  }, [page, attempt]);
 
   function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString(undefined, {
@@ -89,8 +95,9 @@ export function ImportHistoryTable() {
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <CardContent className="flex items-center justify-center gap-2 py-12" role="status">
+          <Loader2 aria-hidden="true" className="h-6 w-6 animate-spin text-muted-foreground" />
+          <span>Loading import history…</span>
         </CardContent>
       </Card>
     );
@@ -105,7 +112,8 @@ export function ImportHistoryTable() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {!data || data.items.length === 0 ? (
+        <Button variant="outline" className="mb-4" onClick={() => setAttempt(value => value + 1)}>Refresh import status</Button>
+        {loadError ? <div role="alert" className="space-y-3"><p>{loadError}</p><Button variant="outline" onClick={() => setAttempt(value => value + 1)}>Retry import history</Button></div> : !data || data.items.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             No imports yet. Use the Blog Import or PDF Import tabs to get started.
           </p>
@@ -126,17 +134,17 @@ export function ImportHistoryTable() {
                   <TableRow key={job.id}>
                     <TableCell>
                       {job.sourceType === "BLOG_URL" ? (
-                        <Globe className="h-4 w-4 text-muted-foreground" />
+                        <span className="inline-flex items-center gap-2"><Globe aria-hidden="true" className="h-4 w-4 text-muted-foreground" />Blog</span>
                       ) : (
-                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <span className="inline-flex items-center gap-2"><FileText aria-hidden="true" className="h-4 w-4 text-muted-foreground" />PDF</span>
                       )}
                     </TableCell>
                     <TableCell className="max-w-[300px]">
-                      <p className="truncate text-sm">
+                      <p className="break-all text-sm">
                         {job.sourceUrl || job.fileName || "—"}
                       </p>
                       {job.errorMessage && (
-                        <p className="mt-0.5 truncate text-xs text-destructive">
+                        <p className="mt-0.5 whitespace-normal break-words text-xs text-destructive">
                           {job.errorMessage}
                         </p>
                       )}
@@ -153,7 +161,7 @@ export function ImportHistoryTable() {
 
             {/* Pagination */}
             {data.totalPages > 1 && (
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-muted-foreground">
                   Page {data.page} of {data.totalPages} ({data.total} total)
                 </p>

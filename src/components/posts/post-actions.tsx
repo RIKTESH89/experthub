@@ -111,6 +111,8 @@ export function PostActions({
                 "gap-1.5 text-muted-foreground transition-colors",
                 isLiked && "text-red-500 hover:text-red-600"
               )}
+              aria-label={`${isLiked ? "Unlike" : "Like"} post, ${likeCount} likes`}
+              aria-pressed={isLiked}
               onClick={handleLike}
               disabled={isLiking}
             >
@@ -129,6 +131,7 @@ export function PostActions({
               variant="ghost"
               size="sm"
               className="gap-1.5 text-muted-foreground"
+              aria-label={`View comments, ${comments} comments`}
               onClick={onCommentClick}
             >
               <MessageCircle className="h-4 w-4" />
@@ -147,6 +150,8 @@ export function PostActions({
                 "gap-1.5 text-muted-foreground transition-colors",
                 isBookmarked && "text-yellow-500 hover:text-yellow-600"
               )}
+              aria-label={`${isBookmarked ? "Remove bookmark" : "Bookmark post"}, ${bookmarkCount} bookmarks`}
+              aria-pressed={isBookmarked}
               onClick={handleBookmark}
               disabled={isBookmarking}
             >
@@ -165,6 +170,7 @@ export function PostActions({
               variant="ghost"
               size="sm"
               className="text-muted-foreground"
+              aria-label="Copy post link"
               onClick={handleShare}
             >
               <Share2 className="h-4 w-4" />

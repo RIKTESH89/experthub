@@ -16,16 +16,21 @@
 
   // Fetch config
   fetch(API_BASE + '/api/widget/config?apiKey=' + apiKey)
-    .then(function(r) { return r.json(); })
+    .then(function(r) { if (!r.ok) throw new Error('Config unavailable'); return r.json(); })
     .then(function(config) { initWidget(config); })
     .catch(function() { console.warn('Twin Widget: Failed to load config'); });
 
   function initWidget(config) {
+    if (document.getElementById("tw-widget-btn")) return;
     // Create floating button
-    var btn = document.createElement('div');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open AI Twin chat');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', 'tw-widget-chat');
     btn.id = 'tw-widget-btn';
     btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
-    btn.style.cssText = 'position:fixed;' + (config.position === 'bottom-left' ? 'left' : 'right') + ':20px;bottom:20px;width:56px;height:56px;border-radius:50%;background:' + config.primaryColor + ';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:999999;transition:transform 0.2s;';
+    btn.style.cssText = 'position:fixed;' + (config.position === 'bottom-left' ? 'left' : 'right') + ':20px;bottom:20px;width:56px;height:56px;border:0;border-radius:50%;background:' + config.primaryColor + ';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:999999;transition:transform 0.2s;';
     btn.onmouseover = function() { btn.style.transform = 'scale(1.1)'; };
     btn.onmouseout = function() { btn.style.transform = 'scale(1)'; };
     document.body.appendChild(btn);
@@ -41,11 +46,15 @@
 
     function openChatBox() {
       chatOpen = true;
+      btn.setAttribute('aria-expanded', 'true');
       btn.style.display = 'none';
 
       chatBox = document.createElement('div');
       chatBox.id = 'tw-widget-chat';
-      chatBox.style.cssText = 'position:fixed;' + (config.position === 'bottom-left' ? 'left' : 'right') + ':20px;bottom:20px;width:380px;height:520px;border-radius:16px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,0.12);z-index:999999;display:flex;flex-direction:column;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
+      chatBox.setAttribute('role', 'dialog');
+      chatBox.setAttribute('aria-label', 'AI Twin chat');
+      chatBox.addEventListener('keydown', function(e) { if (e.key === 'Escape') { e.preventDefault(); closeChatBox(); } });
+      chatBox.style.cssText = 'position:fixed;' + (config.position === 'bottom-left' ? 'left' : 'right') + ':20px;bottom:20px;width:380px;max-width:calc(100vw - 40px);height:520px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);box-sizing:border-box;border-radius:16px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,0.12);z-index:999999;display:flex;flex-direction:column;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
 
       // Header
       var header = document.createElement('div');
@@ -54,7 +63,7 @@
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-5.07l-2.83 2.83M9.76 14.24l-2.83 2.83m0-10.14l2.83 2.83m4.48 4.48l2.83 2.83"/></svg></div>' +
         '<div><div style="font-weight:600;font-size:14px;">' + (config.expertName || 'AI Twin') + '</div>' +
         '<div style="font-size:11px;opacity:0.8;">Digital Twin</div></div>' +
-        '<div style="margin-left:auto;cursor:pointer;padding:4px;" id="tw-close">&times;</div>';
+        '<button type="button" aria-label="Close AI Twin chat" style="margin-left:auto;cursor:pointer;padding:4px;min-width:44px;min-height:44px;border:0;background:transparent;color:inherit;font-size:24px;" id="tw-close">&times;</button>';
       chatBox.appendChild(header);
 
       chatBox.querySelector('#tw-close').onclick = function(e) {
@@ -65,7 +74,9 @@
       // Messages area
       var msgsArea = document.createElement('div');
       msgsArea.id = 'tw-msgs';
-      msgsArea.style.cssText = 'flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f9fafb;';
+      msgsArea.setAttribute('role', 'log');
+      msgsArea.setAttribute('aria-label', 'AI Twin conversation');
+      msgsArea.style.cssText = 'flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f9fafb;';
       chatBox.appendChild(msgsArea);
 
       // Add greeting
@@ -77,7 +88,7 @@
       // Input area
       var inputArea = document.createElement('div');
       inputArea.style.cssText = 'padding:12px;border-top:1px solid #e5e7eb;display:flex;gap:8px;background:#fff;';
-      inputArea.innerHTML = '<input id="tw-input" type="text" placeholder="Ask a question..." style="flex:1;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;font-family:inherit;" />' +
+      inputArea.innerHTML = '<input id="tw-input" aria-label="Question for AI Twin" type="text" placeholder="Ask a question..." style="flex:1;min-width:0;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:16px;font-family:inherit;" />' +
         '<button id="tw-send" style="padding:8px 16px;background:' + config.primaryColor + ';color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;">Send</button>';
       chatBox.appendChild(inputArea);
 
@@ -87,7 +98,7 @@
       var sendBtn = chatBox.querySelector('#tw-send');
 
       sendBtn.onclick = function() { sendMessage(input, msgsArea); };
-      input.onkeydown = function(e) { if (e.key === 'Enter') sendMessage(input, msgsArea); };
+      input.onkeydown = function(e) { if (e.key === 'Enter' && !e.isComposing) sendMessage(input, msgsArea); };
       input.focus();
     }
 
@@ -95,6 +106,8 @@
       chatOpen = false;
       if (chatBox) { chatBox.remove(); chatBox = null; }
       btn.style.display = 'flex';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.focus();
     }
 
     function renderMessages(container) {

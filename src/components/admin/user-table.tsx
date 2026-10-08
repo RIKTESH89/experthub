@@ -149,27 +149,33 @@ export function UserTable() {
   const router = useRouter();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchUsers() {
+      setIsLoading(true);
+      setLoadError(null);
       try {
-        const res = await fetch("/api/admin/users");
-        if (!res.ok) throw new Error("Failed to fetch");
+        const res = await fetch("/api/admin/users", { signal: controller.signal });
+        if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your session cannot access user administration. Sign in with an admin account and try again." : "Users could not be loaded. Try again.");
         const data = await res.json();
         const rows = data.users ?? data;
         if (!Array.isArray(rows)) throw new Error("Invalid users response");
-        setUsers(rows.map((user: UserRow) => ({ ...user, name: user.name || user.email, status: userRowStatus(user) })));
-      } catch {
-        toast.error("Failed to load users");
+        if (!controller.signal.aborted) setUsers(rows.map((user: UserRow) => ({ ...user, name: user.name || user.email, status: userRowStatus(user) })));
+      } catch (error) {
+        if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : "Users could not be loaded. Try again.");
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
     fetchUsers();
-  }, []);
+    return () => controller.abort();
+  }, [loadAttempt]);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -226,8 +232,10 @@ export function UserTable() {
   }, []);
 
   if (isLoading) {
-    return <TableSkeleton />;
+    return <div role="status" aria-label="Loading users"><TableSkeleton /></div>;
   }
+
+  if (loadError) return <section role="alert" className="space-y-3 rounded-xl border bg-card p-6"><h2 className="text-lg font-medium">User list unavailable</h2><p>{loadError}</p><Button variant="outline" onClick={() => setLoadAttempt(value => value + 1)}>Retry users</Button></section>;
 
   return (
     <FadeIn direction="up" duration={0.3}>
@@ -237,6 +245,7 @@ export function UserTable() {
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors duration-200" />
             <Input
+              aria-label="Search users by name or email"
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -250,7 +259,7 @@ export function UserTable() {
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger
+            <SelectTrigger aria-label="Filter users by role"
               className={cn(
                 "w-full sm:w-[160px] h-11 rounded-xl border-border cursor-pointer",
                 "bg-card",
@@ -433,7 +442,7 @@ export function UserTable() {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
+                            <Button aria-label={`Actions for ${user.name || user.email}`}
                               variant="ghost"
                               size="icon"
                               className={cn(

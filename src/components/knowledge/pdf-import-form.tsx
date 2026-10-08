@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { FileText, Upload, Loader2, CheckCircle2, XCircle } from "lucide-react";
@@ -30,9 +31,7 @@ export function PdfImportForm() {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setResult(null);
     const file = acceptedFiles[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+    setSelectedFile(file || null);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
@@ -72,10 +71,10 @@ export function PdfImportForm() {
         numPages: data.numPages,
       });
       setSelectedFile(null);
-    } catch (error) {
+    } catch {
       setResult({
         status: "error",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: "The import response could not be confirmed. Check Import History before retrying.",
       });
     } finally {
       setIsUploading(false);
@@ -85,7 +84,7 @@ export function PdfImportForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex min-w-0 items-center gap-2">
           <FileText className="h-5 w-5" />
           Import from PDF
         </CardTitle>
@@ -94,10 +93,10 @@ export function PdfImportForm() {
           Maximum file size: 10MB.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4" aria-busy={isUploading}>
         {/* Dropzone */}
         <div
-          {...getRootProps({role:"button", "aria-label":"Choose a PDF document"})}
+          {...getRootProps({role:"button", "aria-label":"Choose a PDF document", "aria-disabled": isUploading})}
           className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
             isDragActive
               ? "border-primary bg-primary/5"
@@ -122,18 +121,18 @@ export function PdfImportForm() {
 
         {/* File rejections */}
         {fileRejections.length > 0 && (
-          <p className="text-sm text-destructive">
+          <p role="alert" className="text-sm text-destructive">
             {fileRejections[0].errors[0]?.message || "Invalid file"}
           </p>
         )}
 
         {/* Selected file */}
         {selectedFile && (
-          <div className="flex items-center justify-between rounded-md border p-3">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-3 rounded-md border p-3">
+            <div className="flex min-w-0 items-center gap-2">
               <FileText className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">{selectedFile.name}</p>
+              <div className="min-w-0">
+                <p className="break-all text-sm font-medium">{selectedFile.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
@@ -165,13 +164,14 @@ export function PdfImportForm() {
               Uploading and processing...
             </>
           ) : (
-            "Upload and Import"
+            result?.status === "error" ? "Retry PDF import" : "Upload and Import"
           )}
         </Button>
 
         {/* Result */}
         {result && (
           <div
+            role={result.status === "error" ? "alert" : "status"}
             className={`flex items-start gap-2 rounded-md border p-3 text-sm ${
               result.status === "success"
                 ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
@@ -187,6 +187,7 @@ export function PdfImportForm() {
               {result.status === "success" ? (
                 <>
                   <p className="font-medium">Successfully imported</p>
+                  <Link href="/expert/knowledge" className="underline">View source library</Link>
                   <p className="text-xs text-muted-foreground">
                     {result.title}
                     {result.numPages ? ` - ${result.numPages} pages` : ""}
@@ -195,7 +196,8 @@ export function PdfImportForm() {
               ) : (
                 <>
                   <p className="font-medium">Import failed</p>
-                  <p className="mt-1 text-xs text-red-600">{result.error}</p>
+                  <p className="mt-1 break-words text-sm text-destructive">{result.error}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Your selected file is ready to retry. Check Import History first if the connection was interrupted; the import may have completed.</p>
                 </>
               )}
             </div>

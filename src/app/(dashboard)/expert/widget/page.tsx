@@ -2,7 +2,7 @@
 
 import { ExpertStudio } from "@/components/expert-studio/expert-studio";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Code,
   Copy,
@@ -64,6 +64,10 @@ function ExpertWidgetPageContent() {
   const [loadError, setLoadError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+  const saveInFlight = useRef(false);
   const [domainInput, setDomainInput] = useState("");
 
   // Form state
@@ -98,8 +102,18 @@ function ExpertWidgetPageContent() {
     fetchConfig();
   }, []);
 
+  const hasUnsavedChanges = config !== null && JSON.stringify([isEnabled, primaryColor, position, greeting, freeQuestions, allowedDomains]) !== JSON.stringify([config.isEnabled, config.primaryColor, config.position, config.greeting || "", config.freeQuestions, config.allowedDomains || []]);
+
   async function handleSave() {
+    if (saveInFlight.current) return;
+    if (!/^#[0-9a-f]{6}$/i.test(primaryColor) || !Number.isInteger(freeQuestions) || freeQuestions < 0 || freeQuestions > 100) {
+      setSaveError("Use a six-digit hex color and a whole question allowance from 0 to 100.");
+      return;
+    }
+    saveInFlight.current = true;
     setIsSaving(true);
+    setSaveError(null);
+    setSaved(false);
     try {
       const res = await fetch("/api/expert/widget", {
         method: "PUT",
@@ -113,13 +127,14 @@ function ExpertWidgetPageContent() {
           allowedDomains,
         }),
       });
-      if (res.ok) {
-        const data: WidgetConfig = await res.json();
-        setConfig(data);
-      }
-    } catch {
-      // Failed to save
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your expert session cannot save widget settings. Sign in with an expert account and try again." : "Widget settings could not be saved. Your changes are kept here; try again.");
+      const data: WidgetConfig = await res.json();
+      setConfig(data);
+      setSaved(true);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Widget settings could not be saved. Your changes are kept here; try again.");
     } finally {
+      saveInFlight.current = false;
       setIsSaving(false);
     }
   }
@@ -136,11 +151,15 @@ function ExpertWidgetPageContent() {
     setAllowedDomains(allowedDomains.filter((d) => d !== domain));
   }
 
-  function handleCopyEmbed() {
-    if (config?.embedCode) {
-      navigator.clipboard.writeText(config.embedCode);
+  async function handleCopyEmbed() {
+    if (!config?.embedCode) return;
+    setCopied(false);
+    setCopyError(false);
+    try {
+      await navigator.clipboard.writeText(config.embedCode);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopyError(true);
     }
   }
 
@@ -200,6 +219,8 @@ function ExpertWidgetPageContent() {
                   <div className="flex items-center gap-4">
                     <button
                       role="switch"
+                      aria-label="Enable widget"
+                      disabled={isSaving}
                       aria-checked={isEnabled}
                       onClick={() => setIsEnabled(!isEnabled)}
                       className={`
@@ -227,7 +248,7 @@ function ExpertWidgetPageContent() {
                         }`}
                       />
                       <Label className={`text-sm font-medium ${isEnabled ? "text-emerald-700" : "text-muted-foreground"}`}>
-                        {isEnabled ? "Live" : "Disabled"}
+                        {isEnabled ? "Enabled" : "Disabled"}{hasUnsavedChanges ? " (unsaved)" : ""}
                       </Label>
                     </div>
                   </div>
@@ -260,6 +281,7 @@ function ExpertWidgetPageContent() {
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <Input
+                          disabled={isSaving}
                           id="primaryColor"
                           type="color"
                           value={primaryColor}
@@ -268,6 +290,8 @@ function ExpertWidgetPageContent() {
                         />
                       </div>
                       <Input
+                        disabled={isSaving}
+                        aria-label="Primary color hex value"
                         type="text"
                         value={primaryColor}
                         onChange={(e) => setPrimaryColor(e.target.value)}
@@ -285,7 +309,7 @@ function ExpertWidgetPageContent() {
                       Position
                     </Label>
                     <Select value={position} onValueChange={setPosition}>
-                      <SelectTrigger className="w-48">
+                      <SelectTrigger id="position" disabled={isSaving} className="w-48">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -317,6 +341,8 @@ function ExpertWidgetPageContent() {
                 </CardHeader>
                 <CardContent>
                   <Textarea
+                    aria-label="Greeting message"
+                    disabled={isSaving}
                     value={greeting}
                     onChange={(e) => setGreeting(e.target.value)}
                     placeholder="Hello! Ask me anything about my expertise."
@@ -348,10 +374,12 @@ function ExpertWidgetPageContent() {
                 <CardContent>
                   <div className="flex items-center gap-3">
                     <Input
+                      disabled={isSaving}
+                      aria-label="Free questions per visitor"
                       type="number"
                       value={freeQuestions}
                       onChange={(e) =>
-                        setFreeQuestions(parseInt(e.target.value) || 0)
+                        setFreeQuestions(Number(e.target.value))
                       }
                       min={0}
                       max={100}
@@ -388,6 +416,8 @@ function ExpertWidgetPageContent() {
                     <div className="relative flex-1">
                       <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
+                        disabled={isSaving}
+                        aria-label="Allowed domain"
                         value={domainInput}
                         onChange={(e) => setDomainInput(e.target.value)}
                         placeholder="example.com"
@@ -403,6 +433,7 @@ function ExpertWidgetPageContent() {
                     <Button
                       type="button"
                       variant="outline"
+                      disabled={isSaving}
                       onClick={handleAddDomain}
                       className="cursor-pointer gap-1.5 border-primary text-primary hover:bg-primary transition-all duration-200"
                     >
@@ -433,6 +464,8 @@ function ExpertWidgetPageContent() {
                               <Globe className="h-3 w-3" />
                               {domain}
                               <button
+                                aria-label={`Remove allowed domain ${domain}`}
+                                disabled={isSaving}
                                 onClick={() => handleRemoveDomain(domain)}
                                 className="ml-0.5 rounded-full p-0.5 cursor-pointer transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                               >
@@ -520,6 +553,8 @@ function ExpertWidgetPageContent() {
                         </Button>
                       </motion.div>
                     </div>
+                    {copyError ? <p role="alert" className="mt-3 text-sm text-destructive">Clipboard access failed. Select the embed code above and copy it manually.</p> : null}
+                    {copied ? <p role="status" className="mt-3 text-sm">Embed code copied.</p> : null}
                   </CardContent>
                 </Card>
               </StaggerItem>
@@ -529,6 +564,9 @@ function ExpertWidgetPageContent() {
             <StaggerItem>
               <FadeIn delay={0.3}>
                 <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+                  {saveError ? <p role="alert" className="mb-3 text-sm text-destructive">{saveError}</p> : null}
+                  {saved && !hasUnsavedChanges ? <p role="status" className="mb-3 text-sm">Widget settings saved.</p> : null}
+                  {hasUnsavedChanges ? <p className="mb-3 text-sm text-muted-foreground">Preview shows your unsaved changes. Save to update the installed widget.</p> : null}
                   <Button
                     onClick={handleSave}
                     disabled={isSaving}
@@ -548,7 +586,7 @@ function ExpertWidgetPageContent() {
                         Saving...
                       </span>
                     ) : (
-                      "Save Changes"
+                      saveError ? "Retry saving widget" : "Save Changes"
                     )}
                   </Button>
                 </motion.div>
