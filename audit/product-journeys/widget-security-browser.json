@@ -1,0 +1,40 @@
+[
+  {
+    "buttonColor": "rgb(99, 102, 241)",
+    "case": "final-hostile-name-color-and-subscription-url",
+    "documentWidth": 390,
+    "injectedNodes": 0,
+    "name": "<img src=x onerror=\"document.documentElement.setAttribute('data-widget-name-executed','yes')\"> Dr. A & B",
+    "nameExecuted": null,
+    "panel": {
+      "bottom": 824,
+      "height": 520,
+      "left": 20,
+      "right": 370,
+      "top": 304,
+      "width": 350,
+      "x": 20,
+      "y": 304
+    },
+    "subscriptionLinks": 0,
+    "urlExecuted": null,
+    "width": 390
+  },
+  {
+    "buttonColor": "rgb(54, 84, 73)",
+    "case": "legitimate-name-color-preserved",
+    "documentWidth": 390,
+    "name": "Synthetic expert",
+    "panel": {
+      "bottom": 824,
+      "height": 520,
+      "left": 20,
+      "right": 370,
+      "top": 304,
+      "width": 350,
+      "x": 20,
+      "y": 304
+    },
+    "width": 390
+  }
+]

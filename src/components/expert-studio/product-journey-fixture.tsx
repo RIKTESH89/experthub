@@ -27,8 +27,12 @@ export function ProductJourneyFixture() {
         await new Promise(resolve => setTimeout(resolve, 50));
         if (options?.signal?.aborted) throw new DOMException("Aborted", "AbortError");
       }
-      if (pathname === "/api/widget/config") return json({primaryColor:"#365449",position:"bottom-right",greeting:"Synthetic configured-widget greeting",expertName:"Synthetic expert"});
-      if (pathname === "/api/widget/chat") return json({error:"Synthetic fixture does not run AI responses"},503);
+      const widgetSecurityCase = new URL(url, window.location.origin).searchParams.get("apiKey") === "synthetic-widget-security";
+      if (pathname === "/api/widget/config") return json(widgetSecurityCase ? {primaryColor:"red;position:absolute;z-index:1",position:"bottom-right",greeting:"<b>Synthetic literal greeting</b>",expertName:'<img src=x onerror="document.documentElement.setAttribute(\'data-widget-name-executed\',\'yes\')"> Dr. A & B'} : {primaryColor:"#365449",position:"bottom-right",greeting:"Synthetic configured-widget greeting",expertName:"Synthetic expert"});
+      if (pathname === "/api/widget/chat") {
+        const body = JSON.parse(String(options?.body || "{}"));
+        return body.apiKey === "synthetic-widget-security" ? json({subscribeUrl:"javascript:document.documentElement.setAttribute('data-widget-url-executed','yes')"},403) : json({error:"Synthetic fixture does not run AI responses"},503);
+      }
       if (url === "/api/knowledge/import/pdf") {
         if (++pdfAttempt === 1) return json({error:"Synthetic processing failure. Retry the selected file."},422);
         imported = true;
@@ -65,20 +69,20 @@ export function ProductJourneyFixture() {
     <h1 className="text-2xl">Synthetic product journey review</h1>
     <p>Development only. Component interactions use in-memory synthetic responses. No authenticated role layout, database, PDF parser, AI, payment, or hosted widget authorization is exercised.</p>
     <nav aria-label="Synthetic journeys" className="flex flex-wrap gap-3">
-      {["import","widget","installed-widget","admin","subscriber"].map(name=><Button key={name} variant="outline" aria-pressed={view === name} onClick={()=>setView(name)}>{name}</Button>)}
+      {["import","widget","installed-widget","widget-security","admin","subscriber"].map(name=><Button key={name} variant="outline" aria-pressed={view === name} onClick={()=>setView(name)}>{name}</Button>)}
       <Button variant="outline" onClick={()=>setTheme(resolvedTheme === "dark" ? "light" : "dark")}>Toggle theme</Button>
     </nav>
-    {ready ? view === "import" ? <div className="grid min-w-0 gap-6 lg:grid-cols-2"><PdfImportForm /><ImportHistoryTable /></div> : view === "widget" ? <WidgetPage /> : view === "installed-widget" ? <InstalledWidgetFixture /> : view === "admin" ? <UserTable /> : <PostFeed endpoint="/api/subscriber/bookmarks?sort=newest" emptyTitle="Your reading shelf is empty" /> : <p role="status">Preparing local synthetic responses…</p>}
+    {ready ? view === "import" ? <div className="grid min-w-0 gap-6 lg:grid-cols-2"><PdfImportForm /><ImportHistoryTable /></div> : view === "widget" ? <WidgetPage /> : view === "installed-widget" || view === "widget-security" ? <InstalledWidgetFixture hostile={view === "widget-security"} /> : view === "admin" ? <UserTable /> : <PostFeed endpoint="/api/subscriber/bookmarks?sort=newest" emptyTitle="Your reading shelf is empty" /> : <p role="status">Preparing local synthetic responses…</p>}
   </main>;
 }
 
-function InstalledWidgetFixture() {
+function InstalledWidgetFixture({ hostile }: { hostile: boolean }) {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "/embed/widget.js";
-    script.setAttribute("data-api-key", "synthetic-local-configuration");
+    script.setAttribute("data-api-key", hostile ? "synthetic-widget-security" : "synthetic-local-configuration");
     document.body.appendChild(script);
     return () => { script.remove(); document.getElementById("tw-widget-btn")?.remove(); document.getElementById("tw-widget-chat")?.remove(); };
-  }, []);
-  return <p>Actual widget script, synthetic configuration only. Open the AI Twin chat launcher; sending returns a synthetic service failure. No model or visitor-token service is called.</p>;
+  }, [hostile]);
+  return <p>Actual widget script, synthetic configuration only. Open the AI Twin chat launcher; sending returns a synthetic service failure or unsafe-link refusal. No model or visitor-token service is called.</p>;
 }
