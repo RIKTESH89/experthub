@@ -1,0 +1,169 @@
+{
+  "observedAtUTC": "2026-10-08 07:00:29 UTC",
+  "readOnly": true,
+  "secretsRead": false,
+  "databaseConnections": false,
+  "project": {
+    "id": "steep-wildflower-10013234",
+    "name": "experthub-staging",
+    "region": "aws-ap-southeast-1",
+    "pgVersion": 16,
+    "plan": "free_v3"
+  },
+  "branches": [
+    {
+      "id": "br-steep-pond-b3xfo61k",
+      "name": "production",
+      "default": true,
+      "state": "ready"
+    }
+  ],
+  "computes": [
+    {
+      "id": "ep-quiet-bread-b3rqji3g",
+      "branchId": "br-steep-pond-b3xfo61k",
+      "state": "idle",
+      "directHost": "ep-quiet-bread-b3rqji3g.c-4.ap-southeast-1.aws.neon.tech",
+      "pooledHost": "ep-quiet-bread-b3rqji3g-pooler.c-4.ap-southeast-1.aws.neon.tech",
+      "poolerEnabled": false
+    }
+  ],
+  "functions": [
+    {
+      "slug": "stagingreceiver",
+      "url": "https://br-steep-pond-b3xfo61k-stagingreceiver.compute.c-4.ap-southeast-1.aws.neon.tech/",
+      "active": {
+        "id": 2,
+        "status": "completed",
+        "runtime": "nodejs24",
+        "environmentKeys": [
+          "DATABASE_URL",
+          "DATABASE_URL_UNPOOLED",
+          "DIRECT_URL",
+          "STAGING_BRANCH_ID",
+          "STAGING_ENDPOINT_ID",
+          "STAGING_PAYMENT_MODE",
+          "STAGING_PG_VERSION",
+          "STAGING_PLAN",
+          "STAGING_PROJECT_ID",
+          "STAGING_REGION",
+          "STAGING_WEBHOOK_ENABLED",
+          "STAGING_WEBHOOK_RECOVERY_ENABLED",
+          "STAGING_WEBHOOK_WAKE_ENABLED",
+          "WEBHOOK_DATABASE_URL",
+          "WEBHOOK_DIRECT_URL"
+        ]
+      }
+    },
+    {
+      "slug": "stagingworker",
+      "url": "https://br-steep-pond-b3xfo61k-stagingworker.compute.c-4.ap-southeast-1.aws.neon.tech/",
+      "active": {
+        "id": 2,
+        "status": "completed",
+        "runtime": "nodejs24",
+        "environmentKeys": [
+          "DATABASE_URL",
+          "DATABASE_URL_UNPOOLED",
+          "DIRECT_URL",
+          "STAGING_BRANCH_ID",
+          "STAGING_ENDPOINT_ID",
+          "STAGING_PAYMENT_MODE",
+          "STAGING_PG_VERSION",
+          "STAGING_PLAN",
+          "STAGING_PROJECT_ID",
+          "STAGING_REGION",
+          "STAGING_WEBHOOK_ENABLED",
+          "STAGING_WEBHOOK_RECOVERY_ENABLED",
+          "STAGING_WEBHOOK_WAKE_ENABLED",
+          "WEBHOOK_DATABASE_URL",
+          "WEBHOOK_DIRECT_URL"
+        ]
+      }
+    }
+  ],
+  "triggers": [],
+  "vercel": {
+    "deployment": {
+      "id": "dpl_FzhASMuNRjBJiXeUmyBmGANs5fvZ",
+      "state": "READY",
+      "sha": "8897903fb7820532994a9f0f72c210449a46afb2",
+      "branch": "exp25-26-launch-auth-payments"
+    },
+    "environments": [
+      {
+        "key": "EXPERTHUB_STAGING_GOOGLE_APPROVED_CLIENT_ID",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "plain"
+      },
+      {
+        "key": "EXPERTHUB_STAGING_GOOGLE_CLIENT_ID",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "plain"
+      },
+      {
+        "key": "EXPERTHUB_STAGING_GOOGLE_ENABLED",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "plain",
+        "nonsecretValue": "1"
+      },
+      {
+        "key": "EXPERTHUB_STAGING_GOOGLE_CLIENT_SECRET",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "sensitive"
+      },
+      {
+        "key": "EXPERTHUB_STAGING_MIGRATE",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "plain",
+        "nonsecretValue": "0"
+      },
+      {
+        "key": "AUTH_SECRET",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "sensitive"
+      },
+      {
+        "key": "DIRECT_URL",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "sensitive"
+      },
+      {
+        "key": "DATABASE_URL",
+        "target": [
+          "preview"
+        ],
+        "branch": "exp25-26-launch-auth-payments",
+        "type": "sensitive"
+      }
+    ],
+    "decryptRequested": false
+  },
+  "limits": [
+    "Function enable values unread; secret keys absent from listed deployment environment, not proof of runtime behavior",
+    "Preview DB identity and Production equality remain unknown without sensitive values",
+    "Razorpay/Resend account configuration not inspected; no connector exposed for them",
+    "No real signup, payment, mail, scheduler invocation or hosted DB read performed"
+  ]
+}

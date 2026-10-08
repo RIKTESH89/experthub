@@ -1,0 +1,13 @@
+PASS staging-webhook/host.test.ts
+  ✓ generic adapters route exact paths/methods and stay disabled before initialization (2 ms)
+  ✓ public route passes exact raw bytes and invalid signature persists nothing (2 ms)
+  ✓ standalone worker requires bearer auth; genericHTTP never trusts spoofed Neon headers
+  ✓ nativeNeon recovery defaultoff; requires pinned trigger envelope and edge header (1 ms)
+  ✓ wake uses pinned path/host, distinct bearer secret, timeout and no redirect; ack survives failure (10 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        0.282 s
+Ran all test suites matching /staging-webhook\/host.test.ts/i.
+Test results written to: audit/exp26-provider-readiness/host-tests.json

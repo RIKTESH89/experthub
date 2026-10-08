@@ -1,0 +1,61 @@
+{
+  "base": "8897903fb7820532994a9f0f72c210449a46afb2",
+  "mirrorCheckpoint": "2026-10-08T06:31:15Z",
+  "mirrorSHA256": "f35a9b2ae32537823b2b391ad09c31f78c7eccf690f54867a0e8e93b4bdc3db0",
+  "linearWrites": false,
+  "localOnly": true,
+  "issues": [
+    {
+      "id": "EXP-26",
+      "url": "https://linear.app/experthubupdate/issue/EXP-26/fix-authentication-and-billing-gates",
+      "mirroredStatus": "In Progress",
+      "proposedStatus": "In Progress",
+      "completedLocalUpdate": "199 synthetic auth/gate checks pass on exact 8897903; consenting current-host first signup/repeat/logout and real expiry remain unrun. Preserve client/hostname approval; parent supplies exact tester.",
+      "evidence": [
+        "REPORT.md",
+        "verification-summary.json",
+        "ACCEPTANCE-PROPOSAL.md",
+        "provider-status.json"
+      ]
+    },
+    {
+      "id": "EXP-32",
+      "url": "https://linear.app/experthubupdate/issue/EXP-32/recover-interrupted-subscription-provisioning",
+      "mirroredStatus": "In Progress",
+      "proposedStatus": "In Progress",
+      "completedLocalUpdate": "Fresh metadata confirms exact Neon Test receiver/worker are deployed, no triggers, enable values unread and service secret keys absent from listed environments. Recovery tooling implemented; actual Test account/provisioning runtime/objects and applicable sensitive configuration approvals are still required.",
+      "evidence": [
+        "REPORT.md",
+        "verification-summary.json",
+        "ACCEPTANCE-PROPOSAL.md",
+        "provider-status.json"
+      ]
+    },
+    {
+      "id": "EXP-33",
+      "url": "https://linear.app/experthubupdate/issue/EXP-33/deliver-billing-notifications-durably",
+      "mirroredStatus": "In Progress",
+      "proposedStatus": "In Progress",
+      "completedLocalUpdate": "Local bounded ADMIN health snapshot adds terminal/exhausted-ready visibility, persisted role checks and redaction; synthetic signed receipt/outbox/terminal email failure passes. API not deployed; actual email/alert sender+runtime and worker/scheduler delivery remain unrun. Approved alert destination preserved.",
+      "evidence": [
+        "REPORT.md",
+        "verification-summary.json",
+        "ACCEPTANCE-PROPOSAL.md",
+        "provider-status.json"
+      ]
+    },
+    {
+      "id": "EXP-34",
+      "url": "https://linear.app/experthubupdate/issue/EXP-34/reconcile-existing-paid-subscriptions",
+      "mirroredStatus": "In Progress",
+      "proposedStatus": "In Progress",
+      "completedLocalUpdate": "Existing signed review/fresh-provider/CAS native regressions pass; read-only metadata does not establish real provider evidence. Any real staging apply remains separately gated by exact row, actor and reviewed digest. No customer/shared data reconciled.",
+      "evidence": [
+        "REPORT.md",
+        "verification-summary.json",
+        "ACCEPTANCE-PROPOSAL.md",
+        "provider-status.json"
+      ]
+    }
+  ]
+}
