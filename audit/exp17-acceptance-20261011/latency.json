@@ -1,0 +1,83 @@
+{
+  "mode": "synthetic-full-buffer-latency-only",
+  "realProviderCalls": 0,
+  "sampleCount": 10,
+  "adapterDelayMs": 5,
+  "summary": {
+    "unverifiedGenerationP50Ms": 6.325833000000102,
+    "verifiedFullBufferP50Ms": 26.36016699999982,
+    "verifiedFullBufferP95Ms": 29.974666999999954
+  },
+  "samples": [
+    {
+      "unverifiedGenerationMs": 6.404375000000073,
+      "verifiedFullBufferMs": 29.974666999999954,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.36483300000009,
+      "verifiedFullBufferMs": 25.88083299999994,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.090541999999914,
+      "verifiedFullBufferMs": 26.173500000000104,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.338041999999859,
+      "verifiedFullBufferMs": 27.157875000000104,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.30233300000009,
+      "verifiedFullBufferMs": 26.26883299999986,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.303750000000036,
+      "verifiedFullBufferMs": 28.079291000000012,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.916500000000042,
+      "verifiedFullBufferMs": 27.110999999999876,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.31470800000011,
+      "verifiedFullBufferMs": 26.36016699999982,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.336874999999964,
+      "verifiedFullBufferMs": 26.18116699999996,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    },
+    {
+      "unverifiedGenerationMs": 6.325833000000102,
+      "verifiedFullBufferMs": 27.33750000000009,
+      "outcome": "released-synthetic-evaluation",
+      "calls": 2
+    }
+  ],
+  "deadline": {
+    "requestedMs": 15,
+    "observedMs": 16,
+    "outcome": "blocked",
+    "reasons": [
+      "evaluation-deadline"
+    ],
+    "emittedRiskyText": false
+  },
+  "limit": "No production/provider streaming latency or atomic permission-at-emission guarantee; full-buffer returns only after all verification gates."
+}

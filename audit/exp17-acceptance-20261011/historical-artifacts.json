@@ -1,0 +1,17 @@
+[
+  {
+    "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-8/experthub-exp15-exp17-groq-initial/audit/launch-integration/exp15-exp17-groq-compact-network.json",
+    "sha256": "3d5ae122d170c2e4fabaa1c58bc5262b76d10245c1c990a3c2b38aec6712a4f2",
+    "inspected": "read-only saved history; no new provider calls"
+  },
+  {
+    "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-8/experthub-exp15-exp17-groq-initial/audit/launch-integration/exp15-exp17-groq-h03-diagnostic.json",
+    "sha256": "127e872275e9dd0e2eb17e048e1766f3ffdff63ffdf0ddccd18f8f65fbc359b4",
+    "inspected": "read-only saved history; no new provider calls"
+  },
+  {
+    "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-8/experthub-exp15-exp17-groq-initial/audit/launch-integration/exp15-exp17-groq-calibration-offline.json",
+    "sha256": "1621b71f55526ec3481f3432c417196e5d19032274f3b0bea3d54860b4c65d03",
+    "inspected": "read-only saved history; no new provider calls"
+  }
+]

@@ -2,10 +2,12 @@ import type { EvidenceBundle } from "@/lib/retrieval/bundle";
 import type { DialogueState } from "../state";
 import { digest, evidenceDigest } from "./digests";
 import { LIMITS, type EvidenceReference, type StructuredDraft, type SemanticJudgment, type GateDecision } from "./contracts";
+import { literalPersonSupport, quotationsSupported } from "./literal-support";
 const sameReference = (a: EvidenceReference, b: EvidenceReference) => a.spanId === b.spanId && a.revisionId === b.revisionId && a.contentHash === b.contentHash && a.sourceVersion === b.sourceVersion;
+const uniqueReferences = (rows: EvidenceReference[]) => rows.every((row, i) => !rows.slice(0, i).some(prior => sameReference(row, prior)));
 export function checkStructuredDraft(draft: StructuredDraft): string[] {
     const errors: string[] = [];
-    if (/\[[^\]]+\]\([^)]+\)/.test(draft.text))
+    if (/\[[^\]]+\]\([^)]+\)|<a\b[^>]*>|<https?:\/\/[^>]*>/i.test(draft.text))
         errors.push("inline-source-citation-untyped");
     if (Buffer.byteLength(draft.text, "utf8") > LIMITS.draftBytes)
         errors.push("draft-byte-budget");
@@ -62,6 +64,8 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
             reasons.push("semantic-" + assessment.verdict);
             continue;
         }
+        if (assessment.verdict === "supported" && !claim.evidence.length)
+            reasons.push("supported-verdict-without-evidence");
         const person = claim.category === "person-belief" || claim.category === "person-biography";
         const sourced = person || claim.category === "source-explanation";
         if (claim.category === "high-stakes-advice")
@@ -78,6 +82,8 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
             reasons.push("temporal-coverage-incomplete");
         if (assessment.supportedEvidence.length !== claim.evidence.length || assessment.supportedEvidence.some(r => !claim.evidence.some(other => sameReference(r, other))))
             reasons.push("independent-evidence-mismatch");
+        if (!uniqueReferences(claim.evidence) || !uniqueReferences(assessment.supportedEvidence))
+            reasons.push("duplicate-evidence-reference");
         if (assessment.verdict === "unknown") {
             if (claim.category !== "evidence-gap" || claim.presentation !== "uncertainty" || claim.gapIndex === undefined || !bundle.gaps[claim.gapIndex] || claim.evidence.length)
                 reasons.push("unknown-presented-as-fact");
@@ -90,6 +96,14 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
             reasons.push("unsupported-general-category");
         if (claim.category === "new-application" && claim.presentation !== "uncertainty")
             reasons.push("application-not-labelled-inference");
+        if (claim.category === "new-application" && (!claim.evidence.length || assessment.verdict !== "supported"))
+            reasons.push("inference-without-supported-evidence");
+        const supportingRows = rows.filter(row => claim.evidence.some(ref => sameReference(ref, row)));
+        const claimText = draft.text.slice(claim.start, claim.end);
+        if (person && !literalPersonSupport(claimText, supportingRows))
+            reasons.push("person-entailment-unverified");
+        if ((sourced || claim.evidence.length) && !quotationsSupported(claimText, supportingRows))
+            reasons.push("quotation-not-in-cited-span");
         for (const reference of claim.evidence) {
             const matches = rows.filter(r => sameReference(reference, r));
             const row = matches[0];
@@ -100,6 +114,8 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
             if (person && (row.kind !== "explicit" || !row.endorsedByOwner || row.authorId !== state.expertId || row.speakerId !== state.expertId || row.speakerRole !== "author"))
                 reasons.push("unsupported-person-attribution");
             if (bundle.temporalTrace.supersededStances.some(r => r.spanId === reference.spanId))
+                reasons.push("superseded-reference");
+            if (bundle.temporalTrace.relations.some(r => r.type === "supersedes" && [...bundle.temporalTrace.stances, ...bundle.temporalTrace.supersededStances].some(s => sameReference(reference, s) && s.id === r.to)))
                 reasons.push("superseded-reference");
             if (bundle.temporalTrace.relations.some(r => ["contradiction", "unresolved-disagreement"].includes(r.type) && r.evidenceSpanIds.includes(reference.spanId)))
                 reasons.push("unresolved-evidence-conflict");
@@ -115,6 +131,8 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
                 reasons.push("current-question-downgraded-to-recorded");
             if (person && state.personFrame === "historical" && claim.frame.mode !== "as-of")
                 reasons.push("historical-question-downgraded");
+            if (person && claim.frame.mode === "recorded" && /^The expert (?:currently )?(?:prefers|recommends) /.test(claimText))
+                reasons.push("recorded-source-presented-as-current-belief");
             accepted.add(reference.spanId);
         }
     }
