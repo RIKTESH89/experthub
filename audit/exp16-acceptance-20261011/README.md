@@ -36,3 +36,22 @@ A fresh owned PostgreSQL18 cluster applied **all18 standard Prisma migrations** 
 The first full-schema run caught two invalid synthetic expired subscriptions: fixture start2020 and end2000 violated the actual `verified_paid_period_order` check. `full-schema-initial-console.log` and `full-schema-initial-jest.json` preserve that54/56 result. Fixtures now use an ordered but expired2020→2021 period; revocation and concurrent serialization assertions were preserved. No application constraint or acceptance assertion was relaxed. TypeScript passes (`full-schema-types.log`). Manual script-only lint exposes pre-existing `any` annotations in the native harness, outside the repository's normal lint scope; the new guarded config passes lint.
 
 This closes the partial-schema limitation for these selected PostgreSQL18 cases. PostgreSQL16 and authenticated hosted acceptance, real-provider generation/cost/latency and expert human quality assessment remain open. The earlier76-case partial fixture result stays separately labeled. A fresh backwards-mode regression also passed76/76 after this harness change, with cleanup confirmed in `full-schema-mode-partial-validation.log` and test output in `full-schema-mode-partial-regression.log`. Independent fresh review of this additional mode is recorded separately after the reviewer's run.
+
+
+## PostgreSQL16 parity inventory — continuation at integrated43b784a
+
+`pg16-runtime-inventory.json` records a read-only inventory of PATH executables, Apple Silicon and Intel Homebrew opt/Cellar directories, MacPorts, system/user Applications, Downloads, Homebrew cached bottles, existing Codex artifacts, Colima/Lima runtime locations and accessible Application Support. No installation, daemon/server startup, credential change, live data access or fixture mutation occurred during this inventory. The exact commands, exit codes, timestamps, missing locations and OS-denied directories are retained; the search does not claim visibility into denied OS application data.
+
+Only PostgreSQL18.6 executables were found. All736 discovered `PG_VERSION` markers report18; no16 marker or executable appeared in accessible searched locations. The only cached PostgreSQL bottle is18.6. Docker29.8.2 is a client with one default context, but `/var/run/docker.sock` does not exist; there is no usable daemon. Colima and Lima report no instances. No Postgres.app or other matching application runtime was present.
+
+| Acceptance gate | Status | Evidence or required next step |
+| --- | --- | --- |
+| PG18 all18 full-schema migrations, persistence/widget/replay | PASS56/56 selected;20 explicit skips | Full-schema logs/catalog and independent reviewer `d45a1e932b79121c2e3490ee64f76963150a3af4`, exact source pins match25a41b7 |
+| PG18 original partial native regression | PASS76/76 | `full-schema-mode-partial-validation.log`; cleaned fixture |
+| PostgreSQL16 parity | BLOCKED / UNRUN | No existing available runtime. Requires provision of existing PG16 binaries with compatible vector extension, or specific authorization to install that runtime/extension or create/start a suitable container daemon. None is authorized in this continuation. |
+| Mocked delivery, COMMIT rejection/abort, receipts and replay | Available, previous checks pass | Existing route tests, independent9-case delivery review and native manifests/settings/rollback tests remain runnable without providers |
+| TypeScript and repository lint | Available, previous checks pass | Existing compiler/lint gates remain runnable without PG16 |
+| Authenticated hosted journeys | Open | Integration owner owns scoped hosted acceptance |
+| Real-provider generation/cost/latency and expert human quality | UNRUN | Separate authorization, consenting fixtures and human evaluation required |
+
+No additional PG18 repetition was needed for this evidence-only inventory. PG18 results do not prove PG16 parity. EXP-16 remains open pending the remaining acceptance gates; V2 stays OFF.

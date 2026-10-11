@@ -1,0 +1,447 @@
+{
+  "at": "2026-10-11T05:23:51.857379+00:00",
+  "integrationCommit": "43b784a",
+  "workerCommit": "6f95b81faadf986fefebc15fd80dbff36299eadb",
+  "mode": "read-only runtime/artifact inventory; no installation or daemon startup",
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/bin/postgres",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "postgres (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/pg_ctl",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "pg_ctl (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/initdb",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "initdb (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "context",
+        "ls"
+      ],
+      "exit": 0,
+      "stdout": "NAME        DESCRIPTION                               DOCKER ENDPOINT               ERROR\ndefault *   Current DOCKER_HOST based configuration   unix:///var/run/docker.sock   \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "version"
+      ],
+      "exit": 1,
+      "stdout": "Client: Docker Engine - Community\n Version:           29.8.2\n API version:       1.56\n Go version:        go1.27.1\n Git commit:        7fc2dff9bc\n Built:             Wed Sep 23 09:45:10 2026\n OS/Arch:           darwin/arm64\n Context:           default\n",
+      "stderr": "failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory\n"
+    },
+    {
+      "argv": [
+        "colima",
+        "list"
+      ],
+      "exit": 0,
+      "stdout": "PROFILE    STATUS    ARCH    CPUS    MEMORY    DISK    RUNTIME    ADDRESS\n",
+      "stderr": "time=\"2026-10-11T10:53:52+05:30\" level=warning msg=\"No instance found. Run `colima start` to create an instance.\"\n"
+    },
+    {
+      "argv": [
+        "limactl",
+        "list"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "time=\"2026-10-11T10:53:52+05:30\" level=warning msg=\"failed to detect whether running under rosetta, assuming false\" error=\"failed to read sysctl \\\"sysctl.proc_translated\\\": operation not permitted\"\ntime=\"2026-10-11T10:53:52+05:30\" level=warning msg=\"No instance found. Run `limactl create` to create an instance.\"\n"
+    },
+    {
+      "argv": [
+        "rg",
+        "--files",
+        "--hidden",
+        "--no-ignore",
+        "-g",
+        "postgres",
+        "-g",
+        "pg_ctl",
+        "-g",
+        "initdb",
+        "-g",
+        "PG_VERSION",
+        "-g",
+        "*.qcow2",
+        "-g",
+        "*postgres*16*",
+        "-g",
+        "*postgresql*16*",
+        "/Users/rikteshs20/Documents",
+        "/Users/rikteshs20/Downloads",
+        "/Users/rikteshs20/Applications",
+        "/Users/rikteshs20/Library/Application Support",
+        "/Users/rikteshs20/.colima",
+        "/Users/rikteshs20/.lima",
+        "/tmp",
+        "/opt/homebrew",
+        "/usr/local",
+        "/opt/local"
+      ],
+      "exit": 2,
+      "stderr": "rg: /Users/rikteshs20/.lima: No such file or directory (os error 2)\nrg: /opt/local: No such file or directory (os error 2)\nrg: /Users/rikteshs20/Library/Application Support/Knowledge: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/com.apple.sharedfilelist: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/CloudDocs: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/CallHistoryDB: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/com.apple.avfoundation/Frecents: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/DifferentialPrivacy: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/FaceTime: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/AddressBook: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/FileProvider: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/com.apple.TCC: Operation not permitted (os error 1)\nrg: /Users/rikteshs20/Library/Application Support/CallHistoryTransactions: Operation not permitted (os error 1)\n",
+      "stdoutLineCount": 739,
+      "stdoutSha256": "f93d1cfae3c41b134869b0b083aeb579e1e3c2e4f1bac91b665721b6afc2cca9",
+      "stdoutRuntimeAndArtifactCandidates": [
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/pg_ctl",
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/postgres",
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/initdb"
+      ]
+    },
+    {
+      "argv": [
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/pg_ctl",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "pg_ctl (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/postgres",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "postgres (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/homebrew/Cellar/postgresql@18/18.6/bin/initdb",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "initdb (PostgreSQL) 18.6 (Homebrew)\n",
+      "stderr": ""
+    }
+  ],
+  "runtimeDirectories": [
+    {
+      "path": "/opt/homebrew/opt",
+      "exists": true,
+      "matches": [
+        {
+          "path": "/opt/homebrew/opt/lima",
+          "resolved": "/opt/homebrew/Cellar/lima/2.2.0"
+        },
+        {
+          "path": "/opt/homebrew/opt/postgresql",
+          "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6"
+        },
+        {
+          "path": "/opt/homebrew/opt/docker",
+          "resolved": "/opt/homebrew/Cellar/docker/29.8.2"
+        },
+        {
+          "path": "/opt/homebrew/opt/colima",
+          "resolved": "/opt/homebrew/Cellar/colima/0.10.3"
+        },
+        {
+          "path": "/opt/homebrew/opt/postgres",
+          "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6"
+        },
+        {
+          "path": "/opt/homebrew/opt/postgresql@18",
+          "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6"
+        }
+      ]
+    },
+    {
+      "path": "/opt/homebrew/Cellar",
+      "exists": true,
+      "matches": [
+        {
+          "path": "/opt/homebrew/Cellar/lima",
+          "resolved": "/opt/homebrew/Cellar/lima"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/docker",
+          "resolved": "/opt/homebrew/Cellar/docker"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/colima",
+          "resolved": "/opt/homebrew/Cellar/colima"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/postgresql@18",
+          "resolved": "/opt/homebrew/Cellar/postgresql@18"
+        }
+      ]
+    },
+    {
+      "path": "/usr/local/opt",
+      "exists": false,
+      "matches": []
+    },
+    {
+      "path": "/usr/local/Cellar",
+      "exists": false,
+      "matches": []
+    },
+    {
+      "path": "/opt/local/lib",
+      "exists": false,
+      "matches": []
+    },
+    {
+      "path": "/Applications",
+      "exists": true,
+      "matches": []
+    },
+    {
+      "path": "/Users/rikteshs20/Applications",
+      "exists": true,
+      "matches": []
+    },
+    {
+      "path": "/Users/rikteshs20/Downloads",
+      "exists": true,
+      "matches": []
+    },
+    {
+      "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads",
+      "exists": true,
+      "matches": [
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/ee953626de728cbc54a5eca0881ac865c2e39ac25fb8ed27efb7210788ec767e--postgresql@18-18.6-1.bottle_manifest.json",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/ee953626de728cbc54a5eca0881ac865c2e39ac25fb8ed27efb7210788ec767e--postgresql@18-18.6-1.bottle_manifest.json"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/5a85bd093f398445cedcf9ad3130163e2f2ff60e613dbd897fb771056e4a964a--docker-29.8.2.bottle_manifest.json",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/5a85bd093f398445cedcf9ad3130163e2f2ff60e613dbd897fb771056e4a964a--docker-29.8.2.bottle_manifest.json"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/770c3641a368d1590606d68d3432cd068d0d7f9959394d02657fe2298c1e5b8d--colima--0.10.3.arm64_tahoe.bottle.tar.gz",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/770c3641a368d1590606d68d3432cd068d0d7f9959394d02657fe2298c1e5b8d--colima--0.10.3.arm64_tahoe.bottle.tar.gz"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/1a39e5d87816ecd7d0f017af3321e72739d31c7b9a7d29e66e585a5c2fdfc2a0--colima-0.10.3.bottle_manifest.json",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/1a39e5d87816ecd7d0f017af3321e72739d31c7b9a7d29e66e585a5c2fdfc2a0--colima-0.10.3.bottle_manifest.json"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/abe3d195d3cd3d6fd5e4e5d4fe0edfcf8ed6be25e38c5184eff241739199d683--lima-2.2.0.bottle_manifest.json",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/abe3d195d3cd3d6fd5e4e5d4fe0edfcf8ed6be25e38c5184eff241739199d683--lima-2.2.0.bottle_manifest.json"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/c9d9ffaaad4a20db37d897ffd1dd6cacd956650829891853f638bc0db473da67--lima--2.2.0.arm64_tahoe.bottle.tar.gz",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/c9d9ffaaad4a20db37d897ffd1dd6cacd956650829891853f638bc0db473da67--lima--2.2.0.arm64_tahoe.bottle.tar.gz"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/8bf81b6cc2df2daedb44daad428ab65cbf8246fe77b9a69b26e59c30e08157c6--postgresql@18--18.6.arm64_tahoe.bottle.1.tar.gz",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/8bf81b6cc2df2daedb44daad428ab65cbf8246fe77b9a69b26e59c30e08157c6--postgresql@18--18.6.arm64_tahoe.bottle.1.tar.gz"
+        },
+        {
+          "path": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/931ab4f92b2003c9dd51b5e0129ffb1136e1593baab2c0961dea89bdc366f00d--docker--29.8.2.arm64_tahoe.bottle.tar.gz",
+          "resolved": "/Users/rikteshs20/Library/Caches/Homebrew/downloads/931ab4f92b2003c9dd51b5e0129ffb1136e1593baab2c0961dea89bdc366f00d--docker--29.8.2.arm64_tahoe.bottle.tar.gz"
+        }
+      ]
+    }
+  ],
+  "pathBinaries": [
+    {
+      "path": "/opt/homebrew/bin/postgres",
+      "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/postgres"
+    },
+    {
+      "path": "/opt/homebrew/bin/pg_ctl",
+      "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/pg_ctl"
+    },
+    {
+      "path": "/opt/homebrew/bin/initdb",
+      "resolved": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/initdb"
+    }
+  ],
+  "binaryCandidates": [
+    {
+      "path": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/pg_ctl",
+      "version": "pg_ctl (PostgreSQL) 18.6 (Homebrew)",
+      "exit": 0
+    },
+    {
+      "path": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/postgres",
+      "version": "postgres (PostgreSQL) 18.6 (Homebrew)",
+      "exit": 0
+    },
+    {
+      "path": "/opt/homebrew/Cellar/postgresql@18/18.6/bin/initdb",
+      "version": "initdb (PostgreSQL) 18.6 (Homebrew)",
+      "exit": 0
+    }
+  ],
+  "result": {
+    "pg16Available": false,
+    "pg16ParityGate": "BLOCKED_UNRUN",
+    "reason": "No executable PostgreSQL16 runtime or cached runtime found in accessible searched locations; only 18.6 binaries and18 data markers. Docker API socket absent; Colima/Lima have no instances. Installing PG16 or creating/starting container daemon is outside current authorization.",
+    "existingChecksAvailable": [
+      "PG18 all18 full-schema selected56-case parity",
+      "PG18 partial native76-case regression",
+      "mocked route/COMMIT/cancellation tests",
+      "immutable manifest/settings/rollback unit and native tests",
+      "TypeScript and repository lint"
+    ],
+    "notProven": [
+      "PG16 schema/migration/runtime parity",
+      "hosted authenticated acceptance",
+      "real provider generation cost/latency",
+      "human faithfulness/style/naturalness"
+    ]
+  },
+  "dataVersionMarkers": {
+    "count": 736,
+    "versionCounts": {
+      "18": 736
+    },
+    "clusterRootMarkers": [
+      {
+        "path": "/opt/homebrew/var/postgresql@18/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-5/exp16-shadow/.exp16-shadow-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-5/exp16/.exp16-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-10/payments-continuation/.billing-continuation-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-03/task-10/payments/.billing-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-09-30/task-3/experthub/.phase0-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-3/experthub-ui/.ui-runtime/uiqa-pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/full-site-staging/bounded-acceptance-repair-review/candidate/.bounded-acceptance-tests/run-2ht3TDeT/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/full-site-staging/bounded-launcher-review/retained-reviewer-runtimes/unknown-s1E9kA/.bounded-acceptance-durable/5fa48d5af83b52f44ffa46bb26939564/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/full-site-staging/bounded-launcher-review/candidate/.bounded-acceptance-tests/run-oUyv5z8d/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/full-site-staging/bounded-launcher-review/candidate/.bounded-acceptance-launcher-smoke/run-EeVC1n/.bounded-acceptance-durable/ab11aff9ba846dcf786fc38c48bbcf5e/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/experthub/.billing-continuation-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/full-site-staging/bounded-acceptance-review/candidate/.bounded-acceptance-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-integration/.integration-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-2Wcm59E8/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-continuations-local/.billing-continuation-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-1zKbpZsw/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-nOe9sS62/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-TFE3HAzY/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-ALK9kwkU/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-beEg6fOT/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-OQGLUETC/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-JM9FoBi8/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-vaqCWc3I/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-continuations-local/.billing-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.billing-continuation-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-tests/run-FoAqUMqN/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-launcher-smoke/run-pIzt8Y/.bounded-acceptance-durable/f62e21db1b716a3f5923786655b78325/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-launcher-smoke/run-fIImzR/.bounded-acceptance-durable/96f406515341eccb1805906e847f96a0/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-08/task-3/recovery-readiness/.bounded-acceptance-durable/3b4c34d162aeef7894f36faeb3f18f36/pgdata/PG_VERSION",
+        "version": "18"
+      },
+      {
+        "path": "/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-next-wave-integration/.billing-runtime/pgdata/PG_VERSION",
+        "version": "18"
+      }
+    ]
+  }
+}
