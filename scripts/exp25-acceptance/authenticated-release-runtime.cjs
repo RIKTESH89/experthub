@@ -83,7 +83,7 @@ const { ReviewError } = load('src/lib/persona/store.ts', {
   gate = true;
   const blocked = await preview.POST(req({ expectedHead: null })); assert.equal(blocked.status, 200); assert.equal((await blocked.json()).allowed, false);
   results.push({ caseId: 'blocked release preview remains explicit structured response', outcome: 'PASS' });
-  await denied('entitlement loss: owner role revoked between requests', valid, { role: 'SUBSCRIBER', isActive: true, isBanned: false }, 403);
+  await denied('owner access loss: role revoked between requests', valid, { role: 'SUBSCRIBER', isActive: true, isBanned: false }, 403);
   const report = { mode: 'local synthetic HTTP/session runtime', externalCalls: 0, databaseConnections: 0, realOAuth: 'NOT RUN', persistence: 'NOT RUN: store and identity rows substituted', results };
   fs.writeFileSync(path.join(root, 'audit/exp25-acceptance-20261011/authenticated-release-runtime.json'), JSON.stringify(report, null, 2) + '\n');
   console.log(`${results.length} synthetic encrypted-session/release-handler scenario groups passed`);

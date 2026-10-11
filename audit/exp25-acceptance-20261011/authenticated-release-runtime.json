@@ -100,7 +100,7 @@
       "outcome": "PASS"
     },
     {
-      "caseId": "entitlement loss: owner role revoked between requests",
+      "caseId": "owner access loss: role revoked between requests",
       "outcome": "PASS",
       "handlers": [
         "release GET",
