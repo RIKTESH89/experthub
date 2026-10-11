@@ -7,7 +7,7 @@ export const PROVIDER_PLAN = Object.freeze({
   recipient: 'GroqCloud (Groq); possible reliability/abuse retention in US GCP',
   model: 'openai/gpt-oss-120b', serviceTier: 'on_demand',
   baselineCommit: '0a2cd602646d7ae5689b195a4fbe6da05a5daa28',
-  candidateCommit: '43b784a4e71fc985ae178e1d7ab764f0ff4a85d1',
+  candidateCommit: '8baf837331cd0ef626d3fa19a59646fd46a58ef7',
   caseIds: Array.from({ length: 16 }, (_, i) => `HG${String(i + 1).padStart(3, '0')}`),
   goldStatus: 'NOT_AUTHORED_NOT_VALIDATED', batchCases: 4, batches: 4, distinctQuotaDays: 4,
   repeats: 2, variants: 2, logicalAnswers: 64, wireCalls: 128, attemptsPerAnswer: 1, retries: 0,

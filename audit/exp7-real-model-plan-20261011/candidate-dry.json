@@ -1,5 +1,5 @@
 {
-  "kernelCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
   "sourceGraph": {
     "package-lock.json": "2bbc9e5d043b4f469e86e46441daa7c60904198a9eaf5e880f5e1196a186555b",
     "scripts/exp15-exp17/register-alias.cjs": "26505eb1f71b16fdd19f121d9336f77f9f28cf76868e230b6ee164c61fb1579c",
@@ -8,14 +8,14 @@
     "src/lib/ai/dialogue/structured/contracts.ts": "00b3e3c931827ac95e267f33dd496127f98222abc1e08a8f65e39af1e97567f5",
     "src/lib/ai/dialogue/structured/digests.ts": "cf15f93817da82c747bff1aa6d54dc84f6e14e5134fba135dcff4e8034a19db4",
     "src/lib/ai/dialogue/structured/gate.ts": "7b6ffa0d316507ac99de5bce55dfcf8cafcdbb0b21f8aeca3823df00bd491b1a",
-    "src/lib/ai/dialogue/structured/literal-support.ts": "17b6d832ece459184da14eb43c654e3d5b8e3262b4fafbfb63493d63f181cbf5",
+    "src/lib/ai/dialogue/structured/literal-support.ts": "1ae61c83879695aaed21099b96f0d254d947beac38d44a1497963e97c7007750",
     "src/lib/ai/dialogue/structured/live-pins.ts": "4ca60af3d53f7e8f6abbec0cdad919871db1f95df69dcaf251c655b8a0252ab9",
     "src/lib/ai/dialogue/structured/pipeline.ts": "6858b94cf939ba5cc3d0804a45cb490d42404210699b93b042252af69020e67e",
     "src/lib/ai/dialogue/structured/prompts.ts": "d1d8dd20b9ea6c2ee0dd90c4377d0a04c2358786c5770ac28ea9d9e7eb71cb16",
     "src/lib/ai/dialogue/structured/snapshots.ts": "5f83f1f8aca5bd97c1bae71c4b5a4efe22199204ad5673d4bda9f37ac989efea",
     "src/lib/ai/dialogue/style.ts": "ae18590e899cf2d1895af4bd64720ecb72a10f2c4f40055256a92a0ac6de76a3"
   },
-  "sourceGraphHash": "9550566849ff582077babe66bca946b5e77742372f709e8b35dd78662d38af52",
+  "sourceGraphHash": "39d7908edeb46532081d39f0de2a299509d0cce6037dbf1071ba07ac879d0309",
   "mode": "offline-known-calibration-payload-probe",
   "realProviderCalls": 0,
   "rows": [

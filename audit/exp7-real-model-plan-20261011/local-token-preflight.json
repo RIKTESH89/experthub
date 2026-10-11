@@ -10,6 +10,7 @@
   "records": [
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H01-natural-person-paraphrase",
       "stage": "generationExamples",
       "localCount": 1053,
@@ -17,6 +18,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H01-natural-person-paraphrase",
       "stage": "verificationExamples",
       "localCount": 1281,
@@ -24,6 +26,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H03-research-explanation",
       "stage": "generationExamples",
       "localCount": 1055,
@@ -31,6 +34,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H03-research-explanation",
       "stage": "verificationExamples",
       "localCount": 1253,
@@ -38,6 +42,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H09-imported-persona-correction",
       "stage": "generationExamples",
       "localCount": 1066,
@@ -45,6 +50,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H09-imported-persona-correction",
       "stage": "verificationExamples",
       "localCount": 1265,
@@ -52,6 +58,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H19-current-undated",
       "stage": "generationExamples",
       "localCount": 1045,
@@ -59,6 +66,7 @@
     },
     {
       "kernel": "baseline",
+      "kernelCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
       "case": "H19-current-undated",
       "stage": "verificationExamples",
       "localCount": 1267,
@@ -66,6 +74,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H01-natural-person-paraphrase",
       "stage": "generationExamples",
       "localCount": 1429,
@@ -73,6 +82,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H01-natural-person-paraphrase",
       "stage": "verificationExamples",
       "localCount": 1561,
@@ -80,6 +90,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H03-research-explanation",
       "stage": "generationExamples",
       "localCount": 1428,
@@ -87,6 +98,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H03-research-explanation",
       "stage": "verificationExamples",
       "localCount": 1527,
@@ -94,6 +106,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H09-imported-persona-correction",
       "stage": "generationExamples",
       "localCount": 1472,
@@ -101,6 +114,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H09-imported-persona-correction",
       "stage": "verificationExamples",
       "localCount": 1582,
@@ -108,6 +122,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H19-current-undated",
       "stage": "generationExamples",
       "localCount": 1417,
@@ -115,6 +130,7 @@
     },
     {
       "kernel": "candidate",
+      "kernelCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
       "case": "H19-current-undated",
       "stage": "verificationExamples",
       "localCount": 1542,

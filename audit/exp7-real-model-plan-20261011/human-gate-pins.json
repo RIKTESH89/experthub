@@ -1,10 +1,19 @@
 {
-  "owner": "EXP-15",
-  "commit": "25fa86b",
-  "gatesSha256": "4c0077516c4b60912a7b1f746b09405e01c6220b629da9a75aec05057c1750c3",
-  "rubricSha256": "7625bb823711d4b521b0fcc63c99406c4c2327724a582e2d5e0c36d95ca9e48a",
+  "gatesSha256": "a913e5d9490985b06fd781e591a9bccb12796c0d9b2cd4c594890689500c4f20",
+  "rubricSha256": "cad75079423120f0d7460613360749057fcbf3f969364fbe5f763e969a139fbf",
   "blankGoldSchemaSha256": "0d62ff05a3000d8600f9395e73a44129a5b864cab95b39ad2d78141facee818e",
+  "reviewerPacketSha256": "5f87fdea432a6924e38af19c50739e20c41e34e4a9d1dc0757634fa095c7655e",
+  "owner": "EXP-15",
+  "commit": "b141efe2d17bc6c1fe04507587bb137755a777ed",
+  "integratedCommit": "1e8c687ba75c7bc426c4ebe8cc59021c6326d040",
+  "coordinatorManifestSha256": "6f6f5a65c7051ccc56ee9e077fd91b725b3b6adf50098ffdac1af2d2d81de453",
+  "reviewerMarkdownSha256": "9bd24ab8e677494a589f77c14c6763d95871a6d63fab5a20f24948faa2c7af82",
+  "fixedPacketStageCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "fixedPacketTraceFileHash": "fe1937c15912dbcbb296c0b4f0230a92fbe03dc3dae4fe64f2d4a92f7f788037",
+  "fixedPacketSourceManifestHash": "0fa14f367dde218f2cdf92087ce773e742c85923cb6056693f6e8b7615e0153a",
+  "sourceBindingAdversarialRejections": 13,
   "officialIds": "HG001..HG016",
   "humanInputStatus": "NOT_AUTHORED_NOT_VALIDATED",
+  "humanReview": "NOT_RUN",
   "providerCalls": 0
 }

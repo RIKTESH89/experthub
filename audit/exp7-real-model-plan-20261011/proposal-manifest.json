@@ -8,7 +8,7 @@
     "model": "openai/gpt-oss-120b",
     "serviceTier": "on_demand",
     "baselineCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
-    "candidateCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+    "candidateCommit": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
     "caseIds": [
       "HG001",
       "HG002",
@@ -844,7 +844,7 @@
     "src/lib/ai/dialogue/style.ts": "67c3fcebc6bfd6f460e2b9cad7161e6d43248eb9d89980a8185eb0d76c2e9093",
     "src/lib/graph/temporal/timeline.ts": "2b290cfd04448fe344df6e0211a507c7c70b27ca39d301d02200536498dbd73e",
     "src/lib/retrieval/intent.ts": "3a490877a02883fec9d83cbe4487c2569afdf3304397f23dc6aa48cbefc6e6ff",
-    "scripts/exp7/provider-plan.ts": "629aac819aab0062b28ab90819c21af79ed66aa17b03453587960044d933b8f5",
+    "scripts/exp7/provider-plan.ts": "432f406b175711d97a515591e6717533b48c5e3ced10ad1c1c027dc47e9c32ee",
     "scripts/exp7/dry-provider-kernel.cjs": "403a41e2b875b0a7e04750374b5beb3cd5052557136787fd209f7b1d6a797c60",
     "__tests__/exp7/provider-plan.test.ts": "c02f4e215b6628dddaac988bc7df102b081ee62d35e9786a205a2800823bfdf2"
   },
@@ -857,5 +857,40 @@
     "https://console.groq.com/docs/rate-limits",
     "https://console.groq.com/docs/api-reference",
     "https://console.groq.com/docs/your-data"
-  ]
+  ],
+  "currentCandidateNativeGraph": {
+    "package-lock.json": "2bbc9e5d043b4f469e86e46441daa7c60904198a9eaf5e880f5e1196a186555b",
+    "scripts/exp15-exp17/register-alias.cjs": "26505eb1f71b16fdd19f121d9336f77f9f28cf76868e230b6ee164c61fb1579c",
+    "src/lib/ai/dialogue/local-evaluation.ts": "6190c23b10dcfc6087199d46e8e55e4a432d7b50af5b1692eb9d7204583d3a15",
+    "src/lib/ai/dialogue/state.ts": "01977e6d119444b1ea246d17e6f7bb2de0201c3cc815683721bcccb8fbad3e47",
+    "src/lib/ai/dialogue/structured/contracts.ts": "00b3e3c931827ac95e267f33dd496127f98222abc1e08a8f65e39af1e97567f5",
+    "src/lib/ai/dialogue/structured/digests.ts": "cf15f93817da82c747bff1aa6d54dc84f6e14e5134fba135dcff4e8034a19db4",
+    "src/lib/ai/dialogue/structured/gate.ts": "7b6ffa0d316507ac99de5bce55dfcf8cafcdbb0b21f8aeca3823df00bd491b1a",
+    "src/lib/ai/dialogue/structured/literal-support.ts": "1ae61c83879695aaed21099b96f0d254d947beac38d44a1497963e97c7007750",
+    "src/lib/ai/dialogue/structured/live-pins.ts": "4ca60af3d53f7e8f6abbec0cdad919871db1f95df69dcaf251c655b8a0252ab9",
+    "src/lib/ai/dialogue/structured/pipeline.ts": "6858b94cf939ba5cc3d0804a45cb490d42404210699b93b042252af69020e67e",
+    "src/lib/ai/dialogue/structured/prompts.ts": "d1d8dd20b9ea6c2ee0dd90c4377d0a04c2358786c5770ac28ea9d9e7eb71cb16",
+    "src/lib/ai/dialogue/structured/snapshots.ts": "5f83f1f8aca5bd97c1bae71c4b5a4efe22199204ad5673d4bda9f37ac989efea",
+    "src/lib/ai/dialogue/style.ts": "ae18590e899cf2d1895af4bd64720ecb72a10f2c4f40055256a92a0ac6de76a3"
+  },
+  "historicalCandidateCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "humanGatePins": {
+    "gatesSha256": "a913e5d9490985b06fd781e591a9bccb12796c0d9b2cd4c594890689500c4f20",
+    "rubricSha256": "cad75079423120f0d7460613360749057fcbf3f969364fbe5f763e969a139fbf",
+    "blankGoldSchemaSha256": "0d62ff05a3000d8600f9395e73a44129a5b864cab95b39ad2d78141facee818e",
+    "reviewerPacketSha256": "5f87fdea432a6924e38af19c50739e20c41e34e4a9d1dc0757634fa095c7655e",
+    "owner": "EXP-15",
+    "commit": "b141efe2d17bc6c1fe04507587bb137755a777ed",
+    "integratedCommit": "1e8c687ba75c7bc426c4ebe8cc59021c6326d040",
+    "coordinatorManifestSha256": "6f6f5a65c7051ccc56ee9e077fd91b725b3b6adf50098ffdac1af2d2d81de453",
+    "reviewerMarkdownSha256": "9bd24ab8e677494a589f77c14c6763d95871a6d63fab5a20f24948faa2c7af82",
+    "fixedPacketStageCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+    "fixedPacketTraceFileHash": "fe1937c15912dbcbb296c0b4f0230a92fbe03dc3dae4fe64f2d4a92f7f788037",
+    "fixedPacketSourceManifestHash": "0fa14f367dde218f2cdf92087ce773e742c85923cb6056693f6e8b7615e0153a",
+    "sourceBindingAdversarialRejections": 13,
+    "officialIds": "HG001..HG016",
+    "humanInputStatus": "NOT_AUTHORED_NOT_VALIDATED",
+    "humanReview": "NOT_RUN",
+    "providerCalls": 0
+  }
 }

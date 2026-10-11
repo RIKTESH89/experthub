@@ -1,9 +1,14 @@
 {
   "baseline": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
-  "candidate": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "candidate": "8baf837331cd0ef626d3fa19a59646fd46a58ef7",
+  "historicalCandidate": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
   "sameExternalInputs": true,
   "distinctNativeSourceGraphs": true,
+  "repairedGraphDiffersFromHistorical": true,
   "candidateLiteralSupportPinned": true,
+  "baselineGraphHash": "bfa79da2e1a0f6a8a23b7422d068c870ef31179b0dbbaf4fa51352db97e51276",
+  "repairedCandidateGraphHash": "39d7908edeb46532081d39f0de2a299509d0cce6037dbf1071ba07ac879d0309",
+  "historicalCandidateGraphHash": "9550566849ff582077babe66bca946b5e77742372f709e8b35dd78662d38af52",
   "cases": 4,
   "realProviderCalls": 0,
   "humanHeldoutCasesAuthored": 0
