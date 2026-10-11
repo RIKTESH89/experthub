@@ -31,5 +31,8 @@
   "humanAssessment": "NOT_RUN",
   "semanticModelAssessment": "UNMEASURED",
   "prePostOfficialPairedQualityComparison": false,
-  "clearance": "PASS-prepared-seed-package-only; coordinator README/mapping/hashmanifest not eligible blinded-author distribution"
+  "clearance": "PASS-prepared-seed-package-only; explicit coordinator-only and calibration allowlist boundary reviewed; no quality closure",
+  "coordinatorReadmeClarificationReviewed": true,
+  "coordinatorReadmeSha256": "03b44f908980f3adc460e60958b57e3635e35d2aa143ba257ee1a7db08c4b12b",
+  "rootClarificationAtReview": "uncommitted docs-only README +matchingpackagehash at roota46122b, no source diff"
 }
