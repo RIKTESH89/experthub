@@ -1,0 +1,47 @@
+{
+  "candidate": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "buildId": "8wK667wgWSB5yLdeAYuRP",
+  "browser": "154.0.8037.98",
+  "checks": [
+    {
+      "name": "public pages mobile/desktop noindex, no overflow and zoom enabled",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous review page redirects and API rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "subscriber cannot render workspace or read owner data",
+      "status": "PASS"
+    },
+    {
+      "name": "owner cancel creates no decision and repeated acceptance writes once",
+      "status": "PASS"
+    },
+    {
+      "name": "source CAS conflict blocks decision until refresh",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback preview/cancel is read-only and confirm creates audited release",
+      "status": "PASS"
+    },
+    {
+      "name": "live account deactivation revokes synthetic existing session",
+      "status": "PASS"
+    },
+    {
+      "name": "pinned Google declaration without contacting Google",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "limitations": [
+    "Synthetic signed sessions, no Google OAuth",
+    "Synthetic HTTPS alias intercepted to loopback; HTTP redirect destinations verified locally then navigated via harness script because browser redirects bypass routing; no deployed TLS or Vercel protection proof",
+    "Exact source local Geist assets",
+    "No model/provider recomputation"
+  ]
+}
