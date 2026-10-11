@@ -70,9 +70,13 @@ export function providerAccounting(records: ProviderRecord[]) {
   const fields = ['latencyMs', 'inputTokens', 'outputTokens', 'dollarCost'];
   for (const record of records) {
     requireValue(record && typeof record === 'object' && !Array.isArray(record) && Object.keys(record).length === fields.length && fields.every(key => Object.prototype.hasOwnProperty.call(record, key)), 'Provider measurement requires explicit numeric/null fields');
-    for (const [key, value] of Object.entries(record)) requireValue(value === null || (Number.isFinite(value) && value >= 0 && (!key.endsWith('Tokens') || Number.isInteger(value))), 'Invalid provider measurement');
+    for (const [key, value] of Object.entries(record)) requireValue(value === null || (Number.isFinite(value) && value >= 0 && (!key.endsWith('Tokens') || Number.isSafeInteger(value))), 'Invalid provider measurement');
   }
-  const observed = (key: keyof ProviderRecord) => records.filter(r => r[key] !== null).reduce((total, r) => total + (r[key] as number), 0);
+  const observed = (key: keyof ProviderRecord) => {
+    const value = records.filter(r => r[key] !== null).reduce((total, r) => total + (r[key] as number), 0);
+    requireValue(Number.isFinite(value) && (!key.endsWith('Tokens') || Number.isSafeInteger(value)), 'Provider aggregate overflow');
+    return value;
+  };
   const all = (key: keyof ProviderRecord) => records.length > 0 && records.every(r => r[key] !== null);
   const latencies = records.flatMap(r => r.latencyMs === null ? [] : [r.latencyMs]).sort((a, b) => a - b);
   return { requests: records.length, observedInputTokens: records.length ? observed('inputTokens') : null, observedOutputTokens: records.length ? observed('outputTokens') : null,

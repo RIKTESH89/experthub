@@ -78,8 +78,8 @@
     "firstTokenMs": null
   },
   "localLatency": {
-    "medianMs": 0.8348340000000007,
-    "p95Ms": 1.3663329999999405,
+    "medianMs": 0.8127090000000408,
+    "p95Ms": 1.5704999999999245,
     "scope": "In-process synthetic native pipeline across heterogeneous fixtures; not service/provider latency or production percentile"
   },
   "comparison": "Both labels use the same current native kernel and fixed adapters; no architecture gain is measured",

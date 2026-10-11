@@ -1,0 +1,2673 @@
+{
+  "mode": "all18-standard-migrations",
+  "database": "exp16_replay_fixture",
+  "username": "exp16_fixture",
+  "serverAddress": null,
+  "ledger": [
+    {
+      "migration_name": "20260323175143_init_with_all_features",
+      "checksum": "c717bd96c27da3cbc8a0ad4819aca291a0c04961784c97cc7a6cfea4c04db311",
+      "finished_at": "2026-10-11T05:02:45.075Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260323185226_pgvector_persistent_store",
+      "checksum": "63fb1913d5c1544c6a5fbecaa46e0d5301492fc267b6c817e518919b55ec6cf6",
+      "finished_at": "2026-10-11T05:02:45.081Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260323190303_pgvector_persistent_store",
+      "checksum": "2a651588d6bbef426a3844bf51ead0898bce0e621b73b2d93940378c6742275e",
+      "finished_at": "2026-10-11T05:02:45.082Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260324135829_add_password_reset_token",
+      "checksum": "07facd7cf7e39b2a5dfab10d30458a3674ab3ccd83e44666fc3825eb26c73f2d",
+      "finished_at": "2026-10-11T05:02:45.083Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260325033209_add_post_view_dedup",
+      "checksum": "c74d8124d28161db211b0c80bd147b80e0e5690bb437e9a1800a671f8addc990",
+      "finished_at": "2026-10-11T05:02:45.085Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260327000000_make_password_optional",
+      "checksum": "26b3b0d1615dcb693ff86d105df2595bbe4308ca131c992ce018ad553f4770a3",
+      "finished_at": "2026-10-11T05:02:45.085Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260327010000_add_expert_application",
+      "checksum": "b195d13cd743149de7557d0923d48aa72c5260ed05c3157dc0e1a61fd30a8429",
+      "finished_at": "2026-10-11T05:02:45.086Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260327020000_add_razorpay_fields",
+      "checksum": "b28aa5d2c005bc1e973e6cc34210f2cd33c5f4375040ed5351581127f7ecd531",
+      "finished_at": "2026-10-11T05:02:45.087Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260327030000_add_twin_opinions_framework",
+      "checksum": "abe27db302e4920f19acf1bb91c52b4e99573f275266d8a5bb0ed88eddeeee02",
+      "finished_at": "2026-10-11T05:02:45.087Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260930170000_phase0_source_lifecycle",
+      "checksum": "fcb3d7d617d16a5f01063312d360b024556621bd972edc8542a0ee910c4fab88",
+      "finished_at": "2026-10-11T05:02:45.088Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260930173000_lifecycle_outbox",
+      "checksum": "bc04bc67a0693b069eedd4a571f9ea6bb99f92718f5917e75955132263a99312",
+      "finished_at": "2026-10-11T05:02:45.089Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261001090000_evidence_backed_kg",
+      "checksum": "a38688b9ae5c4c708bb87914a7c370780c821eb014033ef893c616b66c86ab92",
+      "finished_at": "2026-10-11T05:02:45.093Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261001100000_temporal_stances",
+      "checksum": "694160bc0cf4181be049af927ed1aceca22e063c3b3a112de9473a7e913625af",
+      "finished_at": "2026-10-11T05:02:45.095Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261001130000_payment_event_receipts",
+      "checksum": "7eeda071620e2b699f1cabaf043d48987ce5e8dedff6be226014119f16c1bbd1",
+      "finished_at": "2026-10-11T05:02:45.096Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261001140000_verified_paid_periods",
+      "checksum": "98e2c844f11fad80eef69c168761d2bda264312341de7bdbb1522ef0b6662058",
+      "finished_at": "2026-10-11T05:02:45.097Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261003110000_reviewed_persona_releases",
+      "checksum": "5a8d5c8a7baebe50ce3318f4714452b1d1a8e10fee970bfa2f47fdccd2b1a7be",
+      "finished_at": "2026-10-11T05:02:45.100Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261003180000_billing_recovery_outbox",
+      "checksum": "64d8320bc94d117ea4af9454791cb23f85c342739ddee0de855b7d40c36608b2",
+      "finished_at": "2026-10-11T05:02:45.102Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261004000100_staging_webhook_inbox",
+      "checksum": "b66506651f55e743e5c36477b6294d90154df254ac6db7db55962b9d7c52619c",
+      "finished_at": "2026-10-11T05:02:45.103Z",
+      "rolled_back_at": null
+    }
+  ],
+  "tables": [
+    {
+      "tablename": "AnalyticsEvent"
+    },
+    {
+      "tablename": "BillingOutbox"
+    },
+    {
+      "tablename": "BillingProvisioning"
+    },
+    {
+      "tablename": "BillingReconciliation"
+    },
+    {
+      "tablename": "Bookmark"
+    },
+    {
+      "tablename": "ChatMessage"
+    },
+    {
+      "tablename": "ChatSession"
+    },
+    {
+      "tablename": "Comment"
+    },
+    {
+      "tablename": "CorrectionEvent"
+    },
+    {
+      "tablename": "CorrectionReview"
+    },
+    {
+      "tablename": "EvidenceAssertion"
+    },
+    {
+      "tablename": "EvidenceDecisionCase"
+    },
+    {
+      "tablename": "EvidenceRevision"
+    },
+    {
+      "tablename": "EvidenceSpan"
+    },
+    {
+      "tablename": "EvidenceSupport"
+    },
+    {
+      "tablename": "ExpertApplication"
+    },
+    {
+      "tablename": "ExpertPricingTier"
+    },
+    {
+      "tablename": "ExpertProfile"
+    },
+    {
+      "tablename": "ExpertSubscription"
+    },
+    {
+      "tablename": "FreeTrialUsage"
+    },
+    {
+      "tablename": "ImportJob"
+    },
+    {
+      "tablename": "KnowledgeEdge"
+    },
+    {
+      "tablename": "KnowledgeItem"
+    },
+    {
+      "tablename": "KnowledgeLifecycleJob"
+    },
+    {
+      "tablename": "KnowledgeNode"
+    },
+    {
+      "tablename": "Like"
+    },
+    {
+      "tablename": "MonthlyTwinUsage"
+    },
+    {
+      "tablename": "Notification"
+    },
+    {
+      "tablename": "PasswordResetToken"
+    },
+    {
+      "tablename": "PaymentEvent"
+    },
+    {
+      "tablename": "PersonaRelease"
+    },
+    {
+      "tablename": "PersonaReleaseHead"
+    },
+    {
+      "tablename": "Post"
+    },
+    {
+      "tablename": "PostMedia"
+    },
+    {
+      "tablename": "PostTag"
+    },
+    {
+      "tablename": "PostView"
+    },
+    {
+      "tablename": "Report"
+    },
+    {
+      "tablename": "SharedConversation"
+    },
+    {
+      "tablename": "SubscriberMemory"
+    },
+    {
+      "tablename": "Tag"
+    },
+    {
+      "tablename": "TemporalStance"
+    },
+    {
+      "tablename": "TwinAccuracyScore"
+    },
+    {
+      "tablename": "TwinInteraction"
+    },
+    {
+      "tablename": "User"
+    },
+    {
+      "tablename": "UserSettings"
+    },
+    {
+      "tablename": "VectorChunk"
+    },
+    {
+      "tablename": "WidgetConfig"
+    },
+    {
+      "tablename": "WidgetMessage"
+    },
+    {
+      "tablename": "WidgetSession"
+    },
+    {
+      "tablename": "_prisma_migrations"
+    },
+    {
+      "tablename": "staging_webhook_inbox"
+    }
+  ],
+  "constraints": [
+    {
+      "relation": "\"AnalyticsEvent\"",
+      "conname": "AnalyticsEvent_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"AnalyticsEvent\"",
+      "conname": "AnalyticsEvent_eventType_not_null",
+      "definition": "NOT NULL \"eventType\""
+    },
+    {
+      "relation": "\"AnalyticsEvent\"",
+      "conname": "AnalyticsEvent_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"AnalyticsEvent\"",
+      "conname": "AnalyticsEvent_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_attempts_check",
+      "definition": "CHECK ((attempts >= 0))"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_attempts_not_null",
+      "definition": "NOT NULL attempts"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_nextAttemptAt_not_null",
+      "definition": "NOT NULL \"nextAttemptAt\""
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_payload_not_null",
+      "definition": "NOT NULL payload"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_state_check",
+      "definition": "CHECK ((state = ANY (ARRAY['READY'::text, 'LEASED'::text, 'DELIVERED'::text, 'FAILED'::text])))"
+    },
+    {
+      "relation": "\"BillingOutbox\"",
+      "conname": "BillingOutbox_state_not_null",
+      "definition": "NOT NULL state"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_expectedVersion_not_null",
+      "definition": "NOT NULL \"expectedVersion\""
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_price_not_null",
+      "definition": "NOT NULL price"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_providerId_key",
+      "definition": "UNIQUE (\"providerId\")"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_state_check",
+      "definition": "CHECK ((state = ANY (ARRAY['READY'::text, 'IN_FLIGHT'::text, 'UNKNOWN'::text, 'ATTACHED'::text])))"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_state_not_null",
+      "definition": "NOT NULL state"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_subscriberId_not_null",
+      "definition": "NOT NULL \"subscriberId\""
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_tier_not_null",
+      "definition": "NOT NULL tier"
+    },
+    {
+      "relation": "\"BillingProvisioning\"",
+      "conname": "BillingProvisioning_version_not_null",
+      "definition": "NOT NULL version"
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_evidence_not_null",
+      "definition": "NOT NULL evidence"
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_previousVersion_not_null",
+      "definition": "NOT NULL \"previousVersion\""
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_reviewedDigest_key",
+      "definition": "UNIQUE (\"reviewedDigest\")"
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_reviewedDigest_not_null",
+      "definition": "NOT NULL \"reviewedDigest\""
+    },
+    {
+      "relation": "\"BillingReconciliation\"",
+      "conname": "BillingReconciliation_subscriptionId_not_null",
+      "definition": "NOT NULL \"subscriptionId\""
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Bookmark\"",
+      "conname": "Bookmark_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_chatSessionId_fkey",
+      "definition": "FOREIGN KEY (\"chatSessionId\") REFERENCES \"ChatSession\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_chatSessionId_not_null",
+      "definition": "NOT NULL \"chatSessionId\""
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_role_not_null",
+      "definition": "NOT NULL role"
+    },
+    {
+      "relation": "\"ChatMessage\"",
+      "conname": "ChatMessage_senderId_fkey",
+      "definition": "FOREIGN KEY (\"senderId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_isTrial_not_null",
+      "definition": "NOT NULL \"isTrial\""
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_subscriberId_not_null",
+      "definition": "NOT NULL \"subscriberId\""
+    },
+    {
+      "relation": "\"ChatSession\"",
+      "conname": "ChatSession_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_parentId_fkey",
+      "definition": "FOREIGN KEY (\"parentId\") REFERENCES \"Comment\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Comment\"",
+      "conname": "Comment_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_action_check",
+      "definition": "CHECK ((action = ANY (ARRAY['SUBMIT'::text, 'REVISE'::text, 'ACCEPT'::text, 'REJECT'::text])))"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_action_not_null",
+      "definition": "NOT NULL action"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_actorId_not_null",
+      "definition": "NOT NULL \"actorId\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_detail_not_null",
+      "definition": "NOT NULL detail"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_expertProfileId_operationKey_key",
+      "definition": "UNIQUE (\"expertProfileId\", \"operationKey\")"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_expertProfileId_reviewId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\", \"reviewId\") REFERENCES \"CorrectionReview\"(\"expertProfileId\", id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_operationKey_not_null",
+      "definition": "NOT NULL \"operationKey\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_requestHash_not_null",
+      "definition": "NOT NULL \"requestHash\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_reviewId_not_null",
+      "definition": "NOT NULL \"reviewId\""
+    },
+    {
+      "relation": "\"CorrectionEvent\"",
+      "conname": "CorrectionEvent_version_not_null",
+      "definition": "NOT NULL version"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_expertProfileId_id_key",
+      "definition": "UNIQUE (\"expertProfileId\", id)"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_expertProfileId_submittedBy_submissionKey_key",
+      "definition": "UNIQUE (\"expertProfileId\", \"submittedBy\", \"submissionKey\")"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_proposal_not_null",
+      "definition": "NOT NULL proposal"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_requestHash_not_null",
+      "definition": "NOT NULL \"requestHash\""
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_state_check",
+      "definition": "CHECK ((state = ANY (ARRAY['PENDING'::text, 'ACCEPTED'::text, 'REJECTED'::text])))"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_state_not_null",
+      "definition": "NOT NULL state"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_submissionKey_not_null",
+      "definition": "NOT NULL \"submissionKey\""
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_submittedBy_not_null",
+      "definition": "NOT NULL \"submittedBy\""
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_version_check",
+      "definition": "CHECK ((version > 0))"
+    },
+    {
+      "relation": "\"CorrectionReview\"",
+      "conname": "CorrectionReview_version_not_null",
+      "definition": "NOT NULL version"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_endorsedByOwner_not_null",
+      "definition": "NOT NULL \"endorsedByOwner\""
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_extractorVersion_not_null",
+      "definition": "NOT NULL \"extractorVersion\""
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_kind_check",
+      "definition": "CHECK ((kind = ANY (ARRAY['explicit'::text, 'inferred'::text, 'unknown'::text])))"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_kind_not_null",
+      "definition": "NOT NULL kind"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_object_not_null",
+      "definition": "NOT NULL object"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_predicate_not_null",
+      "definition": "NOT NULL predicate"
+    },
+    {
+      "relation": "\"EvidenceAssertion\"",
+      "conname": "EvidenceAssertion_subject_not_null",
+      "definition": "NOT NULL subject"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_chosenAction_not_null",
+      "definition": "NOT NULL \"chosenAction\""
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_decisionType_check",
+      "definition": "CHECK ((\"decisionType\" = ANY (ARRAY['recommendation'::text, 'documented-choice'::text])))"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_decisionType_not_null",
+      "definition": "NOT NULL \"decisionType\""
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_extractorVersion_not_null",
+      "definition": "NOT NULL \"extractorVersion\""
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_spanId_fkey",
+      "definition": "FOREIGN KEY (\"spanId\") REFERENCES \"EvidenceSpan\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_spanId_not_null",
+      "definition": "NOT NULL \"spanId\""
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_stanceId_fkey",
+      "definition": "FOREIGN KEY (\"stanceId\") REFERENCES \"TemporalStance\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_stanceId_key",
+      "definition": "UNIQUE (\"stanceId\")"
+    },
+    {
+      "relation": "\"EvidenceDecisionCase\"",
+      "conname": "EvidenceDecisionCase_stanceId_not_null",
+      "definition": "NOT NULL \"stanceId\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_audience_check",
+      "definition": "CHECK ((audience = ANY (ARRAY['public'::text, 'premium'::text, 'private'::text])))"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_audience_not_null",
+      "definition": "NOT NULL audience"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_contentHash_not_null",
+      "definition": "NOT NULL \"contentHash\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_expertProfileId_itemId_snapshotHash_extrac_key",
+      "definition": "UNIQUE (\"expertProfileId\", \"itemId\", \"snapshotHash\", \"extractorVersion\")"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_extractorVersion_not_null",
+      "definition": "NOT NULL \"extractorVersion\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_ingestedAt_not_null",
+      "definition": "NOT NULL \"ingestedAt\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_itemId_not_null",
+      "definition": "NOT NULL \"itemId\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_publicationTimeBasis_not_null",
+      "definition": "NOT NULL \"publicationTimeBasis\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_snapshotHash_not_null",
+      "definition": "NOT NULL \"snapshotHash\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_sourceType_not_null",
+      "definition": "NOT NULL \"sourceType\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_sourceUpdatedAt_not_null",
+      "definition": "NOT NULL \"sourceUpdatedAt\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_sourceVersion_not_null",
+      "definition": "NOT NULL \"sourceVersion\""
+    },
+    {
+      "relation": "\"EvidenceRevision\"",
+      "conname": "EvidenceRevision_uploaderId_not_null",
+      "definition": "NOT NULL \"uploaderId\""
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_check",
+      "definition": "CHECK ((\"end\" > start))"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_chunkIds_not_null",
+      "definition": "NOT NULL \"chunkIds\""
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_end_not_null",
+      "definition": "NOT NULL \"end\""
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_revisionId_fkey",
+      "definition": "FOREIGN KEY (\"revisionId\") REFERENCES \"EvidenceRevision\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_revisionId_not_null",
+      "definition": "NOT NULL \"revisionId\""
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_revisionId_start_end_key",
+      "definition": "UNIQUE (\"revisionId\", start, \"end\")"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_speakerRole_check",
+      "definition": "CHECK ((\"speakerRole\" = ANY (ARRAY['author'::text, 'quoted'::text, 'unknown'::text])))"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_speakerRole_not_null",
+      "definition": "NOT NULL \"speakerRole\""
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_start_check",
+      "definition": "CHECK ((start >= 0))"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_start_not_null",
+      "definition": "NOT NULL start"
+    },
+    {
+      "relation": "\"EvidenceSpan\"",
+      "conname": "EvidenceSpan_text_not_null",
+      "definition": "NOT NULL text"
+    },
+    {
+      "relation": "\"EvidenceSupport\"",
+      "conname": "EvidenceSupport_assertionId_fkey",
+      "definition": "FOREIGN KEY (\"assertionId\") REFERENCES \"EvidenceAssertion\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceSupport\"",
+      "conname": "EvidenceSupport_assertionId_not_null",
+      "definition": "NOT NULL \"assertionId\""
+    },
+    {
+      "relation": "\"EvidenceSupport\"",
+      "conname": "EvidenceSupport_pkey",
+      "definition": "PRIMARY KEY (\"assertionId\", \"spanId\")"
+    },
+    {
+      "relation": "\"EvidenceSupport\"",
+      "conname": "EvidenceSupport_spanId_fkey",
+      "definition": "FOREIGN KEY (\"spanId\") REFERENCES \"EvidenceSpan\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"EvidenceSupport\"",
+      "conname": "EvidenceSupport_spanId_not_null",
+      "definition": "NOT NULL \"spanId\""
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_email_not_null",
+      "definition": "NOT NULL email"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_name_not_null",
+      "definition": "NOT NULL name"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_reason_not_null",
+      "definition": "NOT NULL reason"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_specialty_not_null",
+      "definition": "NOT NULL specialty"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "relation": "\"ExpertApplication\"",
+      "conname": "ExpertApplication_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_isActive_not_null",
+      "definition": "NOT NULL \"isActive\""
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_price_not_null",
+      "definition": "NOT NULL price"
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_tier_not_null",
+      "definition": "NOT NULL tier"
+    },
+    {
+      "relation": "\"ExpertPricingTier\"",
+      "conname": "ExpertPricingTier_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_displayName_not_null",
+      "definition": "NOT NULL \"displayName\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_freeTrialQuestions_not_null",
+      "definition": "NOT NULL \"freeTrialQuestions\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_isVerified_not_null",
+      "definition": "NOT NULL \"isVerified\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_monthlyPrice_not_null",
+      "definition": "NOT NULL \"monthlyPrice\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_ragEnabled_not_null",
+      "definition": "NOT NULL \"ragEnabled\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_totalSubscribers_not_null",
+      "definition": "NOT NULL \"totalSubscribers\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"ExpertProfile\"",
+      "conname": "ExpertProfile_vectorNamespace_not_null",
+      "definition": "NOT NULL \"vectorNamespace\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_billingVersion_not_null",
+      "definition": "NOT NULL \"billingVersion\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_lastPaymentEventRank_not_null",
+      "definition": "NOT NULL \"lastPaymentEventRank\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_price_not_null",
+      "definition": "NOT NULL price"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_startDate_not_null",
+      "definition": "NOT NULL \"startDate\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_subscriberId_fkey",
+      "definition": "FOREIGN KEY (\"subscriberId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_subscriberId_not_null",
+      "definition": "NOT NULL \"subscriberId\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_tier_not_null",
+      "definition": "NOT NULL tier"
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "ExpertSubscription_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"ExpertSubscription\"",
+      "conname": "verified_paid_period_order",
+      "definition": "CHECK (((\"paidPeriodStart\" IS NULL) OR (\"currentPeriodEnd\" IS NULL) OR (\"paidPeriodStart\" < \"currentPeriodEnd\")))"
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_questionCount_not_null",
+      "definition": "NOT NULL \"questionCount\""
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"FreeTrialUsage\"",
+      "conname": "FreeTrialUsage_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_itemsCreated_not_null",
+      "definition": "NOT NULL \"itemsCreated\""
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_sourceType_not_null",
+      "definition": "NOT NULL \"sourceType\""
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "relation": "\"ImportJob\"",
+      "conname": "ImportJob_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_relationship_not_null",
+      "definition": "NOT NULL relationship"
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_sourceNodeId_fkey",
+      "definition": "FOREIGN KEY (\"sourceNodeId\") REFERENCES \"KnowledgeNode\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_sourceNodeId_not_null",
+      "definition": "NOT NULL \"sourceNodeId\""
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_targetNodeId_fkey",
+      "definition": "FOREIGN KEY (\"targetNodeId\") REFERENCES \"KnowledgeNode\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_targetNodeId_not_null",
+      "definition": "NOT NULL \"targetNodeId\""
+    },
+    {
+      "relation": "\"KnowledgeEdge\"",
+      "conname": "KnowledgeEdge_weight_not_null",
+      "definition": "NOT NULL weight"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_isIndexed_not_null",
+      "definition": "NOT NULL \"isIndexed\""
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_sourceType_not_null",
+      "definition": "NOT NULL \"sourceType\""
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_sourceVersion_not_null",
+      "definition": "NOT NULL \"sourceVersion\""
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_title_not_null",
+      "definition": "NOT NULL title"
+    },
+    {
+      "relation": "\"KnowledgeItem\"",
+      "conname": "KnowledgeItem_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_attempts_not_null",
+      "definition": "NOT NULL attempts"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_availableAt_not_null",
+      "definition": "NOT NULL \"availableAt\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_itemId_not_null",
+      "definition": "NOT NULL \"itemId\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_kind_not_null",
+      "definition": "NOT NULL kind"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_namespace_not_null",
+      "definition": "NOT NULL namespace"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_state_not_null",
+      "definition": "NOT NULL state"
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"KnowledgeLifecycleJob\"",
+      "conname": "KnowledgeLifecycleJob_vectorIds_not_null",
+      "definition": "NOT NULL \"vectorIds\""
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_concept_not_null",
+      "definition": "NOT NULL concept"
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"KnowledgeNode\"",
+      "conname": "KnowledgeNode_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Like\"",
+      "conname": "Like_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_month_not_null",
+      "definition": "NOT NULL month"
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_questionCount_not_null",
+      "definition": "NOT NULL \"questionCount\""
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_subscriberId_not_null",
+      "definition": "NOT NULL \"subscriberId\""
+    },
+    {
+      "relation": "\"MonthlyTwinUsage\"",
+      "conname": "MonthlyTwinUsage_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_isRead_not_null",
+      "definition": "NOT NULL \"isRead\""
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_message_not_null",
+      "definition": "NOT NULL message"
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_title_not_null",
+      "definition": "NOT NULL title"
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Notification\"",
+      "conname": "Notification_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_expiresAt_not_null",
+      "definition": "NOT NULL \"expiresAt\""
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_token_not_null",
+      "definition": "NOT NULL token"
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PasswordResetToken\"",
+      "conname": "PasswordResetToken_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_eventType_not_null",
+      "definition": "NOT NULL \"eventType\""
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_occurredAt_not_null",
+      "definition": "NOT NULL \"occurredAt\""
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_outcome_not_null",
+      "definition": "NOT NULL outcome"
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_payloadHash_not_null",
+      "definition": "NOT NULL \"payloadHash\""
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PaymentEvent\"",
+      "conname": "PaymentEvent_providerSubscriptionId_not_null",
+      "definition": "NOT NULL \"providerSubscriptionId\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_actorId_not_null",
+      "definition": "NOT NULL \"actorId\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_expertProfileId_id_key",
+      "definition": "UNIQUE (\"expertProfileId\", id)"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_expertProfileId_operationKey_key",
+      "definition": "UNIQUE (\"expertProfileId\", \"operationKey\")"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_manifestHash_not_null",
+      "definition": "NOT NULL \"manifestHash\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_manifest_not_null",
+      "definition": "NOT NULL manifest"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_operationKey_not_null",
+      "definition": "NOT NULL \"operationKey\""
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PersonaRelease\"",
+      "conname": "PersonaRelease_requestHash_not_null",
+      "definition": "NOT NULL \"requestHash\""
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_expertProfileId_releaseId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\", \"releaseId\") REFERENCES \"PersonaRelease\"(\"expertProfileId\", id)"
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_generation_check",
+      "definition": "CHECK ((generation > 0))"
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_generation_not_null",
+      "definition": "NOT NULL generation"
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_pkey",
+      "definition": "PRIMARY KEY (\"expertProfileId\")"
+    },
+    {
+      "relation": "\"PersonaReleaseHead\"",
+      "conname": "PersonaReleaseHead_releaseId_not_null",
+      "definition": "NOT NULL \"releaseId\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_authorId_fkey",
+      "definition": "FOREIGN KEY (\"authorId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_authorId_not_null",
+      "definition": "NOT NULL \"authorId\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_isHidden_not_null",
+      "definition": "NOT NULL \"isHidden\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_isPremiumOnly_not_null",
+      "definition": "NOT NULL \"isPremiumOnly\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_isRagEnabled_not_null",
+      "definition": "NOT NULL \"isRagEnabled\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"Post\"",
+      "conname": "Post_viewCount_not_null",
+      "definition": "NOT NULL \"viewCount\""
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_order_not_null",
+      "definition": "NOT NULL \"order\""
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_type_not_null",
+      "definition": "NOT NULL type"
+    },
+    {
+      "relation": "\"PostMedia\"",
+      "conname": "PostMedia_url_not_null",
+      "definition": "NOT NULL url"
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_tagId_fkey",
+      "definition": "FOREIGN KEY (\"tagId\") REFERENCES \"Tag\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PostTag\"",
+      "conname": "PostTag_tagId_not_null",
+      "definition": "NOT NULL \"tagId\""
+    },
+    {
+      "relation": "\"PostView\"",
+      "conname": "PostView_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"PostView\"",
+      "conname": "PostView_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"PostView\"",
+      "conname": "PostView_postId_fkey",
+      "definition": "FOREIGN KEY (\"postId\") REFERENCES \"Post\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"PostView\"",
+      "conname": "PostView_postId_not_null",
+      "definition": "NOT NULL \"postId\""
+    },
+    {
+      "relation": "\"PostView\"",
+      "conname": "PostView_viewedAt_not_null",
+      "definition": "NOT NULL \"viewedAt\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_contentId_not_null",
+      "definition": "NOT NULL \"contentId\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_contentType_not_null",
+      "definition": "NOT NULL \"contentType\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_reason_not_null",
+      "definition": "NOT NULL reason"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_reportedId_fkey",
+      "definition": "FOREIGN KEY (\"reportedId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_reportedId_not_null",
+      "definition": "NOT NULL \"reportedId\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_reporterId_fkey",
+      "definition": "FOREIGN KEY (\"reporterId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_reporterId_not_null",
+      "definition": "NOT NULL \"reporterId\""
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "relation": "\"Report\"",
+      "conname": "Report_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_chatSessionId_fkey",
+      "definition": "FOREIGN KEY (\"chatSessionId\") REFERENCES \"ChatSession\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_chatSessionId_not_null",
+      "definition": "NOT NULL \"chatSessionId\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_isActive_not_null",
+      "definition": "NOT NULL \"isActive\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_shareId_not_null",
+      "definition": "NOT NULL \"shareId\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_sharedById_not_null",
+      "definition": "NOT NULL \"sharedById\""
+    },
+    {
+      "relation": "\"SharedConversation\"",
+      "conname": "SharedConversation_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_category_not_null",
+      "definition": "NOT NULL category"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_confidence_not_null",
+      "definition": "NOT NULL confidence"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_fact_not_null",
+      "definition": "NOT NULL fact"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_subscriberId_not_null",
+      "definition": "NOT NULL \"subscriberId\""
+    },
+    {
+      "relation": "\"SubscriberMemory\"",
+      "conname": "SubscriberMemory_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"Tag\"",
+      "conname": "Tag_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"Tag\"",
+      "conname": "Tag_name_not_null",
+      "definition": "NOT NULL name"
+    },
+    {
+      "relation": "\"Tag\"",
+      "conname": "Tag_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"Tag\"",
+      "conname": "Tag_postCount_not_null",
+      "definition": "NOT NULL \"postCount\""
+    },
+    {
+      "relation": "\"Tag\"",
+      "conname": "Tag_slug_not_null",
+      "definition": "NOT NULL slug"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_action_not_null",
+      "definition": "NOT NULL action"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_category_check",
+      "definition": "CHECK ((category = ANY (ARRAY['preference'::text, 'principle'::text, 'boundary'::text, 'decision'::text])))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_category_not_null",
+      "definition": "NOT NULL category"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_certainty_check",
+      "definition": "CHECK ((certainty = ANY (ARRAY['source-explicit'::text, 'source-reported'::text, 'unknown'::text])))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_certainty_not_null",
+      "definition": "NOT NULL certainty"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_check",
+      "definition": "CHECK (((\"validUntil\" IS NULL) OR ((\"validFrom\" IS NOT NULL) AND (\"validUntil\" > \"validFrom\"))))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_endorsedByOwner_not_null",
+      "definition": "NOT NULL \"endorsedByOwner\""
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_extractorVersion_not_null",
+      "definition": "NOT NULL \"extractorVersion\""
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_kind_check",
+      "definition": "CHECK ((kind = ANY (ARRAY['explicit'::text, 'inferred'::text, 'unknown'::text])))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_kind_not_null",
+      "definition": "NOT NULL kind"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_origin_check",
+      "definition": "CHECK ((origin = ANY (ARRAY['expert-authored'::text, 'third-party-description'::text, 'quote'::text, 'unattributed-upload'::text, 'visitor-claim'::text])))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_origin_not_null",
+      "definition": "NOT NULL origin"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_polarity_check",
+      "definition": "CHECK ((polarity = ANY (ARRAY['positive'::text, 'negative'::text])))"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_polarity_not_null",
+      "definition": "NOT NULL polarity"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_revisionId_fkey",
+      "definition": "FOREIGN KEY (\"revisionId\") REFERENCES \"EvidenceRevision\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_revisionId_not_null",
+      "definition": "NOT NULL \"revisionId\""
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_revisionId_spanId_extractorVersion_key",
+      "definition": "UNIQUE (\"revisionId\", \"spanId\", \"extractorVersion\")"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_spanId_fkey",
+      "definition": "FOREIGN KEY (\"spanId\") REFERENCES \"EvidenceSpan\"(id) ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_spanId_not_null",
+      "definition": "NOT NULL \"spanId\""
+    },
+    {
+      "relation": "\"TemporalStance\"",
+      "conname": "TemporalStance_speaker_not_null",
+      "definition": "NOT NULL speaker"
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_calculatedAt_not_null",
+      "definition": "NOT NULL \"calculatedAt\""
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_components_not_null",
+      "definition": "NOT NULL components"
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_overallScore_not_null",
+      "definition": "NOT NULL \"overallScore\""
+    },
+    {
+      "relation": "\"TwinAccuracyScore\"",
+      "conname": "TwinAccuracyScore_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_isFromWidget_not_null",
+      "definition": "NOT NULL \"isFromWidget\""
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_question_not_null",
+      "definition": "NOT NULL question"
+    },
+    {
+      "relation": "\"TwinInteraction\"",
+      "conname": "TwinInteraction_sourcesUsed_not_null",
+      "definition": "NOT NULL \"sourcesUsed\""
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_email_not_null",
+      "definition": "NOT NULL email"
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_isActive_not_null",
+      "definition": "NOT NULL \"isActive\""
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_isBanned_not_null",
+      "definition": "NOT NULL \"isBanned\""
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_role_not_null",
+      "definition": "NOT NULL role"
+    },
+    {
+      "relation": "\"User\"",
+      "conname": "User_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_emailDigest_not_null",
+      "definition": "NOT NULL \"emailDigest\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_emailOnChat_not_null",
+      "definition": "NOT NULL \"emailOnChat\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_emailOnComment_not_null",
+      "definition": "NOT NULL \"emailOnComment\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_emailOnNewSubscriber_not_null",
+      "definition": "NOT NULL \"emailOnNewSubscriber\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_twoFactorEnabled_not_null",
+      "definition": "NOT NULL \"twoFactorEnabled\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_userId_fkey",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"UserSettings\"",
+      "conname": "UserSettings_userId_not_null",
+      "definition": "NOT NULL \"userId\""
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_namespace_not_null",
+      "definition": "NOT NULL namespace"
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"VectorChunk\"",
+      "conname": "VectorChunk_vectorId_not_null",
+      "definition": "NOT NULL \"vectorId\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_apiKey_not_null",
+      "definition": "NOT NULL \"apiKey\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_expertProfileId_fkey",
+      "definition": "FOREIGN KEY (\"expertProfileId\") REFERENCES \"ExpertProfile\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_expertProfileId_not_null",
+      "definition": "NOT NULL \"expertProfileId\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_freeQuestions_not_null",
+      "definition": "NOT NULL \"freeQuestions\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_isEnabled_not_null",
+      "definition": "NOT NULL \"isEnabled\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_position_not_null",
+      "definition": "NOT NULL \"position\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_primaryColor_not_null",
+      "definition": "NOT NULL \"primaryColor\""
+    },
+    {
+      "relation": "\"WidgetConfig\"",
+      "conname": "WidgetConfig_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_content_not_null",
+      "definition": "NOT NULL content"
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_role_not_null",
+      "definition": "NOT NULL role"
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_widgetSessionId_fkey",
+      "definition": "FOREIGN KEY (\"widgetSessionId\") REFERENCES \"WidgetSession\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"WidgetMessage\"",
+      "conname": "WidgetMessage_widgetSessionId_not_null",
+      "definition": "NOT NULL \"widgetSessionId\""
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_createdAt_not_null",
+      "definition": "NOT NULL \"createdAt\""
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_questionCount_not_null",
+      "definition": "NOT NULL \"questionCount\""
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_updatedAt_not_null",
+      "definition": "NOT NULL \"updatedAt\""
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_visitorId_not_null",
+      "definition": "NOT NULL \"visitorId\""
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_widgetConfigId_fkey",
+      "definition": "FOREIGN KEY (\"widgetConfigId\") REFERENCES \"WidgetConfig\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "relation": "\"WidgetSession\"",
+      "conname": "WidgetSession_widgetConfigId_not_null",
+      "definition": "NOT NULL \"widgetConfigId\""
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_applied_steps_count_not_null",
+      "definition": "NOT NULL applied_steps_count"
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_checksum_not_null",
+      "definition": "NOT NULL checksum"
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_migration_name_not_null",
+      "definition": "NOT NULL migration_name"
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relation": "_prisma_migrations",
+      "conname": "_prisma_migrations_started_at_not_null",
+      "definition": "NOT NULL started_at"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_attempts_check",
+      "definition": "CHECK ((attempts >= 0))"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_attempts_not_null",
+      "definition": "NOT NULL attempts"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_check",
+      "definition": "CHECK (((state = 'leased'::text) = ((lease_token IS NOT NULL) AND (lease_until IS NOT NULL))))"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_digest_check",
+      "definition": "CHECK ((digest ~ '^[0-9a-f]{64}$'::text))"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_digest_not_null",
+      "definition": "NOT NULL digest"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_next_attempt_not_null",
+      "definition": "NOT NULL next_attempt"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_pkey",
+      "definition": "PRIMARY KEY (digest)"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_raw_body_not_null",
+      "definition": "NOT NULL raw_body"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_received_at_not_null",
+      "definition": "NOT NULL received_at"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_state_check",
+      "definition": "CHECK ((state = ANY (ARRAY['ready'::text, 'leased'::text, 'done'::text, 'dead'::text])))"
+    },
+    {
+      "relation": "staging_webhook_inbox",
+      "conname": "staging_webhook_inbox_state_not_null",
+      "definition": "NOT NULL state"
+    }
+  ]
+}

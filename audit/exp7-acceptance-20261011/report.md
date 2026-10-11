@@ -12,7 +12,7 @@ Zero declared contract failures; zero withheld/premium/other-person chunk IDs in
 
 Verification:
 
-- Focused Jest `__tests__/exp7 __tests__/exp15`: **201/201**, 11 suites. EXP-7 adds 35 protocol tests for leakage, drift, parity, forbidden real adapters, negative/unknown accounting and malformed/partial human ratings, including independent-review regressions.
+- Focused Jest `__tests__/exp7 __tests__/exp15`: **202/202**, 11 suites. EXP-7 adds 36 protocol tests for leakage, drift, parity, forbidden real adapters, negative/unknown accounting and malformed/partial human ratings, including independent-review regressions.
 - Full repository `tsc --noEmit --incremental false`: passed, zero diagnostics.
 - Focused Next lint across all six owned code/test files: passed, zero warnings/errors.
 - Both native runner commands: passed; full requests/output traces, source/code/prompt manifest hashes and blank packets saved in `run-1/` and `run-2/`.
@@ -25,3 +25,5 @@ Remaining gates: fresh explicitly authorized provider/data scope with exact mode
 Integration note: changing native gate/state/style code invalidates this frozen implementation hash by design. Preserve these baseline files and generate a new audit directory/manifest after integration, then rerun paired checks. EXP17’s conservative person-entailment envelope can intentionally block safe unseen paraphrases; report such refusal overreach separately from dangerous unsupported release.
 
 Independent review repairs: EXP16 reviewer found malformed provider JSON with missing measurement fields could be treated as complete usage and produce NaN totals. The ledger now requires an array with exactly four explicit finite-number/null fields; seven malformed-record regressions pass. Integration owner found a newly imported EXP17 gate helper outside the original explicit file list. Snapshot construction now recursively follows static local runtime imports from controlled offline entrypoints and pins package-lock; a new-helper/changed-helper regression proves implementation drift invalidates the pin. These repairs were rerun through native paired commands, focused tests, types and lint.
+
+Follow-up accounting review rejects non-safe token integers and overflowed aggregate tokens/cost/latency; the new regression passes. Independent full-schema EXP16 review is recorded under `review-exp16/full-schema/`: exact source `25a41b7`, standard all-18-migration PostgreSQL 18 fixture, 56/56 selected with 20 explicit skips, 480 constraints / 50 FKs and cleanup confirmed. PG16 remains open.

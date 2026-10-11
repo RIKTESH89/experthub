@@ -89,6 +89,11 @@ test.each([{}, { latencyMs: 100 }, { latencyMs: 100, inputTokens: undefined, out
 test('independent review rejects a non-array provider ledger', () => {
   expect(() => providerAccounting({} as ProviderRecord[])).toThrow('array');
 });
+test('provider measurement and aggregate overflow cannot create complete usage or billing', () => {
+  expect(() => providerAccounting([{ latencyMs: 1, inputTokens: 1e100, outputTokens: 1, dollarCost: 0 }])).toThrow('measurement');
+  expect(() => providerAccounting([1, 2].map(() => ({ latencyMs: 1, inputTokens: Number.MAX_SAFE_INTEGER, outputTokens: 1, dollarCost: 0 })))).toThrow('overflow');
+  expect(() => providerAccounting([1, 2].map(() => ({ latencyMs: 1, inputTokens: 1, outputTokens: 1, dollarCost: 1e308 })))).toThrow('overflow');
+});
 const answers = [{ blindId: 'B1', text: 'An answer.', answerHash: hash('An answer.') }];
 function ratings(): HumanRating[] { return ['independent-rater-a', 'independent-rater-b'].flatMap(reviewer => DIMENSIONS.map(dimension => ({ reviewer, blindId: 'B1', answerHash: answers[0].answerHash, dimension, score: dimension === 'style' ? 'not-assessable' as const : 4, evidence: 'Exact span and reference checked; source style insufficient.' }))); }
 test('blank and partial human rating forms cannot create human quality numbers', () => {

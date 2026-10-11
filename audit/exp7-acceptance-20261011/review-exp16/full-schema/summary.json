@@ -1,0 +1,20 @@
+{
+  "reviewedCommit": "25a41b7cad111e84217378920935f08922e59af8",
+  "exactFilePinsMatch": {
+    "scripts/exp16-acceptance/run-native.py": true,
+    "scripts/exp16-acceptance/full-schema.config.ts": true,
+    "scripts/exp16-replay/post-sync.integration.ts": true
+  },
+  "passed": 56,
+  "failed": 0,
+  "skipped": 20,
+  "migrations": 18,
+  "tables": 51,
+  "constraints": 480,
+  "foreignKeys": 50,
+  "database": "exp16_replay_fixture",
+  "role": "exp16_fixture",
+  "serverAddress": null,
+  "ledgerFinished": true,
+  "cleanupConfirmed": true
+}

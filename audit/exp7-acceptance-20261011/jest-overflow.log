@@ -1,0 +1,43 @@
+PASS __tests__/exp7/acceptance-protocol.test.ts
+  ✓ whole documents, neighboring chunks and periods are excluded at the frozen cutoff (10 ms)
+  ✓ rejects neighbor leakage before native adapter dispatch (3 ms)
+  ✓ rejects source-group leakage before native adapter dispatch (2 ms)
+  ✓ rejects period leakage before native adapter dispatch (2 ms)
+  ✓ rejects time leakage before native adapter dispatch (1 ms)
+  ✓ rejects restricted leakage before native adapter dispatch (1 ms)
+  ✓ rejects unregistered leakage before native adapter dispatch (2 ms)
+  ✓ rejects duplicate leakage before native adapter dispatch (1 ms)
+  ✓ rejects unequal model between variants (1 ms)
+  ✓ rejects unequal verifier between variants (1 ms)
+  ✓ rejects unequal promptHash between variants (1 ms)
+  ✓ rejects unequal settings between variants (1 ms)
+  ✓ rejects unequal budget between variants (1 ms)
+  ✓ cannot authorize a real model, unsupported repeat count or amplified native caps (9 ms)
+  ✓ source content or frozen implementation drift is rejected (5 ms)
+  ✓ integration review: new runtime gate helpers and their changed bytes invalidate implementation pin (3 ms)
+  ✓ two fresh paired native executions save identical input/output/request traces without a quality score (237 ms)
+  ✓ hosted runtime does not execute adapters or produce a false quality pass (6 ms)
+  ✓ null retrieval denominators and duplicate-ID inflation stay explicit (1 ms)
+  ✓ unsafe release and refusal overreach use separate denominators
+  ✓ partial/unknown failed-request usage and billing cannot be silently reported complete
+  ✓ independent review rejects malformed provider accounting record {}
+  ✓ independent review rejects malformed provider accounting record {"latencyMs": 100}
+  ✓ independent review rejects malformed provider accounting record {"dollarCost": 0, "inputTokens": undefined, "latencyMs": 100, "outputTokens": 1} (1 ms)
+  ✓ independent review rejects malformed provider accounting record {"dollarCost": 0, "extra": 1, "inputTokens": 1, "latencyMs": 100, "outputTokens": 1}
+  ✓ independent review rejects malformed provider accounting record null
+  ✓ independent review rejects malformed provider accounting record []
+  ✓ independent review rejects a non-array provider ledger
+  ✓ provider measurement and aggregate overflow cannot create complete usage or billing (1 ms)
+  ✓ blank and partial human rating forms cannot create human quality numbers
+  ✓ complete recorded ratings still require adjudication and preserve not-assessable
+  ✓ rejects malformed duplicate human annotation
+  ✓ rejects malformed pin human annotation
+  ✓ rejects malformed scale human annotation (1 ms)
+  ✓ rejects malformed evidence human annotation
+  ✓ rejects malformed reviewer human annotation
+
+Test Suites: 1 passed, 1 total
+Tests:       36 passed, 36 total
+Snapshots:   0 total
+Time:        0.482 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp7/i.
