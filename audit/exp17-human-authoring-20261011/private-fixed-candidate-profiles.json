@@ -1,0 +1,133 @@
+{
+  "mode": "developer-fixed-adapter-stress-not-semantic-quality",
+  "candidates": [
+    {
+      "id": "S17-U01",
+      "text": "The expert recommends rerecording the audio after every exhibition setup.",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U02",
+      "text": "The source says \"I do not recommend overwriting raw observation files.\"",
+      "category": "source-explanation",
+      "presentation": "assertion",
+      "observedCategory": "source-explanation",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U03",
+      "text": "The expert recommends nightly notebook snapshots.",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U04",
+      "text": "A snapshot before each kiosk session may be a useful starting point given the documented exception; verify restore time and local constraints.",
+      "category": "new-application",
+      "presentation": "uncertainty",
+      "observedCategory": "new-application",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U05",
+      "text": "Their reason is fear of criticism.",
+      "category": "general-explanation",
+      "presentation": "assertion",
+      "observedCategory": "general-explanation",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U06",
+      "text": "The source says \"I prefer raster tiles.\"",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U07",
+      "text": "The source says \"I prefer raster tiles.\"",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U08",
+      "text": "The expert currently prefers vector tiles.",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U09",
+      "text": "The recorded source says the author prefers append-only event logs.",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U10",
+      "text": "The source says \"I recommend retaining the signed exhibit checklist.\"",
+      "category": "source-explanation",
+      "presentation": "assertion",
+      "observedCategory": "source-explanation",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U11",
+      "text": "The source says \"I prefer portable light meters.\"",
+      "category": "source-explanation",
+      "presentation": "assertion",
+      "observedCategory": "source-explanation",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U12",
+      "text": "Append-only event logs are the preference expressed in this note.",
+      "category": "person-belief",
+      "presentation": "assertion",
+      "observedCategory": "person-belief",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U13",
+      "text": "A checksum is a compact value calculated from data to help detect changes.",
+      "category": "general-explanation",
+      "presentation": "assertion",
+      "observedCategory": "general-explanation",
+      "verdict": "unsupported"
+    },
+    {
+      "id": "S17-U14",
+      "text": "This representation speaks with twenty years of courtroom practice.",
+      "category": "general-explanation",
+      "presentation": "assertion",
+      "observedCategory": "general-explanation",
+      "verdict": "general-information"
+    },
+    {
+      "id": "S17-U15",
+      "text": "The source says “I … recommend overwriting raw observation files.”",
+      "category": "source-explanation",
+      "presentation": "assertion",
+      "observedCategory": "source-explanation",
+      "verdict": "supported"
+    },
+    {
+      "id": "S17-U16",
+      "text": "The element values[2] uses index two. A checksum helps compare whether data changed.",
+      "category": "general-explanation",
+      "presentation": "assertion",
+      "observedCategory": "general-explanation",
+      "verdict": "general-information"
+    }
+  ]
+}
