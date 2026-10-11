@@ -13,7 +13,20 @@ export function obviousPersonAssertion(text: string): boolean {
     const possessive = /\b(?:the expert['’]s|the represented person['’]s|their)\s+(?:belief|motive|experience|credentials?|preference|position|reason|opinion)\s+(?:is|was|are|were)\b/i;
     const firstPerson = /\bI(?:['’]m|\s+(?:am|was|have|had|believe|prefer|recommend|support|oppose|want|fear|feel|experienced|treated|led|worked|learned|earned))\b/i;
     const negativeFirstPerson = /\bI\s+(?:do|did)\s+not\s+(?:believe|prefer|recommend|support|oppose|want|fear|feel|experience|treat|lead|work|learn|earn)\b/i;
-    return subject.test(normalized) || possessive.test(normalized) || firstPerson.test(normalized) || negativeFirstPerson.test(normalized);
+    return subject.test(normalized) || possessive.test(normalized) || firstPerson.test(normalized) || negativeFirstPerson.test(normalized) || representationCareerAssertion(normalized);
+}
+
+/** A representation/avatar/twin may be discussed as an interface. Reject its
+ * obvious career/credential claims without treating formatting or tone as biography. */
+function representationCareerAssertion(text: string): boolean {
+    const subjects = Array.from(text.matchAll(/\b(?:this|that|the|our|your)\s+(?:AI\s+)?(?:representation|avatar|(?:digital|AI)\s+twin|twin)\b/gi));
+    return subjects.some(subject => {
+        const clause = text.slice(subject.index! + subject[0].length).split(/[.!?\n]/, 1)[0].slice(0, 240);
+        const role = /^\s+(?:is|was|has been|trained as|qualified as|worked as|practiced as|practised as)\s+(?:an?\s+)?(?:(?:licensed|qualified|experienced|professional|board[- ]certified)\s+)*(?:doctor|surgeon|physician|clinician|lawyer|attorney|optometrist|therapist|broker|financial advis[oe]r)\b/i;
+        const career = /\b(?:(?:professional|clinical|medical|legal|courtroom|research|teaching|industry)\s+(?:practice|experience|training|credentials)|doctorate|degree(?!\s+of\b)|licen[cs]e|credentials|career|years?\s+(?:of\s+)?(?:\w+\s+){0,3}(?:practice|experience|training))\b/i;
+        const attribution = /^\s+(?:speaks?|answers?|draws?|works?|has|had|brings?|holds?|earned|possesses|trained|practiced|practised|worked|qualified)\b/i;
+        return role.test(clause) || (attribution.test(clause) && career.test(clause));
+    });
 }
 
 export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean {
