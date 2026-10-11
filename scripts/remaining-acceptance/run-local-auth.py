@@ -2,7 +2,7 @@
 from pathlib import Path
 import os, json, shutil, subprocess, tempfile, signal
 
-root = Path(__file__).resolve().parents[2]
+root = Path(__file__).resolve().parents[3]
 app = root / 'integration'
 output = root / 'evidence' / 'remaining' / 'local-auth'
 output.mkdir(parents=True, exist_ok=True)
