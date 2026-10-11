@@ -1,0 +1,10 @@
+{
+  "owner": "EXP-15",
+  "commit": "25fa86b",
+  "gatesSha256": "4c0077516c4b60912a7b1f746b09405e01c6220b629da9a75aec05057c1750c3",
+  "rubricSha256": "7625bb823711d4b521b0fcc63c99406c4c2327724a582e2d5e0c36d95ca9e48a",
+  "blankGoldSchemaSha256": "0d62ff05a3000d8600f9395e73a44129a5b864cab95b39ad2d78141facee818e",
+  "officialIds": "HG001..HG016",
+  "humanInputStatus": "NOT_AUTHORED_NOT_VALIDATED",
+  "providerCalls": 0
+}

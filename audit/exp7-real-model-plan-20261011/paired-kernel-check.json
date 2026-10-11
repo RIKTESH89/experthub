@@ -1,0 +1,10 @@
+{
+  "baseline": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
+  "candidate": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "sameExternalInputs": true,
+  "distinctNativeSourceGraphs": true,
+  "candidateLiteralSupportPinned": true,
+  "cases": 4,
+  "realProviderCalls": 0,
+  "humanHeldoutCasesAuthored": 0
+}

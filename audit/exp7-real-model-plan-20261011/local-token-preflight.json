@@ -1,0 +1,124 @@
+{
+  "mode": "exact local Harmony render; hosted framing estimated",
+  "providerCalls": 0,
+  "counterHash": "f6e36038ebc6e2852850910ddac0b78d3e7e10b949589a55c473b214c7bb3169",
+  "assetHashes": {
+    "o200k_base.tiktoken": "446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d",
+    "tokenizer_config.json": "9279e942392b742d633c7adbb89ebe002c98399db8926a7af5125c726f404070",
+    "fb374d419588a4632f3f557e76b4b70aebbca790": "446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d"
+  },
+  "records": [
+    {
+      "kernel": "baseline",
+      "case": "H01-natural-person-paraphrase",
+      "stage": "generationExamples",
+      "localCount": 1053,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H01-natural-person-paraphrase",
+      "stage": "verificationExamples",
+      "localCount": 1281,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H03-research-explanation",
+      "stage": "generationExamples",
+      "localCount": 1055,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H03-research-explanation",
+      "stage": "verificationExamples",
+      "localCount": 1253,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H09-imported-persona-correction",
+      "stage": "generationExamples",
+      "localCount": 1066,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H09-imported-persona-correction",
+      "stage": "verificationExamples",
+      "localCount": 1265,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H19-current-undated",
+      "stage": "generationExamples",
+      "localCount": 1045,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "baseline",
+      "case": "H19-current-undated",
+      "stage": "verificationExamples",
+      "localCount": 1267,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H01-natural-person-paraphrase",
+      "stage": "generationExamples",
+      "localCount": 1429,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H01-natural-person-paraphrase",
+      "stage": "verificationExamples",
+      "localCount": 1561,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H03-research-explanation",
+      "stage": "generationExamples",
+      "localCount": 1428,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H03-research-explanation",
+      "stage": "verificationExamples",
+      "localCount": 1527,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H09-imported-persona-correction",
+      "stage": "generationExamples",
+      "localCount": 1472,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H09-imported-persona-correction",
+      "stage": "verificationExamples",
+      "localCount": 1582,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H19-current-undated",
+      "stage": "generationExamples",
+      "localCount": 1417,
+      "estimatedFraming": 256
+    },
+    {
+      "kernel": "candidate",
+      "case": "H19-current-undated",
+      "stage": "verificationExamples",
+      "localCount": 1542,
+      "estimatedFraming": 256
+    }
+  ]
+}

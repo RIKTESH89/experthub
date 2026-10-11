@@ -1,0 +1,12 @@
+# Cross-issue acceptance mapping
+
+| Issue | This proposed real-model/human run can measure | Gates remaining independently |
+|---|---|---|
+| EXP-7 | Distinct pinned kernel same external inputs/model/budgets, two fresh repeats, adjudicated proposition faithfulness, naturalness/style/usefulness/abstention, request/usage/qualified latency | Human-authored sealed inventory/gold, provider scope approval and preflight, actual observations; native retrieval, actual-person evidence, authoritative billing coverage |
+| EXP-14 | Answer response to supplied intent/time/context/constraint/exception/access bundles | Supplied bundles are not native retrieval. Broad heldout retrieval precision/recall, whole source/time split search/index, direct reasons/counterevidence and revocation execution must use actual retrieval separately; no retrieval model calls included |
+| EXP-15 | Subscriber corrections/topic/risk state response, safe conversation, fictional-owner surface style, blinded naturalness/usefulness | Fixed target histories do not prove free-running continuity; no arbitrary persona adoption; actual-person authored style references and streaming runtime latency remain separate |
+| EXP-16 | Response behavior for supplied correction/revocation scenarios only | Real release adoption, immutable manifest/settings replay/rollback, guarded durable SQL/source entitlement acceptance rests on separate native/HTTP evidence; provider test must not mutate live DB |
+| EXP-17 | Claim/evidence/category/time/attribution gold, unsafe release FP and safe refusal FN, model verifier disagreements and unknown coverage | Human/domain-qualified gold needed before acceptance; same model two stages is correlated, no general semantic truth guarantee; native final delivery/access gates separately reviewed |
+| EXP-25 | Sanitized saved provider failures and response absence as fixture observations | Authenticated/runtime release failure UX, buffered SSE/SQL commit and hosted journey are separate runtime/browser checks; do not infer from offline model traces |
+
+Current actual provider calls 0, human ratings 0, human-authored unseen inputs 0. No issue is Done from this plan, synthetic tests or a hypothetical outcome. The separate human packet contains seed-authoring tasks rather than invented gold. PostgreSQL 16 compatibility and authorized hosted identity coverage remain separately bounded by the integration owner.

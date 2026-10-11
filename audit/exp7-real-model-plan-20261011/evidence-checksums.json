@@ -1,0 +1,15 @@
+{
+  "README.md": "71ef715ae16e68a0143ff7b352825dcb861b04756607c34a7c050e512d6782b4",
+  "approval-package.md": "a3b434774ea393008b02335ee4e7ae4a8b0695115045ab9ab4e6b2883fb8ed70",
+  "baseline-dry.json": "3b62f0a84b8a625f19df8fec9c6fa59a4ca20a249f8274553d4d087a28aa84bb",
+  "candidate-dry.json": "1c2e5256d15e5b0ba84845ad7a01d199d05ab31e5b7e7adef60a2e3ba8c793fc",
+  "human-gate-pins.json": "234d0d5343dfbc0595b0221461dd2061e7b3eb3b21ce222d5586ae1fcc15fad7",
+  "independent-review.md": "af9d42099ddebc561e7380685a734907bc6b87f29c2ee50940d30eb0a6dde7a8",
+  "issue-gates.md": "9d5ec9331fe19f5fae252ee9a9b3a9c60e2f3800088bf773c00a76ad27c5e6e0",
+  "lint.log": "9f6ac1417a1fb3d8c8d6551b62726b54a8545079ed74fe6eb00db0cac12b57bc",
+  "local-token-preflight.json": "46c38c0299ae12963b69bcbc757af387ffd0230fb38973feb61be7b21db18a17",
+  "paired-kernel-check.json": "6802d26f31131be7236973b4f226ccc68c276a36a6512f71be338c2f8d4f3f3c",
+  "proposal-manifest.json": "e34c000891d871d93aff58b8a45019762fcac0f55385c6997f672b01a931029f",
+  "tests.log": "3d81f3386c1d2f6b7e7603c3bb5eadaef2a5a66453f1ee8907865bbf344f7c37",
+  "types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
