@@ -1,0 +1,180 @@
+{
+  "deterministicHash": "6c5ce87eb4a4c8fcfa00b4f89e6fb8838f364d336cc968f4a548aa4a7c954d39",
+  "pairs": [
+    {
+      "key": "H01-natural-person-paraphrase:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H02-natural-conversation:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H02-natural-conversation:2",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H03-research-explanation:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H04-medical-informational:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H05-medical-personalized:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H06-investment-informational:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H07-investment-order:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H08-quoted-is-not-owner:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H09-imported-persona-correction:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H10-assistant-invented-identity:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H11-source-revoked:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H12-source-version-changed:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H13-qualified-unknown:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H14-unknown-negative-belief:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H15-conflict-confident-selection:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H16-conflict-qualified-discussion:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H17-superseded-source:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H18-historical-validity:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H19-current-undated:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H20-change-after-judgment:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H21-subscriber-correction:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H21-subscriber-correction:2",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H22-category-laundering:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H23-hidden-unannotated-claim:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H24-whole-source-heldout-reason:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H25-heldout-premium:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H26-unseen-biography:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    },
+    {
+      "key": "H27-constraint-correction:1",
+      "observations": 4,
+      "sameInputs": true,
+      "sameOutputs": true
+    }
+  ],
+  "timingExcluded": "Local elapsed measurements vary; all inputs, outputs and adapter requests remain in comparison."
+}

@@ -1,0 +1,143 @@
+{
+  "version": "exp7-paired-offline-v1",
+  "baselineCommit": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28",
+  "implementationHash": "bb4beb402f5b7bba52516fd9c572fff1d9c28a575e0db6dd1725731fc1321838",
+  "datasetHash": "0969f68bfd5b8b365d67bb286d28128e6f368edb2b4de1b2fdb397d78b147135",
+  "cutoff": "2025-12-31T23:59:59.999Z",
+  "periods": {
+    "corpus": [
+      "2020"
+    ],
+    "heldout": [
+      "2026-H2"
+    ]
+  },
+  "documents": [
+    {
+      "id": "research-note",
+      "group": "research-note-all-revisions",
+      "personId": "expert-synthetic",
+      "period": "2020",
+      "split": "corpus",
+      "publishedAt": "2020-01-01",
+      "audience": "public",
+      "chunks": [
+        {
+          "id": "vector-a",
+          "text": "I prefer preregistered protocols."
+        }
+      ]
+    },
+    {
+      "id": "conflicting-note",
+      "group": "conflicting-note-all-revisions",
+      "personId": "expert-synthetic",
+      "period": "2020",
+      "split": "corpus",
+      "publishedAt": "2020-01-01",
+      "audience": "public",
+      "chunks": [
+        {
+          "id": "vector-b",
+          "text": "I prefer exploratory analysis."
+        }
+      ]
+    },
+    {
+      "id": "unseen-reason",
+      "group": "unseen-reason-all-revisions",
+      "personId": "expert-synthetic",
+      "period": "2026-H2",
+      "split": "heldout",
+      "publishedAt": "2026-08-10",
+      "audience": "public",
+      "chunks": [
+        {
+          "id": "heldout-reason-0",
+          "text": "My documented reason is reducing hindsight bias."
+        },
+        {
+          "id": "heldout-reason-1",
+          "text": "An exception is a clearly labelled exploratory pilot."
+        }
+      ]
+    },
+    {
+      "id": "unseen-private",
+      "group": "unseen-private-all-revisions",
+      "personId": "expert-synthetic",
+      "period": "2026-H2",
+      "split": "heldout",
+      "publishedAt": "2026-08-11",
+      "audience": "premium",
+      "chunks": [
+        {
+          "id": "heldout-private-0",
+          "text": "SYNTHETIC_PREMIUM_EXCEPTION: use a separate exploratory register."
+        }
+      ]
+    },
+    {
+      "id": "other-person",
+      "group": "other-person-all-revisions",
+      "personId": "expert-other",
+      "period": "2026-H2",
+      "split": "heldout",
+      "publishedAt": "2026-08-12",
+      "audience": "public",
+      "chunks": [
+        {
+          "id": "heldout-other-0",
+          "text": "I prefer an exploratory pilot before a preregistered trial."
+        }
+      ]
+    }
+  ],
+  "corpusChunkIds": [
+    "vector-a",
+    "vector-b"
+  ],
+  "variants": [
+    {
+      "id": "baseline",
+      "configuration": {
+        "model": "synthetic-generator-fixture-v1",
+        "verifier": "synthetic-independent-review-fixture-v1",
+        "promptHash": "5f7c41b185eff6b47056f8b159bd855f20f0e7f3de2c3e036d35c4d9c63474c7",
+        "settings": {
+          "temperature": 0,
+          "seed": 7
+        },
+        "budget": {
+          "contextBytes": 200000,
+          "outputBytes": 24000,
+          "callsPerTurn": 4,
+          "attempts": 2,
+          "deadlineMs": 2000
+        }
+      }
+    },
+    {
+      "id": "candidate",
+      "configuration": {
+        "model": "synthetic-generator-fixture-v1",
+        "verifier": "synthetic-independent-review-fixture-v1",
+        "promptHash": "5f7c41b185eff6b47056f8b159bd855f20f0e7f3de2c3e036d35c4d9c63474c7",
+        "settings": {
+          "temperature": 0,
+          "seed": 7
+        },
+        "budget": {
+          "contextBytes": 200000,
+          "outputBytes": 24000,
+          "callsPerTurn": 4,
+          "attempts": 2,
+          "deadlineMs": 2000
+        }
+      }
+    }
+  ],
+  "repeats": 2,
+  "providerAuthorization": "NOT_AUTHORIZED",
+  "humanReview": "NOT_RUN"
+}
