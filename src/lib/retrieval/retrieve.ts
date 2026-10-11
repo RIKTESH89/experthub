@@ -8,11 +8,12 @@ import type { RetrievalResult } from "@/lib/vector/retriever";
 import { assembleBundle, tokenUpperBound } from "./bundle";
 import { planQuestion, RETRIEVAL_BUDGET } from "./intent";
 import { checkSignal } from "@/lib/ai/request-lifecycle";
+import { ACTIVE_TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 /** v1 reads EXP12/13 only. Store authorization errors propagate; search failure is observable. */
 export async function retrieveIntentEvidence(scope: RetrievalScope, question: string, temporal?: TemporalQuery, signal?: AbortSignal) {
   checkSignal(signal);
   if (!scope.namespace || !scope.expertProfileId) throw new Error("Retrieval requires tenant namespace");
-  const started = performance.now(), plan = planQuestion(question,temporal), failures: string[] = [];
+  const started = performance.now(), plan = planQuestion(question,temporal,scope.temporalReadVersion ?? ACTIVE_TEMPORAL_READ_VERSION), failures: string[] = [];
   const search = plan.terms.join(" ");
   const [semantic,keyword] = plan.intent === "conversation" || !search || !scope.allowedVectorIds.length ? [[],[]] : await Promise.all([
     generateEmbedding(question, signal).then(v=>{checkSignal(signal);return vectorStore.query(scope.namespace,v,15,scope);}).catch(()=>{checkSignal(signal);failures.push("semantic-unavailable; lexical fallback");return [];}),

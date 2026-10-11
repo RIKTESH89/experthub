@@ -4,12 +4,13 @@ import { retrieveEvidenceTrace } from "@/lib/graph/evidence-store";
 import { retrieveTemporalEvidence } from "@/lib/graph/temporal/retriever";
 import { planQuestion, RETRIEVAL_BUDGET } from "@/lib/retrieval/intent";
 import { assembleBundle } from "@/lib/retrieval/bundle";
+import { ACTIVE_TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 /** Local evaluation uses only existing live DB gates and deterministic EXP14 assembly.
  * It never invokes embedding, reranking, web search or generation providers. */
 export async function retrieveLocalEvaluationEvidence(scope: RetrievalScope, query: string, temporal?: TemporalQuery) {
     if (!scope.expertProfileId || !scope.namespace)
         throw new Error("Local evaluation retrieval requires an authorized tenant scope");
-    const plan = planQuestion(query, temporal);
+    const plan = planQuestion(query, temporal, scope.temporalReadVersion ?? ACTIVE_TEMPORAL_READ_VERSION);
     const candidates = plan.intent === "conversation" ? [] : Array.from(new Set(scope.allowedVectorIds)).sort().slice(0, RETRIEVAL_BUDGET.candidates).map(vectorId => ({ content: "", score: 0, metadata: { vectorId, expertProfileId: scope.expertProfileId, source: "local-evaluation-db-only" } }));
     const [assertions, timeline] = await Promise.all([retrieveEvidenceTrace(scope, candidates), retrieveTemporalEvidence(scope, candidates, plan.temporal)]);
     const bundle = assembleBundle(scope, plan, candidates, assertions, timeline);

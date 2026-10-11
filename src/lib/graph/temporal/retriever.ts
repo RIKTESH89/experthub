@@ -4,7 +4,7 @@ import type {RetrievalResult} from "@/lib/vector/retriever";
 import {authorizedEvidenceSpans,type AuthorizedSpan} from "../evidence-store";
 import {resolveTimeline,type TimelineStance,type TemporalQuery} from "./timeline";
 import {TEMPORAL_EXTRACTOR_VERSION} from "./extractor";
-import {TEMPORAL_READ_VERSION,TEMPORAL_SELECTION_VERSION,ACTIVE_TEMPORAL_READ_VERSION,supportedTemporalReadVersion,type TemporalReadVersion} from "./read-policy";
+import {TEMPORAL_READ_VERSION,TEMPORAL_SELECTION_VERSION,TEMPORAL_QUERY_NEEDS_VERSION,ACTIVE_TEMPORAL_READ_VERSION,supportedTemporalReadVersion,type TemporalReadVersion} from "./read-policy";
 import {replayNegativePreference} from "./read-projection";
 export interface DecisionFields {situation:string|null;constraints:string|null;chosenAction:string|null;documentedReasons:string|null;alternatives:string|null;tradeoffs:string|null;exceptions:string|null;decisionType:string|null;}
 export type TemporalStanceTrace=TimelineStance&AuthorizedSpan&DecisionFields&{certainty:string;kind:string;extractorVersion:string;projectionBasis?:"authorized-span-replay";storedStanceId?:string;storedExtractorVersion?:string};
@@ -18,7 +18,7 @@ export async function retrieveTemporalEvidence(scope:RetrievalScope,results:Retr
  FROM "TemporalStance" s JOIN "EvidenceSpan" p ON p."id"=s."spanId" AND p."revisionId"=s."revisionId" JOIN "EvidenceRevision" r ON r."id"=s."revisionId" AND r."expertProfileId"=s."expertProfileId" LEFT JOIN "EvidenceDecisionCase" d ON d."stanceId"=s."id" AND d."spanId"=s."spanId" WHERE s."expertProfileId"=${scope.expertProfileId} AND s."spanId"=ANY(${spans.map(s=>s.spanId)}::text[]) AND s."extractorVersion"=${TEMPORAL_EXTRACTOR_VERSION} ORDER BY s."id"`;
  const bySpan=new Map(spans.map(s=>[s.spanId,s]));
  const traces=rows.flatMap(row=>{const span=bySpan.get(row.spanId);return span?[{...span,...row,recordedAt:span.ingestedAt}]:[];});
- return resolved(readVersion===TEMPORAL_READ_VERSION||readVersion===TEMPORAL_SELECTION_VERSION?traces.map(replayNegativePreference):traces);
+ return resolved(readVersion===TEMPORAL_READ_VERSION||readVersion===TEMPORAL_SELECTION_VERSION||readVersion===TEMPORAL_QUERY_NEEDS_VERSION?traces.map(replayNegativePreference):traces);
 }
 export type TemporalRetrievalResult=Awaited<ReturnType<typeof retrieveTemporalEvidence>>;
 export function temporalPrompt(result:TemporalRetrievalResult):string[]{

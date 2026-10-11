@@ -2,7 +2,7 @@ import type { RetrievalScope } from "@/lib/knowledge/access";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import type { EvidenceTrace } from "@/lib/graph/evidence-store";
 import type { TemporalRetrievalResult, TemporalStanceTrace } from "@/lib/graph/temporal/retriever";
-import { TEMPORAL_READ_VERSION, TEMPORAL_SELECTION_VERSION } from "@/lib/graph/temporal/read-policy";
+import { TEMPORAL_READ_VERSION, TEMPORAL_SELECTION_VERSION, TEMPORAL_QUERY_NEEDS_VERSION } from "@/lib/graph/temporal/read-policy";
 import { READ_CONTRACT_VERSION, RETRIEVAL_BUDGET, terms, type RetrievalPlan } from "./intent";
 export interface EvidenceBundle {
   version: typeof READ_CONTRACT_VERSION; plan: RetrievalPlan; sources: RetrievalResult[];
@@ -13,7 +13,8 @@ export interface EvidenceBundle {
 export const tokenUpperBound = (text: string) => Buffer.byteLength(text, "utf8");
 /** Pure selection over live-authorized store output; never accepts a legacy graph description. */
 export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunks: RetrievalResult[], assertions: EvidenceTrace[], timeline: TemporalRetrievalResult): EvidenceBundle {
-  const activeSelection = timeline.readVersion === TEMPORAL_SELECTION_VERSION;
+  const explicitQuestionNeeds = timeline.readVersion === TEMPORAL_QUERY_NEEDS_VERSION;
+  const activeSelection = explicitQuestionNeeds || timeline.readVersion === TEMPORAL_SELECTION_VERSION;
   const compactReplay = activeSelection || timeline.readVersion === TEMPORAL_READ_VERSION;
   // Query expansion remains capped at 24 terms; source matching must inspect the
   // complete bounded evidence row. Preserve frozen v1 ranking/replay behavior.
@@ -109,8 +110,8 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
     gaps.push("Relevant conflicting or superseding evidence is outside selected context; do not present the selected stance as uncontested");
   if (plan.temporal.mode === "as-of" && evidenceTrace.length) gaps.push("Assertion valid-time is unavailable; do not infer historical validity from ingestion or publication");
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.constraints)) gaps.push("Documented constraints unavailable in selected evidence");
-  if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.exceptions)) gaps.push("Documented exceptions unavailable in selected evidence");
-  if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.documentedReasons)) gaps.push("Documented reasons unavailable in selected evidence");
+  if ((plan.intent === "decision" || (explicitQuestionNeeds && plan.needs.includes("exceptions"))) && !temporalTrace.stances.some(s=>s.exceptions)) gaps.push("Documented exceptions unavailable in selected evidence");
+  if ((plan.intent === "decision" || (explicitQuestionNeeds && plan.needs.includes("reasons"))) && !temporalTrace.stances.some(s=>s.documentedReasons)) gaps.push("Documented reasons unavailable in selected evidence");
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.situation)) gaps.push("Documented situation unavailable in selected evidence");
   if (plan.intent === "comparison" && selected.length) {
     const missing = plan.terms.filter(term=>!selected.some(s=>sourceTerms(s.row.text).includes(term)));
