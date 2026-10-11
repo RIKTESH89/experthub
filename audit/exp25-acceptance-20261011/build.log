@@ -5,56 +5,10 @@
    Creating an optimized production build ...
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (139kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (180kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
-Browserslist: caniuse-lite is outdated. Please run:
-  npx update-browserslist-db@latest
-  Why you should do it regularly: https://github.com/browserslist/update-db#readme
- ⚠ Compiled with warnings
-
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/lib/deflate.js
-A Node.js API is used (CompressionStream at line: 10) which is not supported in the Edge Runtime.
-Learn more: https://nextjs.org/docs/api-reference/edge-runtime
-
-Import trace for requested module:
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/lib/deflate.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/jwe/flattened/decrypt.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/jwt.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/lib/init.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/lib/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next-auth/index.js
-
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/lib/deflate.js
-A Node.js API is used (DecompressionStream at line: 26) which is not supported in the Edge Runtime.
-Learn more: https://nextjs.org/docs/api-reference/edge-runtime
-
-Import trace for requested module:
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/lib/deflate.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/jwe/flattened/decrypt.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/jose/dist/webapi/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/jwt.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/lib/init.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/lib/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@auth/core/index.js
-../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next-auth/index.js
-
+ ✓ Compiled successfully
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/113) ...
-Admin list users error: n [Error]: Dynamic server usage: Route /api/admin/users couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/admin/users/route.js:1:3714)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/admin/users couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
 Analytics error: n [Error]: Dynamic server usage: Route /api/admin/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -67,20 +21,6 @@ Analytics error: n [Error]: Dynamic server usage: Route /api/admin/analytics cou
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
   description: "Route /api/admin/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-List expert applications error: n [Error]: Dynamic server usage: Route /api/admin/expert-applications couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/admin/expert-applications/route.js:1:3714)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/admin/expert-applications couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Admin content list error: n [Error]: Dynamic server usage: Route /api/admin/content couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -97,6 +37,20 @@ Admin content list error: n [Error]: Dynamic server usage: Route /api/admin/cont
   description: "Route /api/admin/content couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
+List expert applications error: n [Error]: Dynamic server usage: Route /api/admin/expert-applications couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/admin/expert-applications/route.js:1:3714)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/admin/expert-applications couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
 Admin list experts error: n [Error]: Dynamic server usage: Route /api/admin/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -111,46 +65,18 @@ Admin list experts error: n [Error]: Dynamic server usage: Route /api/admin/expe
   description: "Route /api/admin/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-Analytics revenue error: n [Error]: Dynamic server usage: Route /api/expert/analytics/revenue couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+Admin list users error: n [Error]: Dynamic server usage: Route /api/admin/users couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
     at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/revenue/route.js:1:3715)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/admin/users/route.js:1:3714)
     at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
     at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
     at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
     at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/expert/analytics/revenue couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-Analytics topic-gaps error: n [Error]: Dynamic server usage: Route /api/expert/analytics/topic-gaps couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/topic-gaps/route.js:1:3714)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/expert/analytics/topic-gaps couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-Analytics error: n [Error]: Dynamic server usage: Route /api/expert/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at p (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/route.js:1:3715)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/expert/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  description: "Route /api/admin/users couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Analytics questions error: n [Error]: Dynamic server usage: Route /api/expert/analytics/questions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -167,6 +93,48 @@ Analytics questions error: n [Error]: Dynamic server usage: Route /api/expert/an
   description: "Route /api/expert/analytics/questions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
+Analytics error: n [Error]: Dynamic server usage: Route /api/expert/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at p (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/route.js:1:3715)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/expert/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Analytics topic-gaps error: n [Error]: Dynamic server usage: Route /api/expert/analytics/topic-gaps couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/topic-gaps/route.js:1:3714)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/expert/analytics/topic-gaps couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Analytics revenue error: n [Error]: Dynamic server usage: Route /api/expert/analytics/revenue couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/analytics/revenue/route.js:1:3715)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/expert/analytics/revenue couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
 Get expert posts error: n [Error]: Dynamic server usage: Route /api/expert/posts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -179,6 +147,20 @@ Get expert posts error: n [Error]: Dynamic server usage: Route /api/expert/posts
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
   description: "Route /api/expert/posts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Get expert subscribers error: n [Error]: Dynamic server usage: Route /api/expert/subscribers couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/subscribers/route.js:1:3714)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/expert/subscribers couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Get pricing error: n [Error]: Dynamic server usage: Route /api/expert/pricing couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -195,19 +177,19 @@ Get pricing error: n [Error]: Dynamic server usage: Route /api/expert/pricing co
   description: "Route /api/expert/pricing couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-   Generating static pages (28/113) 
-Get expert subscribers error: n [Error]: Dynamic server usage: Route /api/expert/subscribers couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+   Generating static pages (28/113)
+Expert stats error: n [Error]: Dynamic server usage: Route /api/expert/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
     at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/subscribers/route.js:1:3714)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/stats/route.js:1:3714)
     at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
     at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
     at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
     at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/expert/subscribers couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  description: "Route /api/expert/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Get widget config error: n [Error]: Dynamic server usage: Route /api/expert/widget couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -238,6 +220,20 @@ Featured experts error: n [Error]: Dynamic server usage: Route /api/experts/feat
   description: "Route /api/experts/featured couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
+List experts error: n [Error]: Dynamic server usage: Route /api/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/experts/route.js:1:3721)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
 Trending experts error: n [Error]: Dynamic server usage: Route /api/experts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -250,20 +246,6 @@ Trending experts error: n [Error]: Dynamic server usage: Route /api/experts/tren
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
   description: "Route /api/experts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-Expert stats error: n [Error]: Dynamic server usage: Route /api/expert/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/expert/stats/route.js:1:3714)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/expert/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Twin stats error: n [Error]: Dynamic server usage: Route /api/expert/twin-stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -280,34 +262,6 @@ Twin stats error: n [Error]: Dynamic server usage: Route /api/expert/twin-stats 
   description: "Route /api/expert/twin-stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-Import history error: n [Error]: Dynamic server usage: Route /api/knowledge/import/history couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/knowledge/import/history/route.js:1:3713)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/knowledge/import/history couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-List experts error: n [Error]: Dynamic server usage: Route /api/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/experts/route.js:1:3721)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/experts couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
 Knowledge stats error: n [Error]: Dynamic server usage: Route /api/knowledge/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -320,6 +274,20 @@ Knowledge stats error: n [Error]: Dynamic server usage: Route /api/knowledge/sta
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
   description: "Route /api/knowledge/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Import history error: n [Error]: Dynamic server usage: Route /api/knowledge/import/history couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/knowledge/import/history/route.js:1:3713)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/knowledge/import/history couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Search error: n [Error]: Dynamic server usage: Route /api/search couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -336,20 +304,6 @@ Search error: n [Error]: Dynamic server usage: Route /api/search couldn't be ren
   description: "Route /api/search couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-List subscriptions error: n [Error]: Dynamic server usage: Route /api/subscriptions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at E (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/subscriptions/route.js:1:3725)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/subscriptions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
 Subscriber stats error: n [Error]: Dynamic server usage: Route /api/subscriber/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -362,20 +316,6 @@ Subscriber stats error: n [Error]: Dynamic server usage: Route /api/subscriber/s
     at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
     at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
   description: "Route /api/subscriber/stats couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
-Trending posts error: n [Error]: Dynamic server usage: Route /api/posts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
-    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
-    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
-    at E (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/posts/trending/route.js:1:3726)
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
-    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
-    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
-    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
-    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
-    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
-  description: "Route /api/posts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
 Subscriber bookmarks error: n [Error]: Dynamic server usage: Route /api/subscriber/bookmarks couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
@@ -406,7 +346,35 @@ Subscriber feed error: n [Error]: Dynamic server usage: Route /api/subscriber/fe
   description: "Route /api/subscriber/feed couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-   Generating static pages (56/113) 
+Trending posts error: n [Error]: Dynamic server usage: Route /api/posts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at E (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/posts/trending/route.js:1:3726)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/posts/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (56/113)
+List subscriptions error: n [Error]: Dynamic server usage: Route /api/subscriptions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
+    at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
+    at /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:404:60491
+    at E (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/app/api/subscriptions/route.js:1:3725)
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/context/NoopContextManager.js:25:19)
+    at ContextAPI.with (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at NoopTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/NoopTracer.js:65:31)
+    at ProxyTracer.startActiveSpan (/Users/rikteshs20/Documents/Codex/2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/@opentelemetry/api/build/src/trace/ProxyTracer.js:36:24) {
+  description: "Route /api/subscriptions couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
 Trending topics error: n [Error]: Dynamic server usage: Route /api/topics/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
     at l (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7666.js:1:58788)
     at d (/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-25/.next/server/chunks/7908.js:1:1894)
@@ -421,7 +389,7 @@ Trending topics error: n [Error]: Dynamic server usage: Route /api/topics/trendi
   description: "Route /api/topics/trending couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
   digest: 'DYNAMIC_SERVER_USAGE'
 }
-   Generating static pages (84/113) 
+   Generating static pages (84/113)
  ✓ Generating static pages (113/113)
    Finalizing page optimization ...
    Collecting build traces ...
@@ -576,7 +544,7 @@ Route (app)                                                   Size     First Loa
 └ ƒ /subscriber/subscriptions                                 9.66 kB         283 kB
 + First Load JS shared by all                                 206 kB
   ├ chunks/2587d989-09088808c4153266.js                       53.8 kB
-  ├ chunks/3130-d9cd52b56393c009.js                           109 kB
+  ├ chunks/3130-19e9c758d4f2daaf.js                           109 kB
   ├ chunks/923c8ae7-f61a5fb98fa94d1a.js                       37.2 kB
   └ other shared chunks (total)                               5.52 kB
 

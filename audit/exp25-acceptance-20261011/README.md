@@ -15,15 +15,15 @@ No dependency or application environment file changed. Existing node_modules is 
 
 | Gate | Outcome | Evidence / limitation |
 | --- | --- | --- |
-| Full Jest | PASS, 1,682 tests / 142 suites | `full-jest.json`, `full-jest.log`; no tests hidden |
-| Focused UI + existing approval regression | PASS, 21 tests | `release-failures.test.ts`, `approval-workspace.test.ts` |
+| Full Jest | PASS, 1,684 tests / 142 suites | `full-jest.json`, `full-jest.log`; no tests hidden |
+| Focused UI + existing approval regression | PASS, 23 tests | `release-failures.test.ts`, `approval-workspace.test.ts` |
 | TypeScript | PASS | `types.log`; no exclusions/type weakening |
 | ESLint | PASS | `lint.log` |
 | Actual optimized Next build | PASS | `build.log`; external network blocked; existing Arial font substitution, not font-delivery acceptance |
 | Auth runtime | PASS, 12 scenario groups | `authenticated-release-runtime.json`: installed Auth.js encrypted sessions + actual release/preview handlers and ownerContext; substituted identity/store rows, no database/provider calls |
-| Native Chrome | PASS, 5 mobile scenarios | `browser.json`, `browser.log`, 5 screenshots; real React component, intercepted synthetic HTTP; no real OAuth/DB |
+| Native Chrome | PASS, 7 mobile scenarios | `browser.json`, `browser.log`, 7 screenshots; real React component, intercepted synthetic HTTP; no real OAuth/DB |
 
-The Auth runtime verifies anonymous/expired/tampered sessions, current role overriding JWT role, banned/inactive/deleted owner, identity read failure, authenticated server-derived owner identity, invalid tenant/receipt fields, blocked previews and role loss between requests. Native Chrome verifies blocked safeguard guidance, preview focus, disabled stale approval, same-request retry, non-JSON owner revocation, malformed-preview recovery, no page errors and no horizontal overflow at 390px.
+The Auth runtime verifies anonymous/expired/tampered sessions, current role overriding JWT role, banned/inactive/deleted owner, identity read failure, authenticated server-derived owner identity, invalid tenant/receipt fields, blocked previews and role loss between requests. Native Chrome verifies failed replacement-preview/refresh invalidation, blocked safeguard guidance, preview focus, disabled stale approval, same-request retry, non-JSON owner revocation, malformed-preview recovery, no page errors and no horizontal overflow at 390px.
 
 ## Reproduction commands
 
@@ -40,7 +40,11 @@ node scripts/exp25-acceptance/browser.cjs
 env -i PATH=/opt/homebrew/bin:/usr/bin:/bin NEXT_TELEMETRY_DISABLED=1 NEXT_FONT_GOOGLE_MOCKED_RESPONSES=$PWD/scripts/exp25-26/font-mock.cjs NODE_OPTIONS="--require $PWD/scripts/exp25-26/network-guard.cjs" node node_modules/next/dist/bin/next build
 ```
 
-Native Chrome requires local process permission; its temporary profile is separate from the shared interactive browser. Browser requests are intercepted and non-loopback origins aborted. Initial sandbox-only Chrome launch aborted before a test; the authorized fresh isolated launch completed all five cases. Runtime/browser scripts do not mutate a database.
+Native Chrome requires local process permission; its temporary profile is separate from the shared interactive browser. Browser requests are intercepted and non-loopback origins aborted. Initial sandbox-only Chrome launch aborted before a test; the authorized fresh isolated launch completed all seven cases. Runtime/browser scripts do not mutate a database.
+
+## Independent review repair
+
+EXP-15 found that a failed replacement preview or refresh could leave the old reviewed approval enabled. The component now invalidates the previous preview before either read, while activation retries alone retain the original request. Two independent-review regressions and two native Chrome cases pass. Full suites/types/lint/build and all seven native Chrome cases were rerun after this repair.
 
 ## Open acceptance
 

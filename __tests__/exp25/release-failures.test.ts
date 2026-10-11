@@ -71,6 +71,20 @@ test("malformed activation response stays ambiguous and retryable", async () => 
 test("non-JSON success is a failed verification response", async () => {
   await expect(readReviewRequest("/preview", {}, "POST", (async () => ({ ok: true, status: 200, json: async () => { throw Error("bad"); } })) as unknown as typeof fetch)).rejects.toMatchObject({ status: 502 });
 });
+test("independent review: failed replacement preview cannot retain the earlier approval", async () => {
+  const transport = setup(); await open();
+  transport.mockImplementationOnce(async () => json({ ...preview, changes: null }));
+  fireEvent.click(screen.getByRole("button", { name: "Create release" }));
+  expect((await screen.findByRole("alert")).textContent).toContain("Release verification is unavailable");
+  expect(screen.queryByRole("button", { name: "Confirm new release" })).toBeNull();
+});
+test("independent review: failed refresh cannot retain the earlier approval", async () => {
+  const transport = setup(); await open();
+  transport.mockImplementationOnce(async () => json({ error: "unavailable" }, 503));
+  fireEvent.click(screen.getByRole("button", { name: "Refresh reviews" }));
+  expect((await screen.findByRole("alert")).textContent).toContain("Unable to complete request");
+  expect(screen.queryByRole("button", { name: "Confirm new release" })).toBeNull();
+});
 test.each([
   ["Sources still require recomputation", "Open knowledge settings"],
   ["Every source must have a current supported evidence revision before release", "current evidence"],

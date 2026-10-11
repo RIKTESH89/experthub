@@ -10,9 +10,9 @@ const preview = { allowed: true, reason: null, currentHead: 'head', targetId: nu
 (async () => {
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
   try {
-    for (const scenario of ['gated', 'stale', 'retry', 'revoked', 'malformed']) {
+    for (const scenario of ['gated', 'stale', 'retry', 'revoked', 'malformed', 'replacement-fails', 'refresh-fails']) {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-      const page = await context.newPage(); const errors = []; const writes = [];
+      const page = await context.newPage(); const errors = []; const writes = []; let previewRequests = 0;
       page.on('pageerror', error => errors.push(error.message));
       await context.route('**/*', async route => {
         const url = new URL(route.request().url());
@@ -22,6 +22,8 @@ const preview = { allowed: true, reason: null, currentHead: 'head', targetId: nu
         if (!url.pathname.startsWith('/api/')) return route.fulfill({ contentType: 'text/html', body: '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body><main class="p-6"><div id="root"></div></main><script src="/app.js"></script></body></html>' });
         const json = (body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
         if (url.pathname.endsWith('/preview')) {
+          previewRequests++;
+          if (scenario === 'replacement-fails' && previewRequests > 1) return json({ ...preview, changes: null });
           if (scenario === 'gated') return json({ ...preview, allowed: false, reason: 'V2 writes are gated pending a compatible downgrade target', approvalHash: null });
           if (scenario === 'malformed') return json({ ...preview, changes: null });
           return json(preview);
@@ -33,6 +35,7 @@ const preview = { allowed: true, reason: null, currentHead: 'head', targetId: nu
           if (scenario === 'retry' && writes.length === 1) return json({ error: 'private database detail' }, 503);
           return json({ id: 'new' }, 201);
         }
+        if (scenario === 'refresh-fails' && previewRequests > 0) return json({ error: 'synthetic unavailable' }, 503);
         if (url.pathname.endsWith('persona-releases')) return json({ releases: [{ id: 'private-release', createdAt: '2026-10-11', manifest: { sources: [] } }], heads: [{ releaseId: 'head' }] });
         return json({ reviews: [], events: [], sources: [], truncated: false });
       });
@@ -44,7 +47,10 @@ const preview = { allowed: true, reason: null, currentHead: 'head', targetId: nu
       } else {
         const confirm = page.getByRole('button', { name: 'Confirm new release' }); await confirm.waitFor();
         assert.equal(await page.getByRole('region', { name: 'New release preview' }).evaluate(element => element === document.activeElement), true);
-        if (scenario === 'gated') {
+        if (scenario === 'replacement-fails' || scenario === 'refresh-fails') {
+          await page.getByRole('button', { name: scenario === 'replacement-fails' ? 'Create release' : 'Refresh reviews' }).click();
+          await page.getByRole('alert').waitFor(); assert.equal(await confirm.count(), 0); assert.equal(writes.length, 0);
+        } else if (scenario === 'gated') {
           assert.equal(await confirm.isDisabled(), true);
           await page.getByRole('alert').filter({ hasText: 'Contact your administrator about release readiness' }).waitFor(); assert.equal(writes.length, 0);
         } else {
