@@ -1,3 +1,4 @@
+import { authorizeChatPersistence } from "@/lib/persona/persistence";
 import { createProviderStreamState } from "@/lib/ai/provider-stream";
 import { createChatRequestLifecycle, abortableDelay, ChatRequestStopped } from "@/lib/ai/request-lifecycle";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
@@ -192,7 +193,7 @@ export async function POST(
     }));
 
     // Run chat engine with streaming (now includes subscriberId for memory)
-    const { stream, sources, thinkingSteps } = await runChatEngine({
+    const { stream, sources, thinkingSteps, persistenceSnapshot } = await runChatEngine({
       expertId: chatSession.expertProfile.userId,
       subscriberId: chatSession.subscriberId,
       query: content,
@@ -262,12 +263,17 @@ export async function POST(
             // back. A disconnect after COMMIT starts cannot undo committed data.
             const saved = await prisma.$transaction(async tx => {
               lifecycle.check();
+              await authorizeChatPersistence(tx, persistenceSnapshot, sessionId, chatSession.subscriberId, session.user.role);
+              lifecycle.check();
               const message = await tx.chatMessage.create({ data: {
                 chatSessionId: sessionId, role: "assistant", content: fullResponse,
                 sources: JSON.parse(JSON.stringify(sources)),
               } });
               lifecycle.check();
               await tx.chatSession.update({ where: { id: sessionId }, data: { updatedAt: new Date() } });
+              lifecycle.check();
+              // Recheck clock-based subscription expiry immediately before commit.
+              await authorizeChatPersistence(tx, persistenceSnapshot, sessionId, chatSession.subscriberId, session.user.role);
               lifecycle.check();
               lifecycle.decideCommit();
               return message;

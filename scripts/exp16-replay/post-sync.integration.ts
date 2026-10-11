@@ -28,7 +28,7 @@ beforeAll(async()=>{
  const quote=(v:string)=>'"'+v.replace(/"/g,'""')+'"';
  const literal=(v:unknown)=>typeof v==='string'?"'"+v.replace(/'/g,"''")+"'":String(v);
  for(const e of Prisma.dmmf.datamodel.enums)await prisma.$executeRawUnsafe(`CREATE TYPE ${quote(e.name)} AS ENUM (${e.values.map(v=>literal(v.name)).join(',')})`);
- for(const name of ['ExpertProfile','WidgetConfig','Post','KnowledgeItem','KnowledgeLifecycleJob']){
+ for(const name of ['User','ExpertProfile','WidgetConfig','Post','KnowledgeItem','KnowledgeLifecycleJob','ExpertSubscription','ChatSession','ChatMessage']){
   const model=Prisma.dmmf.datamodel.models.find(m=>m.name===name)!;
   const columns=model.fields.filter(f=>f.kind!=='object').map(f=>{
    let type=scalar[f.type]||quote(f.type), def='';
@@ -52,14 +52,21 @@ beforeAll(async()=>{
  const releaseSql=readFileSync('prisma/migrations/20261003110000_reviewed_persona_releases/migration.sql','utf8');
  for(const definition of Array.from(releaseSql.matchAll(/CREATE TABLE "[^"]+"[\s\S]*?;|CREATE FUNCTION [\s\S]*?\$\$;|CREATE TRIGGER [^;]+;/g)).map(match=>match[0]))await prisma.$executeRawUnsafe(definition);
  await prisma.$executeRawUnsafe('ALTER TABLE "WidgetConfig" ADD UNIQUE ("expertProfileId")');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ExpertSubscription" ADD UNIQUE ("subscriberId","expertProfileId")');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ExpertProfile" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "Post" ADD FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ExpertSubscription" ADD FOREIGN KEY ("subscriberId") REFERENCES "User"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ChatMessage" ADD FOREIGN KEY ("chatSessionId") REFERENCES "ChatSession"("id") ON DELETE CASCADE');
+ await prisma.user.createMany({data:[{id:'owner',email:'owner@synthetic.invalid',role:'EXPERT'},{id:'viewer',email:'viewer@synthetic.invalid',role:'SUBSCRIBER'}]});
  await prisma.expertProfile.create({data:{id:'expert',userId:'owner',displayName:'Synthetic',specialty:[],vectorNamespace:'synthetic-ns'}});
 });
 beforeEach(async()=>{
  delete process.env.OPENAI_MODEL;
+ await prisma.user.update({where:{id:'owner'},data:{isActive:true,isBanned:false,role:'EXPERT'}});await prisma.user.update({where:{id:'viewer'},data:{isActive:true,isBanned:false,role:'SUBSCRIBER'}});
  await prisma.expertProfile.update({where:{id:'expert'},data:{ragEnabled:true,twinGreeting:null}});
  approvals.clear();
  jest.mocked(indexDocument).mockClear();jest.mocked(removeDocument).mockClear();
- await prisma.$executeRawUnsafe('TRUNCATE "PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
+ await prisma.$executeRawUnsafe('TRUNCATE "ChatMessage","ChatSession","ExpertSubscription","PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
  await prisma.post.create({data:{id:'post',authorId:'owner',title:'Advice',content:'Old statement',isRagEnabled:true,isPremiumOnly:true,isHidden:true,status:'DRAFT'}});
  await prisma.knowledgeItem.create({data:{id:'item',expertProfileId:'expert',sourceType:'post',sourceId:'post',title:'Advice',content:'Old statement',sourceVersion:1,indexedVersion:1,isIndexed:true,vectorIds:['old-vector'],metadata:{postId:'post',status:'DRAFT',isHidden:true,isPremiumOnly:true}}});
  await prisma.$executeRaw`INSERT INTO "EvidenceRevision" ("id","expertProfileId","itemId","sourceType","sourceVersion","contentHash","snapshotHash","content","publicationTimeBasis","sourceUpdatedAt","uploaderId","audience","extractorVersion") VALUES ('revision','expert','item','post',1,'synthetic-hash','synthetic-snapshot','Advice','unavailable',CURRENT_TIMESTAMP,'owner','private','synthetic-extractor')`;
@@ -365,4 +372,136 @@ test('native gated writer stays v1-readable by exact deployed reader; v2 readers
 });
 test('native store rejects activation without receipt before any release/config write',async()=>{
  await emptySources();await expect(releasePersona({expertProfileId:'expert',actorId:'owner',operationKey:'missing',expectedHead:null})).rejects.toThrow('approval receipt required');expect(await prisma.$queryRaw`SELECT * FROM "PersonaReleaseHead"`).toEqual([]);
+});
+
+import { authorizeChatPersistence, captureChatPersistenceSnapshot, type ChatPersistenceSnapshot } from '@/lib/persona/persistence';
+import { resolveRetrievalScope } from '@/lib/knowledge/access';
+import { resolveServingPersona, readPersonaRelease } from '@/lib/persona/serving';
+async function persistenceFixture(premium=false) {
+ await prisma.post.update({where:{id:'post'},data:{status:'PUBLISHED',isHidden:false,isPremiumOnly:premium}});
+ await rebuildEvidenceSource('expert','item');
+ await prisma.chatSession.create({data:{id:'session',subscriberId:'viewer',expertProfileId:'expert'}});
+ await prisma.expertSubscription.create({data:{id:'subscription',subscriberId:'viewer',expertProfileId:'expert',price:0,tier:'PREMIUM',status:'ACTIVE',razorpayPaymentId:'synthetic-only',paidPeriodStart:new Date('2020-01-01'),currentPeriodEnd:new Date('2100-01-01')}});
+ const release=await publish('initial',null);
+ const scope=await resolveRetrievalScope('expert','synthetic-ns','owner','viewer');
+ const serving=await resolveServingPersona(scope,true);
+ expect(serving.scope.allowedVectorIds).toEqual(['old-vector']);
+ return {release,snapshot:await captureChatPersistenceSnapshot(serving.scope,'owner',serving.releaseId,true)};
+}
+async function persist(snapshot:ChatPersistenceSnapshot,barrier?:ReturnType<typeof gate>) {
+ return prisma.$transaction(async tx=>{
+  await authorizeChatPersistence(tx,snapshot,'session','viewer','SUBSCRIBER');
+  if(barrier){barrier.open();await persistenceResume!.promise;}
+  await tx.chatMessage.create({data:{id:'answer',chatSessionId:'session',role:'assistant',content:'Synthetic answer'}});
+  await tx.chatSession.update({where:{id:'session'},data:{updatedAt:new Date()}});
+  await authorizeChatPersistence(tx,snapshot,'session','viewer','SUBSCRIBER');
+ },{timeout:10000});
+}
+let persistenceResume:ReturnType<typeof gate>|undefined;
+test('native approved correction changes only intended pins; future release adopts it while prior release stays immutable',async()=>{
+ const {release,snapshot}=await persistenceFixture();
+ await prisma.knowledgeItem.create({data:{id:'unrelated',expertProfileId:'expert',sourceType:'manual',title:'Stable',content:'I prefer stable unrelated context.',sourceVersion:1,indexedVersion:1,isIndexed:true,vectorIds:['stable'],metadata:{authorId:'owner',audience:'public'}}});
+ await rebuildEvidenceSource('expert','unrelated');
+ const unrelatedBefore=await prisma.knowledgeItem.findUnique({where:{id:'unrelated'}});
+ await decideCorrection(decision);
+ await expect(persist(snapshot)).rejects.toThrow('source');
+ expect(await prisma.chatMessage.count()).toBe(0);
+ expect(await prisma.knowledgeItem.findUnique({where:{id:'unrelated'}})).toEqual(unrelatedBefore);
+ await prisma.knowledgeItem.update({where:{id:'item'},data:{isIndexed:true,indexedVersion:2,vectorIds:['corrected-vector']}});
+ await rebuildEvidenceSource('expert','item');
+ const next=await publish('corrected',release.id);
+ expect(next.manifest.sources.find(p=>p.itemId==='item')?.sourceVersion).toBe(2);
+ expect(next.manifest.sources.find(p=>p.itemId==='unrelated')?.vectorIds).toEqual(['stable']);
+ const scope=await resolveRetrievalScope('expert','synthetic-ns','owner','viewer');
+ expect((await resolveServingPersona(scope,true)).scope.allowedVectorIds).toEqual(['corrected-vector','stable']);
+ expect((await prisma.$queryRaw<any[]>`SELECT "manifest" FROM "PersonaRelease" WHERE "id"=${release.id}`)[0].manifest).toEqual(release.manifest);
+ await expect(publish('old-evidence-rollback',next.id,release.id)).rejects.toThrow('no longer current');
+});
+test.each(['release','first-release','rag','post-hidden','post-rag','source-deleted','subscription','session-deleted','session-owner','viewer-banned','owner-inactive','owner-role','viewer-role','source-content','source-author'])('native EOF-to-persistence %s change refuses answer and leaves no assistant row',async change=>{
+ const {release,snapshot}=await persistenceFixture(true);
+ if(change==='release')await publish('new-release',release.id);
+ if(change==='first-release')snapshot.releaseId=null;
+ if(change==='rag')await prisma.expertProfile.update({where:{id:'expert'},data:{ragEnabled:false}});
+ if(change==='post-hidden')await prisma.post.update({where:{id:'post'},data:{isHidden:true}});
+ if(change==='post-rag')await withPostOutbox('owner',tx=>tx.post.update({where:{id:'post'},data:{isRagEnabled:false}}));
+ if(change==='source-deleted')await removeKnowledgeItem('expert','item');
+ if(change==='subscription')await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2000-01-01')}});
+ if(change==='session-deleted')await prisma.chatSession.delete({where:{id:'session'}});
+ if(change==='viewer-banned')await prisma.user.update({where:{id:'viewer'},data:{isBanned:true}});
+ if(change==='owner-inactive')await prisma.user.update({where:{id:'owner'},data:{isActive:false}});
+ if(change==='owner-role')await prisma.user.update({where:{id:'owner'},data:{role:'SUBSCRIBER'}});
+ if(change==='viewer-role')await prisma.user.update({where:{id:'viewer'},data:{role:'ADMIN'}});
+ if(change==='source-content')await prisma.knowledgeItem.update({where:{id:'item'},data:{content:'Drift with same vector'}});
+ if(change==='source-author')await prisma.knowledgeItem.update({where:{id:'item'},data:{metadata:{authorId:'different'}}});
+ if(change==='session-owner')await prisma.chatSession.update({where:{id:'session'},data:{subscriberId:'different'}});
+ await expect(persist(snapshot)).rejects.toThrow();
+ expect(await prisma.chatMessage.count()).toBe(0);
+ expect(await readPersonaRelease('expert')).toMatchObject({id:change==='release'?expect.any(String):release.id});
+ if(['post-hidden','post-rag','source-deleted','rag'].includes(change)) {
+  const scope=await resolveRetrievalScope('expert','synthetic-ns','owner','viewer');
+  expect((await resolveServingPersona(scope,change!=='rag')).scope.allowedVectorIds).toEqual([]);
+ }
+});
+test.each(['post-hidden','source-edit','subscription','session-delete','release','viewer-ban','owner-role'])('native persistence holds %s writer until answer commit; both operations complete without deadlock',async change=>{
+ const {release,snapshot}=await persistenceFixture(true),locked=gate();persistenceResume=gate();
+ const saving=persist(snapshot,locked).then(value=>({value,error:null}),error=>({value:null,error}));
+ await locked.promise;
+ const writing=change==='post-hidden'?prisma.post.update({where:{id:'post'},data:{isHidden:true}}):
+  change==='source-edit'?prisma.knowledgeItem.update({where:{id:'item'},data:{content:'Edited after save',sourceVersion:{increment:1},isIndexed:false}}):
+  change==='subscription'?prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2000-01-01')}}):
+  change==='viewer-ban'?prisma.user.update({where:{id:'viewer'},data:{isBanned:true}}):
+  change==='owner-role'?prisma.user.update({where:{id:'owner'},data:{role:'SUBSCRIBER'}}):
+  change==='session-delete'?prisma.chatSession.delete({where:{id:'session'}}):publish('after-save',release.id);
+ const outcome=writing.then(value=>({value,error:null}),error=>({value:null,error}));
+ let observed=false;
+ try {
+  const until=Date.now()+4000;
+  while(Date.now()<until){const rows=await prisma.$queryRaw<{waiting:boolean}[]>`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock') AS waiting`;if(rows[0].waiting){observed=true;break;}await new Promise(r=>setTimeout(r,10));}
+  expect(observed).toBe(true);
+  expect(await prisma.chatMessage.count()).toBe(0);
+ }finally{persistenceResume.open();}
+ expect((await saving).error).toBeNull();expect((await outcome).error).toBeNull();
+ expect(await prisma.chatMessage.count()).toBe(change==='session-delete'?0:1);
+ if(change!=='session-delete')await expect(persist(snapshot)).rejects.toThrow();
+});
+test('native answer/update transaction failure leaves no partial assistant persistence',async()=>{
+ const {snapshot}=await persistenceFixture();
+ await prisma.$executeRawUnsafe(`ALTER TABLE "ChatMessage" ADD CONSTRAINT synthetic_answer_failure CHECK ("role"<>'assistant')`);
+ const before=await prisma.chatSession.findUnique({where:{id:'session'}});
+ try{await expect(persist(snapshot)).rejects.toThrow('synthetic_answer_failure');expect(await prisma.chatMessage.count()).toBe(0);expect(await prisma.chatSession.findUnique({where:{id:'session'}})).toEqual(before);}
+ finally{await prisma.$executeRawUnsafe('ALTER TABLE "ChatMessage" DROP CONSTRAINT synthetic_answer_failure');}
+});
+test('native rollback refuses deleted/newly restricted source pins without rewriting live access',async()=>{
+ const {release}=await persistenceFixture();
+ await prisma.post.update({where:{id:'post'},data:{isPremiumOnly:true}});
+ await rebuildEvidenceSource('expert','item');
+ const newer=await publish('restricted',release.id);
+ await expect(publish('resurrect-restricted',newer.id,release.id)).rejects.toThrow('no longer current');
+ expect(await prisma.post.findUnique({where:{id:'post'}})).toMatchObject({isPremiumOnly:true});
+ await removeKnowledgeItem('expert','item');
+ await expect(publish('resurrect-deleted',newer.id,release.id)).rejects.toThrow('no longer current');
+ expect(await prisma.knowledgeItem.count()).toBe(0);
+ expect(await readPersonaRelease('expert')).toMatchObject({id:newer.id});
+});
+
+test('native paid expiry during locked SQL work rolls back the assistant before commit',async()=>{
+ const {snapshot}=await persistenceFixture();
+ await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date(Date.now()+1000)}});
+ const locked=gate();persistenceResume=gate();
+ const saving=persist(snapshot,locked).then(value=>({value,error:null}),error=>({value:null,error}));
+ await locked.promise;
+ await new Promise(r=>setTimeout(r,1100));persistenceResume.open();
+ expect((await saving).error).toMatchObject({message:'Chat subscription access changed before persistence'});
+ expect(await prisma.chatMessage.count()).toBe(0);
+});
+
+test('native owner deletion waits before expert/source locks and completes without a deletion cycle',async()=>{
+ const {snapshot}=await persistenceFixture();const locked=gate(),resume=gate();
+ // Actual FK cascade is rolled back deliberately so test-only cleanup preserves the owner.
+ const deleting=prisma.$transaction(async tx=>{await tx.$queryRaw`SELECT "id" FROM "User" WHERE "id"='owner' FOR UPDATE`;locked.open();await resume.promise;await tx.user.delete({where:{id:'owner'}});throw Error('synthetic deletion rollback');},{timeout:10000}).catch(error=>error);
+ await locked.promise;
+ const saving=persist(snapshot).then(value=>({value,error:null}),error=>({value:null,error}));
+ try{await waitForLock('User');}finally{resume.open();}
+ expect(await deleting).toMatchObject({message:'synthetic deletion rollback'});expect((await saving).error).toBeNull();
+ expect(await prisma.chatMessage.count()).toBe(1);
 });

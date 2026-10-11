@@ -17,15 +17,15 @@ export function isEntitled(subscription: SubscriptionAccess | null, now = new Da
 }
 
 /** Resolve from current source/entitlement rows on every request. Never cache this scope. */
-export async function resolveRetrievalScope(expertProfileId: string, namespace: string, ownerId: string, viewerId?: string): Promise<RetrievalScope> {
+export async function resolveRetrievalScope(expertProfileId: string, namespace: string, ownerId: string, viewerId?: string, store: Pick<Prisma.TransactionClient, "expertSubscription" | "knowledgeItem" | "post"> = prisma): Promise<RetrievalScope> {
   const isOwner = viewerId === ownerId;
-  const subscription = !isOwner && viewerId ? await prisma.expertSubscription.findUnique({
+  const subscription = !isOwner && viewerId ? await store.expertSubscription.findUnique({
     where: { subscriberId_expertProfileId: { subscriberId: viewerId, expertProfileId } },
   }) : null;
   const premium = isEntitled(subscription);
-  const items = await prisma.knowledgeItem.findMany({ where: { expertProfileId, isIndexed: true } });
+  const items = await store.knowledgeItem.findMany({ where: { expertProfileId, isIndexed: true } });
   const postIds = items.filter((item) => item.sourceType === "post" && item.sourceId).map((item) => item.sourceId!);
-  const posts = postIds.length ? await prisma.post.findMany({ where: { id: { in: postIds }, authorId: ownerId } }) : [];
+  const posts = postIds.length ? await store.post.findMany({ where: { id: { in: postIds }, authorId: ownerId } }) : [];
   const postMap = new Map(posts.map((post) => [post.id, post]));
   const allowedVectorIds: string[] = [];
   for (const item of items) {

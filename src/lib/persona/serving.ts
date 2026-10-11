@@ -36,12 +36,12 @@ export async function resolveReleasedPresentation(expertProfileId:string,store:P
   widgetGreeting:manifest.format===ACTIVE_MANIFEST_VERSION?manifest.greetings!.widget:null};
 }
 /** Released content never grants access; intersect fresh current pins and live scope. */
-export async function resolveServingPersona(scope:RetrievalScope,liveRagEnabled:boolean) {
- const release=await readPersonaRelease(scope.expertProfileId);
+export async function resolveServingPersona(scope:RetrievalScope,liveRagEnabled:boolean,store:Prisma.TransactionClient=prisma) {
+ const release=await readPersonaRelease(scope.expertProfileId,store);
  const liveScope=liveRagEnabled?scope:{...scope,allowedVectorIds:[]};
  if(!release)return {scope:liveScope,releaseId:null,systemPrompt:null,displayName:null,greeting:null,widgetGreeting:null,runtime:null};
  const manifest=release.manifest;
-  const pins = await currentSourcePins(prisma, scope.expertProfileId);
+  const pins = await currentSourcePins(store, scope.expertProfileId);
   const pinnedScope = scopeForRelease(liveScope, manifest, pins);
   return {
     scope: manifest.config.ragEnabled ? pinnedScope : {...pinnedScope, allowedVectorIds: []},

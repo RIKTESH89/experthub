@@ -1,3 +1,4 @@
+import { captureChatPersistenceSnapshot, type ChatPersistenceSnapshot } from "@/lib/persona/persistence";
 import { currentRuntimePolicy } from "@/lib/persona/runtime";
 import { resolveServingPersona } from "@/lib/persona/serving";
 import { createProviderStreamState } from "@/lib/ai/provider-stream";
@@ -50,6 +51,7 @@ interface ChatEngineOptions {
 }
 
 interface ChatEngineResult {
+  persistenceSnapshot: ChatPersistenceSnapshot;
   stream: ReadableStream;
   sources: RetrievalResult[];
   thinkingSteps: string[];
@@ -94,6 +96,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
   let contextTexts: string[] = [];
 
   const effectiveScope=servingPersona.scope;
+  const persistenceSnapshot = await captureChatPersistenceSnapshot(effectiveScope, expert.userId, servingPersona.releaseId, ragEnabled);
   const evidenceBundle = options.structuredEvaluationAdapters
     ? await retrieveLocalEvaluationEvidence(effectiveScope,query,temporalQuery)
     : options.signal
@@ -135,7 +138,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     const {sources,evidenceTrace,temporalTrace}=acceptedEvidence(release,structuredEvaluation.decision.acceptedSpanIds,audience);
     const stream=new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({choices:[{delta:{content:structuredEvaluation.text}}]})}\n\ndata: [DONE]\n\n`));controller.close();}});
     checkSignal(options.signal);
-    return {stream,sources,thinkingSteps:[...thinkingSteps,"Structured synthetic evaluation; semantic behavior is unvalidated"],evidenceTrace,temporalTrace,
+    return {persistenceSnapshot,stream,sources,thinkingSteps:[...thinkingSteps,"Structured synthetic evaluation; semantic behavior is unvalidated"],evidenceTrace,temporalTrace,
       evidenceBundle:{...release,sources,evidenceTrace,temporalTrace,prompt:JSON.stringify({evidenceTrace,temporalTrace})},
       dialogueState:buildDialogueState(expert.userId,query,authorizedHistory(chatHistory,effectiveScope),release),groundedStyle:groundedStyle(release,expert.userId),structuredEvaluation};
   }
@@ -242,6 +245,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
     controller.close();
   }});
   return {
+    persistenceSnapshot,
     stream,
     dialogueState: releaseState,
     groundedStyle: releaseStyle,

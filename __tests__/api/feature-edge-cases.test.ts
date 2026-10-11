@@ -1,3 +1,4 @@
+jest.mock("@/lib/persona/persistence", () => ({ authorizeChatPersistence: jest.fn(async () => {}) }));
 import { syntheticPaidPeriod } from "../helpers/paid-period";
 /**
  * Edge case & integration tests for all 4 new features

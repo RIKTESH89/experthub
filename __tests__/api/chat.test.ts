@@ -1,3 +1,4 @@
+jest.mock("@/lib/persona/persistence", () => ({ authorizeChatPersistence: jest.fn(async () => {}) }));
 import { syntheticPaidPeriod } from "../helpers/paid-period";
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";
 import { mockAuth, mockSession } from "../mocks/auth";

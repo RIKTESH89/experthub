@@ -1,3 +1,4 @@
+jest.mock("@/lib/persona/persistence", () => ({ authorizeChatPersistence: jest.fn(async () => {}) }));
 jest.mock("@/lib/knowledge/shared-access", () => ({ canPublishConversation: jest.fn().mockResolvedValue(true) }));
 jest.mock("@/lib/knowledge/lifecycle", () => require("../mocks/lifecycle"));
 import mockPrisma, { resetAllMocks } from "../mocks/prisma";

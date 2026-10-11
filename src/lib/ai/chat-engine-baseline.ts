@@ -1,3 +1,4 @@
+import { captureChatPersistenceSnapshot, type ChatPersistenceSnapshot } from "@/lib/persona/persistence";
 import { revalidatedStream } from "./revalidated-stream";
 import { currentRuntimePolicy } from "@/lib/persona/runtime";
 import { resolveServingPersona } from "@/lib/persona/serving";
@@ -39,6 +40,7 @@ interface ChatEngineOptions {
 }
 
 interface ChatEngineResult {
+  persistenceSnapshot: ChatPersistenceSnapshot;
   stream: ReadableStream;
   sources: RetrievalResult[];
   thinkingSteps: string[];
@@ -83,6 +85,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   let contextTexts: string[] = [];
 
   const retrievalScope = servingPersona.scope;
+  const persistenceSnapshot = await captureChatPersistenceSnapshot(retrievalScope, expert.userId, servingPersona.releaseId, ragEnabled);
   const evidenceBundle = options.signal
     ? await retrieveIntentEvidence(retrievalScope, query, temporalQuery, options.signal)
     : await retrieveIntentEvidence(retrievalScope, query, temporalQuery);
@@ -185,6 +188,7 @@ export async function runFrozenChatEngine(options: ChatEngineOptions): Promise<C
   try {await authorize();}catch(error){await response.body.cancel().catch(()=>{});throw error;}
 
   return {
+    persistenceSnapshot,
     stream: revalidatedStream(response.body,authorize,options.signal),
     sources: retrievalResults,
     thinkingSteps,
