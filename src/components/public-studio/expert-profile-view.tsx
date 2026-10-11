@@ -2,8 +2,8 @@
 
 import styles from "@/components/public-studio/reading.module.css";
 import Link from "next/link";
+import { BrandLink } from "@/components/brand/wordmark";
 import {
-  Sparkles,
   Bot,
   Users,
   FileText,
@@ -39,12 +39,7 @@ export function PublicExpertProfileView({ expert }: { expert: ExpertPublicProfil
       {/* Nav bar */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">ExpertHub</span>
-          </Link>
+          <BrandLink />
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
               <Link href="/login">Log In</Link>

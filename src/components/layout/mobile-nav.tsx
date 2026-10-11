@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BrandLink } from "@/components/brand/wordmark";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
@@ -116,61 +117,8 @@ export function MobileNav({ navItems }: MobileNavProps) {
         {/* Header */}
         <SheetHeader className="border-b border-border/50 px-5 py-5">
           <SheetTitle className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-              <svg
-                viewBox="0 0 512 512"
-                className="h-5 w-5 shrink-0"
-                aria-hidden="true"
-              >
-                <rect
-                  x="140"
-                  y="128"
-                  width="36"
-                  height="256"
-                  rx="4"
-                  fill="hsl(var(--primary-foreground))"
-                />
-                <rect
-                  x="176"
-                  y="128"
-                  width="180"
-                  height="30"
-                  rx="4"
-                  fill="hsl(var(--primary-foreground))"
-                />
-                <rect
-                  x="176"
-                  y="225"
-                  width="120"
-                  height="30"
-                  rx="4"
-                  fill="hsl(var(--primary-foreground))"
-                />
-                <rect
-                  x="316"
-                  y="225"
-                  width="40"
-                  height="30"
-                  rx="4"
-                  fill="hsl(var(--primary-foreground))"
-                  opacity="0.5"
-                />
-                <rect
-                  x="176"
-                  y="354"
-                  width="180"
-                  height="30"
-                  rx="4"
-                  fill="hsl(var(--primary-foreground))"
-                />
-                <circle cx="378" cy="240" r="8" fill="hsl(var(--primary-foreground))" opacity="0.3" />
-                <circle cx="400" cy="240" r="5" fill="hsl(var(--primary-foreground))" opacity="0.15" />
-              </svg>
-            </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight">
-                ExpertHub
-              </span>
+              <BrandLink onClick={() => setOpen(false)} />
               {badge && (
                 <span
                   className={cn(

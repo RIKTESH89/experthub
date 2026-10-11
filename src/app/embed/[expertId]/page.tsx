@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLink } from "@/components/brand/wordmark";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -27,13 +28,14 @@ export default async function EmbedExpertPage({
             style={{
               padding: "12px 16px",
               borderBottom: "1px solid hsl(var(--border))",
-              background: "hsl(var(--primary))",
-              color: "hsl(var(--primary-foreground))",
+              background: "hsl(var(--background))",
+              color: "hsl(var(--foreground))",
               fontSize: "14px",
               fontWeight: 600,
             }}
           >
-            ExpertHub &mdash; Expert {expertId}
+            <BrandLink />
+            <p className="text-sm text-muted-foreground">Expert {expertId}</p>
           </div>
 
           <div

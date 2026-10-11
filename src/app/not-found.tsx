@@ -1,17 +1,12 @@
 import styles from "@/components/public-studio/reading.module.css";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { BrandLink } from "@/components/brand/wordmark";
 
 export default function NotFound() {
   return (
     <div className={`${styles.page} ${styles.state}`}>
       <div className="text-center">
-        <Link href="/" className="mb-8 inline-flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Sparkles className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold tracking-tight">ExpertHub</span>
-        </Link>
+        <BrandLink className="mx-auto mb-8" />
 
         <h1 className="mt-6 text-gradient text-8xl font-bold tracking-tighter sm:text-9xl">
           404

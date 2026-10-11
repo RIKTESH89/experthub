@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { BrandLink } from "@/components/brand/wordmark";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { ChevronRight, Home } from "lucide-react";
@@ -65,14 +66,11 @@ export function Navbar({ navItems }: NavbarProps) {
     >
       <div
         className={cn(
-          "flex h-16 items-center gap-4 px-4 md:px-6",
+          "flex h-16 items-center gap-1 px-3 md:gap-4 md:px-6",
           "bg-background/80 backdrop-blur-xl",
           "border-b border-border/50"
         )}
       >
-        {/* Mobile menu toggle */}
-        <MobileNav navItems={navItems} />
-
         {/* Breadcrumbs */}
         <div className="flex-1 min-w-0">
           <nav
@@ -114,20 +112,7 @@ export function Navbar({ navItems }: NavbarProps) {
             ))}
           </nav>
 
-          {/* Mobile: current page title */}
-          <div className="md:hidden">
-            {breadcrumbs.length > 0 && (
-              <motion.p
-                key={pathname}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-sm font-semibold text-foreground truncate"
-              >
-                {breadcrumbs[breadcrumbs.length - 1].label}
-              </motion.p>
-            )}
-          </div>
+          <div className="md:hidden"><BrandLink /></div>
         </div>
 
         {/* Right side actions */}
@@ -137,6 +122,7 @@ export function Navbar({ navItems }: NavbarProps) {
           transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
           className="flex items-center gap-1 sm:gap-2"
         >
+          <MobileNav navItems={navItems} />
           <NotificationBell />
           <div className="h-4 w-px bg-border/60 mx-0.5 hidden sm:block" />
           <ThemeToggle />

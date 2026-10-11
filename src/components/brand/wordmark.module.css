@@ -1,0 +1,31 @@
+.wordmark {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  flex-shrink: 0;
+  min-height: 44px;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 24px;
+  line-height: 1.5;
+  letter-spacing: -1.2px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+}
+.hub { font-weight: 350; }
+.star {
+  color: hsl(var(--muted-foreground));
+  font-style: normal;
+  font-size: 28px;
+  margin-left: 9px;
+}
+.wordmark:focus-visible {
+  outline: 2px solid hsl(var(--foreground));
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+@media (max-width: 760px) {
+  .wordmark { font-size: 19px; letter-spacing: -1px; }
+  .star { font-size: 22px; margin-left: 5px; }
+}

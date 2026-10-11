@@ -2,6 +2,7 @@
 
 
 import Link from "next/link";
+import { BrandLink } from "@/components/brand/wordmark";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
@@ -195,40 +196,7 @@ export function Sidebar({ navItems, className }: SidebarProps) {
           isOpen ? "px-4 gap-3" : "justify-center px-2"
         )}
       >
-        <svg
-          viewBox="0 0 512 512"
-          className="h-7 w-7 shrink-0 rounded-lg"
-          aria-hidden="true"
-        >
-          <rect width="512" height="512" rx="112" fill="currentColor" className="text-primary" />
-          <rect x="140" y="128" width="36" height="256" rx="4" fill="hsl(var(--primary-foreground))" />
-          <rect x="176" y="128" width="180" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
-          <rect x="176" y="225" width="120" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
-          <rect
-            x="316"
-            y="225"
-            width="40"
-            height="30"
-            rx="4"
-            fill="hsl(var(--primary-foreground))"
-            opacity="0.5"
-          />
-          <rect x="176" y="354" width="180" height="30" rx="4" fill="hsl(var(--primary-foreground))" />
-        </svg>
-
-        <AnimatePresence mode="wait">
-          {isOpen && (
-            <motion.span
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -8 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              className="text-base font-bold tracking-tight whitespace-nowrap text-foreground"
-            >
-              ExpertHub
-            </motion.span>
-          )}
-        </AnimatePresence>
+        <BrandLink />
       </div>
 
       {/* Navigation */}
