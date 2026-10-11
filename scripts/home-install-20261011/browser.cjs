@@ -49,7 +49,7 @@ async function nativeEvent(page) {
     assert(await page.evaluate(()=>localStorage.getItem('pwa-install-dismissed'))===null,name+' no global dismissal mutation');
     assert(await page.locator('link[rel="manifest"]').getAttribute('href')==='/manifest.json',name+' manifest retained');
     await page.screenshot({path:path.join(out,name+'-homepage.png')});
-    checks.push({name:name+' homepage native event not intercepted / manifest retained / no dismissal',status:'PASS'});
+    checks.push({name:name+' homepage synthetic event not intercepted / manifest retained / no dismissal',status:'PASS'});
     await page.goto(origin+'/about');
     await page.waitForTimeout(5500);
     await page.getByRole('button',{name:'Install App',exact:true}).waitFor();

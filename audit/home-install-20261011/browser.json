@@ -16,7 +16,7 @@
       "status": "PASS"
     },
     {
-      "name": "desktop homepage native event not intercepted / manifest retained / no dismissal",
+      "name": "desktop homepage synthetic event not intercepted / manifest retained / no dismissal",
       "status": "PASS"
     },
     {
@@ -40,7 +40,7 @@
       "status": "PASS"
     },
     {
-      "name": "mobile homepage native event not intercepted / manifest retained / no dismissal",
+      "name": "mobile homepage synthetic event not intercepted / manifest retained / no dismissal",
       "status": "PASS"
     },
     {
@@ -64,7 +64,7 @@
       "status": "PASS"
     },
     {
-      "name": "ios-emulated homepage native event not intercepted / manifest retained / no dismissal",
+      "name": "ios-emulated homepage synthetic event not intercepted / manifest retained / no dismissal",
       "status": "PASS"
     },
     {
