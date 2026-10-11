@@ -1,0 +1,115 @@
+The files belonging to this database system will be owned by user "rikteshs20".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+creating directory /tmp/exp16-replay-fixture-_dtnfl3e/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Kolkata
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/exp16-replay-fixture-_dtnfl3e/data -l logfile start
+
+
+waiting for server to start.... done
+server started
+
+
+PASS scripts/exp16-replay/post-sync.integration.ts (5.386 s)
+  ✓ native delayed discovery cannot republish the pre-acceptance post snapshot (24 ms)
+  ✓ native opposite transaction interleavings complete without deadlock: correction-first (42 ms)
+  ✓ native opposite transaction interleavings complete without deadlock: sync-first (39 ms)
+  ✓ native failed audit insertion rolls back authoritative post, projection, retirement and outbox (26 ms)
+  ✓ native post mutation acquires expert parent before post/outbox writes (13 ms)
+  ✓ native RAG revocation retracts projection/evidence and preserves post visibility (15 ms)
+  ✓ native simultaneous first projection publication creates one source without duplicate versions (15 ms)
+  ✓ native real evidence FK/projection completes in both rebuild/sync orders: rebuild-first (17 ms)
+  ✓ native real evidence FK/projection completes in both rebuild/sync orders: sync-first (27 ms)
+  ✓ native index/removal with the same deterministic cleanup job has no cycle: index-first (31 ms)
+  ✓ native index/removal with the same deterministic cleanup job has no cycle: remove-first (28 ms)
+  ✓ native index/RAG retraction preserves revocation and cleanup in both orders: index-first (30 ms)
+  ✓ native index/RAG retraction preserves revocation and cleanup in both orders: retraction-first (30 ms)
+  ✓ native evidence publication failure rolls back source/revision and durably cleans staged vectors (21 ms)
+  ✓ native index finishing after accepted correction cannot publish stale evidence or retire new state (16 ms)
+  ✓ native removal cleanup failure rolls back revocation, then retry captures and drains final IDs (15 ms)
+  ✓ native v2 rollback restores captured model, persona, null greeting and widget without restoring live widget settings (40 ms)
+  ✓ native release head CAS permits exactly one concurrent owner publication (21 ms)
+  ✓ native legacy rollback preserves v1 and unsupported v2 is rejected before mutation (28 ms)
+  ✓ native pdf submission captures immutable parsed provenance without changing beliefs; retry survives deletion (16 ms)
+  ✓ native blog submission captures immutable parsed provenance without changing beliefs; retry survives deletion (14 ms)
+  ✓ native stale/foreign/oversized import submissions leave no review audit or source mutation (15 ms)
+  ✓ native expert revision captures new import target while preserving original submission event (13 ms)
+  ✓ native equal-config rollback discloses model/widget delta and binds exact reviewed activation (27 ms)
+  ✓ native new-release approval refuses changed model without publishing a head (17 ms)
+  ✓ native new-release approval refuses changed widget without publishing a head (17 ms)
+  ✓ native new-release approval refuses changed identity without publishing a head (18 ms)
+  ✓ native new-release approval refuses changed draft without publishing a head (18 ms)
+  ✓ native gated writer stays v1-readable by exact deployed reader; v2 readers remain enabled with gate off (26 ms)
+  ✓ native store rejects activation without receipt before any release/config write (16 ms)
+  ✓ native approved correction changes only intended pins; future release adopts it while prior release stays immutable (36 ms)
+  ✓ native EOF-to-persistence release change refuses answer and leaves no assistant row (25 ms)
+  ✓ native EOF-to-persistence first-release change refuses answer and leaves no assistant row (19 ms)
+  ✓ native EOF-to-persistence rag change refuses answer and leaves no assistant row (21 ms)
+  ✓ native EOF-to-persistence post-hidden change refuses answer and leaves no assistant row (29 ms)
+  ✓ native EOF-to-persistence post-rag change refuses answer and leaves no assistant row (25 ms)
+  ✓ native EOF-to-persistence source-deleted change refuses answer and leaves no assistant row (23 ms)
+  ✓ native EOF-to-persistence subscription change refuses answer and leaves no assistant row (20 ms)
+  ✓ native EOF-to-persistence session-deleted change refuses answer and leaves no assistant row (18 ms)
+  ✓ native EOF-to-persistence session-owner change refuses answer and leaves no assistant row (20 ms)
+  ✓ native EOF-to-persistence viewer-banned change refuses answer and leaves no assistant row (22 ms)
+  ✓ native EOF-to-persistence owner-inactive change refuses answer and leaves no assistant row (19 ms)
+  ✓ native EOF-to-persistence owner-role change refuses answer and leaves no assistant row (18 ms)
+  ✓ native EOF-to-persistence viewer-role change refuses answer and leaves no assistant row (19 ms)
+  ✓ native EOF-to-persistence source-content change refuses answer and leaves no assistant row (21 ms)
+  ✓ native EOF-to-persistence source-author change refuses answer and leaves no assistant row (20 ms)
+  ✓ native persistence holds post-hidden writer until answer commit; both operations complete without deadlock (26 ms)
+  ✓ native persistence holds source-edit writer until answer commit; both operations complete without deadlock (39 ms)
+  ✓ native persistence holds subscription writer until answer commit; both operations complete without deadlock (26 ms)
+  ✓ native persistence holds session-delete writer until answer commit; both operations complete without deadlock (35 ms)
+  ✓ native persistence holds release writer until answer commit; both operations complete without deadlock (41 ms)
+  ✓ native persistence holds viewer-ban writer until answer commit; both operations complete without deadlock (30 ms)
+  ✓ native persistence holds owner-role writer until answer commit; both operations complete without deadlock (31 ms)
+  ✓ native answer/update transaction failure leaves no partial assistant persistence (21 ms)
+  ✓ native rollback refuses deleted/newly restricted source pins without rewriting live access (29 ms)
+  ✓ native paid expiry during locked SQL work rolls back the assistant before commit (1129 ms)
+  ✓ native owner deletion waits before expert/source locks and completes without a deletion cycle (50 ms)
+  ✓ native anonymous widget transaction commits both messages and usage exactly within quota (39 ms)
+  ✓ native anonymous widget disabled revocation prevents message/usage persistence (22 ms)
+  ✓ native anonymous widget key-rotated revocation prevents message/usage persistence (23 ms)
+  ✓ native anonymous widget domain-revoked revocation prevents message/usage persistence (23 ms)
+  ✓ native anonymous widget origin-denied revocation prevents message/usage persistence (20 ms)
+  ✓ native anonymous widget quota revocation prevents message/usage persistence (22 ms)
+  ✓ native anonymous widget session-deleted revocation prevents message/usage persistence (22 ms)
+  ✓ native anonymous widget visitor-changed revocation prevents message/usage persistence (20 ms)
+  ✓ native anonymous widget owner-banned revocation prevents message/usage persistence (20 ms)
+  ✓ native anonymous widget source-hidden revocation prevents message/usage persistence (22 ms)
+  ✓ native anonymous widget source-deleted revocation prevents message/usage persistence (25 ms)
+  ✓ native anonymous widget release revocation prevents message/usage persistence (25 ms)
+  ✓ native anonymous widget owner-receipt revocation prevents message/usage persistence (19 ms)
+  ✓ native widget persistence serializes concurrent config revocation without deadlock (47 ms)
+  ✓ native widget persistence serializes concurrent post revocation without deadlock (50 ms)
+  ✓ native widget persistence serializes concurrent session revocation without deadlock (35 ms)
+  ✓ native widget persistence serializes concurrent release revocation without deadlock (38 ms)
+  ✓ native widget usage failure rolls back both messages and usage (23 ms)
+  ✓ native subscription expiring during final guard trailing reads is rejected before return (2228 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       76 passed, 76 total
+Snapshots:   0 total
+Time:        5.475 s, estimated 7 s
+Ran all test suites.
+
+waiting for server to shut down.... done
+server stopped
+
