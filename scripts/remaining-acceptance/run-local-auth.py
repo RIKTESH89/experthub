@@ -4,13 +4,14 @@ import os, json, shutil, subprocess, tempfile, signal
 
 root = Path(__file__).resolve().parents[3]
 app = root / 'integration'
-output = root / 'evidence' / 'remaining' / 'local-auth'
+candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=app, text=True).strip()
+output = root / 'evidence' / 'remaining' / ('local-auth-' + candidate[:7])
 output.mkdir(parents=True, exist_ok=True)
 bin_dir = Path('/opt/homebrew/opt/postgresql@18/bin')
 owned = Path(tempfile.mkdtemp(prefix='experthub-full-http-', dir='/tmp'))
 (owned / 'socket').mkdir(mode=0o700)
 env = {k: os.environ[k] for k in ['PATH', 'LANG', 'LC_ALL', 'TMPDIR'] if k in os.environ}
-env.update(DOTENV_CONFIG_PATH='/dev/null', NEXT_TELEMETRY_DISABLED='1', EXP_REMAINING_OWNED_SYNTHETIC_CLUSTER='1')
+env.update(DOTENV_CONFIG_PATH='/dev/null', NEXT_TELEMETRY_DISABLED='1', EXP_REMAINING_OWNED_SYNTHETIC_CLUSTER='1', EXP_REMAINING_ACCEPTANCE_COMMIT=candidate)
 env['DATABASE_URL'] = f'postgresql://integration_synthetic@localhost:55522/integration_full_http?host={owned}/socket'
 env['DIRECT_URL'] = env['DATABASE_URL']
 steps = []
