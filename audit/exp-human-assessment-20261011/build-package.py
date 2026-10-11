@@ -4,6 +4,7 @@ import argparse, csv, hashlib, json, random, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent
 DIMENSIONS = ['faithfulness', 'attribution_time_access', 'dialogue_state', 'style_resemblance', 'naturalness', 'usefulness', 'abstention_appropriateness']
 SHA = lambda text: hashlib.sha256(text.encode('utf-8')).hexdigest()
+CONTEXT_SHA = lambda context: SHA(json.dumps(context, ensure_ascii=False, sort_keys=True, separators=(',', ':')))
 def dump(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
@@ -28,14 +29,16 @@ def main():
         style=[]
         for sample in samples:
             row=selected.get(sample['spanId']); eligible=row and row.get('authorId')==gen['state']['expertId'] and row.get('speakerId')==gen['state']['expertId'] and row.get('speakerRole')=='author' and row.get('endorsedByOwner') and row.get('kind')=='explicit'
-            if eligible: style.append({'spanId':sample['spanId'],'text':sample['text'],'authorId':row['authorId'],'speakerRole':row['speakerRole'],'audience':row.get('audience')})
+            if eligible:
+                assert sample['text']==row['text'][:500], 'Style sample does not match its frozen source excerpt'
+                style.append({'spanId':sample['spanId'],'text':sample['text'],'authorId':row['authorId'],'speakerId':row['speakerId'],'speakerRole':row['speakerRole'],'audience':row.get('audience')})
         packet.append({'blindId':bid,'track':'fixed-synthetic-output-review','representedPersonId':gen['state']['expertId'],'query':trace['query'],'recentConversation':trace['history'],
           'answer':answer,'answerHash':ah,'admissibleContext':{'generationSnapshot':evidence(gen['bundle']), 'semanticReviewSnapshot':evidence(reviewed['bundle']) if reviewed else None,
           'styleAuthorOnlySamples':style,'styleAssessability':'Sparse selected snippets; resemblance requires sufficient authored references. Mark not-assessable with reason when insufficient.',
           'viewerEntitlement':'Viewer role/entitlement is not serialized in these traces; source audiences and selected request snapshots are available, but do not establish final authorization.',
           'unknownPrivateExperience':'No source access beyond these snapshots is implied. Visitor/assistant history is continuity, never evidence of represented-person beliefs.'},
           'dimensions':DIMENSIONS,'ratings':None})
-        key.append({'blindId':bid,'answerHash':ah,'traceIndex':index,'logicalCase':trace['caseId'],'turn':trace['turn'],'repeat':trace['repeat'],'implementationLabel':trace['variant'],'expectedSyntheticOutcome':trace['expected'],'observedSyntheticOutcome':trace['outcome'],'nativeOutputDigest':trace['outputHash']})
+        key.append({'blindId':bid,'answerHash':ah,'sourceContextHash':CONTEXT_SHA(packet[-1]['admissibleContext']),'traceIndex':index,'logicalCase':trace['caseId'],'turn':trace['turn'],'repeat':trace['repeat'],'implementationLabel':trace['variant'],'expectedSyntheticOutcome':trace['expected'],'observedSyntheticOutcome':trace['outcome'],'nativeOutputDigest':trace['outputHash']})
     dump(ROOT/'reviewer/fixed-outputs.json',{'version':'blinded-human-review-v1','mode':'fixed-synthetic-output-review','humanReview':'NOT_RUN','answers':packet})
     readable=['# Fixed synthetic output review\n\nHuman review NOT RUN. Use the instructions and separate rubric. Preserve exact answer hashes; do not treat repeated fixed records as independent model evidence.\n']
     for row in packet:

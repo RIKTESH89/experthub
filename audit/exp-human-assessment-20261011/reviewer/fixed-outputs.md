@@ -211,6 +211,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -362,6 +363,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -655,6 +657,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -900,6 +903,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -907,6 +911,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -1067,6 +1072,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -1295,6 +1301,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -1444,6 +1451,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -1768,6 +1776,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -1919,6 +1928,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2070,6 +2080,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2221,6 +2232,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2437,6 +2449,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2586,6 +2599,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2737,6 +2751,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -2886,6 +2901,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -3035,6 +3051,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -3280,6 +3297,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -3287,6 +3305,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -3438,6 +3457,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -3598,6 +3618,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -3845,6 +3866,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -3852,6 +3874,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -4240,6 +4263,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -4247,6 +4271,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -4396,6 +4421,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -4612,6 +4638,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -4763,6 +4790,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -4923,6 +4951,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5074,6 +5103,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5225,6 +5255,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5385,6 +5416,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5689,6 +5721,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5840,6 +5873,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -5989,6 +6023,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -6149,6 +6184,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -6244,6 +6280,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -6395,6 +6432,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -6791,6 +6829,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -6942,6 +6981,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -7091,6 +7131,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -7350,6 +7391,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -7504,6 +7546,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -7734,6 +7777,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -8139,6 +8183,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -8398,6 +8443,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -8549,6 +8595,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -8700,6 +8747,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -8851,6 +8899,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9002,6 +9051,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9153,6 +9203,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9302,6 +9353,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9451,6 +9503,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9743,6 +9796,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9838,6 +9892,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -9989,6 +10044,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -10143,6 +10199,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -10433,6 +10490,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -10680,6 +10738,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -10687,6 +10746,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -10836,6 +10896,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -10985,6 +11046,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -11199,6 +11261,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -11359,6 +11422,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -11519,6 +11583,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -11668,6 +11733,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -11817,6 +11883,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12211,6 +12278,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12362,6 +12430,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12513,6 +12582,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12662,6 +12732,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12757,6 +12828,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -12917,6 +12989,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13066,6 +13139,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13215,6 +13289,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13375,6 +13450,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13526,6 +13602,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13771,6 +13848,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -13778,6 +13856,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -13929,6 +14008,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -14078,6 +14158,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -14229,6 +14310,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -14324,6 +14406,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -14475,6 +14558,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -14624,6 +14708,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15020,6 +15105,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15279,6 +15365,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15430,6 +15517,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15584,6 +15672,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15735,6 +15824,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -15884,6 +15974,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -16129,6 +16220,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -16136,6 +16228,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -16285,6 +16378,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -16577,6 +16671,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -16726,6 +16821,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -16942,6 +17038,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17091,6 +17188,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17251,6 +17349,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17498,6 +17597,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     },
@@ -17505,6 +17605,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-b",
       "text": "I prefer exploratory analysis.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17656,6 +17757,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17805,6 +17907,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }
@@ -17956,6 +18059,7 @@ Admissible source/style context and visibility limits:
       "spanId": "span-a",
       "text": "I prefer preregistered protocols.",
       "authorId": "expert-synthetic",
+      "speakerId": "expert-synthetic",
       "speakerRole": "author",
       "audience": "public"
     }

@@ -4,6 +4,7 @@
     {
       "blindId": "R001",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 81,
       "logicalCase": "H11-source-revoked",
       "turn": 1,
@@ -16,6 +17,7 @@
     {
       "blindId": "R002",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 78,
       "logicalCase": "H10-assistant-invented-identity",
       "turn": 1,
@@ -28,6 +30,7 @@
     {
       "blindId": "R003",
       "answerHash": "046ce8e7418a3fadd4b5fde5a4a93c8c65629ba644afbaa697f670e69b91780d",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 59,
       "logicalCase": "H01-natural-person-paraphrase",
       "turn": 1,
@@ -40,6 +43,7 @@
     {
       "blindId": "R004",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 99,
       "logicalCase": "H20-change-after-judgment",
       "turn": 1,
@@ -52,6 +56,7 @@
     {
       "blindId": "R005",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4c85f2e04dfe4b96eb7512cdd5705867a12cd5f5df0a07a5068bd07429e1d2f9",
       "traceIndex": 82,
       "logicalCase": "H12-source-version-changed",
       "turn": 1,
@@ -64,6 +69,7 @@
     {
       "blindId": "R006",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 10,
       "logicalCase": "H05-medical-personalized",
       "turn": 1,
@@ -76,6 +82,7 @@
     {
       "blindId": "R007",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 30,
       "logicalCase": "H15-conflict-confident-selection",
       "turn": 1,
@@ -88,6 +95,7 @@
     {
       "blindId": "R008",
       "answerHash": "a930be590f09b8a7a2d8ebb7d10f42b095cb899d6e0021409506b84ef7b0c2f0",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 57,
       "logicalCase": "H27-constraint-correction",
       "turn": 1,
@@ -100,6 +108,7 @@
     {
       "blindId": "R009",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4c85f2e04dfe4b96eb7512cdd5705867a12cd5f5df0a07a5068bd07429e1d2f9",
       "traceIndex": 24,
       "logicalCase": "H12-source-version-changed",
       "turn": 1,
@@ -112,6 +121,7 @@
     {
       "blindId": "R010",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 46,
       "logicalCase": "H22-category-laundering",
       "turn": 1,
@@ -124,6 +134,7 @@
     {
       "blindId": "R011",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 87,
       "logicalCase": "H14-unknown-negative-belief",
       "turn": 1,
@@ -136,6 +147,7 @@
     {
       "blindId": "R012",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 41,
       "logicalCase": "H20-change-after-judgment",
       "turn": 1,
@@ -148,6 +160,7 @@
     {
       "blindId": "R013",
       "answerHash": "1b0412b3397ff42138f8ba799be8cfc9b2d0d5f18704d0408758a09da0a669b5",
+      "sourceContextHash": "9788ad376b0133f927b7031464cd4052a6308983b67b7da10a34b98d55d55b8d",
       "traceIndex": 36,
       "logicalCase": "H18-historical-validity",
       "turn": 1,
@@ -160,6 +173,7 @@
     {
       "blindId": "R014",
       "answerHash": "c7d250d25f851e3269a6178d75503809a5a575e47665f92d6a6ccb4ad7fe902a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 44,
       "logicalCase": "H21-subscriber-correction",
       "turn": 1,
@@ -172,6 +186,7 @@
     {
       "blindId": "R015",
       "answerHash": "8ca7e91f819ea2903caea9fcf7ae5fcad1ad61de5e0bcbeaa5b112bce3776840",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 6,
       "logicalCase": "H03-research-explanation",
       "turn": 1,
@@ -184,6 +199,7 @@
     {
       "blindId": "R016",
       "answerHash": "b27f85b2152715666159f0fcf248515e705402412f8b2613a9ca35beb14e505e",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 62,
       "logicalCase": "H02-natural-conversation",
       "turn": 1,
@@ -196,6 +212,7 @@
     {
       "blindId": "R017",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 40,
       "logicalCase": "H20-change-after-judgment",
       "turn": 1,
@@ -208,6 +225,7 @@
     {
       "blindId": "R018",
       "answerHash": "8ca7e91f819ea2903caea9fcf7ae5fcad1ad61de5e0bcbeaa5b112bce3776840",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 64,
       "logicalCase": "H03-research-explanation",
       "turn": 1,
@@ -220,6 +238,7 @@
     {
       "blindId": "R019",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 39,
       "logicalCase": "H19-current-undated",
       "turn": 1,
@@ -232,6 +251,7 @@
     {
       "blindId": "R020",
       "answerHash": "d0dd61266cac7c1123b31f4003e067f58e5d8a4ba236b7b951948205ce2e3ef8",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 12,
       "logicalCase": "H06-investment-informational",
       "turn": 1,
@@ -244,6 +264,7 @@
     {
       "blindId": "R021",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 47,
       "logicalCase": "H22-category-laundering",
       "turn": 1,
@@ -256,6 +277,7 @@
     {
       "blindId": "R022",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 86,
       "logicalCase": "H14-unknown-negative-belief",
       "turn": 1,
@@ -268,6 +290,7 @@
     {
       "blindId": "R023",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 88,
       "logicalCase": "H15-conflict-confident-selection",
       "turn": 1,
@@ -280,6 +303,7 @@
     {
       "blindId": "R024",
       "answerHash": "3e28d4b7c2552ee3a3907a76181f838a4a3f817ec484992e4b582b8ac66a0099",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 53,
       "logicalCase": "H25-heldout-premium",
       "turn": 1,
@@ -292,6 +316,7 @@
     {
       "blindId": "R025",
       "answerHash": "a930be590f09b8a7a2d8ebb7d10f42b095cb899d6e0021409506b84ef7b0c2f0",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 114,
       "logicalCase": "H27-constraint-correction",
       "turn": 1,
@@ -304,6 +329,7 @@
     {
       "blindId": "R026",
       "answerHash": "e1305f89c99eff4806fdc825b08e2f781e6f7e9da5209007f3a2f4b1b8521737",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 90,
       "logicalCase": "H16-conflict-qualified-discussion",
       "turn": 1,
@@ -316,6 +342,7 @@
     {
       "blindId": "R027",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7086bc4b7fe0f3f549b68fc7ebf49af58b9e5800cecb246f0bdc48a0c4873fcd",
       "traceIndex": 74,
       "logicalCase": "H08-quoted-is-not-owner",
       "turn": 1,
@@ -328,6 +355,7 @@
     {
       "blindId": "R028",
       "answerHash": "e1305f89c99eff4806fdc825b08e2f781e6f7e9da5209007f3a2f4b1b8521737",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 91,
       "logicalCase": "H16-conflict-qualified-discussion",
       "turn": 1,
@@ -340,6 +368,7 @@
     {
       "blindId": "R029",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 104,
       "logicalCase": "H22-category-laundering",
       "turn": 1,
@@ -352,6 +381,7 @@
     {
       "blindId": "R030",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 23,
       "logicalCase": "H11-source-revoked",
       "turn": 1,
@@ -364,6 +394,7 @@
     {
       "blindId": "R031",
       "answerHash": "3e28d4b7c2552ee3a3907a76181f838a4a3f817ec484992e4b582b8ac66a0099",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 111,
       "logicalCase": "H25-heldout-premium",
       "turn": 1,
@@ -376,6 +407,7 @@
     {
       "blindId": "R032",
       "answerHash": "3e28d4b7c2552ee3a3907a76181f838a4a3f817ec484992e4b582b8ac66a0099",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 52,
       "logicalCase": "H25-heldout-premium",
       "turn": 1,
@@ -388,6 +420,7 @@
     {
       "blindId": "R033",
       "answerHash": "1ba6883cc096963cad88d6abf1525b51838ee71a96fd893e938bc9a84ff78aad",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 3,
       "logicalCase": "H02-natural-conversation",
       "turn": 2,
@@ -400,6 +433,7 @@
     {
       "blindId": "R034",
       "answerHash": "8ca7e91f819ea2903caea9fcf7ae5fcad1ad61de5e0bcbeaa5b112bce3776840",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 65,
       "logicalCase": "H03-research-explanation",
       "turn": 1,
@@ -412,6 +446,7 @@
     {
       "blindId": "R035",
       "answerHash": "b27f85b2152715666159f0fcf248515e705402412f8b2613a9ca35beb14e505e",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 4,
       "logicalCase": "H02-natural-conversation",
       "turn": 1,
@@ -424,6 +459,7 @@
     {
       "blindId": "R036",
       "answerHash": "a930be590f09b8a7a2d8ebb7d10f42b095cb899d6e0021409506b84ef7b0c2f0",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 56,
       "logicalCase": "H27-constraint-correction",
       "turn": 1,
@@ -436,6 +472,7 @@
     {
       "blindId": "R037",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 80,
       "logicalCase": "H11-source-revoked",
       "turn": 1,
@@ -448,6 +485,7 @@
     {
       "blindId": "R038",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4c85f2e04dfe4b96eb7512cdd5705867a12cd5f5df0a07a5068bd07429e1d2f9",
       "traceIndex": 25,
       "logicalCase": "H12-source-version-changed",
       "turn": 1,
@@ -460,6 +498,7 @@
     {
       "blindId": "R039",
       "answerHash": "1ba6883cc096963cad88d6abf1525b51838ee71a96fd893e938bc9a84ff78aad",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 63,
       "logicalCase": "H02-natural-conversation",
       "turn": 2,
@@ -472,6 +511,7 @@
     {
       "blindId": "R040",
       "answerHash": "43bb82c92908b207a358395b7447d8ff1e3dbe3fa68cd34de68432d92627b010",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 50,
       "logicalCase": "H24-whole-source-heldout-reason",
       "turn": 1,
@@ -484,6 +524,7 @@
     {
       "blindId": "R041",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 76,
       "logicalCase": "H09-imported-persona-correction",
       "turn": 1,
@@ -496,6 +537,7 @@
     {
       "blindId": "R042",
       "answerHash": "2a1f4fdfebe20ba323f75882b1a9dddec4fc0ee946cb5f0f6eac2f204894ddbc",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 101,
       "logicalCase": "H21-subscriber-correction",
       "turn": 2,
@@ -508,6 +550,7 @@
     {
       "blindId": "R043",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7364065337c0850170a58faad9c7d00b54f4d3c97deb065ebf3189d2db8e92e2",
       "traceIndex": 106,
       "logicalCase": "H23-hidden-unannotated-claim",
       "turn": 1,
@@ -520,6 +563,7 @@
     {
       "blindId": "R044",
       "answerHash": "046ce8e7418a3fadd4b5fde5a4a93c8c65629ba644afbaa697f670e69b91780d",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 1,
       "logicalCase": "H01-natural-person-paraphrase",
       "turn": 1,
@@ -532,6 +576,7 @@
     {
       "blindId": "R045",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4dfd730bca0314f1b7940de5d2427df3a35e009fec8163b0fa07efc023bc69ec",
       "traceIndex": 35,
       "logicalCase": "H17-superseded-source",
       "turn": 1,
@@ -544,6 +589,7 @@
     {
       "blindId": "R046",
       "answerHash": "43bb82c92908b207a358395b7447d8ff1e3dbe3fa68cd34de68432d92627b010",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 108,
       "logicalCase": "H24-whole-source-heldout-reason",
       "turn": 1,
@@ -556,6 +602,7 @@
     {
       "blindId": "R047",
       "answerHash": "d32772d2a327bdadb55b0c3de454188a8f44e5d007e9bf73a5f3f71fd66d09a3",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 8,
       "logicalCase": "H04-medical-informational",
       "turn": 1,
@@ -568,6 +615,7 @@
     {
       "blindId": "R048",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 96,
       "logicalCase": "H19-current-undated",
       "turn": 1,
@@ -580,6 +628,7 @@
     {
       "blindId": "R049",
       "answerHash": "1b0412b3397ff42138f8ba799be8cfc9b2d0d5f18704d0408758a09da0a669b5",
+      "sourceContextHash": "9788ad376b0133f927b7031464cd4052a6308983b67b7da10a34b98d55d55b8d",
       "traceIndex": 37,
       "logicalCase": "H18-historical-validity",
       "turn": 1,
@@ -592,6 +641,7 @@
     {
       "blindId": "R050",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 79,
       "logicalCase": "H10-assistant-invented-identity",
       "turn": 1,
@@ -604,6 +654,7 @@
     {
       "blindId": "R051",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4c85f2e04dfe4b96eb7512cdd5705867a12cd5f5df0a07a5068bd07429e1d2f9",
       "traceIndex": 83,
       "logicalCase": "H12-source-version-changed",
       "turn": 1,
@@ -616,6 +667,7 @@
     {
       "blindId": "R052",
       "answerHash": "b27f85b2152715666159f0fcf248515e705402412f8b2613a9ca35beb14e505e",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 2,
       "logicalCase": "H02-natural-conversation",
       "turn": 1,
@@ -628,6 +680,7 @@
     {
       "blindId": "R053",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4dfd730bca0314f1b7940de5d2427df3a35e009fec8163b0fa07efc023bc69ec",
       "traceIndex": 92,
       "logicalCase": "H17-superseded-source",
       "turn": 1,
@@ -640,6 +693,7 @@
     {
       "blindId": "R054",
       "answerHash": "2a1f4fdfebe20ba323f75882b1a9dddec4fc0ee946cb5f0f6eac2f204894ddbc",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 43,
       "logicalCase": "H21-subscriber-correction",
       "turn": 2,
@@ -652,6 +706,7 @@
     {
       "blindId": "R055",
       "answerHash": "1b0412b3397ff42138f8ba799be8cfc9b2d0d5f18704d0408758a09da0a669b5",
+      "sourceContextHash": "9788ad376b0133f927b7031464cd4052a6308983b67b7da10a34b98d55d55b8d",
       "traceIndex": 95,
       "logicalCase": "H18-historical-validity",
       "turn": 1,
@@ -664,6 +719,7 @@
     {
       "blindId": "R056",
       "answerHash": "d0dd61266cac7c1123b31f4003e067f58e5d8a4ba236b7b951948205ce2e3ef8",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 13,
       "logicalCase": "H06-investment-informational",
       "turn": 1,
@@ -676,6 +732,7 @@
     {
       "blindId": "R057",
       "answerHash": "8ca7e91f819ea2903caea9fcf7ae5fcad1ad61de5e0bcbeaa5b112bce3776840",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 7,
       "logicalCase": "H03-research-explanation",
       "turn": 1,
@@ -688,6 +745,7 @@
     {
       "blindId": "R058",
       "answerHash": "d0dd61266cac7c1123b31f4003e067f58e5d8a4ba236b7b951948205ce2e3ef8",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 71,
       "logicalCase": "H06-investment-informational",
       "turn": 1,
@@ -700,6 +758,7 @@
     {
       "blindId": "R059",
       "answerHash": "046ce8e7418a3fadd4b5fde5a4a93c8c65629ba644afbaa697f670e69b91780d",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 58,
       "logicalCase": "H01-natural-person-paraphrase",
       "turn": 1,
@@ -712,6 +771,7 @@
     {
       "blindId": "R060",
       "answerHash": "b27f85b2152715666159f0fcf248515e705402412f8b2613a9ca35beb14e505e",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 60,
       "logicalCase": "H02-natural-conversation",
       "turn": 1,
@@ -724,6 +784,7 @@
     {
       "blindId": "R061",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 55,
       "logicalCase": "H26-unseen-biography",
       "turn": 1,
@@ -736,6 +797,7 @@
     {
       "blindId": "R062",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 77,
       "logicalCase": "H09-imported-persona-correction",
       "turn": 1,
@@ -748,6 +810,7 @@
     {
       "blindId": "R063",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7086bc4b7fe0f3f549b68fc7ebf49af58b9e5800cecb246f0bdc48a0c4873fcd",
       "traceIndex": 17,
       "logicalCase": "H08-quoted-is-not-owner",
       "turn": 1,
@@ -760,6 +823,7 @@
     {
       "blindId": "R064",
       "answerHash": "046ce8e7418a3fadd4b5fde5a4a93c8c65629ba644afbaa697f670e69b91780d",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 0,
       "logicalCase": "H01-natural-person-paraphrase",
       "turn": 1,
@@ -772,6 +836,7 @@
     {
       "blindId": "R065",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7364065337c0850170a58faad9c7d00b54f4d3c97deb065ebf3189d2db8e92e2",
       "traceIndex": 48,
       "logicalCase": "H23-hidden-unannotated-claim",
       "turn": 1,
@@ -784,6 +849,7 @@
     {
       "blindId": "R066",
       "answerHash": "d0dd61266cac7c1123b31f4003e067f58e5d8a4ba236b7b951948205ce2e3ef8",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 70,
       "logicalCase": "H06-investment-informational",
       "turn": 1,
@@ -796,6 +862,7 @@
     {
       "blindId": "R067",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 20,
       "logicalCase": "H10-assistant-invented-identity",
       "turn": 1,
@@ -808,6 +875,7 @@
     {
       "blindId": "R068",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7086bc4b7fe0f3f549b68fc7ebf49af58b9e5800cecb246f0bdc48a0c4873fcd",
       "traceIndex": 16,
       "logicalCase": "H08-quoted-is-not-owner",
       "turn": 1,
@@ -820,6 +888,7 @@
     {
       "blindId": "R069",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 38,
       "logicalCase": "H19-current-undated",
       "turn": 1,
@@ -832,6 +901,7 @@
     {
       "blindId": "R070",
       "answerHash": "e1305f89c99eff4806fdc825b08e2f781e6f7e9da5209007f3a2f4b1b8521737",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 32,
       "logicalCase": "H16-conflict-qualified-discussion",
       "turn": 1,
@@ -844,6 +914,7 @@
     {
       "blindId": "R071",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 28,
       "logicalCase": "H14-unknown-negative-belief",
       "turn": 1,
@@ -856,6 +927,7 @@
     {
       "blindId": "R072",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 18,
       "logicalCase": "H09-imported-persona-correction",
       "turn": 1,
@@ -868,6 +940,7 @@
     {
       "blindId": "R073",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 22,
       "logicalCase": "H11-source-revoked",
       "turn": 1,
@@ -880,6 +953,7 @@
     {
       "blindId": "R074",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 19,
       "logicalCase": "H09-imported-persona-correction",
       "turn": 1,
@@ -892,6 +966,7 @@
     {
       "blindId": "R075",
       "answerHash": "1ba6883cc096963cad88d6abf1525b51838ee71a96fd893e938bc9a84ff78aad",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 61,
       "logicalCase": "H02-natural-conversation",
       "turn": 2,
@@ -904,6 +979,7 @@
     {
       "blindId": "R076",
       "answerHash": "1ba6883cc096963cad88d6abf1525b51838ee71a96fd893e938bc9a84ff78aad",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 5,
       "logicalCase": "H02-natural-conversation",
       "turn": 2,
@@ -916,6 +992,7 @@
     {
       "blindId": "R077",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 11,
       "logicalCase": "H05-medical-personalized",
       "turn": 1,
@@ -928,6 +1005,7 @@
     {
       "blindId": "R078",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 15,
       "logicalCase": "H07-investment-order",
       "turn": 1,
@@ -940,6 +1018,7 @@
     {
       "blindId": "R079",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4dfd730bca0314f1b7940de5d2427df3a35e009fec8163b0fa07efc023bc69ec",
       "traceIndex": 34,
       "logicalCase": "H17-superseded-source",
       "turn": 1,
@@ -952,6 +1031,7 @@
     {
       "blindId": "R080",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 68,
       "logicalCase": "H05-medical-personalized",
       "turn": 1,
@@ -964,6 +1044,7 @@
     {
       "blindId": "R081",
       "answerHash": "3e28d4b7c2552ee3a3907a76181f838a4a3f817ec484992e4b582b8ac66a0099",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 110,
       "logicalCase": "H25-heldout-premium",
       "turn": 1,
@@ -976,6 +1057,7 @@
     {
       "blindId": "R082",
       "answerHash": "c7d250d25f851e3269a6178d75503809a5a575e47665f92d6a6ccb4ad7fe902a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 102,
       "logicalCase": "H21-subscriber-correction",
       "turn": 1,
@@ -988,6 +1070,7 @@
     {
       "blindId": "R083",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 72,
       "logicalCase": "H07-investment-order",
       "turn": 1,
@@ -1000,6 +1083,7 @@
     {
       "blindId": "R084",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7364065337c0850170a58faad9c7d00b54f4d3c97deb065ebf3189d2db8e92e2",
       "traceIndex": 107,
       "logicalCase": "H23-hidden-unannotated-claim",
       "turn": 1,
@@ -1012,6 +1096,7 @@
     {
       "blindId": "R085",
       "answerHash": "2a1f4fdfebe20ba323f75882b1a9dddec4fc0ee946cb5f0f6eac2f204894ddbc",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 103,
       "logicalCase": "H21-subscriber-correction",
       "turn": 2,
@@ -1024,6 +1109,7 @@
     {
       "blindId": "R086",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 69,
       "logicalCase": "H05-medical-personalized",
       "turn": 1,
@@ -1036,6 +1122,7 @@
     {
       "blindId": "R087",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 113,
       "logicalCase": "H26-unseen-biography",
       "turn": 1,
@@ -1048,6 +1135,7 @@
     {
       "blindId": "R088",
       "answerHash": "2a1f4fdfebe20ba323f75882b1a9dddec4fc0ee946cb5f0f6eac2f204894ddbc",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 45,
       "logicalCase": "H21-subscriber-correction",
       "turn": 2,
@@ -1060,6 +1148,7 @@
     {
       "blindId": "R089",
       "answerHash": "5cc56cf5926ad7fa79396a0176c06bbcb61261edfe9d9668707787b92500b238",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 27,
       "logicalCase": "H13-qualified-unknown",
       "turn": 1,
@@ -1072,6 +1161,7 @@
     {
       "blindId": "R090",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 89,
       "logicalCase": "H15-conflict-confident-selection",
       "turn": 1,
@@ -1084,6 +1174,7 @@
     {
       "blindId": "R091",
       "answerHash": "d32772d2a327bdadb55b0c3de454188a8f44e5d007e9bf73a5f3f71fd66d09a3",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 66,
       "logicalCase": "H04-medical-informational",
       "turn": 1,
@@ -1096,6 +1187,7 @@
     {
       "blindId": "R092",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 97,
       "logicalCase": "H19-current-undated",
       "turn": 1,
@@ -1108,6 +1200,7 @@
     {
       "blindId": "R093",
       "answerHash": "43bb82c92908b207a358395b7447d8ff1e3dbe3fa68cd34de68432d92627b010",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 51,
       "logicalCase": "H24-whole-source-heldout-reason",
       "turn": 1,
@@ -1120,6 +1213,7 @@
     {
       "blindId": "R094",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7364065337c0850170a58faad9c7d00b54f4d3c97deb065ebf3189d2db8e92e2",
       "traceIndex": 49,
       "logicalCase": "H23-hidden-unannotated-claim",
       "turn": 1,
@@ -1132,6 +1226,7 @@
     {
       "blindId": "R095",
       "answerHash": "5cc56cf5926ad7fa79396a0176c06bbcb61261edfe9d9668707787b92500b238",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 85,
       "logicalCase": "H13-qualified-unknown",
       "turn": 1,
@@ -1144,6 +1239,7 @@
     {
       "blindId": "R096",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 54,
       "logicalCase": "H26-unseen-biography",
       "turn": 1,
@@ -1156,6 +1252,7 @@
     {
       "blindId": "R097",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "4dfd730bca0314f1b7940de5d2427df3a35e009fec8163b0fa07efc023bc69ec",
       "traceIndex": 93,
       "logicalCase": "H17-superseded-source",
       "turn": 1,
@@ -1168,6 +1265,7 @@
     {
       "blindId": "R098",
       "answerHash": "c7d250d25f851e3269a6178d75503809a5a575e47665f92d6a6ccb4ad7fe902a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 42,
       "logicalCase": "H21-subscriber-correction",
       "turn": 1,
@@ -1180,6 +1278,7 @@
     {
       "blindId": "R099",
       "answerHash": "1b0412b3397ff42138f8ba799be8cfc9b2d0d5f18704d0408758a09da0a669b5",
+      "sourceContextHash": "9788ad376b0133f927b7031464cd4052a6308983b67b7da10a34b98d55d55b8d",
       "traceIndex": 94,
       "logicalCase": "H18-historical-validity",
       "turn": 1,
@@ -1192,6 +1291,7 @@
     {
       "blindId": "R100",
       "answerHash": "d32772d2a327bdadb55b0c3de454188a8f44e5d007e9bf73a5f3f71fd66d09a3",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 67,
       "logicalCase": "H04-medical-informational",
       "turn": 1,
@@ -1204,6 +1304,7 @@
     {
       "blindId": "R101",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 21,
       "logicalCase": "H10-assistant-invented-identity",
       "turn": 1,
@@ -1216,6 +1317,7 @@
     {
       "blindId": "R102",
       "answerHash": "c7d250d25f851e3269a6178d75503809a5a575e47665f92d6a6ccb4ad7fe902a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 100,
       "logicalCase": "H21-subscriber-correction",
       "turn": 1,
@@ -1228,6 +1330,7 @@
     {
       "blindId": "R103",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 73,
       "logicalCase": "H07-investment-order",
       "turn": 1,
@@ -1240,6 +1343,7 @@
     {
       "blindId": "R104",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 31,
       "logicalCase": "H15-conflict-confident-selection",
       "turn": 1,
@@ -1252,6 +1356,7 @@
     {
       "blindId": "R105",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 29,
       "logicalCase": "H14-unknown-negative-belief",
       "turn": 1,
@@ -1264,6 +1369,7 @@
     {
       "blindId": "R106",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "7086bc4b7fe0f3f549b68fc7ebf49af58b9e5800cecb246f0bdc48a0c4873fcd",
       "traceIndex": 75,
       "logicalCase": "H08-quoted-is-not-owner",
       "turn": 1,
@@ -1276,6 +1382,7 @@
     {
       "blindId": "R107",
       "answerHash": "5cc56cf5926ad7fa79396a0176c06bbcb61261edfe9d9668707787b92500b238",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 26,
       "logicalCase": "H13-qualified-unknown",
       "turn": 1,
@@ -1288,6 +1395,7 @@
     {
       "blindId": "R108",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 105,
       "logicalCase": "H22-category-laundering",
       "turn": 1,
@@ -1300,6 +1408,7 @@
     {
       "blindId": "R109",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "2ca1e1f351f433eefaa84d520b8f8a769c30914e804214fe45cc073b1b0faef0",
       "traceIndex": 98,
       "logicalCase": "H20-change-after-judgment",
       "turn": 1,
@@ -1312,6 +1421,7 @@
     {
       "blindId": "R110",
       "answerHash": "43bb82c92908b207a358395b7447d8ff1e3dbe3fa68cd34de68432d92627b010",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 109,
       "logicalCase": "H24-whole-source-heldout-reason",
       "turn": 1,
@@ -1324,6 +1434,7 @@
     {
       "blindId": "R111",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 112,
       "logicalCase": "H26-unseen-biography",
       "turn": 1,
@@ -1336,6 +1447,7 @@
     {
       "blindId": "R112",
       "answerHash": "a930be590f09b8a7a2d8ebb7d10f42b095cb899d6e0021409506b84ef7b0c2f0",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 115,
       "logicalCase": "H27-constraint-correction",
       "turn": 1,
@@ -1348,6 +1460,7 @@
     {
       "blindId": "R113",
       "answerHash": "e1305f89c99eff4806fdc825b08e2f781e6f7e9da5209007f3a2f4b1b8521737",
+      "sourceContextHash": "e54e0b2cbd5af597987ecfa469e62e8d8cccbe4cd084a66ea2dac9ecc22d23bb",
       "traceIndex": 33,
       "logicalCase": "H16-conflict-qualified-discussion",
       "turn": 1,
@@ -1360,6 +1473,7 @@
     {
       "blindId": "R114",
       "answerHash": "5cc56cf5926ad7fa79396a0176c06bbcb61261edfe9d9668707787b92500b238",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 84,
       "logicalCase": "H13-qualified-unknown",
       "turn": 1,
@@ -1372,6 +1486,7 @@
     {
       "blindId": "R115",
       "answerHash": "005b2b58363ff8df0eb15fd953a2936fac6cae374e4d81ed5a93bb2b8f1e1d2a",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 14,
       "logicalCase": "H07-investment-order",
       "turn": 1,
@@ -1384,6 +1499,7 @@
     {
       "blindId": "R116",
       "answerHash": "d32772d2a327bdadb55b0c3de454188a8f44e5d007e9bf73a5f3f71fd66d09a3",
+      "sourceContextHash": "1fd57e8e8df2c8509ca3cc9b6c811c1386cc40571f9128bef53b7eab6c8f0e31",
       "traceIndex": 9,
       "logicalCase": "H04-medical-informational",
       "turn": 1,

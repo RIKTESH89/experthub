@@ -1,6 +1,6 @@
 # Separate rating dimensions
 
-Use1–5 or `not-assessable` with a reason. Every numeric judgment needs a source/turn/UI observation and a short rationale. These are proposed anchors, not user-accepted acceptance thresholds. Scores are not interchangeable; a fluent unsupported person claim cannot pass faithfulness.
+Use 1–5 or `not-assessable` with a reason. Every numeric judgment needs a source/turn/UI observation and a short rationale. These are proposed anchors, not user-accepted acceptance thresholds. Scores are not interchangeable; a fluent unsupported person claim cannot pass faithfulness.
 
 | Dimension | 1 | 3 | 5 | Not-assessable boundary |
 | --- | --- | --- | --- | --- |

@@ -11,7 +11,16 @@
     "answer-hash",
     "duplicate-id",
     "label-leakage",
-    "invented-rating"
+    "invented-rating",
+    "invented-style-text",
+    "style-author-mismatch",
+    "style-speaker-mismatch",
+    "style-audience-mismatch",
+    "source-text-mutation",
+    "style-text-source-binding",
+    "style-author-source-binding",
+    "style-speaker-source-binding",
+    "style-audience-source-binding"
   ],
   "humanReview": "NOT_RUN",
   "providerCalls": 0

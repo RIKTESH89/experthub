@@ -191,6 +191,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -334,6 +335,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -609,6 +611,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -848,6 +851,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -855,6 +859,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1007,6 +1012,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1223,6 +1229,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1366,6 +1373,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1674,6 +1682,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1817,6 +1826,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -1960,6 +1970,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2103,6 +2114,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2305,6 +2317,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2448,6 +2461,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2591,6 +2605,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2734,6 +2749,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -2877,6 +2893,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -3116,6 +3133,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -3123,6 +3141,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -3266,6 +3285,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -3418,6 +3438,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -3657,6 +3678,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -3664,6 +3686,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4038,6 +4061,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -4045,6 +4069,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4188,6 +4213,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4390,6 +4416,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4533,6 +4560,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4685,6 +4713,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4828,6 +4857,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -4971,6 +5001,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5123,6 +5154,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5407,6 +5439,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5550,6 +5583,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5693,6 +5727,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5845,6 +5880,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -5934,6 +5970,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -6077,6 +6114,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -6459,6 +6497,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -6602,6 +6641,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -6745,6 +6785,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -6994,6 +7035,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -7142,6 +7184,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -7358,6 +7401,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -7749,6 +7793,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -7998,6 +8043,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8141,6 +8187,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8284,6 +8331,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8427,6 +8475,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8570,6 +8619,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8713,6 +8763,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8856,6 +8907,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -8999,6 +9051,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -9277,6 +9330,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -9366,6 +9420,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -9509,6 +9564,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -9657,6 +9713,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -9935,6 +9992,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10174,6 +10232,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -10181,6 +10240,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10324,6 +10384,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10467,6 +10528,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10669,6 +10731,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10821,6 +10884,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -10973,6 +11037,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -11116,6 +11181,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -11259,6 +11325,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -11641,6 +11708,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -11784,6 +11852,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -11927,6 +11996,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12070,6 +12140,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12159,6 +12230,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12311,6 +12383,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12454,6 +12527,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12597,6 +12671,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12749,6 +12824,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -12892,6 +12968,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13131,6 +13208,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -13138,6 +13216,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13281,6 +13360,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13424,6 +13504,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13567,6 +13648,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13656,6 +13738,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13799,6 +13882,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -13942,6 +14026,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -14324,6 +14409,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -14573,6 +14659,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -14716,6 +14803,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -14864,6 +14952,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15007,6 +15096,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15150,6 +15240,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15389,6 +15480,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -15396,6 +15488,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15539,6 +15632,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15817,6 +15911,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -15960,6 +16055,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16162,6 +16258,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16305,6 +16402,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16457,6 +16555,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16696,6 +16795,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           },
@@ -16703,6 +16803,7 @@
             "spanId": "span-b",
             "text": "I prefer exploratory analysis.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16846,6 +16947,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -16989,6 +17091,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
@@ -17132,6 +17235,7 @@
             "spanId": "span-a",
             "text": "I prefer preregistered protocols.",
             "authorId": "expert-synthetic",
+            "speakerId": "expert-synthetic",
             "speakerRole": "author",
             "audience": "public"
           }
