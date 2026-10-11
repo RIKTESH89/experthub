@@ -2,7 +2,7 @@ import type { RetrievalScope } from "@/lib/knowledge/access";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import type { EvidenceTrace } from "@/lib/graph/evidence-store";
 import type { TemporalRetrievalResult, TemporalStanceTrace } from "@/lib/graph/temporal/retriever";
-import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
+import { TEMPORAL_READ_VERSION, TEMPORAL_SELECTION_VERSION } from "@/lib/graph/temporal/read-policy";
 import { READ_CONTRACT_VERSION, RETRIEVAL_BUDGET, terms, type RetrievalPlan } from "./intent";
 export interface EvidenceBundle {
   version: typeof READ_CONTRACT_VERSION; plan: RetrievalPlan; sources: RetrievalResult[];
@@ -13,10 +13,11 @@ export interface EvidenceBundle {
 export const tokenUpperBound = (text: string) => Buffer.byteLength(text, "utf8");
 /** Pure selection over live-authorized store output; never accepts a legacy graph description. */
 export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunks: RetrievalResult[], assertions: EvidenceTrace[], timeline: TemporalRetrievalResult): EvidenceBundle {
-  const activeRead = timeline.readVersion === TEMPORAL_READ_VERSION;
+  const activeSelection = timeline.readVersion === TEMPORAL_SELECTION_VERSION;
+  const compactReplay = activeSelection || timeline.readVersion === TEMPORAL_READ_VERSION;
   // Query expansion remains capped at 24 terms; source matching must inspect the
   // complete bounded evidence row. Preserve frozen v1 ranking/replay behavior.
-  const sourceTerms = (text: string) => terms(text, activeRead ? Infinity : 24);
+  const sourceTerms = (text: string) => terms(text, activeSelection ? Infinity : 24);
   const overlap = (text: string) => { const words = new Set(sourceTerms(text)); return plan.terms.filter(t => words.has(t)).length; };
   const allowed = new Set(scope.allowedVectorIds);
   const safeChunks = chunks.filter(c => c.metadata.expertProfileId === scope.expertProfileId && typeof c.metadata.vectorId === "string" && allowed.has(c.metadata.vectorId)).slice(0, RETRIEVAL_BUDGET.candidates);
@@ -24,7 +25,7 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   const visible = (row: { chunkIds: string[] }) => row.chunkIds.some(id => eligible.has(id));
   const rows = [...timeline.stances, ...timeline.supersededStances].filter(visible).slice(0, RETRIEVAL_BUDGET.candidates);
   const supportScore = (row: {chunkIds: string[]}) => Math.max(0, ...safeChunks.filter(c=>row.chunkIds.includes(c.metadata.vectorId as string)).map(c=>Number.isFinite(c.score)?Math.max(0,Math.min(1,c.score)):0));
-  const lexical = (s: TemporalStanceTrace) => overlap([s.domain,s.context,s.action,s.situation,s.constraints,s.exceptions,...(activeRead ? [s.documentedReasons,s.alternatives,s.tradeoffs] : [])].filter(Boolean).join(" "));
+  const lexical = (s: TemporalStanceTrace) => overlap([s.domain,s.context,s.action,s.situation,s.constraints,s.exceptions,...(activeSelection ? [s.documentedReasons,s.alternatives,s.tradeoffs] : [])].filter(Boolean).join(" "));
   const seedIds = new Set(rows.filter(s => lexical(s) > 0).map(s => s.id));
   const related = new Set<string>();
   for (const relation of timeline.relations) {
@@ -44,15 +45,21 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   // Keep a direct documented counterposition beside its relevance-ranked seed,
   // before repeated supporting spans consume the context. This only reorders
   // already authorized one-hop candidates; it never expands the candidate set.
-  if (activeRead) {
+  if (activeSelection) {
     const pending = new Map(candidates.map(c => [c.key, c]));
     const ordered: Candidate[] = [];
     for (const seed of candidates) {
       if (!pending.delete(seed.key)) continue;
       ordered.push(seed);
       if (seed.type !== "stance") continue;
-      const neighbors = new Set(timeline.relations.filter(r => r.from === seed.key || r.to === seed.key).flatMap(r => [r.from, r.to]));
-      const counterpart = candidates.find(c => c.type === "stance" && pending.has(c.key) && neighbors.has(c.key));
+      const neighbors = new Map<string, number>();
+      for (const relation of timeline.relations.filter(r => r.from === seed.key || r.to === seed.key)) {
+        const id = relation.from === seed.key ? relation.to : relation.from;
+        const priority = relation.type === "contradiction" ? 0 : relation.type === "supersedes" ? 1 : 2;
+        neighbors.set(id, Math.min(priority, neighbors.get(id) ?? Infinity));
+      }
+      const counterpart = candidates.filter(c => c.type === "stance" && pending.has(c.key) && neighbors.has(c.key))
+        .sort((a, b) => neighbors.get(a.key)! - neighbors.get(b.key)! || b.score - a.score || a.key.localeCompare(b.key))[0];
       if (counterpart) { pending.delete(counterpart.key); ordered.push(counterpart); }
     }
     candidates.splice(0, candidates.length, ...ordered);
@@ -68,7 +75,7 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
     const row: Record<string,unknown> = {...sourceRow};
     // Compaction is part of the new read policy only. Retained v1 serialization and
     // its budget selection must remain byte-for-byte unchanged, including near the cap.
-    if (activeRead) {
+    if (compactReplay) {
       // Retained storage identities stay in typed traces; prompt carries replay basis/version.
       if ("storedStanceId" in row) delete row.storedStanceId;
       if ("storedExtractorVersion" in row) delete row.storedExtractorVersion;
@@ -98,6 +105,8 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   const temporalTrace = {...timeline,stances:timeline.stances.filter(s=>stanceIds.has(s.id)),supersededStances:timeline.supersededStances.filter(s=>stanceIds.has(s.id)),relations};
   const sources = safeChunks.filter(c=>selected.some(s=>s.row.chunkIds.includes(c.metadata.vectorId as string))).map(c=>({...c,content:selected.filter(s=>s.row.chunkIds.includes(c.metadata.vectorId as string)).map(s=>s.row.text).join("\n"),metadata:{...c.metadata,evidenceTrace:evidenceTrace.filter(s=>s.chunkIds.includes(c.metadata.vectorId as string)),temporalTrace:{...temporalTrace,stances:temporalTrace.stances.filter(s=>s.chunkIds.includes(c.metadata.vectorId as string)),supersededStances:temporalTrace.supersededStances.filter(s=>s.chunkIds.includes(c.metadata.vectorId as string)),relations:relations.filter(r=>r.evidenceSpanIds.every(id=>selectedSpans.has(id)))}}}));
   const gaps = !selected.length ? [plan.intent === "conversation" ? "No evidence needed for this conversational query" : "No relevant source-backed evidence within the authorized candidate budget"] : [];
+  if (activeSelection && timeline.relations.some(r => rows.some(s => s.id === r.from) && rows.some(s => s.id === r.to) && stanceIds.has(r.from) !== stanceIds.has(r.to)))
+    gaps.push("Relevant conflicting or superseding evidence is outside selected context; do not present the selected stance as uncontested");
   if (plan.temporal.mode === "as-of" && evidenceTrace.length) gaps.push("Assertion valid-time is unavailable; do not infer historical validity from ingestion or publication");
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.constraints)) gaps.push("Documented constraints unavailable in selected evidence");
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.exceptions)) gaps.push("Documented exceptions unavailable in selected evidence");

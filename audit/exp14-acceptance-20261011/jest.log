@@ -1,18 +1,19 @@
+PASS __tests__/exp14/native-fixture-safety.test.ts
 PASS __tests__/exp14/acceptance-selection.test.ts
 PASS __tests__/exp16/rating-retrieval-compat.test.ts
-PASS __tests__/exp15/revalidation-citations.test.ts
 PASS __tests__/exp14/active-projection.test.ts
+PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp14/negative-projection.test.ts
 PASS __tests__/exp12/evidence-extractor.test.ts
 PASS __tests__/exp12/backfill-route.test.ts
-PASS __tests__/exp14/service.test.ts
+PASS __tests__/exp15/revalidation-citations.test.ts
 PASS __tests__/exp14/retrieval.test.ts
-PASS __tests__/exp14/negative-projection.test.ts
 PASS __tests__/exp13/temporal.test.ts
 PASS __tests__/exp14/v1-budget-compatibility.test.ts
 
-Test Suites: 11 passed, 11 total
-Tests:       105 passed, 105 total
+Test Suites: 12 passed, 12 total
+Tests:       115 passed, 115 total
 Snapshots:   0 total
-Time:        0.503 s, estimated 1 s
+Time:        0.447 s, estimated 1 s
 Ran all test suites matching /__tests__\/exp14|__tests__\/exp12|__tests__\/exp13|__tests__\/exp15\/revalidation-citations.test.ts|__tests__\/exp16\/rating-retrieval-compat.test.ts/i.
 Test results written to: audit/exp14-acceptance-20261011/jest.json

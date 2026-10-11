@@ -1,11 +1,12 @@
 import { assembleBundle } from "@/lib/retrieval/bundle";
 import { planQuestion, RETRIEVAL_BUDGET } from "@/lib/retrieval/intent";
 import { resolveTimeline } from "@/lib/graph/temporal/timeline";
-import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
+import { TEMPORAL_READ_VERSION, TEMPORAL_SELECTION_VERSION } from "@/lib/graph/temporal/read-policy";
 import { TEMPORAL_EXTRACTOR_VERSION } from "@/lib/graph/temporal/extractor";
 import type { TemporalStanceTrace } from "@/lib/graph/temporal/retriever";
 import type { EvidenceTrace } from "@/lib/graph/evidence-store";
 import { writeFileSync } from "fs";
+import { assembleBundle as frozenV2Bundle } from "./fixtures/frozen-v2-bundle";
 
 const at = new Date("2026-10-11T00:00:00Z");
 const stance = (id: string, extra: Partial<TemporalStanceTrace> = {}): TemporalStanceTrace => ({
@@ -18,7 +19,7 @@ function bundle(question: string, rows: TemporalStanceTrace[], assertions: Evide
  const scope={expertProfileId:"tenant",namespace:"tenant-ns",isOwner:false,allowedVectorIds:allowed||ids};
  const chunks=ids.map(id=>({content:"",score:0.9,metadata:{expertProfileId:"tenant",vectorId:id}}));
  const plan=planQuestion(question,{mode:"current",now:at});
- return assembleBundle(scope,plan,chunks,assertions,{...resolveTimeline(rows,plan.temporal),readVersion:active?TEMPORAL_READ_VERSION:TEMPORAL_EXTRACTOR_VERSION});
+ return assembleBundle(scope,plan,chunks,assertions,{...resolveTimeline(rows,plan.temporal),readVersion:active?TEMPORAL_SELECTION_VERSION:TEMPORAL_READ_VERSION});
 }
 
 test("rare exact anchors after 24 source words survive without expanding the query budget",()=>{
@@ -54,7 +55,7 @@ test("same-budget saturation retains a direct conflict before repeated supportin
  // Synthetic required-position recall is separate from human precision/quality.
  const samples=(active:boolean)=>Array.from({length:50},()=>{const start=performance.now();bundle("Should I choose ArrowBus?",rows,[],active);return performance.now()-start;}).sort((a,b)=>a-b);
  const baselineTimes=samples(false),candidateTimes=samples(true);
- writeFileSync("audit/exp14-acceptance-20261011/saturation-comparison.json",JSON.stringify({method:"Hand-authored adversarial support saturation, active v2 versus retained frozen v1 selection, equal 4096-byte budget. Fifty local pure-bundle CPU measurements per variant; excludes SQL, embeddings, network/model latency and cost. No human quality judgment; this is not the Phase0 baseline or general held-out precision/recall.",question:"Should I choose ArrowBus?",requiredPositionIds:["a0","z"],baseline:{selected:old.temporalTrace.stances.map(s=>s.id),requiredPositionRecall:old.temporalTrace.stances.filter(s=>["a0","z"].includes(s.id)).length/2,medianLocalMs:baselineTimes[25],trace:old.trace},candidate:{selected:current.temporalTrace.stances.map(s=>s.id),requiredPositionRecall:current.temporalTrace.stances.filter(s=>["a0","z"].includes(s.id)).length/2,medianLocalMs:candidateTimes[25],trace:current.trace}},null,2)+"\n");
+ writeFileSync("audit/exp14-acceptance-20261011/saturation-comparison.json",JSON.stringify({method:"Hand-authored adversarial support saturation, active v3 versus retained frozen v2 selection, equal 4096-byte budget. Fifty local pure-bundle CPU measurements per variant; excludes SQL, embeddings, network/model latency and cost. No human quality judgment; this is not the Phase0 baseline or general held-out precision/recall.",question:"Should I choose ArrowBus?",requiredPositionIds:["a0","z"],baseline:{selected:old.temporalTrace.stances.map(s=>s.id),requiredPositionRecall:old.temporalTrace.stances.filter(s=>["a0","z"].includes(s.id)).length/2,medianLocalMs:baselineTimes[25],trace:old.trace},candidate:{selected:current.temporalTrace.stances.map(s=>s.id),requiredPositionRecall:current.temporalTrace.stances.filter(s=>["a0","z"].includes(s.id)).length/2,medianLocalMs:candidateTimes[25],trace:current.trace}},null,2)+"\n");
 });
 
 test("counterposition prioritization cannot restore a revoked neighbor or citation",()=>{
@@ -66,10 +67,42 @@ test("counterposition prioritization cannot restore a revoked neighbor or citati
  expect(bundle("Should I choose ArrowBus?",[positive,negative],[],true,[]).sources).toEqual([]);
 });
 
+test("dense mixed relations prioritize contradiction over a higher scoring alternative",()=>{
+ const seed=stance("a",{action:"ArrowBus small teams",text:"I prefer ArrowBus small teams.",documentedReasons:"bounded operations"});
+ const alternative=stance("b",{action:"ArrowBus small teams variant",text:"I prefer ArrowBus small teams variant. "+"alternative detail ".repeat(28)});
+ const contrary=stance("z",{action:seed.action,polarity:"negative",text:"I do not prefer ArrowBus small teams.",documentedReasons:null,situation:null});
+ const r=bundle("Should I choose ArrowBus for small teams?",[seed,alternative,contrary]);
+ expect(r.temporalTrace.stances.map(s=>s.id)).toContain("z");
+ expect(r.temporalTrace.relations.some(r=>r.type==="contradiction")).toBe(true);
+});
+
+test("oversized direct counterevidence omission produces a specific conflict gap",()=>{
+ const seed=stance("a"),contrary=stance("z",{polarity:"negative",text:"I do not prefer ArrowBus.",documentedReasons:"detail ".repeat(800)});
+ const r=bundle("Should I choose ArrowBus?",[seed,contrary]);
+ expect(r.temporalTrace.stances.map(s=>s.id)).toEqual(["a"]);expect(r.temporalTrace.relations).toEqual([]);
+ expect(r.gaps).toContain("Relevant conflicting or superseding evidence is outside selected context; do not present the selected stance as uncontested");
+ expect(r.trace.truncated).toBe(true);expect(r.trace.tokenUpperBound).toBeLessThanOrEqual(RETRIEVAL_BUDGET.tokens);
+});
+
 test("new ranking remains deterministic and cannot invent missing-topic evidence",()=>{
  const rows=[stance("b"),stance("a",{text:"A separately documented ArrowBus preference."}),stance("n",{polarity:"negative",text:"I do not prefer ArrowBus."})];
  const first=bundle("Should I choose ArrowBus?",rows),second=bundle("Should I choose ArrowBus?",[...rows].reverse());
  expect(first.prompt).toBe(second.prompt);expect(first.temporalTrace).toEqual(second.temporalTrace);expect(first.trace).toEqual(second.trace);
  expect(first.sources.map(s=>s.metadata.vectorId).sort()).toEqual(second.sources.map(s=>s.metadata.vectorId).sort());
  expect(bundle("What is the stance on unopened StarMoss?",rows)).toMatchObject({sources:[],trace:{selected:0}});
+});
+
+test("pinned v2 bundles remain byte-equivalent to the frozen delivered selector across context budgets",()=>{
+ let comparisons=0;
+ for(const words of [0,24,25,32])for(const reasonLength of [0,80,300,700])for(const question of ["What is NacreQueue?","Should I choose ArrowBus?","Compare ArrowBus versus NacreQueue"]){
+  const prefix=filler.split(" ").slice(0,words).join(" ");
+  const rows=[stance("a",{documentedReasons:"detail ".repeat(reasonLength),text:"I prefer ArrowBus. "+prefix}),stance("z",{polarity:"negative",text:"I do not prefer ArrowBus."})];
+  const assertions=[assertion("long",prefix+" NacreQueue is documented.")];
+  const ids=[...rows,...assertions].flatMap(r=>r.chunkIds),scope={expertProfileId:"tenant",namespace:"tenant-ns",isOwner:false,allowedVectorIds:ids};
+  const chunks=ids.map(vectorId=>({content:"",score:0.9,metadata:{expertProfileId:"tenant",vectorId}}));
+  const plan=planQuestion(question,{mode:"current",now:at}),timeline={...resolveTimeline(rows,plan.temporal),readVersion:TEMPORAL_READ_VERSION} as const;
+  expect(JSON.stringify(assembleBundle(scope,plan,chunks,assertions,timeline))).toBe(JSON.stringify(frozenV2Bundle(scope,plan,chunks,assertions,timeline)));
+  comparisons++;
+ }
+ expect(comparisons).toBe(48);
 });

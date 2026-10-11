@@ -6,7 +6,7 @@ import {authorizedEvidenceSpans} from "@/lib/graph/evidence-store";
 import {resolveRetrievalScope} from "@/lib/knowledge/access";
 import {retrieveIntentEvidence} from "@/lib/retrieval/retrieve";
 import {TEMPORAL_EXTRACTOR_VERSION} from "@/lib/graph/temporal/extractor";
-import {TEMPORAL_READ_VERSION} from "@/lib/graph/temporal/read-policy";
+import {ACTIVE_TEMPORAL_READ_VERSION} from "@/lib/graph/temporal/read-policy";
 import {RETRIEVAL_BUDGET} from "@/lib/retrieval/intent";
 import {syntheticPaidPeriod} from "../../__tests__/helpers/paid-period";
 import {writeFileSync} from "fs";
@@ -20,8 +20,9 @@ beforeAll(async()=>{
  writeFileSync("audit/launch-integration/exp14-native/database-metadata.json",JSON.stringify(facts,null,2)+"\n");
 });
 beforeEach(async()=>{
- const check=await prisma.$queryRaw<{db:string;port:number;user:string}[]>`SELECT current_database() AS db,inet_server_port() AS port,current_user AS "user"`;
- if(check[0].db!=="integration_exp14"||check[0].port!==55447||check[0].user!=="integration_synthetic")throw Error("Unsafe database");
+ const check=await prisma.$queryRaw<{db:string;port:number|null;user:string}[]>`SELECT current_database() AS db,inet_server_port() AS port,current_user AS "user"`;
+ const safePort=process.env.EXP14_OWNED_SYNTHETIC_CLUSTER==='1'?check[0].port===null:check[0].port===55447;
+ if(check[0].db!=="integration_exp14"||!safePort||check[0].user!=="integration_synthetic")throw Error("Unsafe database");
  await prisma.$executeRawUnsafe('TRUNCATE "KnowledgeLifecycleJob", "VectorChunk", "User" CASCADE');
  await prisma.user.create({data:{id:owner,email:"exp14-owner@example.invalid",role:"EXPERT",expertProfile:{create:{id:expert,displayName:"Synthetic held-out expert",specialty:[],vectorNamespace:namespace}}}});
  embed.mockReset().mockResolvedValue(Array.from({length:1536},(_,i)=>i===0?1:0));global.fetch=async()=>{throw Error("External calls forbidden");};
@@ -80,7 +81,7 @@ test("active read replay repairs negative fields while retained v1 remains uncha
  const raw=await prisma.temporalStance.findFirstOrThrow({where:{polarity:"negative"}}),span=await prisma.evidenceSpan.findUniqueOrThrow({where:{id:raw.spanId}}),decision=await prisma.evidenceDecisionCase.findUnique({where:{stanceId:raw.id}});
  expect(span.text).toBe(negative);expect(decision).toBeNull();
  const r=await read("Should I choose JetStream for small teams?");const n=r.temporalTrace.stances.find(s=>s.polarity==="negative")!;
- expect(r.temporalTrace.readVersion).toBe(TEMPORAL_READ_VERSION);
+ expect(r.temporalTrace.readVersion).toBe(ACTIVE_TEMPORAL_READ_VERSION);
  expect(n).toMatchObject({constraints:"two engineers",documentedReasons:"maintenance",exceptions:"audited workloads",polarity:"negative",projectionBasis:"authorized-span-replay",storedStanceId:raw.id});
  expect(r.temporalTrace.relations[0]).toMatchObject({type:"contradiction",kind:"inferred"});
  const retained=await retrieveIntentEvidence({...await scope(),temporalReadVersion:TEMPORAL_EXTRACTOR_VERSION},"Should I choose JetStream for small teams?");

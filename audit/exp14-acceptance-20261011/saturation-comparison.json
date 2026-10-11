@@ -1,5 +1,5 @@
 {
-  "method": "Hand-authored adversarial support saturation, active v2 versus retained frozen v1 selection, equal 4096-byte budget. Fifty local pure-bundle CPU measurements per variant; excludes SQL, embeddings, network/model latency and cost. No human quality judgment; this is not the Phase0 baseline or general held-out precision/recall.",
+  "method": "Hand-authored adversarial support saturation, active v3 versus retained frozen v2 selection, equal 4096-byte budget. Fifty local pure-bundle CPU measurements per variant; excludes SQL, embeddings, network/model latency and cost. No human quality judgment; this is not the Phase0 baseline or general held-out precision/recall.",
   "question": "Should I choose ArrowBus?",
   "requiredPositionIds": [
     "a0",
@@ -11,11 +11,11 @@
       "a1"
     ],
     "requiredPositionRecall": 0.5,
-    "medianLocalMs": 0.23950000000002092,
+    "medianLocalMs": 0.23316700000009405,
     "trace": {
       "candidates": 9,
       "selected": 2,
-      "tokenUpperBound": 2566,
+      "tokenUpperBound": 2462,
       "hops": 1,
       "truncated": true,
       "retrievalMs": 0,
@@ -28,11 +28,11 @@
       "z"
     ],
     "requiredPositionRecall": 1,
-    "medianLocalMs": 0.283333999999968,
+    "medianLocalMs": 0.23595799999998235,
     "trace": {
       "candidates": 9,
       "selected": 2,
-      "tokenUpperBound": 2430,
+      "tokenUpperBound": 2568,
       "hops": 1,
       "truncated": true,
       "retrievalMs": 0,

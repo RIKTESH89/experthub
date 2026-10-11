@@ -11,7 +11,7 @@ import { retrieveTemporalEvidence } from "@/lib/graph/temporal/retriever";
 import { retrieveLocalEvaluationEvidence } from "@/lib/ai/dialogue/structured/local-retrieval";
 import { revalidateDialogueEvidence } from "@/lib/ai/dialogue/revalidate";
 import { replayNegativePreference } from "@/lib/graph/temporal/read-projection";
-import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
+import { TEMPORAL_READ_VERSION, ACTIVE_TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 import { TEMPORAL_EXTRACTOR_VERSION as V1 } from "@/lib/graph/temporal/extractor";
 import { hashEvidence } from "@/lib/graph/evidence-extractor";
 import { writeFileSync } from "fs";
@@ -63,7 +63,7 @@ beforeEach(async()=>{
 test("active default retrieval closes null fields from default v1 publication without opt-in or writes",async()=>{
  const retained=JSON.stringify(tables);
  const r=await retrieveIntentEvidence(scope,"Should I choose JetStream?",{mode:"current",now:new Date("2026-10-07")});
- expect(r.temporalTrace.readVersion).toBe(TEMPORAL_READ_VERSION);
+ expect(r.temporalTrace.readVersion).toBe(ACTIVE_TEMPORAL_READ_VERSION);
  expect(r.temporalTrace.stances).toHaveLength(2);
  const n=r.temporalTrace.stances.find(s=>s.polarity==="negative")!;
  expect(n).toMatchObject({constraints:"two engineers",documentedReasons:"maintenance",exceptions:"audited workloads",chosenAction:"JetStream",polarity:"negative",start:7,storedExtractorVersion:V1,projectionBasis:"authorized-span-replay"});
