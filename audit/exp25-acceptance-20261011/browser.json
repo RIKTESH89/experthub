@@ -1,0 +1,44 @@
+{
+  "browser": "154.0.8037.98",
+  "mode": "native Chrome real component with intercepted synthetic HTTP",
+  "realOAuth": "NOT RUN",
+  "databasePersistence": "NOT RUN",
+  "externalRequestsAllowed": 0,
+  "results": [
+    {
+      "caseId": "gated",
+      "outcome": "PASS",
+      "width": 390,
+      "consoleErrors": [],
+      "activationWrites": 0
+    },
+    {
+      "caseId": "stale",
+      "outcome": "PASS",
+      "width": 390,
+      "consoleErrors": [],
+      "activationWrites": 1
+    },
+    {
+      "caseId": "retry",
+      "outcome": "PASS",
+      "width": 390,
+      "consoleErrors": [],
+      "activationWrites": 2
+    },
+    {
+      "caseId": "revoked",
+      "outcome": "PASS",
+      "width": 390,
+      "consoleErrors": [],
+      "activationWrites": 1
+    },
+    {
+      "caseId": "malformed",
+      "outcome": "PASS",
+      "width": 390,
+      "consoleErrors": [],
+      "activationWrites": 0
+    }
+  ]
+}
