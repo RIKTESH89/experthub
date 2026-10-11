@@ -1,10 +1,11 @@
 {
   "target": "/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-14",
+  "reviewedCommit": "69e4213",
   "temporalSelectionVersion": "literal-temporal-authorized-selection-v3",
   "assertions": {
     "lateRareKeywordSelected": true,
     "v2FrozenLateAnchorControl": true,
-    "contradictionBeforeOtherNeighbor": false,
+    "contradictionBeforeOtherNeighbor": true,
     "oversizedConflictVisible": true,
     "revokedCounterevidenceNotReturned": true
   },
@@ -13,6 +14,11 @@
       "a",
       "b",
       "z"
+    ],
+    "promptOrder": [
+      "a",
+      "z",
+      "b"
     ],
     "relations": [
       {
