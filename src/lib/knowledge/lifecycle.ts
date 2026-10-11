@@ -33,8 +33,8 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
     return;
   }
   const item = await prisma.knowledgeItem.findUnique({where:{id:itemId},include:{expertProfile:true}});
-  if (!item || item.expertProfileId !== expertProfileId || item.sourceVersion !== job.sourceVersion) {
-    await enqueueLifecycleJob({...job,kind:"CLEANUP"});
+  if (!item || item.expertProfileId !== expertProfileId || item.sourceVersion !== job.sourceVersion || item.expertProfile.vectorNamespace !== job.namespace) {
+    await enqueueLifecycleJob({...job,kind:"CLEANUP",namespaceReceiptJobId:job.id});
     return;
   }
   if (item.isIndexed && item.indexedVersion === item.sourceVersion) return;
@@ -73,7 +73,7 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
       return published;
     });
     if (!published.count) {
-      await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds});
+      await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds,namespaceReceiptJobId:job.id});
       return;
     }
     // Durable cleanup is drained independently; serving uses only this manifest.
@@ -83,7 +83,7 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
     await prisma.$transaction(async tx => {
       await lockExpertSourceWrites(tx,expertProfileId);
       await tx.$queryRaw`SELECT "id" FROM "KnowledgeItem" WHERE "id"=${itemId} AND "expertProfileId"=${expertProfileId} FOR UPDATE`;
-      if (stagedVectorIds) await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:stagedVectorIds},tx);
+      if (stagedVectorIds) await enqueueLifecycleJob({kind:"CLEANUP",expertProfileId,itemId,sourceVersion:version,namespace:job.namespace,vectorIds:stagedVectorIds,namespaceReceiptJobId:job.id},tx);
       await tx.knowledgeItem.updateMany({
         where:{id:item.id,expertProfileId,sourceVersion:version,OR:[{indexedVersion:null},{indexedVersion:{not:version}}]},
         data:{isIndexed:false,indexingError:error instanceof Error?error.message:"Indexing failed"},

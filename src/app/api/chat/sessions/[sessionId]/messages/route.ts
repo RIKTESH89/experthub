@@ -9,7 +9,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { runChatEngine } from "@/lib/ai/chat-engine";
-import { checkTrialAccess, incrementTrialUsage } from "@/lib/trial";
+import { checkTrialAccess, incrementTrialUsage, authorizeUsageCounter, UsageAccessChanged } from "@/lib/trial";
 import { extractMemories } from "@/lib/ai/memory-extractor";
 import { chronologicalHistory } from "@/lib/ai/history";
 import { saveMemories } from "@/lib/ai/memory-manager";
@@ -147,43 +147,64 @@ export async function POST(
 
     const { content, enableWebSearch } = validation.data;
 
-    // Save user message
-    await prisma.chatMessage.create({
-      data: {
-        chatSessionId: sessionId,
-        senderId: session.user.id,
-        role: "user",
-        content,
-      },
-    });
-
-    // Increment usage counters
-    if (chatSession.isTrial) {
-      await incrementTrialUsage(session.user.id, chatSession.expertProfileId);
-    } else {
-      // Increment monthly usage for subscribed users
+    // Submitted questions retain the existing charge timing (before generation),
+    // but parent/session authorization, message and no-FK counter commit together.
+    await prisma.$transaction(async tx => {
+      lifecycle.check();
+      const {expert, subscription} = await authorizeUsageCounter(tx, session.user.id, chatSession.expertProfileId, {
+        ownerId: chatSession.expertProfile.userId, namespace: chatSession.expertProfile.vectorNamespace,
+        sessionId, isTrial: chatSession.isTrial, viewerRole: session.user.role,
+      });
+      lifecycle.check();
       const now = new Date();
       const monthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
+      if (chatSession.isTrial) {
+        const usage = await tx.freeTrialUsage.findUnique({where: {userId_expertProfileId: {userId: session.user.id, expertProfileId: expert.id}}});
+        if ((usage?.questionCount ?? 0) >= expert.freeTrialQuestions) throw new UsageAccessChanged("Free trial exhausted");
+      } else if (subscription) {
+        const tier = await tx.expertPricingTier.findUnique({where: {expertProfileId_tier: {expertProfileId: expert.id, tier: subscription.tier}}});
+        if (tier?.monthlyQuestions != null) {
+          const usage = await tx.monthlyTwinUsage.findUnique({where: {subscriberId_expertProfileId_month: {subscriberId: session.user.id, expertProfileId: expert.id, month: monthKey}}});
+          if ((usage?.questionCount ?? 0) >= tier.monthlyQuestions) throw new UsageAccessChanged("Monthly question limit reached");
+        }
+      }
+      lifecycle.check();
+      await tx.chatMessage.create({
+        data: {
+          chatSessionId: sessionId,
+          senderId: session.user.id,
+          role: "user",
+          content,
+        },
+      });
 
-      await prisma.monthlyTwinUsage.upsert({
-        where: {
-          subscriberId_expertProfileId_month: {
+      // Increment usage counters
+      if (chatSession.isTrial) {
+        await incrementTrialUsage(session.user.id, chatSession.expertProfileId, tx);
+      } else {
+        await tx.monthlyTwinUsage.upsert({
+          where: {
+            subscriberId_expertProfileId_month: {
+              subscriberId: session.user.id,
+              expertProfileId: chatSession.expertProfileId,
+              month: monthKey,
+            },
+          },
+          create: {
             subscriberId: session.user.id,
             expertProfileId: chatSession.expertProfileId,
             month: monthKey,
+            questionCount: 1,
           },
-        },
-        create: {
-          subscriberId: session.user.id,
-          expertProfileId: chatSession.expertProfileId,
-          month: monthKey,
-          questionCount: 1,
-        },
-        update: {
-          questionCount: { increment: 1 },
-        },
-      });
-    }
+          update: {
+            questionCount: { increment: 1 },
+          },
+        });
+      }
+      lifecycle.check();
+      // The locked entitlement can expire by clock while SQL awaits settle.
+      if (subscription && !hasSubscriptionAccess(subscription)) throw new UsageAccessChanged("Your paid period has ended or is not confirmed");
+    });
 
     // Build chat history for context
     const chatHistory = chronologicalHistory(chatSession.messages).map((msg: { role: string; content: string; sources?: unknown }) => ({
@@ -336,6 +357,7 @@ export async function POST(
       const reason = lifecycle.signal.reason;
       return NextResponse.json({ error: reason instanceof ChatRequestStopped && reason.kind === "deadline" ? "Chat request deadline exceeded" : "Chat request cancelled" }, { status: reason instanceof ChatRequestStopped && reason.kind === "deadline" ? 504 : 499 });
     }
+    if (error instanceof UsageAccessChanged) return NextResponse.json({error: error.message, code: "CHAT_ACCESS_CHANGED"}, {status: 403});
     console.error("Send message error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
