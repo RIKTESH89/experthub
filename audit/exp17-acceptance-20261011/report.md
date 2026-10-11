@@ -24,7 +24,7 @@ Read-only saved artifacts and SHA256 hashes are in `historical-artifacts.json`. 
 
 ## Checks run
 
-- Native repository Jest, EXP-15 plus EXP-17: **212/212 tests in 11 suites passed** (`jest.log`). Runtime uses synthetic adapters/mocked stores; native Jest execution is not native database/provider validation.
+- Native repository Jest, EXP-15 plus EXP-17: **213/213 tests in 11 suites passed** (`jest.log`). Runtime uses synthetic adapters/mocked stores; native Jest execution is not native database/provider validation.
 - TypeScript noEmit/incremental false passed (`types.log`); scoped Next lint passed (`lint.log`); diff check passed.
 - Deterministic trace runner: zero policy mismatches, zero provider calls.
 - Ten synthetic latency samples with 5ms adapter delays: simulated unverified generation p50 6.33ms, verified full-buffer p50 26.36ms/p95 29.97ms. A hung-verifier 15ms deadline blocked in 16ms and emitted no risky draft. This is a local synthetic comparison, not production/provider time-to-first-token measurement. See `latency.json`.
@@ -38,3 +38,5 @@ Independent human-reviewed unseen entailment/attribution/time/inference and refu
 ## Independent review repair
 
 Integration review required fixing the explicit category-laundered doctorate rather than retaining it as an accepted limitation. The bounded category guard and ordinary conversation controls now pass. EXP-14 reviewer identified missing negative auxiliaries and unmatched single quotations; targeted regressions now cover do/does/did and contracted negatives, source-quotation boundaries and safe first-person quoted evidence. The final 26-case confusion trace has zero unsafe releases in these declared fixtures and one deliberate faithful-synonym refusal; broader semantic error rates remain unmeasured.
+
+Final quotation review found a curly-apostrophe contraction could end a quote at don’t and hide an invented remainder. Closing-boundary parsing now handles contractions, and full-gate truthful/misleading negative-source quotations are tested. Exact curly/straight recorded-source quotations remain usable without treating source speaker first-person words as a new biography.

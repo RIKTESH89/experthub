@@ -19,8 +19,8 @@ export function obviousPersonAssertion(text: string): boolean {
 export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean {
     const claim = sentence(text);
     return rows.some(row => {
-        const quote = JSON.stringify(row.text);
-        if ([quote, `The recorded source states ${quote}`, `The author stated ${quote}`].includes(claim)) return true;
+        const quotes = [JSON.stringify(row.text), `“${row.text}”`, `‘${row.text}’`, `'${row.text}'`];
+        if (quotes.some(quote => [quote, `The recorded source states ${quote}`, `The source says ${quote}`, `The author stated ${quote}`].includes(claim))) return true;
         if (!["prefer", "recommend"].includes(row.predicate || "") || !row.object) return false;
         // The extracted object cannot launder an attributed quote, negative, inference,
         // time modifier or invented assertion into a new positive person statement.
@@ -38,10 +38,11 @@ export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean 
  * Compare each quotation against a single adjacent cited span; never concatenate
  * unrelated evidence into an invented quote. Apostrophes in prose are not quotation marks. */
 export function quotationsSupported(text: string, rows: LiteralRow[]): boolean {
-    const quotes = text.match(/"(?:\\.|[^"\\])*"|“[^”]*”|‘[^’]*’/g) || [];
+    // A closing curly apostrophe inside don’t is not the end of a quotation.
+    const quotes = text.match(/"(?:\\.|[^"\\])*"|“[^”]*”|‘[^\n]+?’(?=$|[\s.,;:)])/g) || [];
     const singleMatches = Array.from(text.matchAll(/(?:^|[\s(:,])'([^\n]+?)'(?=$|[\s.,;:)])/g));
     const remainder = [...quotes, ...singleMatches.map(match => match[0])].reduce((rest, quote) => rest.replace(quote, ""), text);
-    if (/["“”‘]/.test(remainder) || /(?:^|[\s(:,])'(?=\S)/.test(remainder)) return false;
+    if (/["“”‘]/.test(remainder) || /(?:^|[\s(:,])'(?=\S)|(?:^|[^a-zA-Z0-9])’(?=$|[\s.,;:)])/.test(remainder)) return false;
     const supported = (value: string) => !!value && rows.some(row => row.text.includes(value));
     const straightSingle = singleMatches.map(match => match[1]);
     return straightSingle.every(supported) && quotes.every(quote => {

@@ -3,14 +3,14 @@ PASS __tests__/exp15/structured-review-regressions.test.ts
 PASS __tests__/exp15/structured-chat-integration.test.ts
 PASS __tests__/exp17/acceptance.test.ts
 PASS __tests__/exp15/default-path-parity.test.ts
-PASS __tests__/exp15/revalidation-citations.test.ts
 PASS __tests__/exp15/structured-local-retrieval.test.ts
-PASS __tests__/exp15/response-policy.test.ts
+PASS __tests__/exp15/revalidation-citations.test.ts
 PASS __tests__/exp15/dialogue-verification.test.ts
-PASS __tests__/exp15/review-regressions.test.ts
+PASS __tests__/exp15/response-policy.test.ts
 PASS __tests__/exp15/claim-gate.test.ts
+PASS __tests__/exp15/review-regressions.test.ts
 
 Test Suites: 11 passed, 11 total
-Tests:       212 passed, 212 total
+Tests:       213 passed, 213 total
 Snapshots:   0 total
-Time:        0.937 s, estimated 1 s
+Time:        0.593 s, estimated 1 s

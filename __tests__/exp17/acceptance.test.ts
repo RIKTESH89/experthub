@@ -22,6 +22,8 @@ test('quotation boundaries preserve exact words and cannot combine separate cite
     expect(quotationsSupported("The author's note is clear.", [{ text: 'unrelated' }])).toBe(true);
     expect(quotationsSupported('The source says ‘invented words.', [{ text: 'unrelated' }])).toBe(false);
     expect(quotationsSupported("The source says 'invented words.", [{ text: 'unrelated' }])).toBe(false);
+    expect(quotationsSupported('The source says ‘I don’t prefer invented trials.’', [{ text: 'I don’t prefer calibrated trials.' }])).toBe(false);
+    expect(quotationsSupported('The source says ‘I don’t prefer calibrated trials.’', [{ text: 'I don’t prefer calibrated trials.' }])).toBe(true);
 });
 test('a forged predicate/object extraction cannot convert a source negation into positive support', () => {
     expect(literalPersonSupport('The expert prefers trials.', [{ text: 'I do not prefer trials.', predicate: 'prefer', object: 'trials' }])).toBe(false);
@@ -42,4 +44,16 @@ test('a literal source quotation can retain the source speaker first-person word
     test.response.text = 'The expert has a medical doctorate.';
     test.response.claims[0].end = test.response.text.length;
     expect(evaluateCase(test).decision.reasons).toContain('person-assertion-category-mismatch');
+});
+test('curly single quotations preserve a source negation through the full gate and block invented remainder', () => {
+    const test = acceptanceCases().find(test => test.id === 'ordinary-exact-quotation')!;
+    test.response.claims[0].category = 'source-explanation';
+    delete test.response.claims[0].personId;
+    test.bundle.evidenceTrace[0].text = 'I don’t prefer calibrated trials.';
+    test.response.text = 'The source says ‘I don’t prefer calibrated trials.’';
+    test.response.claims[0].end = test.response.text.length;
+    expect(evaluateCase(test).decision.allowed).toBe(true);
+    test.response.text = 'The source says ‘I don’t prefer invented trials.’';
+    test.response.claims[0].end = test.response.text.length;
+    expect(evaluateCase(test).decision.reasons).toContain('quotation-not-in-cited-span');
 });
