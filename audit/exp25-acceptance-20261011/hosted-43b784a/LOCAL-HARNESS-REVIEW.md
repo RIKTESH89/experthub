@@ -1,6 +1,6 @@
 # Independent prepared local-auth harness review — 2026-10-11
 
-Reviewed root-owned `evidence/remaining/run-local-auth.py` and `integration/scripts/remaining-acceptance/local-auth-built.cjs` before execution. This review is separate from hosted identity eligibility; no actual application/session/database outcome is asserted here.
+Reviewed root-owned `evidence/remaining/run-local-auth.py` and `integration/scripts/remaining-acceptance/local-auth-built.cjs` before execution. This prepared-harness review is separate from hosted identity eligibility. The subsequent actual application/session/database results are reviewed in `LOCAL-OUTCOME-REVIEW.md`.
 
 Safety: new owned `/tmp/experthub-full-http-*` private-socket PostgreSQL fixture, synthetic role/database names, empty target identity assertion, isolated environment and localhost-only Next listener. Existing migrations are applied only to that fixture. Browser uses fresh headless Chrome context, canonical staging URLs intercepted to loopback; every other origin aborted. Synthetic Auth.js encrypted session cookies stay inside the fresh contexts; no shared browser, Google callback, billing endpoint, real model provider, live database or credential operation. Exact integration HEAD and runtime-source cleanliness are asserted, and actual build ID is saved by the harness. V2 remains OFF.
 

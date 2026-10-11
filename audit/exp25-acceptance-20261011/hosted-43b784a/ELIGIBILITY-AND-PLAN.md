@@ -31,6 +31,24 @@ The owner already approved historical Google use; do not ask them to reapprove t
 
 ## Separation from ongoing local/provider work
 
-Root is independently running compiled Next/Auth.js/Prisma against a NEW private-socket PG18 synthetic fixture using already approved local scope. That can establish actual local application/database journeys; it is not hosted Google/account/provider acceptance. This lane will independently review that harness when ready.
+Root completed the reviewed compiled Next/Auth.js/Prisma run against a NEW private-socket PG18 synthetic fixture using already approved local scope: **8/8 scenario groups PASS**, all 18 migrations, exact candidate `43b784a`, build ID `8wK667wgWSB5yLdeAYuRP`, Chrome `154.0.8037.98`. Independent outcome review confirms no page errors/external requests and runtime-directory removal after PostgreSQL stop. This establishes the recorded actual LOCAL application/database journeys; it does not unblock the hosted Google/account/provider prerequisites. See `LOCAL-OUTCOME-REVIEW.md`.
 
 The separate approved ₹0 Razorpay/Resend task owns its browser/billing/provider scope. None of its approval, success or identity is reused for these ExpertHub auth journeys, and no payment/email endpoint was touched here. No paid call, provider exchange, live database mutation, app change, credential creation or access/protection change occurred. EXP-25 stays In Progress.
+
+
+## H1–H8 local versus hosted reconciliation after native run
+
+Hosted statuses above remain BLOCKED as stated. The new local native evidence advances these bounded analogs only:
+
+| Hosted case | New local native analog | Still unverified |
+| --- | --- | --- |
+| H1 existing subscriber | Synthetic Auth.js session renders subscriber feed and owner review workspace; persisted identity controls access. | Hosted approved app session and deployed session/no-store read. |
+| H2 authenticated denials | Subscriber cannot render owner workspace; correction API 403. | Hosted denial responses, broader admin-route matrix. |
+| H3 discovery/read access | Owner review reads synthetic native source/release data. | Expert discovery and rights-cleared hosted source/citation reading. |
+| H4 owner release failure UX | Actual compiled owner correction acceptance/CAS, completed refresh, release preview/cancel and reviewed rollback with native rows. | Hosted authorized expert profile/session and preview permission; deployed failure modes. |
+| H5 session/expiry | Deactivating the synthetic native account rejects its existing encrypted session on reload. | Real Google logout/relogin and natural expiry; subscription expiry. |
+| H6 fresh signup | Native synthetic users were seeded expressly for the owned fixture. This is not OAuth signup. | Consenting new Google tester and approved hosted User PII writes. |
+| H7 ingestion/chat | Accepted correction creates one native audit event and lifecycle job under double click. | Ingestion/vector recomputation, generated chat/citations and provider/durable-message journeys. |
+| H8 revocation/rollback | Native reviewed rollback appends a third release while retaining source version; native account deactivation rejects current session. | Hosted release/access mutations, paid-period entitlement loss, concurrent or midstream revocation. |
+
+The native run's eight groups, hosted seven anonymous guards, installed Auth.js 12 synthetic groups, prior browser/unit results and historical real Google sequence are different scopes. Do not sum them into one acceptance total or mark full EXP-25 Done.
