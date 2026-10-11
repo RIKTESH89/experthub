@@ -2,11 +2,11 @@
 import { createElement } from "react";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
-let mockPathname = "/";
+let mockPathname = "/about";
 jest.mock("next/navigation", () => ({ usePathname: () => mockPathname }));
 
 beforeEach(() => {
-  mockPathname = "/";
+  mockPathname = "/about";
   jest.useFakeTimers();
   localStorage.clear();
   window.matchMedia = jest.fn().mockReturnValue({matches:false});
@@ -19,6 +19,61 @@ it("never places a site installation suggestion inside an embed frame", () => {
   expect(screen.queryByRole("complementary")).toBeNull();
 });
 afterEach(() => { cleanup(); jest.useRealTimers(); });
+
+it("keeps every homepage install surface hidden after the fallback and a delayed native event", () => {
+  mockPathname = "/";
+  render(createElement(PWAInstallPrompt));
+  act(() => jest.advanceTimersByTime(6000));
+  const event = new Event("beforeinstallprompt", {cancelable:true});
+  const prompt = jest.fn();
+  Object.assign(event, {prompt, userChoice:Promise.resolve({outcome:"dismissed"})});
+  act(() => window.dispatchEvent(event));
+  act(() => jest.advanceTimersByTime(6000));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(screen.queryByRole("button", {name:"Install App"})).toBeNull();
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(event.defaultPrevented).toBe(false);
+  expect(prompt).not.toHaveBeenCalled();
+  expect(localStorage.getItem("pwa-install-dismissed")).toBeNull();
+});
+
+it("hides a previously open off-home guide and removes native event interception on homepage navigation", () => {
+  const view = render(createElement(PWAInstallPrompt));
+  act(() => jest.advanceTimersByTime(5000));
+  fireEvent.click(screen.getByRole("button", {name:"Install App"}));
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  mockPathname = "/";
+  view.rerender(createElement(PWAInstallPrompt));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(screen.queryByRole("dialog")).toBeNull();
+  const event = new Event("beforeinstallprompt", {cancelable:true});
+  act(() => window.dispatchEvent(event));
+  expect(event.defaultPrevented).toBe(false);
+  expect(localStorage.getItem("pwa-install-dismissed")).toBeNull();
+});
+
+it("starts normal delayed installation eligibility when navigating away from the homepage", () => {
+  mockPathname = "/";
+  const view = render(createElement(PWAInstallPrompt));
+  act(() => jest.advanceTimersByTime(6000));
+  mockPathname = "/login";
+  view.rerender(createElement(PWAInstallPrompt));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  act(() => jest.advanceTimersByTime(5000));
+  expect(screen.getByRole("button", {name:"Install App"})).toBeTruthy();
+});
+
+it("preserves native installation actions on other routes", async () => {
+  render(createElement(PWAInstallPrompt));
+  const event = new Event("beforeinstallprompt", {cancelable:true});
+  const prompt = jest.fn().mockResolvedValue(undefined);
+  Object.assign(event, {prompt, userChoice:Promise.resolve({outcome:"accepted"})});
+  act(() => window.dispatchEvent(event));
+  expect(event.defaultPrevented).toBe(true);
+  await act(async () => fireEvent.click(screen.getByRole("button", {name:"Install App"})));
+  expect(prompt).toHaveBeenCalledTimes(1);
+  expect(screen.queryByRole("complementary")).toBeNull();
+});
 
 it("places the install suggestion in document flow with named dismissal", () => {
   render(createElement(PWAInstallPrompt));

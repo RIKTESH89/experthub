@@ -23,7 +23,8 @@ export function PWAInstallPrompt() {
   const installButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (pathname?.startsWith("/embed/")) return;
+    // Keep homepage installation UI hidden without intercepting native browser installation.
+    if (pathname === "/" || pathname?.startsWith("/embed/")) return;
     if (window.matchMedia("(display-mode: standalone)").matches) return;
     try {
       const dismissed = localStorage.getItem("pwa-install-dismissed");
@@ -66,10 +67,10 @@ export function PWAInstallPrompt() {
     try { localStorage.setItem("pwa-install-dismissed", Date.now().toString()); } catch { /* Optional preference. */ }
   }, []);
 
-  if (!showBanner || pathname?.startsWith("/embed/")) return null;
+  if (!showBanner || pathname === "/" || pathname?.startsWith("/embed/")) return null;
 
   return <>
-    {/* Keep document flow; the homepage banner owns its rectangle above the smooth story layer. */}
+    {/* Keep installation suggestions in document flow on eligible routes. */}
     <aside aria-label="Install ExpertHub" className={`${homepageTheme}${pathname === "/" ? "z-40 " : ""}relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-xl items-start gap-3 rounded-xl border border-border bg-card p-4 text-foreground`}>
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true"><Smartphone size={20}/></span>
       <div className="min-w-0 flex-1">

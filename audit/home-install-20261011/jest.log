@@ -1,0 +1,17 @@
+PASS __tests__/pwa-prompt-accessibility.test.ts
+  ✓ never places a site installation suggestion inside an embed frame (9 ms)
+  ✓ keeps every homepage install surface hidden after the fallback and a delayed native event (2 ms)
+  ✓ hides a previously open off-home guide and removes native event interception on homepage navigation (33 ms)
+  ✓ starts normal delayed installation eligibility when navigating away from the homepage (4 ms)
+  ✓ preserves native installation actions on other routes (4 ms)
+  ✓ places the install suggestion in document flow with named dismissal (4 ms)
+  ✓ opens a labeled manual dialog only after an explicit action (13 ms)
+  ✓ does not reopen after an early native event was dismissed (3 ms)
+  ✓ does not show suggestions for installed or recently dismissed apps (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        0.651 s
+Ran all test suites matching /__tests__\/pwa-prompt-accessibility.test.ts/i.
+Test results written to: audit/home-install-20261011/jest.json
