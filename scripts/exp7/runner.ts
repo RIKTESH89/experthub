@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { posix } from 'path';
 import { performance } from 'perf_hooks';
 import { runStructuredDialogue } from '../../src/lib/ai/dialogue/structured/pipeline';
 import { GENERATION_INSTRUCTIONS, VERIFICATION_INSTRUCTIONS } from '../../src/lib/ai/dialogue/structured/prompts';
@@ -8,10 +9,30 @@ import type { HistoryMessage } from '../../src/lib/ai/history';
 import { documents, evaluationCases } from './fixtures';
 import { aggregateHumanRatings, hash, releaseMetrics, retrievalMetrics, validateManifest, type Manifest, type ReviewAnswer } from './protocol';
 
-const PINNED_FILES = ['src/lib/ai/dialogue/structured/pipeline.ts', 'src/lib/ai/dialogue/structured/gate.ts', 'src/lib/ai/dialogue/structured/contracts.ts', 'src/lib/ai/dialogue/structured/prompts.ts', 'src/lib/ai/dialogue/structured/snapshots.ts', 'src/lib/ai/dialogue/structured/live-pins.ts', 'src/lib/ai/dialogue/structured/digests.ts', 'src/lib/ai/dialogue/local-evaluation.ts', 'src/lib/ai/dialogue/state.ts', 'src/lib/ai/dialogue/style.ts', 'src/lib/retrieval/intent.ts', 'src/lib/retrieval/bundle.ts', 'src/lib/graph/temporal/read-policy.ts', 'scripts/exp15-exp17/fixtures.ts', 'scripts/exp15-exp17/runner.ts', 'scripts/exp7/fixtures.ts', 'scripts/exp7/protocol.ts', 'scripts/exp7/runner.ts'];
+/** Traverse static local runtime imports from controlled offline entrypoints so
+ * a newly introduced gate helper cannot escape the frozen implementation pin.
+ * Imported type-only modules have no runtime behavior. External dependencies
+ * are represented by the checked-in lockfile; no packages are installed/read. */
+export function implementationSnapshot(read = (file: string) => readFileSync(file, 'utf8')): [string, string][] {
+  const visited = new Map<string, string>(), pending = ['scripts/exp7/runner.ts', 'scripts/exp7/run-local.ts', 'scripts/exp7/import-ratings.ts', 'scripts/exp15-exp17/register-alias.cjs', 'package-lock.json'];
+  while (pending.length) {
+    const file = pending.pop()!;
+    if (visited.has(file)) continue;
+    if (!/^(src|scripts)\//.test(file) && file !== 'package-lock.json') throw new Error('Dependency escaped controlled roots');
+    const content = read(file); visited.set(file, hash(content));
+    if (visited.size > 100) throw new Error('Offline dependency graph exceeds frozen bound');
+    if (file === 'package-lock.json') continue;
+    const imports = Array.from(content.matchAll(/\bimport\s+(?!type\b)(?:[^;]+?\s+from\s*)?["']([^"']+)["']/g)).map(m => m[1]);
+    for (const specifier of imports) {
+      const local = specifier.startsWith('@/') ? `src/${specifier.slice(2)}` : specifier.startsWith('.') ? posix.normalize(posix.join(posix.dirname(file), specifier)) : null;
+      if (local) pending.push(/\.(ts|tsx|cjs|js)$/.test(local) ? local : `${local}.ts`);
+    }
+  }
+  return Array.from(visited.entries()).sort(([a], [b]) => a.localeCompare(b));
+}
 export function frozenManifest(): Manifest {
   const configuration = { model: 'synthetic-generator-fixture-v1', verifier: 'synthetic-independent-review-fixture-v1', promptHash: hash([GENERATION_INSTRUCTIONS, VERIFICATION_INSTRUCTIONS]), settings: { temperature: 0, seed: 7 }, budget: { contextBytes: 200000, outputBytes: 24000, callsPerTurn: 4, attempts: 2, deadlineMs: 2000 } };
-  return { version: 'exp7-paired-offline-v1', baselineCommit: '0a2cd602646d7ae5689b195a4fbe6da05a5daa28', implementationHash: hash(PINNED_FILES.map(path => [path, hash(readFileSync(path, 'utf8'))])), datasetHash: hash(evaluationCases()), cutoff: '2025-12-31T23:59:59.999Z', periods: { corpus: ['2020'], heldout: ['2026-H2'] }, documents: documents(), corpusChunkIds: ['vector-a', 'vector-b'], variants: [{ id: 'baseline', configuration: structuredClone(configuration) }, { id: 'candidate', configuration: structuredClone(configuration) }], repeats: 2, providerAuthorization: 'NOT_AUTHORIZED', humanReview: 'NOT_RUN' };
+  return { version: 'exp7-paired-offline-v1', baselineCommit: '0a2cd602646d7ae5689b195a4fbe6da05a5daa28', implementationHash: hash(implementationSnapshot()), datasetHash: hash(evaluationCases()), cutoff: '2025-12-31T23:59:59.999Z', periods: { corpus: ['2020'], heldout: ['2026-H2'] }, documents: documents(), corpusChunkIds: ['vector-a', 'vector-b'], variants: [{ id: 'baseline', configuration: structuredClone(configuration) }, { id: 'candidate', configuration: structuredClone(configuration) }], repeats: 2, providerAuthorization: 'NOT_AUTHORIZED', humanReview: 'NOT_RUN' };
 }
 export interface Trace {
   repeat: number; variant: string; caseId: string; turn: number; inputHash: string; outputHash: string;

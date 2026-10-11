@@ -1,5 +1,6 @@
-import { aggregateHumanRatings, DIMENSIONS, hash, providerAccounting, releaseMetrics, retrievalMetrics, validateManifest, type HumanRating } from '../../scripts/exp7/protocol';
-import { frozenManifest, runOffline } from '../../scripts/exp7/runner';
+import { aggregateHumanRatings, DIMENSIONS, hash, providerAccounting, releaseMetrics, retrievalMetrics, validateManifest, type HumanRating, type ProviderRecord } from '../../scripts/exp7/protocol';
+import { frozenManifest, implementationSnapshot, runOffline } from '../../scripts/exp7/runner';
+import { readFileSync } from 'fs';
 const original = process.env;
 beforeEach(() => { process.env = { ...original, NODE_ENV: 'test', EXP15_EXP17_LOCAL_EVALUATION: '1' }; delete process.env.VERCEL; delete process.env.VERCEL_ENV; delete process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED; });
 afterEach(() => { process.env = original; });
@@ -35,6 +36,20 @@ test('source content or frozen implementation drift is rejected', async () => {
   let m = frozenManifest(); m.documents[0].chunks[0].text += 'corruption'; await expect(runOffline(m)).rejects.toThrow('Frozen snapshot drift');
   m = frozenManifest(); m.implementationHash = 'f'.repeat(64); await expect(runOffline(m)).rejects.toThrow('Frozen snapshot drift');
 });
+test('integration review: new runtime gate helpers and their changed bytes invalidate implementation pin', () => {
+  const injected = (file: string) => file === 'src/lib/ai/dialogue/structured/new-runtime-helper.ts' ? 'export const verdict = false;' : readFileSync(file, 'utf8') + (file === 'src/lib/ai/dialogue/structured/gate.ts' ? '\nimport { verdict } from "./new-runtime-helper";\nvoid verdict;' : '');
+  const first = implementationSnapshot(injected);
+  expect(first.some(([file]) => file.endsWith('new-runtime-helper.ts'))).toBe(true);
+  const changed = implementationSnapshot(file => file.endsWith('new-runtime-helper.ts') ? 'export const verdict = true;' : injected(file));
+  expect(hash(first)).not.toBe(hash(changed));
+  const actual = implementationSnapshot();
+  expect(actual.some(([file]) => file.endsWith('gate.ts'))).toBe(true);
+  expect(actual.some(([file]) => file.endsWith('prompts.ts'))).toBe(true);
+  expect(actual.some(([file]) => file === 'package-lock.json')).toBe(true);
+  expect(actual.some(([file]) => file === 'scripts/exp7/run-local.ts')).toBe(true);
+  expect(actual.some(([file]) => file === 'scripts/exp15-exp17/register-alias.cjs')).toBe(true);
+  expect(hash(implementationSnapshot(file => readFileSync(file, 'utf8') + (file === 'scripts/exp7/run-local.ts' ? '\n// changed packet code' : '')))).not.toBe(hash(actual));
+});
 test('two fresh paired native executions save identical input/output/request traces without a quality score', async () => {
   const first = await runOffline(), second = await runOffline(first.manifest);
   expect(first.traces).toHaveLength(116); expect(first.summary.contractFailures).toEqual([]);
@@ -67,6 +82,12 @@ test('partial/unknown failed-request usage and billing cannot be silently report
   expect(providerAccounting([{ inputTokens: 10, outputTokens: 5, dollarCost: 0, latencyMs: 100 }, { inputTokens: null, outputTokens: null, dollarCost: null, latencyMs: null }])).toMatchObject({ observedInputTokens: 10, observedOutputTokens: 5, completeUsage: false, unknownUsageRequests: 1, dollarCost: null, medianLatencyMs: null });
   expect(providerAccounting([{ inputTokens: 10, outputTokens: 5, dollarCost: 0, latencyMs: 100 }])).toMatchObject({ completeUsage: true, dollarCost: 0, p95LatencyMs: null });
   expect(() => providerAccounting([{ inputTokens: -1, outputTokens: 1, dollarCost: null, latencyMs: 1 }])).toThrow();
+});
+test.each([{}, { latencyMs: 100 }, { latencyMs: 100, inputTokens: undefined, outputTokens: 1, dollarCost: 0 }, { latencyMs: 100, inputTokens: 1, outputTokens: 1, dollarCost: 0, extra: 1 }, null, []])('independent review rejects malformed provider accounting record %p', record => {
+  expect(() => providerAccounting([record] as ProviderRecord[])).toThrow();
+});
+test('independent review rejects a non-array provider ledger', () => {
+  expect(() => providerAccounting({} as ProviderRecord[])).toThrow('array');
 });
 const answers = [{ blindId: 'B1', text: 'An answer.', answerHash: hash('An answer.') }];
 function ratings(): HumanRating[] { return ['independent-rater-a', 'independent-rater-b'].flatMap(reviewer => DIMENSIONS.map(dimension => ({ reviewer, blindId: 'B1', answerHash: answers[0].answerHash, dimension, score: dimension === 'style' ? 'not-assessable' as const : 4, evidence: 'Exact span and reference checked; source style insufficient.' }))); }

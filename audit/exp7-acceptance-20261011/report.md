@@ -12,7 +12,7 @@ Zero declared contract failures; zero withheld/premium/other-person chunk IDs in
 
 Verification:
 
-- Focused Jest `__tests__/exp7 __tests__/exp15`: **193/193**, 11 suites. EXP-7 adds 27 protocol tests for leakage, drift, parity, forbidden real adapters, negative/unknown accounting and malformed/partial human ratings.
+- Focused Jest `__tests__/exp7 __tests__/exp15`: **201/201**, 11 suites. EXP-7 adds 35 protocol tests for leakage, drift, parity, forbidden real adapters, negative/unknown accounting and malformed/partial human ratings, including independent-review regressions.
 - Full repository `tsc --noEmit --incremental false`: passed, zero diagnostics.
 - Focused Next lint across all six owned code/test files: passed, zero warnings/errors.
 - Both native runner commands: passed; full requests/output traces, source/code/prompt manifest hashes and blank packets saved in `run-1/` and `run-2/`.
@@ -23,3 +23,5 @@ Local elapsed timings are measured separately in each run’s `metrics.json` and
 Remaining gates: fresh explicitly authorized provider/data scope with exact model/version/request/token/cost/time caps; repeated same-input baseline/candidate generative execution; independent held-out native retrieval and claim entailment; two consented independent human raters with blinded naturalness/style/faithfulness and adjudication; real-person EXP31 pilot evidence. Current provider allowance is exactly zero. `provider-protocol.md` is a concrete proposal, not authorization or an execution result. Developer-known transcripts from EXP15/17 are calibration rather than unseen assessment. EXP-7 remains **In Progress**; units, replay traces and staging deployment cannot mark it Done.
 
 Integration note: changing native gate/state/style code invalidates this frozen implementation hash by design. Preserve these baseline files and generate a new audit directory/manifest after integration, then rerun paired checks. EXP17’s conservative person-entailment envelope can intentionally block safe unseen paraphrases; report such refusal overreach separately from dangerous unsupported release.
+
+Independent review repairs: EXP16 reviewer found malformed provider JSON with missing measurement fields could be treated as complete usage and produce NaN totals. The ledger now requires an array with exactly four explicit finite-number/null fields; seven malformed-record regressions pass. Integration owner found a newly imported EXP17 gate helper outside the original explicit file list. Snapshot construction now recursively follows static local runtime imports from controlled offline entrypoints and pins package-lock; a new-helper/changed-helper regression proves implementation drift invalidates the pin. These repairs were rerun through native paired commands, focused tests, types and lint.

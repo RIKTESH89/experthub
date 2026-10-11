@@ -1,0 +1,10 @@
+PASS __tests__/exp16/widget-persistence-route.test.ts
+PASS __tests__/exp16/persistence-route.test.ts
+PASS __tests__/exp16/serving-chat.test.ts
+PASS __tests__/exp15/widget-interruption.test.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       39 passed, 39 total
+Snapshots:   0 total
+Time:        0.442 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp16\/persistence-route.test.ts|__tests__\/exp16\/widget-persistence-route.test.ts|__tests__\/exp15\/widget-interruption.test.ts|__tests__\/exp16\/serving-chat.test.ts/i.
