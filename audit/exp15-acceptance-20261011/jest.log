@@ -1,33 +1,33 @@
-PASS __tests__/api/widget.test.ts
 PASS __tests__/exp26/preview-origin.test.ts
-PASS __tests__/exp26/checkout-pending.test.ts
-PASS __tests__/phase0/chat-engine.test.ts
 PASS __tests__/exp15/structured-pipeline.test.ts
-PASS __tests__/exp15/widget-interruption.test.ts
+PASS __tests__/exp26/checkout-pending.test.ts
+PASS __tests__/api/widget.test.ts
+PASS __tests__/exp15/acceptance-state-style.test.ts
 PASS __tests__/exp26/preview-isolation.test.ts
 PASS __tests__/exp26/staging-build.test.ts
 PASS __tests__/exp26/token-boundary.test.ts
-PASS __tests__/exp15/structured-chat-integration.test.ts
+PASS __tests__/phase0/chat-engine.test.ts
 PASS __tests__/exp15/structured-review-regressions.test.ts
+PASS __tests__/exp15/widget-interruption.test.ts
 PASS __tests__/api/chat.test.ts
-PASS __tests__/exp15/acceptance-cancellation.test.ts
+PASS __tests__/exp15/structured-chat-integration.test.ts
 PASS __tests__/exp26/preview-error.test.ts
-PASS __tests__/exp15/acceptance-state-style.test.ts
 PASS __tests__/exp26/chat-access.test.ts
 PASS __tests__/exp15/default-path-parity.test.ts
 PASS __tests__/exp26/full-site-staging.test.ts
+PASS __tests__/exp15/acceptance-cancellation.test.ts
 PASS __tests__/exp26/auth.test.ts
+PASS __tests__/exp26/staging-google.test.ts
 PASS __tests__/exp15/structured-local-retrieval.test.ts
 PASS __tests__/exp15/revalidation-citations.test.ts
-PASS __tests__/exp26/staging-google.test.ts
-PASS __tests__/exp15/dialogue-verification.test.ts
 PASS __tests__/exp15/response-policy.test.ts
+PASS __tests__/exp15/review-regressions.test.ts
 PASS __tests__/exp26/preview-reporting.test.ts
 PASS __tests__/exp26/paid-access.test.ts
+PASS __tests__/exp15/dialogue-verification.test.ts
 PASS __tests__/exp15/claim-gate.test.ts
-PASS __tests__/exp15/review-regressions.test.ts
 
 Test Suites: 28 passed, 28 total
-Tests:       416 passed, 416 total
+Tests:       417 passed, 417 total
 Snapshots:   0 total
-Time:        2.038 s, estimated 3 s
+Time:        2.899 s

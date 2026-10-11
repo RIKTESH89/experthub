@@ -2,7 +2,7 @@ import { detachedSnapshot, immutableResult, isSnapshotMutation } from "./snapsho
 import { constrainLiveEvidence } from "./live-pins";
 import type { EvidenceBundle } from "@/lib/retrieval/bundle";
 import type { HistoryMessage } from "@/lib/ai/history";
-import { buildDialogueState } from "../state";
+import { buildDialogueState, CONTINUITY_INSTRUCTIONS } from "../state";
 import { groundedStyle } from "../style";
 import { localDialogueEvaluationEnabled } from "../local-evaluation";
 import { LIMITS, STRUCTURED_VERSION, draftSchema, judgmentSchema, type StructuredAdapters, type TurnResult, type DialogueContext } from "./contracts";
@@ -91,7 +91,7 @@ export async function runStructuredDialogue(input: StructuredTurnInput): Promise
             const context: DialogueContext = { state: buildDialogueState(expertId, query, history, bundle), bundle: structuredClone(bundle), style: groundedStyle(bundle, expertId), history: structuredClone(history) };
             if (Buffer.byteLength(JSON.stringify(context), "utf8") > 200000)
                 return blocked(["adapter-context-budget"]);
-            const generatorData = checkedSnapshot({ version: STRUCTURED_VERSION, instructions: GENERATION_INSTRUCTIONS, context, feedback: [...feedback], attempt: attempts }, "generator-mutated-context");
+            const generatorData = checkedSnapshot({ version: STRUCTURED_VERSION, instructions: GENERATION_INSTRUCTIONS + "\n" + CONTINUITY_INSTRUCTIONS, context, feedback: [...feedback], attempt: attempts }, "generator-mutated-context");
             boundary = "generation";
             calls++;
             const raw = await timed(signal => adapters.generator(Object.freeze({ ...generatorData, signal })));
@@ -115,7 +115,7 @@ export async function runStructuredDialogue(input: StructuredTurnInput): Promise
             if (bundle.version !== "intent-evidence-v1")
                 return blocked(["invalid-live-evidence-contract"]);
             const releaseContext: DialogueContext = detachedSnapshot({ state: buildDialogueState(expertId, query, history, bundle), bundle: structuredClone(bundle), style: groundedStyle(bundle, expertId), history: structuredClone(history) });
-            const request = detachedSnapshot({ version: STRUCTURED_VERSION, instructions: VERIFICATION_INSTRUCTIONS, draft, context: releaseContext, draftDigest: digest(draft), evidenceDigest: evidenceDigest(bundle), stateDigest: digest(releaseContext.state) });
+            const request = detachedSnapshot({ version: STRUCTURED_VERSION, instructions: VERIFICATION_INSTRUCTIONS + "\n" + CONTINUITY_INSTRUCTIONS, draft, context: releaseContext, draftDigest: digest(draft), evidenceDigest: evidenceDigest(bundle), stateDigest: digest(releaseContext.state) });
             const approvedPin = digest(request);
             const verifierData = checkedSnapshot(request, "verifier-mutated-snapshot");
             boundary = "verification";

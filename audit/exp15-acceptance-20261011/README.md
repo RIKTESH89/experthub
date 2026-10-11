@@ -11,7 +11,9 @@ Baseline `0a2cd602`, isolated branch `exp-15/acceptance-20261011`. Existing stru
 
 ## Evidence
 
-`jest.log`: 416/416 tests in 28 suites passed, covering EXP-15, chat-engine, chat/thinking-chat, widget and EXP-26 regressions. TypeScript `--noEmit --incremental false`, focused ESLint and `git diff --check` pass. These are local synthetic/injected-store/transport checks; no live database/provider tests ran in this lane.
+`jest.log`: 417/417 tests in 28 suites passed after independent review repair, covering EXP-15, chat-engine, chat/thinking-chat, widget and EXP-26 regressions. TypeScript `--noEmit --incremental false`, focused ESLint and `git diff --check` pass. These are local synthetic/injected-store/transport checks; no live database/provider tests ran in this lane.
+
+EXP-25's independent reviewer identified that raw prior-task constraint/commitment candidates could be misread as obligations for a new independent goal. A separate fixed continuity instruction now reaches both generator and verifier, making prior-task candidates historical for independent new goals while retaining explicitly persistent global preferences. A captured adapter-request regression proves that policy and the full candidate chronology are present; actual semantic compliance remains unmeasured. The shared verifier policy still determines which constraints are applicable rather than treating the raw ledger as an oracle.
 
 `paired-transcripts.json`: two fixed conversations / six turns for subscriber correction and medical-to-recursion topic shift. Answers and semantic verdicts are fixed synthetic fixtures. Captured generator state, independent verifier state digests and reviewable style profiles establish plumbing/retention only. They do not establish real semantic constraint satisfaction, faithfulness, naturalness or person resemblance.
 
