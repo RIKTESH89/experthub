@@ -1,0 +1,63 @@
+{
+  "target": "/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-14",
+  "temporalSelectionVersion": "literal-temporal-authorized-selection-v3",
+  "assertions": {
+    "lateRareKeywordSelected": true,
+    "v2FrozenLateAnchorControl": true,
+    "contradictionBeforeOtherNeighbor": false,
+    "oversizedConflictVisible": true,
+    "revokedCounterevidenceNotReturned": true
+  },
+  "crowded": {
+    "selected": [
+      "a",
+      "b",
+      "z"
+    ],
+    "relations": [
+      {
+        "from": "a",
+        "to": "b",
+        "type": "supersedes",
+        "kind": "explicit",
+        "evidenceSpanIds": [
+          "span-a",
+          "span-b"
+        ],
+        "uncertainty": null
+      },
+      {
+        "from": "a",
+        "to": "z",
+        "type": "contradiction",
+        "kind": "explicit",
+        "evidenceSpanIds": [
+          "span-a",
+          "span-z"
+        ],
+        "uncertainty": null
+      }
+    ]
+  },
+  "oversized": {
+    "selected": [
+      "a"
+    ],
+    "gaps": [
+      "Relevant conflicting or superseding evidence is outside selected context; do not present the selected stance as uncontested",
+      "Documented constraints unavailable in selected evidence",
+      "Documented exceptions unavailable in selected evidence",
+      "Documented reasons unavailable in selected evidence"
+    ],
+    "trace": {
+      "candidates": 2,
+      "selected": 1,
+      "tokenUpperBound": 1394,
+      "hops": 1,
+      "truncated": true,
+      "retrievalMs": 0,
+      "failures": []
+    }
+  },
+  "limit": "Pure synthetic selector review; no database/provider calls or human quality assessment."
+}

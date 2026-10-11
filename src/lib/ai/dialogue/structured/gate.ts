@@ -2,7 +2,7 @@ import type { EvidenceBundle } from "@/lib/retrieval/bundle";
 import type { DialogueState } from "../state";
 import { digest, evidenceDigest } from "./digests";
 import { LIMITS, type EvidenceReference, type StructuredDraft, type SemanticJudgment, type GateDecision } from "./contracts";
-import { literalPersonSupport, quotationsSupported } from "./literal-support";
+import { literalPersonSupport, obviousPersonAssertion, quotationsSupported } from "./literal-support";
 const sameReference = (a: EvidenceReference, b: EvidenceReference) => a.spanId === b.spanId && a.revisionId === b.revisionId && a.contentHash === b.contentHash && a.sourceVersion === b.sourceVersion;
 const uniqueReferences = (rows: EvidenceReference[]) => rows.every((row, i) => !rows.slice(0, i).some(prior => sameReference(row, prior)));
 export function checkStructuredDraft(draft: StructuredDraft): string[] {
@@ -100,6 +100,8 @@ export function decideStructuredClaims(draft: StructuredDraft, judgment: Semanti
             reasons.push("inference-without-supported-evidence");
         const supportingRows = rows.filter(row => claim.evidence.some(ref => sameReference(ref, row)));
         const claimText = draft.text.slice(claim.start, claim.end);
+        if (!person && claim.category !== "evidence-gap" && obviousPersonAssertion(claimText) && !(claim.category === "source-explanation" && literalPersonSupport(claimText, supportingRows)))
+            reasons.push("person-assertion-category-mismatch");
         if (person && !literalPersonSupport(claimText, supportingRows))
             reasons.push("person-entailment-unverified");
         if ((sourced || claim.evidence.length) && !quotationsSupported(claimText, supportingRows))

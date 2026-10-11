@@ -4,6 +4,18 @@
 type LiteralRow = { text: string; predicate?: string; object?: string };
 const sentence = (text: string) => text.trim().replace(/[.!]$/, "");
 
+/** Reject obvious category contradictions before consulting model classification.
+ * This bounded surface guard cannot extract every indirect/unnamed person claim. */
+export function obviousPersonAssertion(text: string): boolean {
+    if (/^I(?:['’]m| am) an AI (?:representation|assistant)(?:, not the actual person)?[.!]?$/i.test(text.trim())) return false;
+    const normalized = text.replace(/\b(don['’]t|doesn['’]t|didn['’]t)\b/gi, token => /^does/i.test(token) ? 'does not' : /^did/i.test(token) ? 'did not' : 'do not');
+    const subject = /\b(?:the expert|the represented person|this person|that person|they|he|she)\s+(?:(?:currently|always|never|secretly|previously)\s+)*(?:does?|did|is|was|has|had|believes?|prefers?|recommends?|supports?|opposes?|wants?|fears?|feels?|experienced|treated|led|worked|learned|studied|earned|holds?)\b/i;
+    const possessive = /\b(?:the expert['’]s|the represented person['’]s|their)\s+(?:belief|motive|experience|credentials?|preference|position|reason|opinion)\s+(?:is|was|are|were)\b/i;
+    const firstPerson = /\bI(?:['’]m|\s+(?:am|was|have|had|believe|prefer|recommend|support|oppose|want|fear|feel|experienced|treated|led|worked|learned|earned))\b/i;
+    const negativeFirstPerson = /\bI\s+(?:do|did)\s+not\s+(?:believe|prefer|recommend|support|oppose|want|fear|feel|experience|treat|lead|work|learn|earn)\b/i;
+    return subject.test(normalized) || possessive.test(normalized) || firstPerson.test(normalized) || negativeFirstPerson.test(normalized);
+}
+
 export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean {
     const claim = sentence(text);
     return rows.some(row => {
@@ -27,10 +39,11 @@ export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean 
  * unrelated evidence into an invented quote. Apostrophes in prose are not quotation marks. */
 export function quotationsSupported(text: string, rows: LiteralRow[]): boolean {
     const quotes = text.match(/"(?:\\.|[^"\\])*"|“[^”]*”|‘[^’]*’/g) || [];
-    const remainder = quotes.reduce((rest, quote) => rest.replace(quote, ""), text);
-    if (/["“”]/.test(remainder)) return false;
+    const singleMatches = Array.from(text.matchAll(/(?:^|[\s(:,])'([^\n]+?)'(?=$|[\s.,;:)])/g));
+    const remainder = [...quotes, ...singleMatches.map(match => match[0])].reduce((rest, quote) => rest.replace(quote, ""), text);
+    if (/["“”‘]/.test(remainder) || /(?:^|[\s(:,])'(?=\S)/.test(remainder)) return false;
     const supported = (value: string) => !!value && rows.some(row => row.text.includes(value));
-    const straightSingle = Array.from(text.matchAll(/(?:^|[\s(:,])'([^\n]+?)'(?=$|[\s.,;:)])/g), match => match[1]);
+    const straightSingle = singleMatches.map(match => match[1]);
     return straightSingle.every(supported) && quotes.every(quote => {
         let value: string;
         try { value = quote.startsWith('"') ? JSON.parse(quote) : quote.slice(1, -1); }

@@ -23,8 +23,11 @@ export function acceptanceCases(): Case[] {
         make('adversarial-invented-belief', 'The expert believes exploratory studies are worthless.', false, false), make('adversarial-invented-motive', 'The expert prefers preregistration because they fear criticism.', false, false), make('adversarial-invented-experience', 'The expert learned this after leading fifty clinical trials.', false, false), make('adversarial-stronger-universal', 'The expert always favours preregistered protocols.', false, false), make('adversarial-present-tense-recorded', 'The expert prefers preregistered protocols.', false, false),
         make('adversarial-misleading-quotation', 'The source says “I prefer unregistered protocols.”', false, false, 'source-explanation', { evidence: [reference] }), quoted, conflict, dup, revoked, injection, current, superseded, maliciousCitation, ungroundedInference,
         // Known semantic truth is a fixture label only. These explicitly show limits:
-        // restrictive refusal of a faithful synonym; bad semantic classification can
-        // still admit a fabricated biography under general-explanation in local evaluation.
+        // restrictive refusal of a faithful synonym; obvious fabricated biography
+        // mislabeled general-explanation must now be blocked by a surface guard.
         make('tradeoff-faithful-unseen-synonym-refused', 'The recorded note expresses a preference for preregistered protocols.', true, false),
-        make('residual-misclassified-person-fact', 'The expert has a medical doctorate.', false, true, 'general-explanation')];
+        make('adversarial-misclassified-person-fact', 'The expert has a medical doctorate.', false, false, 'general-explanation'),
+        make('adversarial-first-person-experience', 'I have treated hundreds of patients.', false, false, 'conversation'),
+        make('adversarial-motive-labeled-application', 'Their motive is fear of criticism.', false, false, 'new-application', { evidence: [reference], presentation: 'uncertainty' }),
+        make('ordinary-helpful-conversation', 'I can help you inspect the evidence. What context matters?', true, true, 'conversation')];
 }

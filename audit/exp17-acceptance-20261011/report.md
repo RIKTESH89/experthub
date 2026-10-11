@@ -12,11 +12,11 @@ EXP-14 separately repaired revoked manual-source author attribution. Existing re
 
 ## Synthetic evidence and tradeoff
 
-`claim-evidence-traces.json` contains 23 new ordinary/adversarial cases using deliberately permissive synthetic review. Every declared deterministic policy expectation matches. These are newly constructed developer fixtures, not unseen-to-author blind semantic evaluation. Fixture safety labels are declared expectations, not human adjudication.
+`claim-evidence-traces.json` contains 26 new ordinary/adversarial cases using deliberately permissive synthetic review. Every declared deterministic policy expectation matches. These are newly constructed developer fixtures, not unseen-to-author blind semantic evaluation. Fixture safety labels are declared expectations, not human adjudication.
 
-Positive means release: 6 safe releases, 15 unsafe blocks, **1 safe refusal (false negative)** and **1 unsafe release (false positive)**. The refused faithful synonym is “The recorded note expresses a preference for preregistered protocols.” The admitted unsafe statement is “The expert has a medical doctorate.” when both adapters incorrectly classify it as general-explanation. This residual demonstrates why the local pathway cannot be enabled or marked Done from gate/unit tests. No semantic keyword classifier or provider verdict is treated as a truth proof.
+Positive means release: 7 safe releases, 18 unsafe blocks, **1 safe refusal (false negative)** and **0 unsafe releases in these fixtures**. The refused faithful synonym is “The recorded note expresses a preference for preregistered protocols.” Independent integration review identified the originally admitted unsafe statement “The expert has a medical doctorate.” under general-explanation as a repair finding. A bounded surface category-contradiction guard now rejects obvious represented-person belief/biography/motive/experience and first-person assertions under general, application or conversation labels. Exact supported source quotations and ordinary AI/help language remain usable. The new regression blocks that statement even with approving semantic labels. This fixture result does not establish full semantic coverage or justify enabling the local pathway. No semantic keyword classifier or provider verdict is treated as a truth proof.
 
-The remaining unsafe-category failure is intentionally retained in the report and regression test; a category label plus matched reviewer label does not establish absence of hidden person facts. Fixing semantic classification and citation entailment generally requires independently evaluated claim coverage and verification, not a larger phrase catalogue.
+The surface guard is deliberately bounded: indirect attribution, unnamed entities, unusual linguistic constructions, coded/multilingual person references or substantively false general statements can evade it. A category label plus matched reviewer label still does not establish absence of hidden person facts. Semantic classification and citation entailment generally require independently evaluated claim coverage and verification. The report claims only the stated fixture outcomes, not a zero semantic false-positive rate.
 
 ## Historical provider evidence inspected
 
@@ -24,7 +24,7 @@ Read-only saved artifacts and SHA256 hashes are in `historical-artifacts.json`. 
 
 ## Checks run
 
-- Native repository Jest, EXP-15 plus EXP-17: **193/193 tests in 11 suites passed** (`jest.log`). Runtime uses synthetic adapters/mocked stores; native Jest execution is not native database/provider validation.
+- Native repository Jest, EXP-15 plus EXP-17: **212/212 tests in 11 suites passed** (`jest.log`). Runtime uses synthetic adapters/mocked stores; native Jest execution is not native database/provider validation.
 - TypeScript noEmit/incremental false passed (`types.log`); scoped Next lint passed (`lint.log`); diff check passed.
 - Deterministic trace runner: zero policy mismatches, zero provider calls.
 - Ten synthetic latency samples with 5ms adapter delays: simulated unverified generation p50 6.33ms, verified full-buffer p50 26.36ms/p95 29.97ms. A hung-verifier 15ms deadline blocked in 16ms and emitted no risky draft. This is a local synthetic comparison, not production/provider time-to-first-token measurement. See `latency.json`.
@@ -34,3 +34,7 @@ Reproduce traces and timings with NODE_ENV=test EXP15_EXP17_LOCAL_EVALUATION=1 a
 ## Remaining gates
 
 Independent human-reviewed unseen entailment/attribution/time/inference and refusal-overreach judgments; evaluated provider claim coverage/classification; runtime provider latency; authenticated/native-store revocation acceptance; and release permission checks atomic with actual delivery remain open. Final checks are separate reads and changes after the final read can race response emission. No human ratings, semantic model scores, new provider calls, external transmission, credentials, live database mutations, billing/browser work, push or deployment occurred. Integrator owns independent review, combined checks, Linear updates and any protected staging release.
+
+## Independent review repair
+
+Integration review required fixing the explicit category-laundered doctorate rather than retaining it as an accepted limitation. The bounded category guard and ordinary conversation controls now pass. EXP-14 reviewer identified missing negative auxiliaries and unmatched single quotations; targeted regressions now cover do/does/did and contracted negatives, source-quotation boundaries and safe first-person quoted evidence. The final 26-case confusion trace has zero unsafe releases in these declared fixtures and one deliberate faithful-synonym refusal; broader semantic error rates remain unmeasured.
