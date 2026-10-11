@@ -8,15 +8,15 @@ The fixture-only `permittedAtDelivery`, `permittedAtRetrieval`, `provenanceNote`
 
 Fixed candidate text/category and reviewer observedCategory/verdict are separately frozen in `private-fixed-candidate-profiles.json` before native invocation. Matching labels intentionally reproduce compromised/permissive classification; they are not independent semantic judgment. Snapshot digest binding and one-attempt behavior come from the actual pipeline. Reports call native `providerCalls` counters `syntheticAdapterInvocations` to avoid implying wire calls. Global fetch throws if dispatched. Native source hashes and kernel HEAD are recorded; code at a different HEAD requires explicit pin review.
 
-Rebuild authored JSON with `python3 scripts/exp17-human/build-package.py`. After that, execute the fixed owned kernel from its checkout using:
+Rebuild authored JSON with `python3 scripts/exp17-human/build-package.py`. After that, review any implementation diff from 17543b1, then execute the current owned checkout using (the output records its actual HEAD and source hashes):
 
 ```sh
 EXP15_EXP17_LOCAL_EVALUATION=1 NODE_ENV=test TS_NODE_PROJECT=tsconfig.json \
 EXP17_NATIVE_STRESS_TARGET=/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-17 \
-EXP17_NATIVE_STRESS_PHASE=post-repair EXP17_NATIVE_STRESS_HEAD=17543b1dfb4ac758f27632b649da7c9e61fd4288 \
+EXP17_NATIVE_STRESS_PHASE=post-repair EXP17_NATIVE_STRESS_HEAD="$(git rev-parse HEAD)" \
 node -r ./scripts/exp15-exp17/register-alias.cjs -r ./node_modules/ts-node/register/transpile-only scripts/exp17-human/native-stress.cjs
 ```
 
-The alias bootstrap must precede ts-node so CommonJS options are set before compiler initialization. To target integration, use its tsconfig and its alias bootstrap, explicit current integration HEAD and `EXP17_NATIVE_STRESS_TARGET` accordingly; do not reuse this command after HEAD changes without reviewing source changes. Original pre-repair43b trace is preserved rather than recreated against repaired integration. This runner is not EXP-7's provider runner or the official human heldout evaluation.
+The saved report is the historical exact-17543b1 run; the package commit adds scripts and authoring material without changing its runtime. A rerun at a later package-only HEAD is a new recorded run, not a rewrite of the old commit identity. The alias bootstrap must precede ts-node so CommonJS options are set before compiler initialization. To target integration, use its tsconfig and its alias bootstrap, explicit current integration HEAD and `EXP17_NATIVE_STRESS_TARGET` accordingly; do not reuse this command after HEAD changes without reviewing source changes. Original pre-repair43b trace is preserved rather than recreated against repaired integration. This runner is not EXP-7's provider runner or the official human heldout evaluation.
 
 After native reports are stable, rebuild package hashes with the builder again. `package-hashes.json` hashes every JSON file other than itself, plus README.md and mapping.md; scripts are covered by the Git commit. It never fills human gold or ratings.
