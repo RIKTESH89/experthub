@@ -1,8 +1,10 @@
 # Independent delivery boundary review
 
-The EXP-15 worker independently reviewed EXP-16's subscriber/widget delivery changes (excluding its own earlier dialogue implementation). Review began at EXP-16 HEAD `090ad6a` with guard/buffering changes uncommitted, and the author subsequently froze them in `074e0d4`. Integration at `715be52` had not yet received those changes. No integration acceptance is claimed until the harness is rerun there.
+The EXP-15 worker independently reviewed EXP-16's subscriber/widget delivery changes (excluding its own earlier dialogue implementation). Review began at EXP-16 HEAD `090ad6a` with guard/buffering changes uncommitted, and the author subsequently froze them in `074e0d4`. The reviewer then reran externally against integrated exact HEAD **`a8cb3aa74bb44f8e364478333e9564c200cc055f`**, checking Git HEAD immediately before and after the run: unchanged. All four reviewed source SHA-256 pins below match the worker and integration.
 
 `delivery-boundary.log`: **9/9 reviewer tests pass** against the EXP-16 worker source. The actual route/ReadableStream/SSE/provider-state code executes, with injected engine/guard/Prisma/store fixtures. The mocked transaction promises explicitly delay or reject simulated COMMIT resolution. This tests transport ordering, not PostgreSQL commit/rollback, native locking, real auth/provider behavior or deployed HTTP.
+
+`integrated-delivery-boundary.log`: **9/9 reviewer tests pass** against integrated exact HEAD above. This is an integration rerun of the same cases, not nine new independent native tests. No implementation code was cherry-picked into this reviewer's checkout; only the configurable target root changed. Final bounded delivery review is cleared with no unresolved finding. Any subsequent source change needs the appropriate checks again.
 
 Both subscriber and widget withhold full answer bytes until their transaction promises resolve. Rejected COMMIT and disconnect while COMMIT is pending emit zero answer/citation/success bytes. Provider error records and trailing post-DONE frames are rejected before guard invocation. Subscriber source-title progress is scrubbed before a later guard failure. No new correctness finding in this bounded review; EXP-7 separately owns native guard/lock acceptance.
 
