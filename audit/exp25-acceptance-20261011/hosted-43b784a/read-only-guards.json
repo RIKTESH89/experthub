@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-10-11T05:25:32.996575+00:00",
+  "candidate": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "mode": "anonymous read-only HTTPS guards",
+  "authenticatedJourneys": "NOT RUN",
+  "providerExchanges": 0,
+  "databaseMutation": false,
+  "checks": [
+    {
+      "path": "/api/auth/session",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "anonymousSessionIsNull": true,
+      "cacheControl": "private, no-cache, no-store"
+    },
+    {
+      "path": "/api/experts?limit=1",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/api/chat/sessions",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/api/expert/corrections",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/api/expert/corrections/context",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "path": "/expert/reviews",
+      "status": 307,
+      "expected": 307,
+      "pass": true,
+      "redirectPath": "/login",
+      "redirectHost": null
+    },
+    {
+      "path": "/subscriber/feed",
+      "status": 307,
+      "expected": 307,
+      "pass": true,
+      "redirectPath": "/login",
+      "redirectHost": null
+    }
+  ],
+  "pass": true
+}
