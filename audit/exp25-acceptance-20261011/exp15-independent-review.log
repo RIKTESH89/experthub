@@ -1,0 +1,10 @@
+PASS __tests__/exp15/acceptance-cancellation.test.ts
+PASS __tests__/exp15/structured-chat-integration.test.ts
+PASS __tests__/exp15/widget-interruption.test.ts
+PASS __tests__/exp15/acceptance-state-style.test.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       26 passed, 26 total
+Snapshots:   0 total
+Time:        0.459 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp15\/acceptance-state-style.test.ts|__tests__\/exp15\/acceptance-cancellation.test.ts|__tests__\/exp15\/widget-interruption.test.ts|__tests__\/exp15\/structured-chat-integration.test.ts/i.
