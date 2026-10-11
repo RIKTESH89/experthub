@@ -1,0 +1,235 @@
+The files belonging to this database system will be owned by user "rikteshs20".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+creating directory /tmp/exp16-replay-fixture-or9w0ul7/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Asia/Kolkata
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    '/opt/homebrew/opt/postgresql@18/bin/pg_ctl' -D /tmp/exp16-replay-fixture-or9w0ul7/data -l logfile start
+
+
+waiting for server to start.... done
+server started
+
+
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Loaded Prisma config from scripts/exp16-acceptance/full-schema.config.ts.
+
+warn The Prisma config file in scripts/exp16-acceptance/full-schema.config.ts overrides the deprecated `package.json#prisma` property in package.json.
+  For more information, see: https://pris.ly/prisma-config
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "exp16_replay_fixture", schema "public" at "localhost:55513"
+
+18 migrations found in prisma/migrations
+
+Applying migration `20260323175143_init_with_all_features`
+Applying migration `20260323185226_pgvector_persistent_store`
+Applying migration `20260323190303_pgvector_persistent_store`
+Applying migration `20260324135829_add_password_reset_token`
+Applying migration `20260325033209_add_post_view_dedup`
+Applying migration `20260327000000_make_password_optional`
+Applying migration `20260327010000_add_expert_application`
+Applying migration `20260327020000_add_razorpay_fields`
+Applying migration `20260327030000_add_twin_opinions_framework`
+Applying migration `20260930170000_phase0_source_lifecycle`
+Applying migration `20260930173000_lifecycle_outbox`
+Applying migration `20261001090000_evidence_backed_kg`
+Applying migration `20261001100000_temporal_stances`
+Applying migration `20261001130000_payment_event_receipts`
+Applying migration `20261001140000_verified_paid_periods`
+Applying migration `20261003110000_reviewed_persona_releases`
+Applying migration `20261003180000_billing_recovery_outbox`
+Applying migration `20261004000100_staging_webhook_inbox`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260323175143_init_with_all_features/
+    └─ migration.sql
+  └─ 20260323185226_pgvector_persistent_store/
+    └─ migration.sql
+  └─ 20260323190303_pgvector_persistent_store/
+    └─ migration.sql
+  └─ 20260324135829_add_password_reset_token/
+    └─ migration.sql
+  └─ 20260325033209_add_post_view_dedup/
+    └─ migration.sql
+  └─ 20260327000000_make_password_optional/
+    └─ migration.sql
+  └─ 20260327010000_add_expert_application/
+    └─ migration.sql
+  └─ 20260327020000_add_razorpay_fields/
+    └─ migration.sql
+  └─ 20260327030000_add_twin_opinions_framework/
+    └─ migration.sql
+  └─ 20260930170000_phase0_source_lifecycle/
+    └─ migration.sql
+  └─ 20260930173000_lifecycle_outbox/
+    └─ migration.sql
+  └─ 20261001090000_evidence_backed_kg/
+    └─ migration.sql
+  └─ 20261001100000_temporal_stances/
+    └─ migration.sql
+  └─ 20261001130000_payment_event_receipts/
+    └─ migration.sql
+  └─ 20261001140000_verified_paid_periods/
+    └─ migration.sql
+  └─ 20261003110000_reviewed_persona_releases/
+    └─ migration.sql
+  └─ 20261003180000_billing_recovery_outbox/
+    └─ migration.sql
+  └─ 20261004000100_staging_webhook_inbox/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+
+FAIL scripts/exp16-replay/post-sync.integration.ts (11.171 s)
+  ✓ native v2 rollback restores captured model, persona, null greeting and widget without restoring live widget settings (119 ms)
+  ✓ native release head CAS permits exactly one concurrent owner publication (48 ms)
+  ✓ native legacy rollback preserves v1 and unsupported v2 is rejected before mutation (73 ms)
+  ✓ native equal-config rollback discloses model/widget delta and binds exact reviewed activation (70 ms)
+  ✓ native new-release approval refuses changed model without publishing a head (48 ms)
+  ✓ native new-release approval refuses changed widget without publishing a head (53 ms)
+  ✓ native new-release approval refuses changed identity without publishing a head (63 ms)
+  ✓ native new-release approval refuses changed draft without publishing a head (54 ms)
+  ✓ native gated writer stays v1-readable by exact deployed reader; v2 readers remain enabled with gate off (75 ms)
+  ✓ native store rejects activation without receipt before any release/config write (45 ms)
+  ✓ native approved correction changes only intended pins; future release adopts it while prior release stays immutable (104 ms)
+  ✓ native EOF-to-persistence release change refuses answer and leaves no assistant row (62 ms)
+  ✓ native EOF-to-persistence first-release change refuses answer and leaves no assistant row (56 ms)
+  ✓ native EOF-to-persistence rag change refuses answer and leaves no assistant row (68 ms)
+  ✓ native EOF-to-persistence post-hidden change refuses answer and leaves no assistant row (82 ms)
+  ✓ native EOF-to-persistence post-rag change refuses answer and leaves no assistant row (73 ms)
+  ✓ native EOF-to-persistence source-deleted change refuses answer and leaves no assistant row (59 ms)
+  ✕ native EOF-to-persistence subscription change refuses answer and leaves no assistant row (57 ms)
+  ✓ native EOF-to-persistence session-deleted change refuses answer and leaves no assistant row (52 ms)
+  ✓ native EOF-to-persistence session-owner change refuses answer and leaves no assistant row (54 ms)
+  ✓ native EOF-to-persistence viewer-banned change refuses answer and leaves no assistant row (56 ms)
+  ✓ native EOF-to-persistence owner-inactive change refuses answer and leaves no assistant row (52 ms)
+  ✓ native EOF-to-persistence owner-role change refuses answer and leaves no assistant row (47 ms)
+  ✓ native EOF-to-persistence viewer-role change refuses answer and leaves no assistant row (46 ms)
+  ✓ native EOF-to-persistence source-content change refuses answer and leaves no assistant row (46 ms)
+  ✓ native EOF-to-persistence source-author change refuses answer and leaves no assistant row (46 ms)
+  ✓ native persistence holds post-hidden writer until answer commit; both operations complete without deadlock (53 ms)
+  ✓ native persistence holds source-edit writer until answer commit; both operations complete without deadlock (54 ms)
+  ✕ native persistence holds subscription writer until answer commit; both operations complete without deadlock (4053 ms)
+  ✓ native persistence holds session-delete writer until answer commit; both operations complete without deadlock (74 ms)
+  ✓ native persistence holds release writer until answer commit; both operations complete without deadlock (73 ms)
+  ✓ native persistence holds viewer-ban writer until answer commit; both operations complete without deadlock (69 ms)
+  ✓ native persistence holds owner-role writer until answer commit; both operations complete without deadlock (65 ms)
+  ✓ native answer/update transaction failure leaves no partial assistant persistence (50 ms)
+  ✓ native rollback refuses deleted/newly restricted source pins without rewriting live access (66 ms)
+  ✓ native paid expiry during locked SQL work rolls back the assistant before commit (1152 ms)
+  ✓ native owner deletion waits before expert/source locks and completes without a deletion cycle (83 ms)
+  ✓ native anonymous widget transaction commits both messages and usage exactly within quota (83 ms)
+  ✓ native anonymous widget disabled revocation prevents message/usage persistence (64 ms)
+  ✓ native anonymous widget key-rotated revocation prevents message/usage persistence (62 ms)
+  ✓ native anonymous widget domain-revoked revocation prevents message/usage persistence (73 ms)
+  ✓ native anonymous widget origin-denied revocation prevents message/usage persistence (60 ms)
+  ✓ native anonymous widget quota revocation prevents message/usage persistence (78 ms)
+  ✓ native anonymous widget session-deleted revocation prevents message/usage persistence (61 ms)
+  ✓ native anonymous widget visitor-changed revocation prevents message/usage persistence (54 ms)
+  ✓ native anonymous widget owner-banned revocation prevents message/usage persistence (58 ms)
+  ✓ native anonymous widget source-hidden revocation prevents message/usage persistence (53 ms)
+  ✓ native anonymous widget source-deleted revocation prevents message/usage persistence (56 ms)
+  ✓ native anonymous widget release revocation prevents message/usage persistence (73 ms)
+  ✓ native anonymous widget owner-receipt revocation prevents message/usage persistence (51 ms)
+  ✓ native widget persistence serializes concurrent config revocation without deadlock (81 ms)
+  ✓ native widget persistence serializes concurrent post revocation without deadlock (70 ms)
+  ✓ native widget persistence serializes concurrent session revocation without deadlock (68 ms)
+  ✓ native widget persistence serializes concurrent release revocation without deadlock (76 ms)
+  ✓ native widget usage failure rolls back both messages and usage (56 ms)
+  ✓ native subscription expiring during final guard trailing reads is rejected before return (2257 ms)
+  ○ skipped native delayed discovery cannot republish the pre-acceptance post snapshot
+  ○ skipped native opposite transaction interleavings complete without deadlock: correction-first
+  ○ skipped native opposite transaction interleavings complete without deadlock: sync-first
+  ○ skipped native failed audit insertion rolls back authoritative post, projection, retirement and outbox
+  ○ skipped native post mutation acquires expert parent before post/outbox writes
+  ○ skipped native RAG revocation retracts projection/evidence and preserves post visibility
+  ○ skipped native simultaneous first projection publication creates one source without duplicate versions
+  ○ skipped native real evidence FK/projection completes in both rebuild/sync orders: rebuild-first
+  ○ skipped native real evidence FK/projection completes in both rebuild/sync orders: sync-first
+  ○ skipped native index/removal with the same deterministic cleanup job has no cycle: index-first
+  ○ skipped native index/removal with the same deterministic cleanup job has no cycle: remove-first
+  ○ skipped native index/RAG retraction preserves revocation and cleanup in both orders: index-first
+  ○ skipped native index/RAG retraction preserves revocation and cleanup in both orders: retraction-first
+  ○ skipped native evidence publication failure rolls back source/revision and durably cleans staged vectors
+  ○ skipped native index finishing after accepted correction cannot publish stale evidence or retire new state
+  ○ skipped native removal cleanup failure rolls back revocation, then retry captures and drains final IDs
+  ○ skipped native pdf submission captures immutable parsed provenance without changing beliefs; retry survives deletion
+  ○ skipped native blog submission captures immutable parsed provenance without changing beliefs; retry survives deletion
+  ○ skipped native stale/foreign/oversized import submissions leave no review audit or source mutation
+  ○ skipped native expert revision captures new import target while preserving original submission event
+
+  ● native EOF-to-persistence subscription change refuses answer and leaves no assistant row
+
+    PrismaClientUnknownRequestError: 
+    Invalid `prisma.expertSubscription.update()` invocation in
+    /Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-16/scripts/exp16-replay/post-sync.integration.ts:447:61
+
+      444 if(change==='post-hidden')await prisma.post.update({where:{id:'post'},data:{isHidden:true}});
+      445 if(change==='post-rag')await withPostOutbox('owner',tx=>tx.post.update({where:{id:'post'},data:{isRagEnabled:false}}));
+      446 if(change==='source-deleted')await removeKnowledgeItem('expert','item');
+    → 447 if(change==='subscription')await prisma.expertSubscription.update(
+    Error occurred during query execution:
+    ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "23514", message: "new row for relation \"ExpertSubscription\" violates check constraint \"verified_paid_period_order\"", severity: "ERROR", detail: Some("Failing row contains (subscription, viewer, expert, ACTIVE, 2026-10-11 04:59:22.961, null, 0, PREMIUM, 2026-10-11 04:59:22.961, 2026-10-11 04:59:22.972, null, synthetic-only, 2000-01-01 00:00:00, null, 0, 2020-01-01 00:00:00, null, 0)."), column: None, hint: None }), transient: false })
+
+      445 |  if(change==='post-rag')await withPostOutbox('owner',tx=>tx.post.update({where:{id:'post'},data:{isRagEnabled:false}}));
+      446 |  if(change==='source-deleted')await removeKnowledgeItem('expert','item');
+    > 447 |  if(change==='subscription')await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2000-01-01')}});
+          |                             ^
+      448 |  if(change==='session-deleted')await prisma.chatSession.delete({where:{id:'session'}});
+      449 |  if(change==='viewer-banned')await prisma.user.update({where:{id:'viewer'},data:{isBanned:true}});
+      450 |  if(change==='owner-inactive')await prisma.user.update({where:{id:'owner'},data:{isActive:false}});
+
+      at ei.handleRequestError (../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/.prisma/client/runtime/library.js:125:7458)
+      at ei.handleAndLogRequestError (../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/.prisma/client/runtime/library.js:125:6593)
+      at ei.request (../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/.prisma/client/runtime/library.js:125:6300)
+      at a (../../../../2026-10-04/task-13/experthub-app-brain-camera-revision/node_modules/.prisma/client/runtime/library.js:134:9551)
+      at scripts/exp16-replay/post-sync.integration.ts:447:29
+
+  ● native persistence holds subscription writer until answer commit; both operations complete without deadlock
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      477 |   const until=Date.now()+4000;
+      478 |   while(Date.now()<until){const rows=await prisma.$queryRaw<{waiting:boolean}[]>`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock') AS waiting`;if(rows[0].waiting){observed=true;break;}await new Promise(r=>setTimeout(r,10));}
+    > 479 |   expect(observed).toBe(true);
+          |                    ^
+      480 |   expect(await prisma.chatMessage.count()).toBe(0);
+      481 |  }finally{persistenceResume.open();}
+      482 |  expect((await saving).error).toBeNull();expect((await outcome).error).toBeNull();
+
+      at scripts/exp16-replay/post-sync.integration.ts:479:20
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 20 skipped, 54 passed, 76 total
+Snapshots:   0 total
+Time:        11.317 s
+Ran all test suites with tests matching "native v2 rollback|native release head CAS|native legacy rollback|native equal-config rollback|native new-release approval|native gated writer|native store rejects|native approved correction|native EOF-to-persistence|native persistence holds|native answer/update|native rollback refuses|native paid expiry|native owner deletion|native anonymous widget|native widget persistence|native widget usage|native subscription expiring".
+Test results written to: audit/exp16-acceptance-20261011/full-schema-jest.json
+
+waiting for server to shut down.... done
+server stopped
+

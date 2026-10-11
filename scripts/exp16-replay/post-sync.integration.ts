@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { syncPostSource, withPostOutbox, performIndexJob, removeKnowledgeItem } from '@/lib/knowledge/lifecycle';
@@ -20,8 +20,21 @@ async function waitForLock(table:string){
  }
  throw Error('No observed native lock wait for '+table);
 }
+const fullSchema = process.env.EXP16_NATIVE_FULL_SCHEMA === '1';
+let fullChildTables: string[] = [];
 beforeAll(async()=>{
  expect(await prisma.$queryRaw`SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address`).toEqual([{database:'exp16_replay_fixture',username:'exp16_fixture',address:null}]);
+ if(fullSchema){
+  // Actual all18 standard migrations are owned by the runner, never reproduced here.
+  const stagingGuard=jest.requireActual('../staging/build.cjs');
+  await stagingGuard.verify(prisma,stagingGuard.migrations());
+  const ledger=await prisma.$queryRaw`SELECT migration_name,checksum,finished_at,rolled_back_at FROM "_prisma_migrations" ORDER BY migration_name`;
+  const tables=await prisma.$queryRaw<{tablename:string}[]>`SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename`;
+  const constraints=await prisma.$queryRaw`SELECT conrelid::regclass::text AS relation,conname,pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE connamespace='public'::regnamespace ORDER BY relation,conname`;
+  expect(tables).toHaveLength(51); //50 app tables plus engine-owned migration ledger.
+  fullChildTables=tables.map(row=>row.tablename).filter(table=>!['User','ExpertProfile','_prisma_migrations'].includes(table));
+  writeFileSync('audit/exp16-acceptance-20261011/full-schema-metadata.json',JSON.stringify({mode:'all18-standard-migrations',database:'exp16_replay_fixture',username:'exp16_fixture',serverAddress:null,ledger,tables,constraints},null,2)+'\n');
+ }else{
  // DMMF-derived scalar fixture tables only. No app migrations, extension installs or shared DB.
  // Relevant native unique/FK constraints are added explicitly below.
  const scalar:Record<string,string>={String:'TEXT',Int:'INTEGER',Float:'DOUBLE PRECISION',Boolean:'BOOLEAN',DateTime:'TIMESTAMP(3)',Json:'JSONB'};
@@ -61,7 +74,8 @@ beforeAll(async()=>{
  await prisma.$executeRawUnsafe('ALTER TABLE "WidgetSession" ADD UNIQUE ("widgetConfigId","visitorId"), ADD FOREIGN KEY ("widgetConfigId") REFERENCES "WidgetConfig"("id") ON DELETE CASCADE');
  await prisma.$executeRawUnsafe('ALTER TABLE "WidgetMessage" ADD FOREIGN KEY ("widgetSessionId") REFERENCES "WidgetSession"("id") ON DELETE CASCADE');
  await prisma.$executeRawUnsafe('ALTER TABLE "ChatMessage" ADD FOREIGN KEY ("chatSessionId") REFERENCES "ChatSession"("id") ON DELETE CASCADE');
- await prisma.user.createMany({data:[{id:'owner',email:'owner@synthetic.invalid',role:'EXPERT'},{id:'viewer',email:'viewer@synthetic.invalid',role:'SUBSCRIBER'}]});
+ }
+ await prisma.user.createMany({data:[{id:'owner',email:'owner@synthetic.invalid',role:'EXPERT'},{id:'viewer',email:'viewer@synthetic.invalid',role:'SUBSCRIBER'},{id:'different',email:'different@synthetic.invalid',role:'SUBSCRIBER'}]});
  await prisma.expertProfile.create({data:{id:'expert',userId:'owner',displayName:'Synthetic',specialty:[],vectorNamespace:'synthetic-ns'}});
 });
 beforeEach(async()=>{
@@ -70,7 +84,8 @@ beforeEach(async()=>{
  await prisma.expertProfile.update({where:{id:'expert'},data:{ragEnabled:true,twinGreeting:null}});
  approvals.clear();
  jest.mocked(indexDocument).mockClear();jest.mocked(removeDocument).mockClear();
- await prisma.$executeRawUnsafe('TRUNCATE "WidgetMessage","WidgetSession","ChatMessage","ChatSession","ExpertSubscription","PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
+ if(fullSchema)await prisma.$executeRawUnsafe('TRUNCATE '+fullChildTables.map(table=>'"'+table.replace(/"/g,'""')+'"').join(','));
+ else await prisma.$executeRawUnsafe('TRUNCATE "WidgetMessage","WidgetSession","ChatMessage","ChatSession","ExpertSubscription","PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
  await prisma.post.create({data:{id:'post',authorId:'owner',title:'Advice',content:'Old statement',isRagEnabled:true,isPremiumOnly:true,isHidden:true,status:'DRAFT'}});
  await prisma.knowledgeItem.create({data:{id:'item',expertProfileId:'expert',sourceType:'post',sourceId:'post',title:'Advice',content:'Old statement',sourceVersion:1,indexedVersion:1,isIndexed:true,vectorIds:['old-vector'],metadata:{postId:'post',status:'DRAFT',isHidden:true,isPremiumOnly:true}}});
  await prisma.$executeRaw`INSERT INTO "EvidenceRevision" ("id","expertProfileId","itemId","sourceType","sourceVersion","contentHash","snapshotHash","content","publicationTimeBasis","sourceUpdatedAt","uploaderId","audience","extractorVersion") VALUES ('revision','expert','item','post',1,'synthetic-hash','synthetic-snapshot','Advice','unavailable',CURRENT_TIMESTAMP,'owner','private','synthetic-extractor')`;
@@ -429,7 +444,7 @@ test.each(['release','first-release','rag','post-hidden','post-rag','source-dele
  if(change==='post-hidden')await prisma.post.update({where:{id:'post'},data:{isHidden:true}});
  if(change==='post-rag')await withPostOutbox('owner',tx=>tx.post.update({where:{id:'post'},data:{isRagEnabled:false}}));
  if(change==='source-deleted')await removeKnowledgeItem('expert','item');
- if(change==='subscription')await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2000-01-01')}});
+ if(change==='subscription')await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2021-01-01')}});
  if(change==='session-deleted')await prisma.chatSession.delete({where:{id:'session'}});
  if(change==='viewer-banned')await prisma.user.update({where:{id:'viewer'},data:{isBanned:true}});
  if(change==='owner-inactive')await prisma.user.update({where:{id:'owner'},data:{isActive:false}});
@@ -452,7 +467,7 @@ test.each(['post-hidden','source-edit','subscription','session-delete','release'
  await locked.promise;
  const writing=change==='post-hidden'?prisma.post.update({where:{id:'post'},data:{isHidden:true}}):
   change==='source-edit'?prisma.knowledgeItem.update({where:{id:'item'},data:{content:'Edited after save',sourceVersion:{increment:1},isIndexed:false}}):
-  change==='subscription'?prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2000-01-01')}}):
+  change==='subscription'?prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date('2021-01-01')}}):
   change==='viewer-ban'?prisma.user.update({where:{id:'viewer'},data:{isBanned:true}}):
   change==='owner-role'?prisma.user.update({where:{id:'owner'},data:{role:'SUBSCRIBER'}}):
   change==='session-delete'?prisma.chatSession.delete({where:{id:'session'}}):publish('after-save',release.id);
