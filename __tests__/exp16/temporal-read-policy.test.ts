@@ -4,7 +4,7 @@ jest.mock("@/lib/ai/prompts",()=>({getDigitalTwinSystemPrompt:()=>"Synthetic per
 import { releasePersona as activatePersona, previewPersonaActivation, previewPersonaRollback } from "@/lib/persona/store";
 import { manifestHash, scopeForRelease, type PersonaManifest } from "@/lib/persona/manifest";
 import { TEMPORAL_EXTRACTOR_VERSION as V1 } from "@/lib/graph/temporal/extractor";
-import { TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
+import { TEMPORAL_READ_VERSION, ACTIVE_TEMPORAL_READ_VERSION } from "@/lib/graph/temporal/read-policy";
 import { EXTRACTOR_VERSION } from "@/lib/graph/evidence-extractor";
 async function releasePersona(input:Parameters<typeof activatePersona>[0]) {const preview=await previewPersonaActivation(input);return activatePersona({...input,...(preview.approvalHash?{approvalHash:preview.approvalHash}:{})});}
 const config={twinPersonality:null,twinGreeting:null,twinOpinions:null,twinFramework:null,twinBoundaries:null,ragEnabled:true,personalityProfile:null};
@@ -42,10 +42,10 @@ test("retained v1 manifests pin v1 reader while live scope and exact pins still 
 test("new releases stamp the active adapter read policy without rewriting historical manifests",async()=>{
  const retained=JSON.stringify(old);
  const release=await releasePersona({expertProfileId:"tenant-a",actorId:"owner",operationKey:"new",expectedHead:"head"});
- expect(release.manifest.algorithms.temporal).toBe(TEMPORAL_READ_VERSION);
- expect(scopeForRelease(scope,release.manifest,pins).temporalReadVersion).toBe(TEMPORAL_READ_VERSION);
+ expect(release.manifest.algorithms.temporal).toBe(ACTIVE_TEMPORAL_READ_VERSION);
+ expect(scopeForRelease(scope,release.manifest,pins).temporalReadVersion).toBe(ACTIVE_TEMPORAL_READ_VERSION);
  expect(JSON.stringify(old)).toBe(retained);expect(update).not.toHaveBeenCalled();
- expect(JSON.parse(writes[0][6] as string).algorithms.temporal).toBe(TEMPORAL_READ_VERSION);
+ expect(JSON.parse(writes[0][6] as string).algorithms.temporal).toBe(ACTIVE_TEMPORAL_READ_VERSION);
 });
 test("rollback preserves target v1 temporal interpretation rather than silently adopting adapter",async()=>{
  const preview=await previewPersonaRollback({expertProfileId:"tenant-a",actorId:"owner",expectedHead:"head",rollbackTo:"old"});expect(preview.allowed).toBe(true);
