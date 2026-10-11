@@ -1,0 +1,870 @@
+{
+  "candidateCommit": "43b784a4e71fc985ae178e1d7ab764f0ff4a85d1",
+  "fixtureSha256": "b659d137830ca0bb22527da1ad571e4a28c6576e0cbdf68f82021a82228ca635",
+  "method": "13 developer-authored synthetic breadth cases. Actual frozen Phase0 retriever and current intent orchestration, identical4096byte cap, injected same semantic hits; source/live permission stores are mocked. Temporal extraction/replay/timeline/selector execute. No model, SQL, human review or external calls. Whole-source held-doc and both neighboring chunks are absent from permitted candidate corpus. Semantic-only hit relevance is an injected oracle, not a calibrated embedding claim. Per-case provisional source-set precision/recall only; no general held-out score.",
+  "traces": [
+    {
+      "caseId": "current-time",
+      "question": "Current stance on NacreStore",
+      "intent": "stance",
+      "goldSourceIds": [
+        "present"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "past",
+          "present"
+        ],
+        "recall": 1,
+        "precision": 0.5,
+        "exactSetMatch": false,
+        "contextBytes": 130,
+        "localMs": 0.05649999999991451
+      },
+      "candidate": {
+        "selectedSourceIds": [
+          "present"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 1,
+          "selected": 1,
+          "tokenUpperBound": 1313,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.2708749999999327,
+          "failures": []
+        },
+        "gaps": [],
+        "stances": [
+          {
+            "start": 0,
+            "end": 60,
+            "text": "From 2025-01-01, In warehousing, I do not prefer NacreStore.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": null,
+            "category": "preference",
+            "polarity": "negative",
+            "action": "NacreStore",
+            "reasons": null,
+            "constraints": null,
+            "alternatives": null,
+            "tradeoffs": null,
+            "exceptions": null,
+            "supersedes": null,
+            "validFrom": "2025-01-01T00:00:00.000Z",
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "recommendation",
+            "id": "15f826f2f4ba97fbbdb9dcbdaa14d5fb27d7ed45b70c7e12d90ef923ffc91faa",
+            "spanId": "s-present",
+            "revisionId": "r-present",
+            "itemId": "present",
+            "contentHash": "f2316195ff01f2eb4c72875d68b4637403a0c5521513ec3c51140165cbd9e7f5",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-present"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v2",
+            "situation": null,
+            "chosenAction": "NacreStore",
+            "documentedReasons": null,
+            "storedStanceId": "18eba8f85bb7b44371760ede2e7d57bcb76a4a09c42881bcf2723d156f1c2f74",
+            "storedExtractorVersion": "literal-temporal-decision-v1",
+            "projectionBasis": "authorized-span-replay",
+            "temporalUncertainty": null
+          }
+        ],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "asof-time",
+      "question": "As of 2024-01-01, stance on NacreStore",
+      "intent": "stance",
+      "goldSourceIds": [
+        "past"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "past",
+          "present"
+        ],
+        "recall": 1,
+        "precision": 0.5,
+        "exactSetMatch": false,
+        "contextBytes": 130,
+        "localMs": 0.00895900000000438
+      },
+      "candidate": {
+        "selectedSourceIds": [
+          "past"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 1,
+          "selected": 1,
+          "tokenUpperBound": 1311,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.14208399999984067,
+          "failures": []
+        },
+        "gaps": [],
+        "stances": [
+          {
+            "start": 0,
+            "end": 70,
+            "text": "From 2023-01-01 until 2025-01-01, In warehousing, I prefer NacreStore.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": null,
+            "category": "preference",
+            "polarity": "positive",
+            "action": "NacreStore",
+            "reasons": null,
+            "constraints": null,
+            "alternatives": null,
+            "tradeoffs": null,
+            "exceptions": null,
+            "supersedes": null,
+            "validFrom": "2023-01-01T00:00:00.000Z",
+            "validUntil": "2025-01-01T00:00:00.000Z",
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "recommendation",
+            "id": "251769d271159e961721b0fd0ff41368a8918e37f8f0b0db4f65b3bc991d7848",
+            "spanId": "s-past",
+            "revisionId": "r-past",
+            "itemId": "past",
+            "contentHash": "f45f920297bad07c035077127fced922b51252698f1cf5a68c690fffa426b679",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-past"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": null,
+            "chosenAction": "NacreStore",
+            "documentedReasons": null,
+            "temporalUncertainty": null
+          }
+        ],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "recorded-knownat",
+      "question": "As of 2024-01-01, stance on NacreStore",
+      "intent": "stance",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "past"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 70,
+        "localMs": 0.0062499999999090505
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.024249999999938154,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "decision-pair",
+      "question": "Should I choose NacreStore for startup?",
+      "intent": "decision",
+      "goldSourceIds": [
+        "yes",
+        "no"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "yes",
+          "no"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "contextBytes": 372,
+        "localMs": 0.006709000000000742
+      },
+      "candidate": {
+        "selectedSourceIds": [
+          "no",
+          "yes"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 2,
+          "selected": 2,
+          "tokenUpperBound": 2997,
+          "hops": 1,
+          "truncated": false,
+          "retrievalMs": 0.14037499999994907,
+          "failures": []
+        },
+        "gaps": [],
+        "stances": [
+          {
+            "start": 0,
+            "end": 187,
+            "text": "In warehousing, For startup, I do not prefer NacreStore because upgrade toil; constraints: two operators; exceptions: disposable pilots; alternatives: paper logs; tradeoff: recovery time.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": "startup",
+            "category": "preference",
+            "polarity": "negative",
+            "action": "NacreStore",
+            "reasons": "upgrade toil",
+            "constraints": "two operators",
+            "alternatives": "paper logs",
+            "tradeoffs": "recovery time",
+            "exceptions": "disposable pilots",
+            "supersedes": null,
+            "validFrom": null,
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": null,
+            "id": "6c588b4cacaae4e93051f5c2f719a1e487afef0c1a7ced31196f0a0483767610",
+            "spanId": "s-no",
+            "revisionId": "r-no",
+            "itemId": "no",
+            "contentHash": "506ce56b4933f0e5a8c800401f86b7c28c76cafc9da6c49a0ec95f89ea50697f",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-no"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": null,
+            "chosenAction": null,
+            "documentedReasons": null,
+            "temporalUncertainty": "valid-time-unknown"
+          },
+          {
+            "start": 0,
+            "end": 185,
+            "text": "In warehousing, For startup, I prefer NacreStore because simple installation; constraints: two operators; exceptions: audited systems; alternatives: paper logs; tradeoff: recovery time.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": "startup",
+            "category": "preference",
+            "polarity": "positive",
+            "action": "NacreStore",
+            "reasons": "simple installation",
+            "constraints": "two operators",
+            "alternatives": "paper logs",
+            "tradeoffs": "recovery time",
+            "exceptions": "audited systems",
+            "supersedes": null,
+            "validFrom": null,
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "recommendation",
+            "id": "d228f9c9d790e95b4e699b28caeff33d6312b765d106d2178dd599970a577440",
+            "spanId": "s-yes",
+            "revisionId": "r-yes",
+            "itemId": "yes",
+            "contentHash": "a156f9a337927bd66fcff6dd3187afd830705899d09fd4137d82bf698758a557",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-yes"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": "startup",
+            "chosenAction": "NacreStore",
+            "documentedReasons": "simple installation",
+            "temporalUncertainty": "valid-time-unknown"
+          }
+        ],
+        "relations": [
+          {
+            "from": "6c588b4cacaae4e93051f5c2f719a1e487afef0c1a7ced31196f0a0483767610",
+            "to": "d228f9c9d790e95b4e699b28caeff33d6312b765d106d2178dd599970a577440",
+            "type": "contradiction",
+            "kind": "inferred",
+            "evidenceSpanIds": [
+              "s-no",
+              "s-yes"
+            ],
+            "uncertainty": "valid-time-unknown; do not resolve by recorded recency"
+          }
+        ]
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "late-rare-name",
+      "question": "What is the stance on CobaltRunner?",
+      "intent": "stance",
+      "goldSourceIds": [
+        "late"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "late"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "contextBytes": 262,
+        "localMs": 0.0061659999998937565
+      },
+      "candidate": {
+        "selectedSourceIds": [
+          "late"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 1,
+          "selected": 1,
+          "tokenUpperBound": 1687,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.0752500000000964,
+          "failures": []
+        },
+        "gaps": [],
+        "stances": [
+          {
+            "start": 0,
+            "end": 262,
+            "text": "I prefer topicaa topicba topicca topicda topicea topicfa topicga topicha topicia topicja topicka topicla topicma topicna topicoa topicpa topicqa topicra topicsa topicta topicua topicva topicwa topicxa topicya topicza topicab topicbb topiccb topicdb CobaltRunner.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": null,
+            "context": null,
+            "category": "preference",
+            "polarity": "positive",
+            "action": "topicaa topicba topicca topicda topicea topicfa topicga topicha topicia topicja topicka topicla topicma topicna topicoa topicpa topicqa topicra topicsa topicta topicua topicva topicwa topicxa topicya topicza topicab topicbb topiccb topicdb CobaltRunner",
+            "reasons": null,
+            "constraints": null,
+            "alternatives": null,
+            "tradeoffs": null,
+            "exceptions": null,
+            "supersedes": null,
+            "validFrom": null,
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "recommendation",
+            "id": "35b7f46b8e077e7b6d5e798d8215d11570b6b62a76a3f26d94fbf324f661e0c6",
+            "spanId": "s-late",
+            "revisionId": "r-late",
+            "itemId": "late",
+            "contentHash": "1a688c75719cbad7a862b922b9534645d9d4e89426d9b9869415f4c6c39b66f2",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-late"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": null,
+            "chosenAction": "topicaa topicba topicca topicda topicea topicfa topicga topicha topicia topicja topicka topicla topicma topicna topicoa topicpa topicqa topicra topicsa topicta topicua topicva topicwa topicxa topicya topicza topicab topicbb topiccb topicdb CobaltRunner",
+            "documentedReasons": null,
+            "temporalUncertainty": "valid-time-unknown"
+          }
+        ],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "unknown-topic",
+      "question": "What is the stance on StarMoss?",
+      "intent": "stance",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "yes"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 185,
+        "localMs": 0.004958999999871594
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.024750000000040018,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "whole-source-withheld-neighbors",
+      "question": "What is the stance on HIDDEN_HELDOUT_SENTINEL?",
+      "intent": "stance",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "held-doc",
+          "yes"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 234,
+        "localMs": 0.005208999999922526
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.026250000000118234,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "warm-audience-revocation",
+      "question": "What is the stance on PREMIUM_REVOKED_SENTINEL?",
+      "intent": "stance",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "premium",
+          "yes"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 235,
+        "localMs": 0.005292000000054031
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.027916000000004715,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "cross-tenant-neighbor",
+      "question": "What is the stance on FOREIGN_TENANT_SENTINEL?",
+      "intent": "stance",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "foreign",
+          "yes"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 234,
+        "localMs": 0.008374999999887223
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.02804199999991397,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "conversation",
+      "question": "Hello!",
+      "intent": "conversation",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "yes"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 185,
+        "localMs": 0.004500000000007276
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 503,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.01808300000016061,
+          "failures": []
+        },
+        "gaps": [
+          "No evidence needed for this conversational query"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": null
+    },
+    {
+      "caseId": "biography-unavailable",
+      "question": "Tell me your biography",
+      "intent": "biography",
+      "goldSourceIds": [],
+      "baseline": {
+        "selectedSourceIds": [
+          "bio"
+        ],
+        "recall": null,
+        "precision": 0,
+        "exactSetMatch": false,
+        "contextBytes": 31,
+        "localMs": 0.007582999999840467
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": null,
+        "precision": null,
+        "exactSetMatch": true,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 528,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.01587500000005093,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": "Routing exists; biography extraction is unavailable and must remain UNKNOWN."
+    },
+    {
+      "caseId": "semantic-only-paraphrase",
+      "question": "Should I use a tiny in-process database?",
+      "intent": "decision",
+      "goldSourceIds": [
+        "semantic"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "semantic"
+        ],
+        "recall": 1,
+        "precision": 1,
+        "exactSetMatch": true,
+        "contextBytes": 95,
+        "localMs": 0.00383300000021336
+      },
+      "candidate": {
+        "selectedSourceIds": [],
+        "recall": 0,
+        "precision": null,
+        "exactSetMatch": false,
+        "trace": {
+          "candidates": 0,
+          "selected": 0,
+          "tokenUpperBound": 801,
+          "hops": 0,
+          "truncated": false,
+          "retrievalMs": 0.024916000000075655,
+          "failures": []
+        },
+        "gaps": [
+          "No relevant source-backed evidence within the authorized candidate budget",
+          "Documented constraints unavailable in selected evidence",
+          "Documented exceptions unavailable in selected evidence",
+          "Documented reasons unavailable in selected evidence",
+          "Documented situation unavailable in selected evidence"
+        ],
+        "stances": [],
+        "relations": []
+      },
+      "knownLimit": "A high-score injected semantic hit cannot seed a stance without a lexical/source-field anchor. Developer treats embedded datastore/in-process database as paraphrases; independent semantic adjudication remains unrun."
+    },
+    {
+      "caseId": "different-context-neighbor",
+      "question": "Should I choose NacreStore for startup?",
+      "intent": "decision",
+      "goldSourceIds": [
+        "yes"
+      ],
+      "baseline": {
+        "selectedSourceIds": [
+          "yes",
+          "independent"
+        ],
+        "recall": 1,
+        "precision": 0.5,
+        "exactSetMatch": false,
+        "contextBytes": 320,
+        "localMs": 0.004459000000224478
+      },
+      "candidate": {
+        "selectedSourceIds": [
+          "independent",
+          "yes"
+        ],
+        "recall": 1,
+        "precision": 0.5,
+        "exactSetMatch": false,
+        "trace": {
+          "candidates": 2,
+          "selected": 2,
+          "tokenUpperBound": 2679,
+          "hops": 1,
+          "truncated": false,
+          "retrievalMs": 0.10591700000009041,
+          "failures": []
+        },
+        "gaps": [],
+        "stances": [
+          {
+            "start": 0,
+            "end": 135,
+            "text": "In warehousing, For Fortune500, I chose AuroraAPI because global availability; constraints: ten operators; exceptions: regional pilots.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": "Fortune500",
+            "category": "decision",
+            "polarity": "positive",
+            "action": "AuroraAPI",
+            "reasons": "global availability",
+            "constraints": "ten operators",
+            "alternatives": null,
+            "tradeoffs": null,
+            "exceptions": "regional pilots",
+            "supersedes": null,
+            "validFrom": null,
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "documented-choice",
+            "id": "276c4728fc4838662f96b95e32cd8b6832365569becc182d93bf1e236c717247",
+            "spanId": "s-independent",
+            "revisionId": "r-independent",
+            "itemId": "independent",
+            "contentHash": "2d75b2a795ea435a8c1a6ac00036ac62cf55bf60dab966bd2e5615c184485ddd",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-independent"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": "Fortune500",
+            "chosenAction": "AuroraAPI",
+            "documentedReasons": "global availability",
+            "temporalUncertainty": "valid-time-unknown"
+          },
+          {
+            "start": 0,
+            "end": 185,
+            "text": "In warehousing, For startup, I prefer NacreStore because simple installation; constraints: two operators; exceptions: audited systems; alternatives: paper logs; tradeoff: recovery time.",
+            "speakerId": "owner",
+            "speakerRole": "author",
+            "origin": "expert-authored",
+            "domain": "warehousing",
+            "context": "startup",
+            "category": "preference",
+            "polarity": "positive",
+            "action": "NacreStore",
+            "reasons": "simple installation",
+            "constraints": "two operators",
+            "alternatives": "paper logs",
+            "tradeoffs": "recovery time",
+            "exceptions": "audited systems",
+            "supersedes": null,
+            "validFrom": null,
+            "validUntil": null,
+            "certainty": "source-explicit",
+            "kind": "explicit",
+            "endorsedByOwner": true,
+            "decisionType": "recommendation",
+            "id": "d228f9c9d790e95b4e699b28caeff33d6312b765d106d2178dd599970a577440",
+            "spanId": "s-yes",
+            "revisionId": "r-yes",
+            "itemId": "yes",
+            "contentHash": "a156f9a337927bd66fcff6dd3187afd830705899d09fd4137d82bf698758a557",
+            "sourceVersion": 1,
+            "authorId": "owner",
+            "uploaderId": "owner",
+            "audience": "public",
+            "publishedAt": null,
+            "publicationTimeBasis": "unavailable",
+            "sourceUpdatedAt": "2026-10-11T00:00:00.000Z",
+            "ingestedAt": "2026-10-11T00:00:00.000Z",
+            "recordedAt": "2026-10-11T00:00:00.000Z",
+            "chunkIds": [
+              "c-yes"
+            ],
+            "speaker": "owner",
+            "extractorVersion": "literal-temporal-decision-v1",
+            "situation": "startup",
+            "chosenAction": "NacreStore",
+            "documentedReasons": "simple installation",
+            "temporalUncertainty": "valid-time-unknown"
+          }
+        ],
+        "relations": []
+      },
+      "knownLimit": "Same-domain expansion returns a separately documented Fortune500 case. Conservative developer gold treats it as extra context; human relevance adjudication is needed, not a demonstrated unsafe answer."
+    }
+  ]
+}

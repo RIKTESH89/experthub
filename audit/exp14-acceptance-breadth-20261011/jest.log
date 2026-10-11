@@ -1,0 +1,21 @@
+PASS __tests__/exp14/acceptance-breadth.test.ts
+  ✓ current-time records actual frozen/intent-reader behavior at equal bounded evidence budget (8 ms)
+  ✓ asof-time records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ recorded-knownat records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ decision-pair records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ late-rare-name records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ unknown-topic records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ whole-source-withheld-neighbors records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ warm-audience-revocation records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ cross-tenant-neighbor records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ conversation records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ biography-unavailable records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ semantic-only-paraphrase records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ different-context-neighbor records actual frozen/intent-reader behavior at equal bounded evidence budget
+
+Test Suites: 1 passed, 1 total
+Tests:       13 passed, 13 total
+Snapshots:   0 total
+Time:        0.164 s, estimated 1 s
+Ran all test suites matching /__tests__\/exp14\/acceptance-breadth.test.ts/i.
+Test results written to: audit/exp14-acceptance-breadth-20261011/jest.json

@@ -1,0 +1,17 @@
+PASS audit/exp17-representation-independent-review-20261011/representation.review.ts
+  ✓ U14-exact records whole native gate outcome without inferring semantics from reviewer labels (5 ms)
+  ✓ registered-doctor records whole native gate outcome without inferring semantics from reviewer labels
+  ✓ unlisted-role records whole native gate outcome without inferring semantics from reviewer labels (1 ms)
+  ✓ years-in-domain records whole native gate outcome without inferring semantics from reviewer labels
+  ✓ degree-negation records whole native gate outcome without inferring semantics from reviewer labels (1 ms)
+  ✓ safe-role-disclaimer records whole native gate outcome without inferring semantics from reviewer labels (1 ms)
+  ✓ denial-followed-career records whole native gate outcome without inferring semantics from reviewer labels
+  ✓ archived-data records whole native gate outcome without inferring semantics from reviewer labels (1 ms)
+  ✓ ordinary-interface records whole native gate outcome without inferring semantics from reviewer labels
+  ✓ computational-explanation records whole native gate outcome without inferring semantics from reviewer labels (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        0.266 s, estimated 1 s
+Ran all test suites.

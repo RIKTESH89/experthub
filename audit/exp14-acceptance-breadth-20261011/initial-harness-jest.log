@@ -1,0 +1,44 @@
+FAIL __tests__/exp14/acceptance-breadth.test.ts
+  ✓ current-time records actual frozen/intent-reader behavior at equal bounded evidence budget (7 ms)
+  ✕ asof-time records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ recorded-knownat records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ decision-pair records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ late-rare-name records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ unknown-topic records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ whole-source-withheld-neighbors records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ warm-audience-revocation records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ cross-tenant-neighbor records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ conversation records actual frozen/intent-reader behavior at equal bounded evidence budget (1 ms)
+  ✓ biography-unavailable records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ semantic-only-paraphrase records actual frozen/intent-reader behavior at equal bounded evidence budget
+  ✓ different-context-neighbor records actual frozen/intent-reader behavior at equal bounded evidence budget
+
+  ● asof-time records actual frozen/intent-reader behavior at equal bounded evidence budget
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "past",
+    +   "present",
+      ]
+
+      63 |  const current=await retrieveIntentEvidence(scope,c.question,c.query||{mode:'current',now:at});
+      64 |  const selected=Array.from(new Set(current.temporalTrace.stances.map(row=>row.itemId))).sort();
+    > 65 |  expect(selected).toEqual([...c.observed].sort());expect(current.trace.tokenUpperBound).toBeLessThanOrEqual(RETRIEVAL_BUDGET.tokens);expect(current.trace.hops).toBeLessThanOrEqual(1);
+         |                   ^
+      66 |  if(c.id==='decision-pair'){expect(current.temporalTrace.stances.every(s=>s.constraints==='two operators')).toBe(true);expect(current.prompt).toContain('audited systems');expect(current.prompt).toContain('disposable pilots');expect(current.temporalTrace.relations.some(r=>r.type==='contradiction')).toBe(true);}
+      67 |  if(c.id==='whole-source-withheld-neighbors')expect(JSON.stringify(current)).not.toContain('HIDDEN_HELDOUT_SENTINEL');
+      68 |  if(c.id==='warm-audience-revocation')expect(JSON.stringify(current)).not.toContain('PREMIUM_REVOKED_SENTINEL');
+
+      at __tests__/exp14/acceptance-breadth.test.ts:65:19
+      at fulfilled (__tests__/exp14/acceptance-breadth.test.ts:5:58)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 12 passed, 13 total
+Snapshots:   0 total
+Time:        0.277 s
+Ran all test suites matching /__tests__\/exp14\/acceptance-breadth.test.ts/i.
+Test results written to: audit/exp14-acceptance-breadth-20261011/jest.json
