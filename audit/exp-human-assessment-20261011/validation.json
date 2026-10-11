@@ -1,0 +1,18 @@
+{
+  "fixedAnswers": 116,
+  "scoreRows": 1672,
+  "workflowTasks": 6,
+  "ratingsEntered": 0,
+  "labelLeakage": 0,
+  "mode": "package-integrity-only",
+  "result": "PASS",
+  "readablePacketComplete": true,
+  "adversarialRejections": [
+    "answer-hash",
+    "duplicate-id",
+    "label-leakage",
+    "invented-rating"
+  ],
+  "humanReview": "NOT_RUN",
+  "providerCalls": 0
+}
