@@ -4,6 +4,7 @@ import { runChatEngine } from "@/lib/ai/chat-engine";
 import { chronologicalHistory } from "@/lib/ai/history";
 import { widgetIdentity } from "@/lib/ai/widget-identity";
 import { rateLimit } from "@/lib/rate-limit";
+import { checkSignal } from "@/lib/ai/request-lifecycle";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,6 +19,7 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
+    checkSignal(request.signal);
     const body = await request.json();
     const { apiKey, visitorId: requestedVisitorId, visitorToken, message } = body;
 
@@ -103,6 +105,7 @@ export async function POST(request: NextRequest) {
       query: message,
       chatHistory,
       enableWebSearch: false,
+      signal: request.signal,
     });
 
     // Create a TransformStream to capture the full response while streaming
@@ -112,6 +115,7 @@ export async function POST(request: NextRequest) {
 
     const transformStream = new TransformStream({
       transform(chunk, controller) {
+        checkSignal(request.signal);
         const text = new TextDecoder().decode(chunk);
         const lines = text.split("\n");
         for (const line of lines) {
@@ -141,6 +145,7 @@ export async function POST(request: NextRequest) {
         }
       },
       async flush() {
+        checkSignal(request.signal);
         // Save messages after streaming completes
         if (fullResponse) {
           await prisma.widgetMessage.createMany({
@@ -176,7 +181,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const responseStream = stream.pipeThrough(transformStream);
+    const responseStream = stream.pipeThrough(transformStream, { signal: request.signal });
 
     return new NextResponse(responseStream, {
       headers: {

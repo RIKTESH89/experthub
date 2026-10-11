@@ -118,7 +118,7 @@ async function runExperimentalChatEngine(options: ChatEngineOptions): Promise<Ch
 
   if (options.structuredEvaluationAdapters) {
     let audience: "owner" | "viewer" = scope.isOwner ? "owner" : "viewer";
-    const structuredEvaluation = await runStructuredDialogue({expertId:expert.userId,query,
+    const structuredEvaluation = await runStructuredDialogue({expertId:expert.userId,query,signal:options.signal,
       history:authorizedHistory(chatHistory,effectiveScope),bundle:evidenceBundle,
       adapters:{...options.structuredEvaluationAdapters,evidence:{revalidate:async(original,signal)=>{
         if(signal.aborted)throw new Error("evaluation aborted");

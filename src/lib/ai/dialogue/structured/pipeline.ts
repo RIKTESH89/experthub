@@ -17,6 +17,7 @@ export interface StructuredTurnInput {
     adapters: StructuredAdapters;
     maxAttempts?: number;
     deadlineMs?: number;
+    signal?: AbortSignal;
 }
 const blockedText = "I’m an AI representation, not the actual person. I can’t support that response from the available evidence and verification. Could you clarify the question or provide an authorized source?";
 /** Total deadline and abort propagation bound hung/rejecting adapters, including repair.
@@ -27,6 +28,7 @@ export async function runStructuredDialogue(input: StructuredTurnInput): Promise
     const blocked = (reasons: string[]): TurnResult => immutableResult({ version: STRUCTURED_VERSION, outcome: "blocked", text: blockedText, decision: { allowed: false, reasons, acceptedSpanIds: [], unknownClaimIds: [] }, attempts, providerCalls: calls, semanticEvidence: "synthetic-fixture-only", elapsedMs: Date.now() - started });
     if (!localDialogueEvaluationEnabled())
         return blocked(["local-evaluation-disabled"]);
+    if (input.signal?.aborted) return blocked(["evaluation-cancelled"]);
     if (!input.adapters?.generator || !input.adapters.verifier || !input.adapters.evidence || typeof input.adapters.generator.generate !== "function" || typeof input.adapters.verifier.verify !== "function" || typeof input.adapters.evidence.revalidate !== "function")
         return blocked(["invalid-adapters"]);
     if (input.adapters.generator.id === input.adapters.verifier.id)
@@ -48,18 +50,27 @@ export async function runStructuredDialogue(input: StructuredTurnInput): Promise
     const deadline = started + Math.min(LIMITS.deadlineMs, Math.max(1, input.deadlineMs || LIMITS.deadlineMs));
     const controller = new AbortController();
     const timed = async <T>(action: (signal: AbortSignal) => Promise<T>): Promise<T> => {
+        if (input.signal?.aborted) throw new Error("evaluation-cancelled");
         const remaining = deadline - Date.now();
         if (remaining <= 0)
             throw new Error("evaluation-deadline");
         let timer: ReturnType<typeof setTimeout> | undefined;
+        let onAbort: (() => void) | undefined;
         try {
-            const result = await Promise.race([Promise.resolve().then(() => action(controller.signal)), new Promise<T>((_resolve, reject) => { timer = setTimeout(() => { controller.abort(); reject(new Error("evaluation-deadline")); }, remaining); })]);
+            const result = await Promise.race([Promise.resolve().then(() => { if (input.signal?.aborted) throw new Error("evaluation-cancelled"); return action(controller.signal); }), new Promise<T>((_resolve, reject) => {
+                onAbort = () => { controller.abort(); reject(new Error("evaluation-cancelled")); };
+                input.signal?.addEventListener("abort", onAbort, {once:true});
+                if (input.signal?.aborted) onAbort();
+                timer = setTimeout(() => { controller.abort(); reject(new Error("evaluation-deadline")); }, remaining);
+            })]);
+            if (input.signal?.aborted) throw new Error("evaluation-cancelled");
             assertRetained();
             return result;
         }
         finally {
             if (timer)
                 clearTimeout(timer);
+            if (onAbort) input.signal?.removeEventListener("abort", onAbort);
         }
     };
     let bundle: EvidenceBundle, initial: EvidenceBundle, history: HistoryMessage[], feedback: string[] = [];
@@ -149,7 +160,7 @@ export async function runStructuredDialogue(input: StructuredTurnInput): Promise
     }
     catch (error) {
         const retainedReason = error instanceof Error && ["generator-mutated-context", "verifier-mutated-snapshot", "live-adapter-mutated-input"].includes(error.message) ? error.message : null;
-        return blocked([retainedReason || (isSnapshotMutation(error) ? boundary === "generation" ? "generator-mutated-context" : boundary === "verification" ? "verifier-mutated-snapshot" : "immutable-adapter-snapshot-violation" : error instanceof Error && error.message === "evaluation-deadline" ? "evaluation-deadline" : "adapter-or-permission-failure")]);
+        return blocked([retainedReason || (input.signal?.aborted ? "evaluation-cancelled" : isSnapshotMutation(error) ? boundary === "generation" ? "generator-mutated-context" : boundary === "verification" ? "verifier-mutated-snapshot" : "immutable-adapter-snapshot-violation" : error instanceof Error && error.message === "evaluation-deadline" ? "evaluation-deadline" : "adapter-or-permission-failure")]);
     }
     finally {
         controller.abort();
