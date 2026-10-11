@@ -14,7 +14,7 @@ const saved=process.env;
 beforeEach(()=>{
  process.env={...saved,NODE_ENV:'test',AUTH_SECRET:'widget-local-synthetic-signing',EXP15_EXP17_LOCAL_EVALUATION:'1'};delete process.env.VERCEL;delete process.env.VERCEL_ENV;delete process.env.NEXT_PUBLIC_EXPERTHUB_PREVIEW_ISOLATED;
  resetAllMocks();(runChatEngine as jest.Mock).mockReset();localRetrieve.mockReset().mockResolvedValue(baseBundle());revalidate.mockReset().mockImplementation((_scope,bundle)=>Promise.resolve(bundle));
- prisma.widgetConfig.findUnique.mockResolvedValue({id:'synthetic-widget',isEnabled:true,freeQuestions:10,expertProfile:{id:'profile-synthetic',userId:'expert-synthetic'}});
+ prisma.widgetConfig.findUnique.mockResolvedValue({id:'synthetic-widget',expertProfileId:'profile-synthetic',apiKey:'synthetic-widget-key',allowedDomains:[],isEnabled:true,freeQuestions:10,expertProfile:{id:'profile-synthetic',userId:'expert-synthetic'}});
  prisma.widgetSession.upsert.mockResolvedValue({id:'synthetic-session',questionCount:0});prisma.widgetMessage.findMany.mockResolvedValue([]);
  prisma.expertProfile.findUnique.mockResolvedValue({id:'profile-synthetic',userId:'expert-synthetic',vectorNamespace:'synthetic-ns',ragEnabled:true});prisma.knowledgeItem.findMany.mockResolvedValue([]);
  global.fetch=jest.fn().mockRejectedValue(new Error('network forbidden'));

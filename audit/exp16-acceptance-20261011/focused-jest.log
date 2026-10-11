@@ -1,0 +1,40 @@
+PASS __tests__/exp15/acceptance-state-style.test.ts
+PASS __tests__/exp16/widget-persistence-route.test.ts
+PASS __tests__/exp15/widget-interruption.test.ts
+PASS __tests__/exp15/acceptance-cancellation.test.ts
+PASS __tests__/api/thinking-chat-enhanced.test.ts
+PASS __tests__/exp16/rating-controls.test.ts
+PASS __tests__/exp15/structured-pipeline.test.ts
+PASS __tests__/exp16/approval-workspace.test.ts
+PASS __tests__/api/chat.test.ts
+PASS __tests__/exp16/rating-chat-interface.test.ts
+PASS __tests__/exp15/structured-review-regressions.test.ts
+PASS __tests__/exp16/temporal-read-policy.test.ts
+PASS __tests__/exp16/rating-review.test.ts
+PASS __tests__/exp16/page.test.ts
+PASS __tests__/exp16/serving-chat.test.ts
+PASS __tests__/exp16/post-correction.test.ts
+PASS __tests__/exp16/persistence-route.test.ts
+PASS __tests__/exp15/structured-chat-integration.test.ts
+PASS __tests__/exp16/routes.test.ts
+PASS __tests__/exp15/default-path-parity.test.ts
+PASS __tests__/exp26/chat-access.test.ts
+PASS __tests__/exp16/rating-route.test.ts
+PASS __tests__/exp16/released-greetings.test.ts
+PASS __tests__/exp16/replay-capsule.test.ts
+PASS __tests__/exp16/serving.test.ts
+PASS __tests__/exp16/rating-retrieval-compat.test.ts
+PASS __tests__/exp16/post-sync-race-review.test.ts
+PASS __tests__/exp15/revalidation-citations.test.ts
+PASS __tests__/exp15/structured-local-retrieval.test.ts
+PASS __tests__/exp16/revalidated-stream.test.ts
+PASS __tests__/exp15/dialogue-verification.test.ts
+PASS __tests__/exp15/response-policy.test.ts
+PASS __tests__/exp15/claim-gate.test.ts
+PASS __tests__/exp15/review-regressions.test.ts
+
+Test Suites: 34 passed, 34 total
+Tests:       364 passed, 364 total
+Snapshots:   0 total
+Time:        6.167 s
+Ran all test suites matching /__tests__\/exp16|__tests__\/exp15|__tests__\/api\/chat.test.ts|__tests__\/api\/thinking-chat-enhanced.test.ts|__tests__\/exp26\/chat-access.test.ts/i.

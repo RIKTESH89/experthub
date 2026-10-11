@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { manifestHash } from "./manifest";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, ExpertSubscription } from "@prisma/client";
 import { resolveRetrievalScope, type RetrievalScope } from "@/lib/knowledge/access";
 import { hasSubscriptionAccess } from "@/lib/payments/access";
 import { resolveServingPersona } from "./serving";
@@ -51,14 +51,18 @@ export async function authorizeChatPersistence(tx: Prisma.TransactionClient, sna
   await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "authorId"=${ownerId} ORDER BY "id" FOR UPDATE`;
   const expert = await tx.expertProfile.findUnique({where: {id: scope.expertProfileId}});
   if (!expert || expert.userId !== ownerId || expert.vectorNamespace !== scope.namespace || (expert.ragEnabled ?? true) !== ragEnabled) throw new Error("Expert identity or RAG permission changed before persistence");
-  if (!session.isTrial && subscriberId !== ownerId) {
-    const subscription = await tx.expertSubscription.findUnique({where: {subscriberId_expertProfileId: {subscriberId, expertProfileId: scope.expertProfileId}}});
+  let subscription: ExpertSubscription | null = null;
+  const subscriptionRequired = !session.isTrial && subscriberId !== ownerId;
+  if (subscriptionRequired) {
+    subscription = await tx.expertSubscription.findUnique({where: {subscriberId_expertProfileId: {subscriberId, expertProfileId: scope.expertProfileId}}});
     if (!hasSubscriptionAccess(subscription)) throw new Error("Chat subscription access changed before persistence");
   }
   const currentScope = await resolveRetrievalScope(expert.id, expert.vectorNamespace, expert.userId, subscriberId, tx);
   const currentPersona = await resolveServingPersona(currentScope, expert.ragEnabled ?? true, tx);
   if (await sourceStateHash(scope,tx) !== snapshot.sourceStateHash) throw new Error("Chat source state changed before persistence");
   if (currentPersona.releaseId !== releaseId || currentScope.isOwner !== scope.isOwner || scope.allowedVectorIds.some(id => !currentPersona.scope.allowedVectorIds.includes(id))) throw new Error("Persona release or source access changed before persistence");
+  // Clock-based entitlement can expire while the trailing read awaits settle.
+  if (subscriptionRequired && !hasSubscriptionAccess(subscription)) throw new Error("Chat subscription access changed before persistence");
 }
 
 export type WidgetPersistenceIdentity = {configId: string; sessionId: string; visitorId: string; configHash: string; origin: string | null};

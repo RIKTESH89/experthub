@@ -14,7 +14,7 @@ function gate(){let open!:()=>void;const promise=new Promise<void>(r=>{open=r;})
 async function waitForLock(table:string){
  const deadline=Date.now()+4000;
  while(Date.now()<deadline){
-  const rows=await prisma.$queryRaw<{waiting:boolean}[]>`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE ${'%FROM "'+table+'"%FOR UPDATE%'}) AS waiting`;
+  const rows=await prisma.$queryRaw<{waiting:boolean}[]>`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE ${'%FROM "'+table+'"%FOR%UPDATE%'}) AS waiting`;
   if(rows[0].waiting)return;
   await new Promise(r=>setTimeout(r,10));
  }
@@ -28,7 +28,7 @@ beforeAll(async()=>{
  const quote=(v:string)=>'"'+v.replace(/"/g,'""')+'"';
  const literal=(v:unknown)=>typeof v==='string'?"'"+v.replace(/'/g,"''")+"'":String(v);
  for(const e of Prisma.dmmf.datamodel.enums)await prisma.$executeRawUnsafe(`CREATE TYPE ${quote(e.name)} AS ENUM (${e.values.map(v=>literal(v.name)).join(',')})`);
- for(const name of ['User','ExpertProfile','WidgetConfig','Post','KnowledgeItem','KnowledgeLifecycleJob','ExpertSubscription','ChatSession','ChatMessage']){
+ for(const name of ['User','ExpertProfile','WidgetConfig','Post','KnowledgeItem','KnowledgeLifecycleJob','ExpertSubscription','ChatSession','ChatMessage','WidgetSession','WidgetMessage']){
   const model=Prisma.dmmf.datamodel.models.find(m=>m.name===name)!;
   const columns=model.fields.filter(f=>f.kind!=='object').map(f=>{
    let type=scalar[f.type]||quote(f.type), def='';
@@ -41,7 +41,7 @@ beforeAll(async()=>{
   await prisma.$executeRawUnsafe(`CREATE TABLE ${quote(name)} (${columns.join(',')})`);
  }
  await prisma.$executeRawUnsafe('ALTER TABLE "ExpertProfile" ADD UNIQUE ("userId")');
- await prisma.$executeRawUnsafe('ALTER TABLE "KnowledgeItem" ADD UNIQUE ("expertProfileId","sourceType","sourceId"),ADD FOREIGN KEY ("expertProfileId") REFERENCES "ExpertProfile"("id")');
+ await prisma.$executeRawUnsafe('ALTER TABLE "KnowledgeItem" ADD UNIQUE ("expertProfileId","sourceType","sourceId"),ADD FOREIGN KEY ("expertProfileId") REFERENCES "ExpertProfile"("id") ON DELETE CASCADE');
  // Copy only reviewed evidence/temporal fixture definitions, including their real FKs
  // and immutable triggers. No migration engine/ledger, application or vector migrations.
  for (const name of ['20261001090000_evidence_backed_kg','20261001100000_temporal_stances']) {
@@ -56,6 +56,10 @@ beforeAll(async()=>{
  await prisma.$executeRawUnsafe('ALTER TABLE "ExpertProfile" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE');
  await prisma.$executeRawUnsafe('ALTER TABLE "Post" ADD FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE');
  await prisma.$executeRawUnsafe('ALTER TABLE "ExpertSubscription" ADD FOREIGN KEY ("subscriberId") REFERENCES "User"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "ChatSession" ADD FOREIGN KEY ("expertProfileId") REFERENCES "ExpertProfile"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "WidgetConfig" ADD FOREIGN KEY ("expertProfileId") REFERENCES "ExpertProfile"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "WidgetSession" ADD UNIQUE ("widgetConfigId","visitorId"), ADD FOREIGN KEY ("widgetConfigId") REFERENCES "WidgetConfig"("id") ON DELETE CASCADE');
+ await prisma.$executeRawUnsafe('ALTER TABLE "WidgetMessage" ADD FOREIGN KEY ("widgetSessionId") REFERENCES "WidgetSession"("id") ON DELETE CASCADE');
  await prisma.$executeRawUnsafe('ALTER TABLE "ChatMessage" ADD FOREIGN KEY ("chatSessionId") REFERENCES "ChatSession"("id") ON DELETE CASCADE');
  await prisma.user.createMany({data:[{id:'owner',email:'owner@synthetic.invalid',role:'EXPERT'},{id:'viewer',email:'viewer@synthetic.invalid',role:'SUBSCRIBER'}]});
  await prisma.expertProfile.create({data:{id:'expert',userId:'owner',displayName:'Synthetic',specialty:[],vectorNamespace:'synthetic-ns'}});
@@ -66,7 +70,7 @@ beforeEach(async()=>{
  await prisma.expertProfile.update({where:{id:'expert'},data:{ragEnabled:true,twinGreeting:null}});
  approvals.clear();
  jest.mocked(indexDocument).mockClear();jest.mocked(removeDocument).mockClear();
- await prisma.$executeRawUnsafe('TRUNCATE "ChatMessage","ChatSession","ExpertSubscription","PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
+ await prisma.$executeRawUnsafe('TRUNCATE "WidgetMessage","WidgetSession","ChatMessage","ChatSession","ExpertSubscription","PersonaReleaseHead","PersonaRelease","WidgetConfig","Post","KnowledgeItem","KnowledgeLifecycleJob","EvidenceDecisionCase","TemporalStance","EvidenceSupport","EvidenceSpan","EvidenceAssertion","EvidenceRevision","CorrectionEvent","CorrectionReview"');
  await prisma.post.create({data:{id:'post',authorId:'owner',title:'Advice',content:'Old statement',isRagEnabled:true,isPremiumOnly:true,isHidden:true,status:'DRAFT'}});
  await prisma.knowledgeItem.create({data:{id:'item',expertProfileId:'expert',sourceType:'post',sourceId:'post',title:'Advice',content:'Old statement',sourceVersion:1,indexedVersion:1,isIndexed:true,vectorIds:['old-vector'],metadata:{postId:'post',status:'DRAFT',isHidden:true,isPremiumOnly:true}}});
  await prisma.$executeRaw`INSERT INTO "EvidenceRevision" ("id","expertProfileId","itemId","sourceType","sourceVersion","contentHash","snapshotHash","content","publicationTimeBasis","sourceUpdatedAt","uploaderId","audience","extractorVersion") VALUES ('revision','expert','item','post',1,'synthetic-hash','synthetic-snapshot','Advice','unavailable',CURRENT_TIMESTAMP,'owner','private','synthetic-extractor')`;
@@ -504,4 +508,68 @@ test('native owner deletion waits before expert/source locks and completes witho
  try{await waitForLock('User');}finally{resume.open();}
  expect(await deleting).toMatchObject({message:'synthetic deletion rollback'});expect((await saving).error).toBeNull();
  expect(await prisma.chatMessage.count()).toBe(1);
+});
+
+import { authorizeWidgetPersistence, widgetAccessHash, type WidgetPersistenceIdentity } from '@/lib/persona/persistence';
+async function widgetFixture(){
+ const {release}=await persistenceFixture();
+ const config=await prisma.widgetConfig.create({data:{id:'widget',expertProfileId:'expert',apiKey:'synthetic-widget-key',allowedDomains:['allowed.synthetic.invalid'],freeQuestions:2}});
+ await prisma.widgetSession.create({data:{id:'widget-session',widgetConfigId:'widget',visitorId:'signed-synthetic-visitor'}});
+ const scope=await resolveRetrievalScope('expert','synthetic-ns','owner');const serving=await resolveServingPersona(scope,true);
+ const snapshot=await captureChatPersistenceSnapshot(serving.scope,'owner',serving.releaseId,true);
+ const identity={configId:'widget',sessionId:'widget-session',visitorId:'signed-synthetic-visitor',configHash:widgetAccessHash(config),origin:'https://allowed.synthetic.invalid'};
+ return {release,snapshot,identity};
+}
+async function persistWidget(snapshot:ChatPersistenceSnapshot,identity:WidgetPersistenceIdentity,barrier?:ReturnType<typeof gate>){
+ return prisma.$transaction(async tx=>{
+  await authorizeWidgetPersistence(tx,snapshot,identity);
+  if(barrier){barrier.open();await persistenceResume!.promise;}
+  await tx.widgetMessage.createMany({data:[{widgetSessionId:identity.sessionId,role:'user',content:'Synthetic question'},{widgetSessionId:identity.sessionId,role:'assistant',content:'Synthetic answer'}]});
+  await tx.widgetSession.update({where:{id:identity.sessionId},data:{questionCount:{increment:1}}});
+  await authorizeWidgetPersistence(tx,snapshot,identity,true);
+ },{timeout:10000});
+}
+test('native anonymous widget transaction commits both messages and usage exactly within quota',async()=>{
+ const {snapshot,identity}=await widgetFixture();await persistWidget(snapshot,identity);await persistWidget(snapshot,identity);
+ expect(await prisma.widgetMessage.count()).toBe(4);expect(await prisma.widgetSession.findUnique({where:{id:'widget-session'}})).toMatchObject({questionCount:2});
+ await expect(persistWidget(snapshot,identity)).rejects.toThrow('question limit');expect(await prisma.widgetMessage.count()).toBe(4);
+});
+test.each(['disabled','key-rotated','domain-revoked','origin-denied','quota','session-deleted','visitor-changed','owner-banned','source-hidden','source-deleted','release','owner-receipt'])('native anonymous widget %s revocation prevents message/usage persistence',async change=>{
+ const {release,snapshot,identity}=await widgetFixture();
+ if(change==='disabled')await prisma.widgetConfig.update({where:{id:'widget'},data:{isEnabled:false}});
+ if(change==='key-rotated')await prisma.widgetConfig.update({where:{id:'widget'},data:{apiKey:'rotated-synthetic-key'}});
+ if(change==='domain-revoked')await prisma.widgetConfig.update({where:{id:'widget'},data:{allowedDomains:['other.synthetic.invalid']}});
+ if(change==='origin-denied')identity.origin='https://evil.synthetic.invalid';
+ if(change==='quota')await prisma.widgetSession.update({where:{id:'widget-session'},data:{questionCount:2}});
+ if(change==='session-deleted')await prisma.widgetSession.delete({where:{id:'widget-session'}});
+ if(change==='visitor-changed')identity.visitorId='forged-visitor';
+ if(change==='owner-banned')await prisma.user.update({where:{id:'owner'},data:{isBanned:true}});
+ if(change==='source-hidden')await prisma.post.update({where:{id:'post'},data:{isHidden:true}});
+ if(change==='source-deleted')await removeKnowledgeItem('expert','item');
+ if(change==='release')await publish('changed-widget-release',release.id);
+ if(change==='owner-receipt')snapshot.scope.isOwner=true;
+ const before=await prisma.widgetSession.findUnique({where:{id:'widget-session'}});
+ await expect(persistWidget(snapshot,identity)).rejects.toThrow();expect(await prisma.widgetMessage.count()).toBe(0);
+ expect(await prisma.widgetSession.findUnique({where:{id:'widget-session'}})).toEqual(before);
+});
+test.each(['config','post','session','release'])('native widget persistence serializes concurrent %s revocation without deadlock',async change=>{
+ const {release,snapshot,identity}=await widgetFixture(),locked=gate();persistenceResume=gate();
+ const saving=persistWidget(snapshot,identity,locked).then(value=>({value,error:null}),error=>({value:null,error}));await locked.promise;
+ const writing=change==='config'?prisma.widgetConfig.update({where:{id:'widget'},data:{isEnabled:false}}):change==='post'?prisma.post.update({where:{id:'post'},data:{isHidden:true}}):change==='session'?prisma.widgetSession.delete({where:{id:'widget-session'}}):publish('post-widget-save',release.id);
+ const outcome=writing.then(value=>({value,error:null}),error=>({value:null,error}));
+ try{const until=Date.now()+4000;let waited=false;while(Date.now()<until){const rows=await prisma.$queryRaw<{waiting:boolean}[]>`SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock') AS waiting`;if(rows[0].waiting){waited=true;break;}await new Promise(r=>setTimeout(r,10));}expect(waited).toBe(true);expect(await prisma.widgetMessage.count()).toBe(0);}finally{persistenceResume.open();}
+ expect((await saving).error).toBeNull();expect((await outcome).error).toBeNull();expect(await prisma.widgetMessage.count()).toBe(change==='session'?0:2);
+});
+test('native widget usage failure rolls back both messages and usage',async()=>{
+ const {snapshot,identity}=await widgetFixture();await prisma.$executeRawUnsafe('ALTER TABLE "WidgetSession" ADD CONSTRAINT synthetic_usage_failure CHECK ("questionCount"=0)');
+ try{await expect(persistWidget(snapshot,identity)).rejects.toThrow('synthetic_usage_failure');expect(await prisma.widgetMessage.count()).toBe(0);expect(await prisma.widgetSession.findUnique({where:{id:'widget-session'}})).toMatchObject({questionCount:0});}
+ finally{await prisma.$executeRawUnsafe('ALTER TABLE "WidgetSession" DROP CONSTRAINT synthetic_usage_failure');}
+});
+test('native subscription expiring during final guard trailing reads is rejected before return',async()=>{
+ const {snapshot}=await persistenceFixture();await prisma.expertSubscription.update({where:{id:'subscription'},data:{currentPeriodEnd:new Date(Date.now()+1000)}});
+ await expect(prisma.$transaction(async tx=>{
+  const original=tx.post.findMany.bind(tx.post);
+  const wrapped=new Proxy(tx,{get(target,key){if(key==='post')return new Proxy(target.post,{get(model,method){if(method==='findMany')return async(args:any)=>{const result=await original(args);await new Promise(r=>setTimeout(r,1100));return result;};return Reflect.get(model,method);}});return Reflect.get(target,key);}});
+  await authorizeChatPersistence(wrapped,snapshot,'session','viewer','SUBSCRIBER');
+ })).rejects.toThrow('subscription access changed');expect(await prisma.chatMessage.count()).toBe(0);
 });

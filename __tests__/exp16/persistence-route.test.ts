@@ -38,3 +38,22 @@ test('malformed/unterminated provider stream never reaches the persistence guard
  prepare('data: {"choices":[{"delta":{"content":"Synthetic"}}]}\n\n');
  const response=await send();await expect(response.text()).rejects.toThrow('without DONE');expect(guard).not.toHaveBeenCalled();
 });
+test('content received before EOF stays withheld when release changes at persistence',async()=>{
+ let provider!:ReadableStreamDefaultController<Uint8Array>;
+ engine.mockResolvedValue({stream:new ReadableStream({start(c){provider=c;c.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"PRIVATE_WITHHELD_SENTINEL"}}]}\n\n'));}}),sources:[],thinkingSteps:[],persistenceSnapshot:snapshot});
+ const response=await send(),reader=response.body!.getReader();let settled=false;const read=reader.read().then(value=>{settled=true;return value;},error=>{settled=true;throw error;});
+ await new Promise(r=>setTimeout(r,20));expect(settled).toBe(false);guard.mockRejectedValueOnce(new Error('source revoked before commit'));
+ provider.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));provider.close();await expect(read).rejects.toThrow('source revoked before commit');
+ expect(prisma.chatMessage.create).toHaveBeenCalledTimes(1);
+});
+test.each(['','   '])('empty/whitespace completed answer %p never reaches guard or terminal success',async text=>{
+ prepare(`data: ${JSON.stringify({choices:[{delta:{content:text}}]})}\n\ndata: [DONE]\n\n`);const response=await send();await expect(response.text()).rejects.toThrow('empty answer');expect(guard).not.toHaveBeenCalled();
+});
+test('synthetic first-answer latency includes provider completion and both guarded SQL checks',async()=>{
+ const started=performance.now();let providerDoneMs=0,lastGuardMs=0;
+ engine.mockResolvedValue({stream:new ReadableStream({start(c){c.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"Synthetic latency answer"}}]}\n\n'));setTimeout(()=>{providerDoneMs=performance.now()-started;c.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));c.close();},40);}}),sources:[],thinkingSteps:[],persistenceSnapshot:snapshot});
+ guard.mockImplementation(async()=>{await new Promise(r=>setTimeout(r,20));lastGuardMs=performance.now()-started;});
+ const response=await send();const first=await response.body!.getReader().read();const firstAnswerMs=performance.now()-started;
+ expect(new TextDecoder().decode(first.value)).toContain('Synthetic latency answer');expect(firstAnswerMs).toBeGreaterThanOrEqual(lastGuardMs);expect(lastGuardMs).toBeGreaterThan(providerDoneMs);
+ const {writeFileSync}=await import('fs');writeFileSync('audit/exp16-acceptance-20261011/synthetic-delivery-latency.json',JSON.stringify({mode:'mocked-route-buffering',providerDoneMs,lastGuardMs,firstAnswerMs,configuredProviderDelayMs:40,configuredSqlCheckDelayMs:20,sqlChecks:2,providerCalls:0,humanRatings:0,interpretation:'One in-process synthetic sample; verifies first answer waits for terminal provider data and SQL. Not network/model/production latency.'},null,2)+'\n');
+});

@@ -219,13 +219,13 @@ export async function POST(
       return true;
     };
     const cancelReader = () => reader.cancel(lifecycle.signal.reason).catch(() => {}).finally(() => { try { reader.releaseLock(); } catch { /* read cancellation still settling */ } });
-    const parse = (data: string, controller: ReadableStreamDefaultController<Uint8Array>) => {
+    const parse = (data: string) => {
       lifecycle.check();
       const content = providerState.accept(data);
       if (typeof content === "string" && content) {
         fullResponse += content;
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
-        return true;
+        if (fullResponse.length > 100000) throw new Error("Provider response exceeds answer bound");
+        return false;
       }
       return false;
     };
@@ -243,19 +243,20 @@ export async function POST(
         try {
           lifecycle.check();
           if (thinkingIndex < thinkingSteps.length) {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ thinking: thinkingSteps[thinkingIndex++] })}\n\n`));
+            const step = thinkingSteps[thinkingIndex++];
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ thinking: step.startsWith("Considering:") ? "Reviewing source evidence..." : step })}\n\n`));
             await abortableDelay(400, lifecycle.signal);
             return;
           }
-          // A split UTF-8/SSE chunk may produce no downstream event. Keep
-          // reading while demand is pending; yield as soon as content enqueues.
+          // Buffer the bounded full answer until provider validation and the
+          // guarded persistence transaction complete. Thinking remains visible.
           while (true) {
           const { done, value } = await reader.read();
           lifecycle.check();
-          let emitted = false;
-          for (const data of decoder.push(value, done)) emitted = parse(data, controller) || emitted;
-          if (!done) { if (emitted) return; continue; }
+          for (const data of decoder.push(value, done)) parse(data);
+          if (!done) continue;
           if (!providerState.done) throw new Error("Provider stream ended without DONE");
+          if (!fullResponse.trim()) throw new Error("Provider returned an empty answer");
           let messageId: string | undefined;
           if (fullResponse) {
             // The synchronous commit decision is the cancellation boundary.
@@ -302,7 +303,9 @@ export async function POST(
             })().catch(() => {}).finally(() => lifecycle.dispose());
           }
           lifecycle.check();
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, messageId, sources: toMessageSources(sources) })}\n\n`));
+          // Release answer bytes only after verification and durable SQL success.
+          if (fullResponse) controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: fullResponse })}\n\n`));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, messageId, sources: toMessageSources(fullResponse ? sources : []) })}\n\n`));
           reader.releaseLock();
           if (finish()) controller.close();
           return;

@@ -1,3 +1,4 @@
+jest.mock("@/lib/persona/persistence",()=>({...jest.requireActual("@/lib/persona/persistence"),authorizeChatPersistence:jest.fn(async()=>{}),authorizeWidgetPersistence:jest.fn(async()=>{})}));
 import prisma,{resetAllMocks} from "../mocks/prisma";
 const auth=jest.fn();const engine=jest.fn();const memoryExtractor=jest.fn();const save=jest.fn();
 jest.mock("@/lib/prisma",()=>({__esModule:true,default:prisma}));
@@ -19,9 +20,9 @@ beforeEach(()=>{
  prisma.chatSession.findUnique.mockImplementation(async({include}: {include:{messages:{orderBy:unknown;take:number}}})=>({id:"session-a",subscriberId:"visitor-a",expertProfileId:"ada",expertProfile:{userId:"ada-owner"},isTrial:false,messages:ordered(include.messages)}));
  prisma.expertSubscription.findUnique.mockResolvedValue({status:"ACTIVE",tier:"PREMIUM",...syntheticPaidPeriod});prisma.expertPricingTier.findUnique.mockResolvedValue({monthlyQuestions:null});
  prisma.chatMessage.create.mockResolvedValue({});prisma.monthlyTwinUsage.upsert.mockResolvedValue({});
- prisma.widgetConfig.findUnique.mockResolvedValue({id:"widget-ada",isEnabled:true,freeQuestions:100,expertProfile:{id:"ada",userId:"ada-owner"}});
+ prisma.widgetConfig.findUnique.mockResolvedValue({id:"widget-ada",expertProfileId:"ada",apiKey:"public-widget",allowedDomains:[],isEnabled:true,freeQuestions:100,expertProfile:{id:"ada",userId:"ada-owner"}});
  prisma.widgetSession.upsert.mockResolvedValue({id:"widget-session-a",questionCount:0});prisma.widgetMessage.findMany.mockImplementation(async(query:{orderBy:unknown;take:number})=>ordered(query));
- engine.mockImplementation(async()=>({stream:new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));controller.close();}}),sources:[],thinkingSteps:[]}));
+ engine.mockImplementation(async()=>({stream:new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"Synthetic reply"}}]}\n\ndata: [DONE]\n\n'));controller.close();}}),sources:[],thinkingSteps:[]}));
 });
 afterEach(()=>{delete process.env.AUTH_SECRET;});
 test("EXP10 subscriber >50 messages gets latest correction and stable tie ordering",async()=>{

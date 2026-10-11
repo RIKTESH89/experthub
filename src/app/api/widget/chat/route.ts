@@ -1,3 +1,6 @@
+import { authorizeWidgetPersistence, widgetAccessHash, widgetOriginAllowed } from "@/lib/persona/persistence";
+import { createProviderStreamState } from "@/lib/ai/provider-stream";
+import { createSSEDecoder } from "@/lib/ai/sse";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { runChatEngine } from "@/lib/ai/chat-engine";
@@ -50,6 +53,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const origin = request.headers.get("origin");
+    if (!widgetOriginAllowed(widgetConfig.allowedDomains, origin)) return NextResponse.json({error:"Widget origin is not allowed"},{status:403,headers:corsHeaders});
     let identity;
     try { identity = widgetIdentity(widgetConfig.id, requestedVisitorId, visitorToken); }
     catch (error) {
@@ -100,7 +105,7 @@ export async function POST(request: NextRequest) {
     }));
 
     // Run chat engine
-    const { stream, sources } = await runChatEngine({
+    const { stream, sources, persistenceSnapshot } = await runChatEngine({
       expertId: widgetConfig.expertProfile.userId,
       query: message,
       chatHistory,
@@ -113,71 +118,41 @@ export async function POST(request: NextRequest) {
     const sessionId = widgetSession.id;
     const configId = widgetConfig.id;
 
-    const transformStream = new TransformStream({
-      transform(chunk, controller) {
+    const decoder=createSSEDecoder(), providerState=createProviderStreamState(), encoder=new TextEncoder();
+    const persistenceIdentity={configId,sessionId,visitorId,configHash:widgetAccessHash(widgetConfig),origin};
+    const collect=(data:string)=>{
+      const content=providerState.accept(data);
+      if(content){fullResponse+=content;if(fullResponse.length>100000)throw new Error("Provider response exceeds answer bound");}
+    };
+    const transformStream = new TransformStream<Uint8Array,Uint8Array>({
+      transform(chunk) {
         checkSignal(request.signal);
-        const text = new TextDecoder().decode(chunk);
-        const lines = text.split("\n");
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") {
-              controller.enqueue(
-                new TextEncoder().encode(`data: [DONE]\n\n`)
-              );
-              continue;
-            }
-            try {
-              const parsed = JSON.parse(data);
-              const content = parsed.choices?.[0]?.delta?.content || "";
-              if (content) {
-                fullResponse += content;
-                controller.enqueue(
-                  new TextEncoder().encode(
-                    `data: ${JSON.stringify({ content })}\n\n`
-                  )
-                );
-              }
-            } catch {
-              // Skip unparseable chunks
-            }
-          }
-        }
+        for(const data of decoder.push(chunk))collect(data);
       },
-      async flush() {
+      async flush(controller) {
         checkSignal(request.signal);
-        // Save messages after streaming completes
+        for(const data of decoder.push(undefined,true))collect(data);
+        if(!providerState.done)throw new Error("Provider stream ended without DONE");
+        if(!fullResponse.trim())throw new Error("Provider returned an empty answer");
         if (fullResponse) {
-          await prisma.widgetMessage.createMany({
-            data: [
-              {
-                widgetSessionId: sessionId,
-                role: "user",
-                content: message,
-              },
-              {
-                widgetSessionId: sessionId,
-                role: "assistant",
-                content: fullResponse,
-                sources: JSON.parse(JSON.stringify(sources)),
-              },
-            ],
+          await prisma.$transaction(async tx=>{
+            checkSignal(request.signal);
+            await authorizeWidgetPersistence(tx,persistenceSnapshot,persistenceIdentity);
+            checkSignal(request.signal);
+            await tx.widgetMessage.createMany({data:[
+              {widgetSessionId:sessionId,role:"user",content:message},
+              {widgetSessionId:sessionId,role:"assistant",content:fullResponse,sources:JSON.parse(JSON.stringify(sources))},
+            ]});
+            checkSignal(request.signal);
+            await tx.widgetSession.update({where:{id:sessionId},data:{questionCount:{increment:1},updatedAt:new Date()}});
+            await authorizeWidgetPersistence(tx,persistenceSnapshot,persistenceIdentity,true);
+            checkSignal(request.signal);
           });
-
-          // Increment question count
-          await prisma.widgetSession.update({
-            where: {
-              widgetConfigId_visitorId: {
-                widgetConfigId: configId,
-                visitorId,
-              },
-            },
-            data: {
-              questionCount: { increment: 1 },
-              updatedAt: new Date(),
-            },
-          });
+          checkSignal(request.signal);
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({content:fullResponse})}\n\n`));
         }
+        checkSignal(request.signal);
+        controller.enqueue(encoder.encode('data: [DONE]\n\n'));
       },
     });
 
