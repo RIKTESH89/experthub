@@ -1,6 +1,6 @@
-import { literalPersonSupport, quotationsSupported, obviousPersonAssertion } from '/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-17/src/lib/ai/dialogue/structured/literal-support';
-import { acceptanceCases } from '/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-17/scripts/exp17/cases';
-import { evaluateCase } from '/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-17/scripts/exp17/evaluate';
+import { literalPersonSupport, quotationsSupported, obviousPersonAssertion } from '../../src/lib/ai/dialogue/structured/literal-support';
+import { acceptanceCases } from '../../scripts/exp17/cases';
+import { evaluateCase } from '../../scripts/exp17/evaluate';
 test('curly quoted contraction validates full quote rather than prefix',()=>{
  expect(quotationsSupported('The source says ‘experts don’t prefer invented trials.’',[{text:'experts don’t prefer calibrated trials.'}])).toBe(false);
  expect(quotationsSupported('The source says ‘experts don’t prefer calibrated trials.’',[{text:'experts don’t prefer calibrated trials.'}])).toBe(true);

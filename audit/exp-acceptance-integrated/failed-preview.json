@@ -1,0 +1,13 @@
+{
+  "id": "dpl_8g24yn5x4VrJGnpHRTT8ZaAbmmFg",
+  "url": "experthub-2ljtdmxa8-riktesh-singhs-projects.vercel.app",
+  "state": "ERROR",
+  "commit": "f85897cb2aab6bc657a8a501dfbb867e628a7cab",
+  "branch": "exp25-26-launch-auth-payments",
+  "target": "Preview",
+  "errorCode": "module_not_found",
+  "errorMessage": "Command \"npm run build\" exited with 1",
+  "errorStep": "buildStep",
+  "stagingAliasSwitched": false,
+  "reason": "Audit TypeScript import used a worker absolute path; local sibling checkout masked missing import on hosted build"
+}
