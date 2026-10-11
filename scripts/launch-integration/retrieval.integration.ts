@@ -1,7 +1,8 @@
 const embed=jest.fn();
 jest.mock("@/lib/vector/embeddings",()=>({...jest.requireActual("@/lib/vector/embeddings"),generateEmbedding:embed}));
 import prisma from "@/lib/prisma";
-import {syncPostSource,removeKnowledgeItem} from "@/lib/knowledge/lifecycle";
+import {syncPostSource,syncKnowledgeItem,removeKnowledgeItem} from "@/lib/knowledge/lifecycle";
+import {authorizedEvidenceSpans} from "@/lib/graph/evidence-store";
 import {resolveRetrievalScope} from "@/lib/knowledge/access";
 import {retrieveIntentEvidence} from "@/lib/retrieval/retrieve";
 import {TEMPORAL_EXTRACTOR_VERSION} from "@/lib/graph/temporal/extractor";
@@ -91,4 +92,31 @@ test("active read replay repairs negative fields while retained v1 remains uncha
 test("real SQL candidate saturation remains bounded and reports coverage loss",async()=>{
  for(let i=0;i<102;i++)await post("cap-"+i,"In domain-"+i+", I prefer Store"+i+".");
  const r=await read("stance on domain");expect(r.trace.candidates).toBeLessThanOrEqual(100);expect(r.trace.selected).toBeLessThanOrEqual(12);expect(r.trace.truncated).toBe(true);expect(r.gaps).toContain("Candidate or context budget reached; further evidence may exist");
+});
+
+test.each([
+ ["owner-to-unknown",{authorId:owner},{}],
+ ["owner-to-third-party",{authorId:owner},{authorId:"third-party"}],
+ ["unknown-to-owner",{},{authorId:owner}],
+ ["owner-to-malformed",{authorId:owner},{authorId:42}],
+])("warm manual attribution revocation fails closed without a version bump: %s",async(_label,before,after)=>{
+ const id="manual-attribution";
+ await prisma.knowledgeItem.create({data:{id,expertProfileId:expert,title:"Manual advice",content:"In transport, I prefer ArrowBus.",sourceType:"manual",metadata:{audience:"public",...before},vectorIds:[]}});
+ await syncKnowledgeItem(expert,id);
+ const warm=await scope(),chunks=warm.allowedVectorIds.map(vectorId=>({content:"",score:1,metadata:{vectorId,expertProfileId:expert}}));
+ expect((await authorizedEvidenceSpans(warm,chunks)).length).toBeGreaterThan(0);
+ const original=await prisma.knowledgeItem.findUniqueOrThrow({where:{id}});
+ await prisma.knowledgeItem.update({where:{id},data:{metadata:{audience:"public",...after}}});
+ expect((await prisma.knowledgeItem.findUniqueOrThrow({where:{id}})).sourceVersion).toBe(original.sourceVersion);
+ expect(await authorizedEvidenceSpans(warm,chunks)).toEqual([]);
+ expect((await retrieveIntentEvidence(warm,"Should I choose ArrowBus?")).sources).toEqual([]);
+});
+
+test.each([{}, {authorId:null}, {authorId:42}])("legacy unknown manual authorship remains visible when unchanged: %p",async metadata=>{
+ const id="manual-unknown";
+ await prisma.knowledgeItem.create({data:{id,expertProfileId:expert,title:"Unknown advice",content:"In transport, I prefer ArrowBus.",sourceType:"manual",metadata:{audience:"public",...metadata},vectorIds:[]}});
+ await syncKnowledgeItem(expert,id);
+ const current=await scope(),chunks=current.allowedVectorIds.map(vectorId=>({content:"",score:1,metadata:{vectorId,expertProfileId:expert}}));
+ const spans=await authorizedEvidenceSpans(current,chunks);
+ expect(spans.length).toBeGreaterThan(0);expect(spans.every(s=>s.authorId===null)).toBe(true);
 });

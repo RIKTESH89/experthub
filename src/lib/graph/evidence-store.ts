@@ -113,6 +113,8 @@ export async function authorizedEvidenceSpans(scope:RetrievalScope,results:Retri
     AND r."retiredAt" IS NULL AND i."sourceVersion"=r."sourceVersion" AND i."indexedVersion"=r."sourceVersion" AND i."isIndexed"=true
     AND (i."title" || E'\n\n' || i."content")=r."content"
     AND (i."sourceType"='manual' OR (post."id" IS NOT NULL AND post."isRagEnabled"=true AND i."title"=COALESCE(post."title",'Untitled Post') AND i."content"=COALESCE(post."content",'')))
+    AND (i."sourceType"<>'manual' OR r."authorId" IS NOT DISTINCT FROM
+       CASE WHEN jsonb_typeof(i."metadata"->'authorId')='string' THEN i."metadata"->>'authorId' ELSE NULL END)
     AND r."audience"=CASE WHEN i."sourceType"='post' THEN
        CASE WHEN post."status"<>'PUBLISHED' OR post."isHidden" THEN 'private' WHEN post."isPremiumOnly" THEN 'premium' ELSE 'public' END
        ELSE CASE WHEN i."metadata"->>'audience' IN ('public','premium') THEN i."metadata"->>'audience' ELSE 'private' END END

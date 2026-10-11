@@ -11,16 +11,20 @@ export interface EvidenceBundle {
 }
 // UTF-8 bytes conservatively bound byte-level tokenizer tokens, including non-English text.
 export const tokenUpperBound = (text: string) => Buffer.byteLength(text, "utf8");
-const overlap = (query: string[], text: string) => query.filter(t => terms(text).includes(t)).length;
 /** Pure selection over live-authorized store output; never accepts a legacy graph description. */
 export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunks: RetrievalResult[], assertions: EvidenceTrace[], timeline: TemporalRetrievalResult): EvidenceBundle {
+  const activeRead = timeline.readVersion === TEMPORAL_READ_VERSION;
+  // Query expansion remains capped at 24 terms; source matching must inspect the
+  // complete bounded evidence row. Preserve frozen v1 ranking/replay behavior.
+  const sourceTerms = (text: string) => terms(text, activeRead ? Infinity : 24);
+  const overlap = (text: string) => { const words = new Set(sourceTerms(text)); return plan.terms.filter(t => words.has(t)).length; };
   const allowed = new Set(scope.allowedVectorIds);
   const safeChunks = chunks.filter(c => c.metadata.expertProfileId === scope.expertProfileId && typeof c.metadata.vectorId === "string" && allowed.has(c.metadata.vectorId)).slice(0, RETRIEVAL_BUDGET.candidates);
   const eligible = new Set(safeChunks.map(c => c.metadata.vectorId as string));
   const visible = (row: { chunkIds: string[] }) => row.chunkIds.some(id => eligible.has(id));
   const rows = [...timeline.stances, ...timeline.supersededStances].filter(visible).slice(0, RETRIEVAL_BUDGET.candidates);
   const supportScore = (row: {chunkIds: string[]}) => Math.max(0, ...safeChunks.filter(c=>row.chunkIds.includes(c.metadata.vectorId as string)).map(c=>Number.isFinite(c.score)?Math.max(0,Math.min(1,c.score)):0));
-  const lexical = (s: TemporalStanceTrace) => overlap(plan.terms, [s.domain,s.context,s.action,s.situation,s.constraints,s.exceptions].filter(Boolean).join(" "));
+  const lexical = (s: TemporalStanceTrace) => overlap([s.domain,s.context,s.action,s.situation,s.constraints,s.exceptions,...(activeRead ? [s.documentedReasons,s.alternatives,s.tradeoffs] : [])].filter(Boolean).join(" "));
   const seedIds = new Set(rows.filter(s => lexical(s) > 0).map(s => s.id));
   const related = new Set<string>();
   for (const relation of timeline.relations) {
@@ -33,10 +37,26 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   type Candidate = { key: string; row: TemporalStanceTrace | EvidenceTrace; type: "stance" | "assertion"; score: number };
   const candidates: Candidate[] = rows.filter(s => seedIds.has(s.id) || related.has(s.id)).map(s => ({ key:s.id,row:s,type:"stance",score:lexical(s)*10 + supportScore(s) + (related.has(s.id)?5:0) + (plan.intent === "decision" && (s.constraints || s.exceptions)?4:0) }));
   for (const a of assertions.filter(visible).filter(a=>plan.temporal.mode!=="as-of" || !plan.temporal.knownAt || a.ingestedAt<=plan.temporal.knownAt).slice(0, RETRIEVAL_BUDGET.candidates)) {
-    const score = overlap(plan.terms,a.text);
+    const score = overlap(a.text);
     if (score) candidates.push({key:a.assertionId+":"+a.spanId,row:a,type:"assertion",score:score*10 + supportScore(a) + Math.min(3,Math.max(0,a.weight))});
   }
   candidates.sort((a,b)=>b.score-a.score||a.key.localeCompare(b.key));
+  // Keep a direct documented counterposition beside its relevance-ranked seed,
+  // before repeated supporting spans consume the context. This only reorders
+  // already authorized one-hop candidates; it never expands the candidate set.
+  if (activeRead) {
+    const pending = new Map(candidates.map(c => [c.key, c]));
+    const ordered: Candidate[] = [];
+    for (const seed of candidates) {
+      if (!pending.delete(seed.key)) continue;
+      ordered.push(seed);
+      if (seed.type !== "stance") continue;
+      const neighbors = new Set(timeline.relations.filter(r => r.from === seed.key || r.to === seed.key).flatMap(r => [r.from, r.to]));
+      const counterpart = candidates.find(c => c.type === "stance" && pending.has(c.key) && neighbors.has(c.key));
+      if (counterpart) { pending.delete(counterpart.key); ordered.push(counterpart); }
+    }
+    candidates.splice(0, candidates.length, ...ordered);
+  }
   const candidateTruncated = candidates.length > RETRIEVAL_BUDGET.candidates;
   candidates.length = Math.min(candidates.length, RETRIEVAL_BUDGET.candidates);
   const selected: Candidate[] = [], seen = new Set<string>();
@@ -48,7 +68,7 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
     const row: Record<string,unknown> = {...sourceRow};
     // Compaction is part of the new read policy only. Retained v1 serialization and
     // its budget selection must remain byte-for-byte unchanged, including near the cap.
-    if (timeline.readVersion === TEMPORAL_READ_VERSION) {
+    if (activeRead) {
       // Retained storage identities stay in typed traces; prompt carries replay basis/version.
       if ("storedStanceId" in row) delete row.storedStanceId;
       if ("storedExtractorVersion" in row) delete row.storedExtractorVersion;
@@ -84,7 +104,7 @@ export function assembleBundle(scope: RetrievalScope, plan: RetrievalPlan, chunk
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.documentedReasons)) gaps.push("Documented reasons unavailable in selected evidence");
   if (plan.intent === "decision" && !temporalTrace.stances.some(s=>s.situation)) gaps.push("Documented situation unavailable in selected evidence");
   if (plan.intent === "comparison" && selected.length) {
-    const missing = plan.terms.filter(term=>!selected.some(s=>terms(s.row.text).includes(term)));
+    const missing = plan.terms.filter(term=>!selected.some(s=>sourceTerms(s.row.text).includes(term)));
     if (missing.length) gaps.push(`Comparison terms absent from selected evidence: ${missing.join(", ").slice(0,100)}`);
   }
   return {version:READ_CONTRACT_VERSION,plan,sources,evidenceTrace,temporalTrace,prompt,gaps,trace:{candidates:candidates.length,selected:selected.length,tokenUpperBound:tokenUpperBound([prompt,...gaps.map(gap=>`Evidence gap: ${gap}`)].join("\n")),hops:related.size?1:0,truncated,retrievalMs:0,failures:[]}};
