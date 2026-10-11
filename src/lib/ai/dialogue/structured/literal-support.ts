@@ -38,11 +38,13 @@ export function literalPersonSupport(text: string, rows: LiteralRow[]): boolean 
  * Compare each quotation against a single adjacent cited span; never concatenate
  * unrelated evidence into an invented quote. Apostrophes in prose are not quotation marks. */
 export function quotationsSupported(text: string, rows: LiteralRow[]): boolean {
-    // A closing curly apostrophe inside don’t is not the end of a quotation.
-    const quotes = text.match(/"(?:\\.|[^"\\])*"|“[^”]*”|‘[^\n]+?’(?=$|[\s.,;:)])/g) || [];
-    const singleMatches = Array.from(text.matchAll(/(?:^|[\s(:,])'([^\n]+?)'(?=$|[\s.,;:)])/g));
+    // Prefer the complete outer single quotation: internal contractions and plural
+    // possessives cannot terminate it early. Multiple separate single quotations
+    // on one line may conservatively refuse; double quotations remain unambiguous.
+    const quotes = text.match(/"(?:\\.|[^"\\])*"|“[^”]*”|‘[^\n]+’(?=$|[\s.,;:)])/g) || [];
+    const singleMatches = Array.from(text.matchAll(/(?:^|[\s(:,])'([^\n]+)'(?=$|[\s.,;:)])/g));
     const remainder = [...quotes, ...singleMatches.map(match => match[0])].reduce((rest, quote) => rest.replace(quote, ""), text);
-    if (/["“”‘]/.test(remainder) || /(?:^|[\s(:,])'(?=\S)|(?:^|[^a-zA-Z0-9])’(?=$|[\s.,;:)])/.test(remainder)) return false;
+    if (/["“”‘]/.test(remainder) || /(?:^|[\s(:,])'(?=\S)/.test(remainder) || (text.includes('‘') && /’(?=$|[\s.,;:)])/.test(remainder)) || (singleMatches.length > 0 && /'(?=$|[\s.,;:)])/.test(remainder))) return false;
     const supported = (value: string) => !!value && rows.some(row => row.text.includes(value));
     const straightSingle = singleMatches.map(match => match[1]);
     return straightSingle.every(supported) && quotes.every(quote => {

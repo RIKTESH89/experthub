@@ -57,3 +57,15 @@ test('curly single quotations preserve a source negation through the full gate a
     test.response.claims[0].end = test.response.text.length;
     expect(evaluateCase(test).decision.reasons).toContain('quotation-not-in-cited-span');
 });
+test.each([['‘', '’'], ["'", "'"]])('outer quotations retain an internal plural possessive: %s %s', (open, close) => {
+    const test = acceptanceCases().find(test => test.id === 'ordinary-exact-quotation')!;
+    test.response.claims[0].category = 'source-explanation';
+    delete test.response.claims[0].personId;
+    test.bundle.evidenceTrace[0].text = `trials${close} outcomes are calibrated`;
+    test.response.text = `The source says ${open}trials${close} outcomes are calibrated${close}.`;
+    test.response.claims[0].end = test.response.text.length;
+    expect(evaluateCase(test).decision.allowed).toBe(true);
+    test.response.text = `The source says ${open}trials${close} outcomes are invented${close}.`;
+    test.response.claims[0].end = test.response.text.length;
+    expect(evaluateCase(test).decision.reasons).toContain('quotation-not-in-cited-span');
+});
