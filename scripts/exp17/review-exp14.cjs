@@ -1,4 +1,5 @@
 /* Independent pure-selector review. Reads EXP-14 checkout; writes only own audit. */
+/* eslint-disable @typescript-eslint/no-require-imports -- CommonJS entry loads TypeScript through the preloaded ts-node review bootstrap. */
 const { writeFileSync } = require('node:fs');
 const target = '/Users/rikteshs20/Documents/Codex/2026-10-11/task-5/workers/exp-14';
 const { assembleBundle } = require(target + '/src/lib/retrieval/bundle.ts');

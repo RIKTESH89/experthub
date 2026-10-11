@@ -27,7 +27,7 @@ Read-only saved artifacts and SHA256 hashes are in `historical-artifacts.json`. 
 - Native repository Jest, EXP-15 plus EXP-17: **215/215 tests in 11 suites passed** (`jest.log`). Runtime uses synthetic adapters/mocked stores; native Jest execution is not native database/provider validation.
 - TypeScript noEmit/incremental false passed (`types.log`); scoped Next lint passed (`lint.log`); diff check passed.
 - Deterministic trace runner: zero policy mismatches, zero provider calls.
-- Ten synthetic latency samples with 5ms adapter delays: simulated unverified generation p50 6.33ms, verified full-buffer p50 26.36ms/p95 29.97ms. A hung-verifier 15ms deadline blocked in 16ms and emitted no risky draft. This is a local synthetic comparison, not production/provider time-to-first-token measurement. See `latency.json`.
+- Ten synthetic latency samples with 5ms adapter delays: simulated unverified generation p50 5.68ms, verified full-buffer p50 24.22ms/p95 27.15ms. A hung-verifier 15ms deadline blocked in 15ms and emitted no risky draft. This is a local synthetic comparison, not production/provider time-to-first-token measurement. See `latency.json`.
 
 Reproduce traces and timings with NODE_ENV=test EXP15_EXP17_LOCAL_EVALUATION=1 and `node -r ./scripts/exp15-exp17/register-alias.cjs -r ./node_modules/ts-node/register scripts/exp17/evaluate.ts` (or latency.ts). These explicit local commands never change a shared feature flag or call a provider.
 
@@ -42,3 +42,5 @@ Integration review required fixing the explicit category-laundered doctorate rat
 Final quotation review found a curly-apostrophe contraction could end a quote at don’t and hide an invented remainder. Closing-boundary parsing now handles contractions, and full-gate truthful/misleading negative-source quotations are tested. Exact curly/straight recorded-source quotations remain usable without treating source speaker first-person words as a new biography.
 
 The final independent quote review also demonstrated early closing at a plural possessive (trials’ outcomes). The parser now takes the complete outer single quotation and rejects unmatched residual closing delimiters; full-gate truthful and invented plural-possessive cases pass for curly and straight singles. Multiple separately quoted single fragments on one line can conservatively refuse rather than joining source support across ambiguous boundaries; this is an additional disclosed potential refusal-overreach case.
+
+EXP-14 independent reviewer reran 8 adversarial/ordinary regressions in 2 suites against exact verifier head `d808194`: all passed, with no remaining blocking findings in the changed deterministic paths. Review artifacts are on EXP-14 commit `05eade4`, audit/exp17-independent-review-20261011. This review is source/local synthetic verification, not semantic human or provider acceptance.
