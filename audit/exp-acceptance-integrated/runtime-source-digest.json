@@ -1,0 +1,5 @@
+{
+  "sourceSHA256": "0c86eaf11125746130fc692208faa1ce650f72035d80f864d3622d8fe02d227e",
+  "files": 487,
+  "scope": "all src files; test-only and evidence commits do not change this digest"
+}

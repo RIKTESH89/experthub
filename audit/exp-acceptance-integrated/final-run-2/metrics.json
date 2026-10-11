@@ -1,0 +1,87 @@
+{
+  "mode": "native-pipeline-synthetic-protocol-parity",
+  "traces": 116,
+  "cases": 27,
+  "turnsPerVariant": 29,
+  "repeats": 2,
+  "sameInputPairs": 29,
+  "repeatableOutputPairs": 29,
+  "contractFailures": [],
+  "releasePolicy": {
+    "tp": 56,
+    "tn": 60,
+    "fp": 0,
+    "fn": 0,
+    "falsePositiveRate": 0,
+    "falseNegativeRate": 0,
+    "interpretation": "Release-policy confusion against fixed synthetic expectations; not independent semantic verifier accuracy."
+  },
+  "suppliedEvidence": {
+    "selected": 124,
+    "goldMatched": 8,
+    "gold": 8,
+    "forbiddenExposure": 0,
+    "interpretation": "Preassembled context accounting only; no native retrieval call occurred"
+  },
+  "nativeRetrieval": {
+    "status": "NOT_RUN",
+    "precision": null,
+    "recall": null
+  },
+  "human": {
+    "status": "NOT_RUN_OR_INCOMPLETE",
+    "reviewers": 0,
+    "annotationRows": 0,
+    "dimensions": {
+      "faithfulness": {
+        "mean": null,
+        "rated": 0,
+        "notAssessable": 0
+      },
+      "style": {
+        "mean": null,
+        "rated": 0,
+        "notAssessable": 0
+      },
+      "naturalness": {
+        "mean": null,
+        "rated": 0,
+        "notAssessable": 0
+      },
+      "usefulness": {
+        "mean": null,
+        "rated": 0,
+        "notAssessable": 0
+      },
+      "abstention": {
+        "mean": null,
+        "rated": 0,
+        "notAssessable": 0
+      }
+    },
+    "interpretation": "Recorded annotations require independent-rater provenance and disagreement adjudication; no automatic acceptance or personality claim."
+  },
+  "measuredFidelity": {
+    "supportedClaimRate": null,
+    "unsupportedPersonClaims": null,
+    "abstentionQuality": null,
+    "naturalness": null,
+    "style": null
+  },
+  "provider": {
+    "status": "NOT_RUN",
+    "requests": 0,
+    "inputTokens": null,
+    "outputTokens": null,
+    "dollarCost": null,
+    "latencyMs": null,
+    "firstTokenMs": null
+  },
+  "localLatency": {
+    "medianMs": 1.1092089999999644,
+    "p95Ms": 1.7897079999997914,
+    "scope": "In-process synthetic native pipeline across heterogeneous fixtures; not service/provider latency or production percentile"
+  },
+  "comparison": "Both labels use the same current native kernel and fixed adapters; no architecture gain is measured",
+  "interpretation": "Repeated native adapter execution demonstrates harness/contract determinism only. Gold/review fixtures supply outcomes; neither independent semantic accuracy nor human quality is measured. Supplied-evidence IDs are preassembled context accounting, not native retrieval precision/recall."
+}
