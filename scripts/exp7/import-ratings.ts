@@ -1,0 +1,11 @@
+import { readFileSync, writeFileSync } from 'fs';
+import { relative, resolve, sep } from 'path';
+import { aggregateHumanRatings, type ReviewAnswer, type HumanRating } from './protocol';
+const [key, ratingsFile, outputFile] = process.argv.slice(2);
+if (!key || !ratingsFile || !outputFile) throw new Error('Usage: import-ratings.ts coordinator-answer-key.json independently-completed-ratings.json output.json');
+const output = resolve(outputFile), within = relative(process.cwd(), output);
+if (within.startsWith(`..${sep}`) || within === '..' || within.startsWith(sep)) throw new Error('Report must remain inside checkout');
+const answers: ReviewAnswer[] = JSON.parse(readFileSync(key, 'utf8')), ratings: HumanRating[] = JSON.parse(readFileSync(ratingsFile, 'utf8'));
+const result = aggregateHumanRatings(answers, ratings);
+writeFileSync(output, JSON.stringify(result, null, 2) + '\n');
+process.stdout.write(JSON.stringify({ status: result.status, reviewers: result.reviewers, annotations: result.annotationRows, acceptance: 'Not inferred; adjudication and provenance required' }) + '\n');

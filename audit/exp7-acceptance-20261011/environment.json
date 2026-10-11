@@ -1,0 +1,12 @@
+{
+  "node": "v26.5.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "jest": "29.7.0",
+  "typescript": "5.9.3",
+  "tsNode": "10.9.2",
+  "dependencies": "Read-only existing node_modules symlink; no installation",
+  "database": "NOT RUN",
+  "provider": "NOT RUN",
+  "baseline": "0a2cd602646d7ae5689b195a4fbe6da05a5daa28"
+}
