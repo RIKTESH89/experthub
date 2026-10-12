@@ -1,5 +1,0 @@
-{
-  "scripts/exp16-acceptance/run-native.py": "b56430bd4b918c12e5d47d791a52a0a2ef82f0f9c1f19e6acd379a7501906b94",
-  "scripts/exp16-acceptance/full-schema.config.ts": "c22d949138526da6d1b8c354c2c579a35a76ab7f56101b9e6cfcdbef3fd34315",
-  "scripts/exp16-replay/post-sync.integration.ts": "bc6c4d1deddfd9ff59c715f581bcf9998ec0ca8e9b5333aa189515b77b7189d1"
-}

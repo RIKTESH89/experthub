@@ -1,3 +1,4 @@
+import { withKnowledgeOwnerWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -47,21 +48,15 @@ export async function POST(
       return NextResponse.json({ tracked: false });
     }
 
-    // Record view and increment count
-    await prisma.postView.create({
-      data: {
-        postId,
-        userId,
-        ipHash: userId ? null : ipHash,
-      },
+    // Deduplication and counter mutation share the same admission transaction.
+    const tracked = await withKnowledgeOwnerWrite(post.authorId, async tx => {
+      const prior = await tx.postView.findFirst({ where: { postId, viewedAt: { gte: twentyFourHoursAgo }, ...(userId ? { userId } : { ipHash }) } });
+      if (prior) return false;
+      await tx.postView.create({ data: { postId, userId, ipHash: userId ? null : ipHash } });
+      await tx.post.update({ where: { id: postId }, data: { viewCount: { increment: 1 } } });
+      return true;
     });
-
-    await prisma.post.update({
-      where: { id: postId },
-      data: { viewCount: { increment: 1 } },
-    });
-
-    return NextResponse.json({ tracked: true });
+    return NextResponse.json({ tracked });
   } catch (error) {
     console.error("Track view error:", error);
     return NextResponse.json({ tracked: false });

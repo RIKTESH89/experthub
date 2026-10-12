@@ -1,8 +1,0 @@
-PASS __tests__/phase0/conversation.test.ts
-PASS __tests__/exp16/temporal-read-policy.test.ts
-
-Test Suites: 2 passed, 2 total
-Tests:       11 passed, 11 total
-Snapshots:   0 total
-Time:        0.235 s, estimated 1 s
-Ran all test suites matching /__tests__\/phase0\/conversation.test.ts|__tests__\/exp16\/temporal-read-policy.test.ts/i.

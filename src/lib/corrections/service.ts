@@ -7,6 +7,7 @@ import { manifestHash } from "@/lib/persona/manifest";
 import { enqueueLifecycleJob } from "@/lib/knowledge/outbox";
 import { retireEvidence } from "@/lib/graph/evidence-store";
 import { plannedVectorIds } from "@/lib/vector/indexer";
+import { lockExpertSourceWrites } from "@/lib/knowledge/write-lock";
 export const proposalSchema=z.object({feedback:z.string().trim().min(1).max(4000),itemId:z.string().min(1).max(200).optional(),sourceVersion:z.number().int().positive().optional(),title:z.string().trim().min(1).max(500).optional(),content:z.string().trim().min(1).max(100000).optional()}).strict();
 export type Proposal=z.infer<typeof proposalSchema>;
 export type Review={id:string;expertProfileId:string;submittedBy:string;requestHash:string;proposal:Proposal;state:"PENDING"|"ACCEPTED"|"REJECTED";version:number};
@@ -30,6 +31,7 @@ export async function submitCorrection(input:Submission) {
 }
 /** Internal adapter entry point: caller owns the transaction; provenance is server-derived. */
 export async function submitCorrectionInTransaction(tx:Store,input:Submission,provenance?:unknown) {
+ await lockExpertSourceWrites(tx, input.expertProfileId);
  const proposal=proposalSchema.parse(input.proposal), hash=manifestHash({...input,proposal});
   // Serialize submissions and owner decisions per expert; no belief writes on submission.
   const owners=await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${input.expertProfileId} FOR UPDATE`;

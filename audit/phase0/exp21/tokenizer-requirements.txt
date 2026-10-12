@@ -1,6 +1,0 @@
-openai-harmony==0.0.8 --hash=sha256:029ec25ca74abe48fdb58eb9fdd2a8c1618581fc33ce8e5653f8a1ffbfbd9326
-pydantic==2.11.7 --hash=sha256:dde5df002701f6de26248661f6835bbe296a47bf73990135c7d07ce741b9623b
-pydantic-core==2.33.2 --hash=sha256:6fa6dfc3e4d1f734a34710f391ae822e0a8eb8559a85c6979e14e65ee6ba2954
-annotated-types==0.7.0 --hash=sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53
-typing-extensions==4.14.1 --hash=sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76
-typing-inspection==0.4.1 --hash=sha256:389055682238f53b04f7badcb49b989835495a96700ced5dab2d8feae4b26f51

@@ -48,6 +48,8 @@ const sourceTypeOptions = [
   { value: "post", label: "From Post", icon: MessageSquare, color: "text-green-500" },
 ];
 
+const uncertainSaveMessage = "Save result could not be confirmed. Check your knowledge library before retrying; an item may have been saved but still need indexing.";
+
 export function KnowledgeForm({
   initialData,
   onSuccess,
@@ -100,7 +102,7 @@ export function KnowledgeForm({
         signal: request.signal,
       });
 
-      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your expert session cannot save this knowledge item. Your draft is kept here." : "Knowledge item could not be saved. Your draft is kept here; try again.");
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Your expert session cannot save this knowledge item. Your draft is kept here." : uncertainSaveMessage);
       if (request.signal.aborted) return;
       reset(data);
       setSaved(true);
@@ -110,7 +112,7 @@ export function KnowledgeForm({
       );
       onSuccess?.();
     } catch (error) {
-      if (!request.signal.aborted) setSaveError(error instanceof Error && !["TypeError", "SyntaxError"].includes(error.name) ? error.message : "Save response could not be confirmed. Check your library before retrying an interrupted save.");
+      if (!request.signal.aborted) setSaveError(error instanceof Error && !["TypeError", "SyntaxError"].includes(error.name) ? error.message : uncertainSaveMessage);
     } finally {
       inFlight.current = false;
       if (!request.signal.aborted) setIsSubmitting(false);
@@ -276,6 +278,7 @@ export function KnowledgeForm({
           </CardContent>
 
           {saveError ? <p role="alert" className="mx-6 mb-4 text-sm text-destructive">{saveError}</p> : null}
+          {saveError === uncertainSaveMessage ? <a className="mx-6 mb-4 inline-block underline" href="/expert/knowledge" target="_blank" rel="noopener noreferrer">Check knowledge library (opens in new tab)</a> : null}
           {saved && !isDirty ? <p role="status" className="mx-6 mb-4 text-sm">Knowledge item saved.</p> : null}
           {isSubmitting ? <p role="status" className="mx-6 mb-4 text-sm">Saving knowledge item…</p> : null}
           <CardFooter className="flex justify-end gap-2.5 border-t border-border/30 bg-card px-6 py-4">
@@ -300,7 +303,7 @@ export function KnowledgeForm({
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              {isSubmitting ? "Saving…" : saveError ? "Retry saving knowledge" : isEditing ? "Update" : "Create"}
+              {isSubmitting ? "Saving…" : saveError === uncertainSaveMessage ? "Save after checking library" : saveError ? "Retry saving knowledge" : isEditing ? "Update" : "Create"}
             </Button>
           </CardFooter>
         </form>

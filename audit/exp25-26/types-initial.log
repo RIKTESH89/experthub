@@ -1,5 +1,0 @@
-__tests__/api/experts.test.ts(591,40): error TS2554: Expected 0 arguments, but got 1.
-__tests__/api/experts.test.ts(616,40): error TS2554: Expected 0 arguments, but got 1.
-src/lib/auth.config.ts(14,27): error TS2322: Type 'unknown' is not assignable to type 'string'.
-src/lib/auth.config.ts(14,55): error TS2322: Type 'unknown' is not assignable to type 'string'.
-src/lib/auth.ts(63,18): error TS2322: Type '{}' is not assignable to type 'string'.

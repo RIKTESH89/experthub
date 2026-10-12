@@ -1,7 +1,0 @@
-{
-  "positive": "In messaging, For small teams, I prefer JetStream because capacity; constraints: two engineers; exceptions: audited workloads.",
-  "negative": "In messaging, For small teams, I do not prefer JetStream because maintenance; constraints: two engineers; exceptions: audited workloads.",
-  "missing": "I do not prefer JetStream.",
-  "boundary": "I will not disclose secrets; constraints: contractual duty; exceptions: authorized disclosure.",
-  "unsupported": "I might not prefer JetStream.\nWe dislike JetStream.\nI do not recommend JetStream.\nQuantum orchids are interesting."
-}

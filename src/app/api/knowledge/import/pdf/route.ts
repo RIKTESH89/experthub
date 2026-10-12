@@ -1,3 +1,5 @@
+import { withSourceWorker, sourceWorkerSignal } from "@/lib/knowledge/repair-fence";
+import { withKnowledgeWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -55,28 +57,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    return await withSourceWorker(prisma, expertProfile.id, async () => {
     const fileName = file.name || "upload.pdf";
 
     // Create ImportJob with status PROCESSING
-    const importJob = await prisma.importJob.create({
+    const importJob = await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.create({
       data: {
         expertProfileId: expertProfile.id,
         sourceType: "PDF",
         fileName,
         status: "PROCESSING",
       },
-    });
+    }));
 
     try {
       // Read file buffer from FormData
+      sourceWorkerSignal()?.throwIfAborted();
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
       // Parse PDF content
+      sourceWorkerSignal()?.throwIfAborted();
       const { title, content, numPages } = await parsePdfContent(buffer);
+      sourceWorkerSignal()?.throwIfAborted();
 
       // Create KnowledgeItem
-      const knowledgeItem = await prisma.knowledgeItem.create({
+      const knowledgeItem = await withKnowledgeWrite(expertProfile.id, tx => tx.knowledgeItem.create({
         data: {
           expertProfileId: expertProfile.id,
           title,
@@ -84,15 +90,15 @@ export async function POST(request: NextRequest) {
           sourceType: "pdf",
           metadata: { fileName, numPages },
         },
-      });
+      }));
 
       await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 
       // Update ImportJob status to COMPLETED
-      await prisma.importJob.update({
+      await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.update({
         where: { id: importJob.id },
         data: { status: "COMPLETED", itemsCreated: 1 },
-      });
+      }));
 
       return NextResponse.json({
         status: "success",
@@ -105,16 +111,17 @@ export async function POST(request: NextRequest) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
       // Update ImportJob status to FAILED
-      await prisma.importJob.update({
+      await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.update({
         where: { id: importJob.id },
         data: { status: "FAILED", errorMessage },
-      });
+      }));
 
       return NextResponse.json(
         { error: errorMessage },
         { status: 422 }
       );
     }
+    });
   } catch (error) {
     console.error("PDF import error:", error);
     return NextResponse.json(

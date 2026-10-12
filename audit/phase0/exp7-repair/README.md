@@ -1,3 +1,0 @@
-# Offline history projection repair
-
-Prepared after EXP22 stopped on HTTP400. No provider calls. Correct original role/content projection and candidate role/content/sources projection, local provider-envelope validation, sanitized HTTP error diagnostics.20/20 mocks passed, including original/candidate latest correction and safe field projection. Existing EXP21/EXP22 artifacts untouched. Provider execution blocked, even with an execute flag. Any continuation requires new scope/approval because10 remaining requests would exceed EXP22's14-attempt ceiling after5 spent attempts. See ../exp7-next/results.md.

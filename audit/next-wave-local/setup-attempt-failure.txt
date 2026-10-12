@@ -1,5 +1,0 @@
-Error: native-start failed; see /Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-next-wave-integration/audit/next-wave-local/native-start.log
-    at run (/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-next-wave-integration/scripts/next-wave-local/run-native.cjs:11:316)
-    at pg (/Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-next-wave-integration/scripts/next-wave-local/run-native.cjs:12:29)
-    at /Users/rikteshs20/Documents/Codex/2026-10-01/task-2/experthub-next-wave-integration/scripts/next-wave-local/run-native.cjs:16:2
-    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

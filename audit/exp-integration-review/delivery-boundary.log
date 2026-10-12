@@ -1,6 +1,0 @@
-PASS audit/exp-integration-review/delivery-boundary.test.ts
-
-Test Suites: 1 passed, 1 total
-Tests:       9 passed, 9 total
-Snapshots:   0 total
-Time:        0.713 s, estimated 1 s

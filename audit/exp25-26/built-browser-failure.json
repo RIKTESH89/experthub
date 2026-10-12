@@ -1,9 +1,0 @@
-{
-  "results": [
-    {
-      "name": "built login and Google provider declaration load",
-      "status": "PASS"
-    }
-  ],
-  "error": "Anonymous application intercepted"
-}

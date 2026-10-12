@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { admitSourceWrite } from "./repair-fence";
 
 /** Source writers use expert -> source -> post -> outbox/evidence ordering.
  * Take this gate BEFORE source/job writes, including FK-taking evidence inserts.
@@ -6,5 +7,5 @@ import type { Prisma } from "@prisma/client";
  * Outbox claims/acks are separate autocommit statements, never held across handlers.
  */
 export async function lockExpertSourceWrites(tx: Prisma.TransactionClient, expertProfileId: string) {
-  await tx.$queryRaw`SELECT "id" FROM "ExpertProfile" WHERE "id"=${expertProfileId} FOR UPDATE`;
+  await admitSourceWrite(tx, expertProfileId);
 }

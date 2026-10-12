@@ -4,6 +4,22 @@
 import prisma from "@/lib/prisma";
 import type { RetrievalScope } from "@/lib/knowledge/access";
 import { EMBEDDING_MODEL, validateEmbedding } from "./embeddings";
+import { admitSourceWrite } from "@/lib/knowledge/repair-fence";
+import type { Prisma } from "@prisma/client";
+
+async function admitVectorWrite(tx: Prisma.TransactionClient, namespace: string, expertId?: string, ids?: string[]) {
+  let expert = expertId ? await tx.expertProfile.findUnique({ where: { id: expertId } }) : await tx.expertProfile.findFirst({ where: { vectorNamespace: namespace } });
+  if (!expert) throw new Error("Vector writer owner is not current");
+  await admitSourceWrite(tx, expert.id);
+  expert = await tx.expertProfile.findUnique({ where: { id: expert.id } });
+  if (!expert) throw new Error("Vector writer owner disappeared");
+  if (expert.vectorNamespace !== namespace) {
+    if (!ids?.length) throw new Error("Vector writer namespace is not current");
+    const receipts = await tx.knowledgeLifecycleJob.findMany({ where: { expertProfileId: expert.id, namespace, kind: { in: ["INDEX", "CLEANUP"] } } });
+    const authorized = new Set(receipts.flatMap(r => r.vectorIds));
+    if (ids.some(id => !authorized.has(id))) throw new Error("Historical vector cleanup lacks receipt");
+  }
+}
 
 interface VectorEntry {
   id: string;
@@ -26,6 +42,9 @@ class PgVectorStore {
       if (entry.metadata.embeddingModel !== EMBEDDING_MODEL) throw new Error("Embedding model mismatch");
     }
     await prisma.$transaction(async (tx) => {
+      const experts = Array.from(new Set(entries.map(entry => entry.metadata.expertProfileId)));
+      if (experts.length !== 1 || typeof experts[0] !== "string") throw new Error("Vector writer requires one owner");
+      await admitVectorWrite(tx, namespace, experts[0]);
       for (const entry of entries) {
         const embeddingStr = `[${entry.values.join(",")}]`;
         await tx.$executeRawUnsafe(
@@ -170,21 +189,27 @@ class PgVectorStore {
     return allResults.slice(0, topK);
   }
 
-  async deleteByIds(namespace: string, ids: string[]) {
+  async deleteByIds(namespace: string, ids: string[], expertId?: string) {
     if (ids.length === 0) return;
 
-    await prisma.$executeRawUnsafe(
+    await prisma.$transaction(async tx => {
+    await admitVectorWrite(tx, namespace, expertId, ids);
+    await tx.$executeRawUnsafe(
       `DELETE FROM "VectorChunk" WHERE "namespace" = $1 AND "vectorId" = ANY($2)`,
       namespace,
       ids
     );
+    });
   }
 
   async deleteNamespace(namespace: string) {
-    await prisma.$executeRawUnsafe(
+    await prisma.$transaction(async tx => {
+    await admitVectorWrite(tx, namespace);
+    await tx.$executeRawUnsafe(
       `DELETE FROM "VectorChunk" WHERE "namespace" = $1`,
       namespace
     );
+    });
   }
 
   async count(namespace: string): Promise<number> {

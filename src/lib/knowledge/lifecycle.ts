@@ -5,6 +5,29 @@ import { indexDocument, plannedVectorIds } from "@/lib/vector/indexer";
 
 import { enqueueLifecycleJob, runLifecycleJob } from "./outbox";
 import type { KnowledgeLifecycleJob, Prisma } from "@prisma/client";
+import { withSourceWorker, holdSourceWriter } from "./repair-fence";
+
+/** Short mutation transaction; never infer write admission from a prior read. */
+export function withKnowledgeWrite<T>(expertId: string, work: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+  return prisma.$transaction(async tx => { await lockExpertSourceWrites(tx, expertId); return work(tx); });
+}
+export function withKnowledgeOwnerWrite<T>(ownerId: string, work: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+  return prisma.$transaction(async tx => {
+    const expert = await tx.expertProfile.findUnique({ where: { userId: ownerId } });
+    if (expert) await lockExpertSourceWrites(tx, expert.id);
+    return work(tx);
+  });
+}
+/** Account teardown shares User-before-Expert ordering with parent persistence. */
+export function withKnowledgeAccountWrite<T>(ownerId: string, work: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+  return prisma.$transaction(async tx => {
+    const expert = await tx.expertProfile.findUnique({ where: { userId: ownerId } });
+    if (expert) await holdSourceWriter(tx, expert.id);
+    await tx.$queryRaw`SELECT "id" FROM "User" WHERE "id"=${ownerId} FOR NO KEY UPDATE`;
+    if (expert) await lockExpertSourceWrites(tx, expert.id);
+    return work(tx);
+  });
+}
 
 /** Replay-safe: an event identifies a source; its old payload is never authoritative. */
 export async function syncKnowledgeItem(expertProfileId: string, itemId: string) {
@@ -18,6 +41,13 @@ export async function syncKnowledgeItem(expertProfileId: string, itemId: string)
 }
 
 export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void> {
+  return withSourceWorker(prisma, job.expertProfileId, async () => {
+    const owned = await prisma.knowledgeLifecycleJob.findUnique({ where: { id: job.id } });
+    if (!owned || owned.state !== "RUNNING" || !job.leaseToken || owned.leaseToken !== job.leaseToken || owned.expertProfileId !== job.expertProfileId) throw new Error("Index worker lease is not current");
+    return performAdmittedIndexJob(job);
+  });
+}
+async function performAdmittedIndexJob(job: KnowledgeLifecycleJob): Promise<void> {
   const {expertProfileId,itemId} = job;
   if (job.kind === "POST_SYNC") {
     const post = await prisma.post.findUnique({where:{id:itemId}});
@@ -69,7 +99,13 @@ export async function performIndexJob(job: KnowledgeLifecycleJob): Promise<void>
         where:{id:itemId,expertProfileId,sourceVersion:version},
         data:{vectorIds,isIndexed:true,indexedVersion:version,indexingError:null},
       });
-      if (published.count) await publishEvidence(tx,current,current.expertProfile.userId);
+      if (published.count) {
+        // Index publication advances updatedAt. Imported-blog evidence pins that
+        // fresh timestamp so later metadata edits revoke its snapshot immediately.
+        const evidenceItem = current.sourceType === "blog"
+          ? await tx.knowledgeItem.findUniqueOrThrow({where:{id:itemId}}) : current;
+        await publishEvidence(tx,evidenceItem,current.expertProfile.userId);
+      }
       return published;
     });
     if (!published.count) {
@@ -117,6 +153,7 @@ export async function syncPostSource(postId: string) {
   // Initial reads discover the tenant only. Never publish their content snapshot.
   // Match correction/release ordering: expert -> knowledge source -> authoritative post.
   const itemId = await prisma.$transaction(async tx => {
+    await lockExpertSourceWrites(tx, expert.id);
     const owners = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expert.id} FOR UPDATE`;
     if (owners[0]?.userId !== post.authorId) throw new Error("Post source owner changed");
     const key = { expertProfileId: expert.id, sourceType: "post", sourceId: postId };
@@ -177,6 +214,7 @@ export async function withPostOutbox<T extends {id:string}>(authorId:string, mut
     const expert = await tx.expertProfile.findUnique({where:{userId:authorId}});
     // Join the expert-first protocol before authoritative post/outbox writes.
     if (expert) {
+      await lockExpertSourceWrites(tx, expert.id);
       const owners = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expert.id} FOR UPDATE`;
       if (owners[0]?.userId !== authorId) throw new Error("Post source owner changed");
     }

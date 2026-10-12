@@ -1,9 +1,0 @@
-PASS __tests__/exp16/page.test.ts
-PASS __tests__/exp16/routes.test.ts
-
-Test Suites: 2 passed, 2 total
-Tests:       9 passed, 9 total
-Snapshots:   0 total
-Time:        0.198 s, estimated 1 s
-Ran all test suites matching /__tests__\/exp16/i.
-Test results written to: audit/exp16/ui-routes.json

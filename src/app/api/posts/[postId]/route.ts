@@ -1,3 +1,4 @@
+import { withKnowledgeOwnerWrite } from "@/lib/knowledge/lifecycle";
 import { isPreviewIsolated } from "@/lib/preview-isolation";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -105,18 +106,12 @@ export async function GET(
       });
 
       if (!existingView) {
-        // New unique view — record it and increment count
-        prisma.postView.create({
-          data: {
-            postId,
-            userId,
-            ipHash: userId ? null : ipHash,
-          },
-        }).then(() => {
-          return prisma.post.update({
-            where: { id: postId },
-            data: { viewCount: { increment: 1 } },
-          });
+        // Background work still admits and commits both view writes atomically.
+        void withKnowledgeOwnerWrite(post.authorId, async tx => {
+          const prior = await tx.postView.findFirst({ where: { postId, viewedAt: { gte: twentyFourHoursAgo }, ...(userId ? { userId } : { ipHash }) } });
+          if (prior) return;
+          await tx.postView.create({ data: { postId, userId, ipHash: userId ? null : ipHash } });
+          await tx.post.update({ where: { id: postId }, data: { viewCount: { increment: 1 } } });
         }).catch(() => {}); // fire-and-forget
       }
     }
@@ -297,7 +292,7 @@ export async function DELETE(
       }
     }
 
-    await prisma.post.delete({ where: { id: postId } });
+    await withKnowledgeOwnerWrite(post.authorId, tx => tx.post.delete({ where: { id: postId } }));
 
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {

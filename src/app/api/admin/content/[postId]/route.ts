@@ -1,3 +1,4 @@
+import { withKnowledgeOwnerWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -57,7 +58,7 @@ export async function PATCH(
         break;
     }
 
-    const updatedPost = await prisma.post.update({
+    const updatedPost = await withKnowledgeOwnerWrite(post.authorId, tx => tx.post.update({
       where: { id: postId },
       data: updateData,
       select: {
@@ -66,7 +67,7 @@ export async function PATCH(
         status: true,
         isHidden: true,
       },
-    });
+    }));
 
     return NextResponse.json({
       ...updatedPost,

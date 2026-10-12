@@ -1,1 +1,0 @@
-module.exports={rootDir:'../..',preset:'ts-jest',testEnvironment:'node',testMatch:['<rootDir>/scripts/exp16-repair/*.integration.ts'],moduleNameMapper:{'^@/(.*)$':'<rootDir>/src/$1'},transform:{'^.+\\.tsx?$':['ts-jest',{tsconfig:{target:'ES2020',jsx:'react-jsx',esModuleInterop:true}}]},setupFiles:['<rootDir>/scripts/exp16-repair/setup.cjs'],testTimeout:20000};

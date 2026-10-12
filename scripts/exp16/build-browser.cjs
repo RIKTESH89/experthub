@@ -1,3 +1,0 @@
-const path=require('path'),webpack=require('webpack');
-const root=path.resolve(__dirname,'../..');
-webpack({mode:'development',entry:path.join(__dirname,'browser-entry.tsx'),output:{path:path.join(root,'.exp16-runtime/browser'),filename:'app.js'},resolve:{extensions:['.tsx','.ts','.js'],alias:{'@':path.join(root,'src')}},module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:path.join(__dirname,'typescript-loader.cjs')}]},plugins:[new webpack.DefinePlugin({'process.env':JSON.stringify({NODE_ENV:'development'})})],devtool:false},(error,stats)=>{if(error||stats.hasErrors()){console.error(error||stats.toString({all:false,errors:true}));process.exitCode=1;}else console.log('Real review client bundled with existing webpack/typescript dependencies.');});

@@ -1,1 +1,0 @@
-PASS: access predicate, expert/payment-verification effects, role guards, register redirect, shared CSS/chat unchanged; CSS parses; type errors identical to baseline.

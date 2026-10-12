@@ -1,9 +1,0 @@
-PASS scripts/exp28-29/ingestion.integration.ts
-PASS scripts/exp28-29/reliability.integration.ts
-
-Test Suites: 2 passed, 2 total
-Tests:       16 passed, 16 total
-Snapshots:   0 total
-Time:        1.093 s, estimated 2 s
-Ran all test suites.
-Test results written to: audit/exp28-29/jest.json

@@ -1,9 +1,0 @@
-PASS scripts/phase0-integration/restart-proof.integration.ts
-  ✓ cluster restart preserves expired cleanup lease and orphan IDs; fresh worker recovers (19 ms)
-
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        0.189 s, estimated 1 s
-Ran all test suites matching /restart-proof/i.
-Test results written to: audit/phase0/restart-jest.json

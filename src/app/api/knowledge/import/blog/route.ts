@@ -1,3 +1,5 @@
+import { withSourceWorker, sourceWorkerSignal } from "@/lib/knowledge/repair-fence";
+import { withKnowledgeWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
@@ -58,32 +60,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    return await withSourceWorker(prisma, expertProfile.id, async () => {
     const { urls } = validation.data;
     const results: ImportResult[] = [];
 
     for (const url of urls) {
+      sourceWorkerSignal()?.throwIfAborted();
       // Create ImportJob with status PENDING
-      const importJob = await prisma.importJob.create({
+      const importJob = await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.create({
         data: {
           expertProfileId: expertProfile.id,
           sourceType: "BLOG_URL",
           sourceUrl: url,
           status: "PENDING",
         },
-      });
+      }));
 
       try {
         // Set status PROCESSING
-        await prisma.importJob.update({
+        await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.update({
           where: { id: importJob.id },
           data: { status: "PROCESSING" },
-        });
+        }));
 
         // Scrape blog content
+        sourceWorkerSignal()?.throwIfAborted();
         const { title, content } = await scrapeBlogContent(url);
+        sourceWorkerSignal()?.throwIfAborted();
 
         // Create KnowledgeItem
-        const knowledgeItem = await prisma.knowledgeItem.create({
+        const knowledgeItem = await withKnowledgeWrite(expertProfile.id, tx => tx.knowledgeItem.create({
           data: {
             expertProfileId: expertProfile.id,
             title,
@@ -91,31 +97,32 @@ export async function POST(request: NextRequest) {
             sourceType: "blog",
             metadata: { sourceUrl: url },
           },
-        });
+        }));
 
         await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 
         // Update ImportJob status to COMPLETED
-        await prisma.importJob.update({
+        await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.update({
           where: { id: importJob.id },
           data: { status: "COMPLETED", itemsCreated: 1 },
-        });
+        }));
 
         results.push({ url, status: "success", title });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
         // Update ImportJob status to FAILED
-        await prisma.importJob.update({
+        await withKnowledgeWrite(expertProfile.id, tx => tx.importJob.update({
           where: { id: importJob.id },
           data: { status: "FAILED", errorMessage },
-        });
+        }));
 
         results.push({ url, status: "error", error: errorMessage });
       }
     }
 
     return NextResponse.json(results);
+    });
   } catch {
     console.error("Blog import failed");
     return NextResponse.json(

@@ -2,6 +2,8 @@ import { randomUUID, createHash } from "crypto";
 import type { KnowledgeLifecycleJob, Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { removeDocument } from "@/lib/vector/indexer";
+import { lockExpertSourceWrites } from "./write-lock";
+import { withSourceWorker, RepairFenceError } from "./repair-fence";
 
 type Store = Pick<Prisma.TransactionClient, "knowledgeLifecycleJob"|"$queryRaw">;
 type Work = Pick<KnowledgeLifecycleJob,"kind"|"expertProfileId"|"itemId"|"sourceVersion"|"namespace"|"vectorIds"> & {
@@ -19,6 +21,7 @@ export async function enqueueLifecycleJob(work: Work, store?: Store): Promise<Kn
   return enqueueLocked(work,store);
 }
 async function enqueueLocked(work: Work, store: Store): Promise<KnowledgeLifecycleJob> {
+  await lockExpertSourceWrites(store as Prisma.TransactionClient, work.expertProfileId);
   const parents = await store.$queryRaw<{id:string;vectorNamespace:string}[]>`SELECT "id","vectorNamespace" FROM "ExpertProfile" WHERE "id"=${work.expertProfileId} FOR UPDATE`;
   if (!parents.length) throw new Error("Lifecycle expert no longer exists");
   if (parents[0].vectorNamespace !== work.namespace) {
@@ -43,10 +46,16 @@ async function enqueueLocked(work: Work, store: Store): Promise<KnowledgeLifecyc
 
 /** Claim using a token/CAS; an expired worker cannot acknowledge another worker's lease. */
 export async function runLifecycleJob(id: string, expertProfileId: string, index: (job: KnowledgeLifecycleJob) => Promise<void>, now = new Date()) {
+  return withSourceWorker(prisma, expertProfileId, () => runAdmittedLifecycleJob(id, expertProfileId, index, now));
+}
+async function runAdmittedLifecycleJob(id: string, expertProfileId: string, index: (job: KnowledgeLifecycleJob) => Promise<void>, now: Date) {
   const token = randomUUID();
-  const claimed = await prisma.knowledgeLifecycleJob.updateMany({where:{id,expertProfileId,availableAt:{lte:now},OR:[
+  const claimed = await prisma.$transaction(async tx => {
+    await lockExpertSourceWrites(tx, expertProfileId);
+    return tx.knowledgeLifecycleJob.updateMany({where:{id,expertProfileId,availableAt:{lte:now},OR:[
     {state:"PENDING"},{state:"RUNNING",leaseUntil:{lte:now}},
   ]},data:{state:"RUNNING",leaseToken:token,leaseUntil:new Date(now.getTime()+300_000),attempts:{increment:1}}});
+  });
   if (!claimed.count) return false;
   const job = await prisma.knowledgeLifecycleJob.findUnique({where:{id}});
   if (!job || job.leaseToken !== token) return false;
@@ -58,13 +67,20 @@ export async function runLifecycleJob(id: string, expertProfileId: string, index
       // Vector identity is namespace-local. A current copy in a new namespace
       // cannot protect the same IDs left behind in a receipt-bound old namespace.
       const protectedIds = current?.expertProfileId === job.expertProfileId && current.expertProfile.vectorNamespace === job.namespace ? current.vectorIds : [];
-      await removeDocument(job.namespace,job.vectorIds.filter((value)=>!protectedIds.includes(value)));
+      await removeDocument(job.namespace,job.vectorIds.filter((value)=>!protectedIds.includes(value)), job.expertProfileId);
     } else throw new Error("Unknown lifecycle job kind");
-    await prisma.knowledgeLifecycleJob.updateMany({where:{id,leaseToken:token,state:"RUNNING"},data:{state:"DONE",leaseToken:null,leaseUntil:null,lastError:null}});
+    await prisma.$transaction(async tx => {
+      await lockExpertSourceWrites(tx, expertProfileId);
+      await tx.knowledgeLifecycleJob.updateMany({where:{id,leaseToken:token,state:"RUNNING"},data:{state:"DONE",leaseToken:null,leaseUntil:null,lastError:null}});
+    });
     return true;
   } catch (error) {
+    if (error instanceof RepairFenceError) throw error;
     const delay = Math.min(3_600_000,1000 * 2 ** Math.min(job.attempts,12));
-    await prisma.knowledgeLifecycleJob.updateMany({where:{id,leaseToken:token,state:"RUNNING"},data:{state:"PENDING",leaseToken:null,leaseUntil:null,availableAt:new Date(now.getTime()+delay),lastError:error instanceof Error?error.message:"Lifecycle work failed"}});
+    await prisma.$transaction(async tx => {
+      await lockExpertSourceWrites(tx, expertProfileId);
+      await tx.knowledgeLifecycleJob.updateMany({where:{id,leaseToken:token,state:"RUNNING"},data:{state:"PENDING",leaseToken:null,leaseUntil:null,availableAt:new Date(now.getTime()+delay),lastError:error instanceof Error?error.message:"Lifecycle work failed"}});
+    });
     throw error;
   }
 }

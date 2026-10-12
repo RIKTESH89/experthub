@@ -13,7 +13,13 @@ function isStagingPreview(env = process.env) {
   return env.VERCEL_ENV === 'preview' && env.VERCEL_GIT_COMMIT_REF === STAGING_BRANCH && env.VERCEL_BRANCH_URL === STAGING_HOST;
 }
 function previewOriginFromEnvironment(env = process.env) {
-  const origin = previewOriginFromHost(env.VERCEL_BRANCH_URL);
+  // Git deployments provide a branch alias; CLI deployments may provide only
+  // their immutable system URL. That URL establishes an isolated origin, never
+  // the separately gated full-site staging identity or Google configuration.
+  const missingBranch = env.VERCEL_BRANCH_URL === undefined || env.VERCEL_BRANCH_URL === '';
+  const host = missingBranch && env.VERCEL === '1' && env.VERCEL_ENV === 'preview'
+    ? env.VERCEL_URL : env.VERCEL_BRANCH_URL;
+  const origin = previewOriginFromHost(host);
   return isStagingPreview(env) ? STAGING_ORIGIN : origin;
 }
 function validatePreviewOrigin(origin) {

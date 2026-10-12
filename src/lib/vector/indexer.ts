@@ -30,8 +30,8 @@ export async function indexDocument(
   return vectorIds;
 }
 
-export async function removeDocument(namespace: string, vectorIds: string[]) {
-  await vectorStore.deleteByIds(namespace, vectorIds);
+export async function removeDocument(namespace: string, vectorIds: string[], expertId?: string) {
+  await vectorStore.deleteByIds(namespace, vectorIds, expertId);
 }
 
 export function plannedVectorIds(expertProfileId: string, id: string, sourceVersion: number, content: string) {

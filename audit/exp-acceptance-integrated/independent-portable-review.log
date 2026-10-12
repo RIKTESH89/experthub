@@ -1,9 +1,0 @@
-PASS audit/exp17-independent-review-20261011/contraction-and-category.review.ts
-PASS audit/exp17-independent-review-20261011/possessive.review.ts
-
-Test Suites: 2 passed, 2 total
-Tests:       8 passed, 8 total
-Snapshots:   0 total
-Time:        0.318 s, estimated 1 s
-Ran all test suites.
-Test results written to: ../../../../../../../tmp/exp17-portable-review-20261011.json

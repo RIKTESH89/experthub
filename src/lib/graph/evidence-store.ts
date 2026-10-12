@@ -1,7 +1,7 @@
 import { lockExpertSourceWrites } from "@/lib/knowledge/write-lock";
 import prisma from "@/lib/prisma";
 import {publishTemporal} from "./temporal/publisher";
-import type { KnowledgeItem, Prisma } from "@prisma/client";
+import { Prisma, type KnowledgeItem } from "@prisma/client";
 import type { RetrievalScope } from "@/lib/knowledge/access";
 import type { RetrievalResult } from "@/lib/vector/retriever";
 import { EXTRACTOR_VERSION, extractLiteralAssertions, hashEvidence, overlappingChunks } from "./evidence-extractor";
@@ -19,6 +19,13 @@ async function snapshot(tx: Store, item: KnowledgeItem, ownerId: string): Promis
       // Existing Post schema does not record publication time. Do not invent it.
       publishedAt:null,publicationTimeBasis:"unavailable",sourceUpdatedAt:post.updatedAt};
   }
+  if (item.sourceType === "blog") {
+    // Import ownership/source URL do not verify an author or publication date.
+    // Preserve the owner's explicit audience; unspecified imports remain private.
+    return {content:`${item.title}\n\n${item.content}`,authorId:null,uploaderId:ownerId,
+      audience:metadata?.audience === "public" ? "public" : metadata?.audience === "premium" ? "premium" : "private",
+      publishedAt:null,publicationTimeBasis:"unavailable",sourceUpdatedAt:item.updatedAt};
+  }
   if (item.sourceType !== "manual") return null;
   return {content:`${item.title}\n\n${item.content}`,authorId:typeof metadata?.authorId === "string" ? metadata.authorId : null,
     uploaderId:ownerId,audience:metadata?.audience === "public" ? "public" : metadata?.audience === "premium" ? "premium" : "private",
@@ -33,11 +40,20 @@ export async function publishEvidence(tx: Store, item: KnowledgeItem, ownerId: s
   const value = await snapshot(tx,item,ownerId);
   if (!value) return null;
   const contentHash = hashEvidence(value.content);
-  const snapshotHash = hashEvidence([item.sourceVersion,contentHash,value.authorId,value.uploaderId,value.audience,value.publishedAt,value.publicationTimeBasis]);
+  const snapshotHash = hashEvidence([item.sourceVersion,contentHash,value.authorId,value.uploaderId,value.audience,value.publishedAt,value.publicationTimeBasis,
+    // Blog metadata edits invalidate the imported snapshot even without a version bump.
+    // Keep existing manual/post snapshot identities byte-compatible.
+    ...(item.sourceType === "blog" ? ["blog",item.sourceId,item.updatedAt] : [])]);
   const revisionId = hashEvidence([item.expertProfileId,item.id,snapshotHash,EXTRACTOR_VERSION]);
+  // Prisma Dates bind as timezone-aware parameters; assigning them directly to
+  // TIMESTAMP can shift wall time under a non-UTC DB session. Blog freshness
+  // compares UTC wall times, so bind its UTC text with an explicit target cast.
+  // Existing manual/post bindings retain their prior representation.
+  const sourceUpdatedAt = item.sourceType === "blog"
+    ? Prisma.sql`${value.sourceUpdatedAt.toISOString().slice(0,23)}::timestamp(3)` : value.sourceUpdatedAt;
   await tx.$executeRaw`UPDATE "EvidenceRevision" SET "retiredAt"=CURRENT_TIMESTAMP WHERE "expertProfileId"=${item.expertProfileId} AND "itemId"=${item.id} AND "id"<>${revisionId} AND "retiredAt" IS NULL`;
   await tx.$executeRaw`INSERT INTO "EvidenceRevision" ("id","expertProfileId","itemId","sourceType","sourceId","sourceVersion","contentHash","snapshotHash","content","authorId","uploaderId","audience","publishedAt","publicationTimeBasis","sourceUpdatedAt","extractorVersion")
-    VALUES (${revisionId},${item.expertProfileId},${item.id},${item.sourceType},${item.sourceId},${item.sourceVersion},${contentHash},${snapshotHash},${value.content},${value.authorId},${value.uploaderId},${value.audience},${value.publishedAt},${value.publicationTimeBasis},${value.sourceUpdatedAt},${EXTRACTOR_VERSION}) ON CONFLICT ("id") DO NOTHING`;
+    VALUES (${revisionId},${item.expertProfileId},${item.id},${item.sourceType},${item.sourceId},${item.sourceVersion},${contentHash},${snapshotHash},${value.content},${value.authorId},${value.uploaderId},${value.audience},${value.publishedAt},${value.publicationTimeBasis},${sourceUpdatedAt},${EXTRACTOR_VERSION}) ON CONFLICT ("id") DO NOTHING`;
   for (const assertion of extractLiteralAssertions(value.content,value.authorId,ownerId)) {
     const spanId = hashEvidence([revisionId,assertion.start,assertion.end]);
     // Unresolved speakers are source-local mentions, never merged people by name.
@@ -112,7 +128,10 @@ export async function authorizedEvidenceSpans(scope:RetrievalScope,results:Retri
     WHERE r."expertProfileId"=${scope.expertProfileId}
     AND r."retiredAt" IS NULL AND i."sourceVersion"=r."sourceVersion" AND i."indexedVersion"=r."sourceVersion" AND i."isIndexed"=true
     AND (i."title" || E'\n\n' || i."content")=r."content"
-    AND (i."sourceType"='manual' OR (post."id" IS NOT NULL AND post."isRagEnabled"=true AND i."title"=COALESCE(post."title",'Untitled Post') AND i."content"=COALESCE(post."content",'')))
+    AND (i."sourceType" IN ('manual','blog') OR (post."id" IS NOT NULL AND post."isRagEnabled"=true AND i."title"=COALESCE(post."title",'Untitled Post') AND i."content"=COALESCE(post."content",'')))
+    AND ((i."sourceType"<>'blog' AND r."sourceType"<>'blog') OR (i."sourceType"='blog' AND r."sourceType"='blog' AND r."sourceId" IS NOT DISTINCT FROM i."sourceId"
+       AND r."authorId" IS NULL AND r."uploaderId"=e."userId" AND r."publishedAt" IS NULL
+       AND r."publicationTimeBasis"='unavailable' AND r."sourceUpdatedAt"=i."updatedAt"))
     AND (i."sourceType"<>'manual' OR r."authorId" IS NOT DISTINCT FROM
        CASE WHEN jsonb_typeof(i."metadata"->'authorId')='string' THEN i."metadata"->>'authorId' ELSE NULL END)
     AND r."audience"=CASE WHEN i."sourceType"='post' THEN

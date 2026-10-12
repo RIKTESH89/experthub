@@ -1,1 +1,0 @@
-module.exports={rootDir:'../..',preset:'ts-jest',testEnvironment:'node',testMatch:['<rootDir>/scripts/exp14/*.integration.ts'],moduleNameMapper:{'^@/(.*)$':'<rootDir>/src/$1'},transform:{'^.+\\.tsx?$':['ts-jest',{tsconfig:{...require('../../tsconfig.json').compilerOptions,target:'ES2020'}}]},setupFiles:['<rootDir>/scripts/exp14/setup.cjs'],testTimeout:30000};

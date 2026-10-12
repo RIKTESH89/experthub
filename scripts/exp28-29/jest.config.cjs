@@ -1,1 +1,0 @@
-module.exports={rootDir:'../..',preset:'ts-jest',testEnvironment:'node',testMatch:['<rootDir>/scripts/exp28-29/*.integration.ts'],moduleNameMapper:{'^@/(.*)$':'<rootDir>/src/$1'},transform:{'^.+\\.tsx?$':['ts-jest',{tsconfig:{target:'ES2020',esModuleInterop:true},diagnostics:false}]},testTimeout:20000};

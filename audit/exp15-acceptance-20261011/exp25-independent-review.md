@@ -1,9 +1,0 @@
-# EXP-25 independent review
-
-Reviewed candidate `f519cf8` and the subsequent uncommitted repair in the isolated EXP-25 checkout. This is an independent code/regression review of the release UX, not a real OAuth, provider or database-persistence test.
-
-Found a stale-approval recovery defect: after a valid preview, a malformed replacement preview left the earlier confirmation enabled; a failed refresh could also leave the earlier preview in the UI. EXP-25 confirmed the defect and repaired both transitions. Preview operations now clear the old preview/confirmation before dispatch; refresh clears pending private editors/preview before dispatch and blocks stale write controls until successful reload. Activation's ambiguous network/server failure path still retains the same reviewed receipt and idempotency key for safe retries.
-
-Added two fresh regressions in EXP-25's `release-failures.test.ts`: malformed replacement preview after a valid preview; failed refresh after a valid preview. Reviewed repaired behavior and independently ran EXP-25 + EXP-16 suites: **149/149 tests in 17 suites pass** (including both new cases). The owner applied its repair before the first reproduction run, so there is no saved pre-repair failing log; the code defect and owner confirmation are the before evidence.
-
-Also inspected non-JSON 401/403 handling and private DOM clearing, malformed activation response ambiguity, blocked V2/indexing/rollback invariants, error text sanitization, same-key retry tests, preview focus, alert/status roles and intercepted mobile Chrome evidence. No unresolved correctness finding in the repaired candidate. The final commit, combined integration checks and any protected-staging evidence are the integration owner's responsibility. Earlier owner full/build/browser/runtime evidence is local/synthetic as labeled, not authenticated production or human-quality proof.

@@ -1,3 +1,4 @@
+import { withKnowledgeAccountWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -207,7 +208,7 @@ export async function DELETE(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    await prisma.user.delete({ where: { id: userId } });
+    await withKnowledgeAccountWrite(userId, tx => tx.user.delete({ where: { id: userId } }));
 
     return NextResponse.json({ message: "User deleted successfully" });
   } catch (error) {

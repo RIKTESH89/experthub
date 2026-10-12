@@ -1,8 +1,0 @@
-{
-  "ledger.json": "ed089562f96bbb8c31dc3763918d7cdc19bedbadf7334fed44222cec0851ec7e",
-  "execution.log": "17de0b4d0e57c013b85d861b7f79c7a8ef81cedc0150a3df99ff6dc2e00feed0",
-  "manifest.json": "30248466ec107dea27dd9f32916c633f0cf46c9a5a6dd46afbf71338a860317e",
-  "prompt-traces.json": "d3f5b7be081755bed31bf13cc22d69ead0912eb6b1ed39ddb3ff452019aaa320",
-  "claims-review.json": "8e2ec019a32b533f9f13871c5e57d3b4e95d8fd219be6bf1121dc06d0658f8a2",
-  "metrics.json": "fe5050a920030904510488efac95a77433fc4a5ad488351554072d468a560b6d"
-}

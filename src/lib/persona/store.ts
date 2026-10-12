@@ -2,6 +2,7 @@ import { currentRuntimePolicy, supportedReplayCapsule } from "./runtime";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
+import { lockExpertSourceWrites } from "@/lib/knowledge/write-lock";
 import { getDigitalTwinSystemPrompt, type PersonalityProfile } from "@/lib/ai/prompts";
 import { EXTRACTOR_VERSION } from "@/lib/graph/evidence-extractor";
 import { ACTIVE_TEMPORAL_READ_VERSION, supportedTemporalReadVersion } from "@/lib/graph/temporal/read-policy";
@@ -9,6 +10,7 @@ import { manifestHash, sortedPins, sourcePinsEqual, ACTIVE_MANIFEST_VERSION, sup
 export class ReviewError extends Error { constructor(public status: number, message: string) { super(message); } }
 export type Store = Prisma.TransactionClient;
 export async function lockOwner(tx: Store, expertProfileId: string, actorId: string) {
+  await lockExpertSourceWrites(tx, expertProfileId);
   const rows = await tx.$queryRaw<{userId:string}[]>`SELECT "userId" FROM "ExpertProfile" WHERE "id"=${expertProfileId} FOR UPDATE`;
   if (!rows.length || rows[0].userId !== actorId) throw new ReviewError(403,"Expert owner required");
 }
@@ -21,7 +23,10 @@ export async function currentSourcePins(tx: Store, expertProfileId: string): Pro
     WHERE i."expertProfileId"=${expertProfileId} AND i."isIndexed" AND i."indexedVersion"=i."sourceVersion" AND r."retiredAt" IS NULL
     AND (i."sourceType"<>'manual' OR r."authorId" IS NOT DISTINCT FROM (i."metadata"->>'authorId'))
     AND r."extractorVersion"=${EXTRACTOR_VERSION} AND r."content"=(i."title" || E'\n\n' || i."content")
-    AND (i."sourceType"='manual' OR (p."id" IS NOT NULL AND p."isRagEnabled" AND i."title"=COALESCE(p."title",'Untitled Post') AND i."content"=COALESCE(p."content",'')))
+    AND (i."sourceType" IN ('manual','blog') OR (p."id" IS NOT NULL AND p."isRagEnabled" AND i."title"=COALESCE(p."title",'Untitled Post') AND i."content"=COALESCE(p."content",'')))
+    AND ((i."sourceType"<>'blog' AND r."sourceType"<>'blog') OR (i."sourceType"='blog' AND r."sourceType"='blog' AND r."sourceId" IS NOT DISTINCT FROM i."sourceId"
+      AND r."authorId" IS NULL AND r."uploaderId"=e."userId" AND r."publishedAt" IS NULL
+      AND r."publicationTimeBasis"='unavailable' AND r."sourceUpdatedAt"=i."updatedAt"))
     AND r."audience"=CASE WHEN i."sourceType"='post' THEN CASE WHEN p."status"<>'PUBLISHED' OR p."isHidden" THEN 'private' WHEN p."isPremiumOnly" THEN 'premium' ELSE 'public' END
       ELSE CASE WHEN i."metadata"->>'audience' IN ('public','premium') THEN i."metadata"->>'audience' ELSE 'private' END END`;
   return sortedPins(pins);

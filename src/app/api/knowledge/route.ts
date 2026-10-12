@@ -1,3 +1,4 @@
+import { withKnowledgeWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     const { title, content, sourceType, metadata } = validation.data;
 
-    const knowledgeItem = await prisma.knowledgeItem.create({
+    const knowledgeItem = await withKnowledgeWrite(expertProfile.id, tx => tx.knowledgeItem.create({
       data: {
         expertProfileId: expertProfile.id,
         title,
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
         sourceType,
         metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined,
       },
-    });
+    }));
 
     const updatedItem = await syncKnowledgeItem(expertProfile.id, knowledgeItem.id);
 

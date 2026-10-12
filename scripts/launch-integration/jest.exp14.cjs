@@ -1,1 +1,0 @@
-const c=require('../exp14/jest.config.cjs');module.exports={...c,testMatch:['<rootDir>/scripts/launch-integration/retrieval.integration.ts'],setupFiles:['<rootDir>/scripts/launch-integration/setup.exp14.cjs']};

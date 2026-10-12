@@ -1,3 +1,4 @@
+import { withKnowledgeWrite } from "@/lib/knowledge/lifecycle";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -99,10 +100,10 @@ export async function PATCH(
     }
     const changed = (title !== undefined && title !== knowledgeItem.title) ||
       (content !== undefined && content !== knowledgeItem.content) || metadata !== undefined;
-    const updatedItem = changed ? await prisma.knowledgeItem.update({
+    const updatedItem = changed ? await withKnowledgeWrite(knowledgeItem.expertProfileId, tx => tx.knowledgeItem.update({
       where: { id: itemId },
       data: { ...updateData, sourceVersion: { increment: 1 }, isIndexed: false, indexingError: null },
-    }) : knowledgeItem;
+    })) : knowledgeItem;
     const indexedItem = await syncKnowledgeItem(knowledgeItem.expertProfileId, itemId);
 
     return NextResponse.json(indexedItem || updatedItem);
