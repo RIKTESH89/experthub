@@ -1913,6 +1913,7 @@
 !/src/lib/persona/store.ts
 !/src/lib/preview-isolation.ts
 !/src/lib/prisma.ts
+!/src/lib/staging-auth-datasource.ts
 !/src/lib/public-launch-copy.ts
 !/src/lib/public-metadata.ts
 !/src/lib/rate-limit.ts
